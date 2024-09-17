@@ -6,10 +6,10 @@ import './App.css'
 
 function App() {
   const [count, setCount] = useState(0);
-  const [array, setArray] = useState([]);
+  const [serverMessage, setServerMessage] = useState([]);
   const fetchAPI = async () => {
     const response = await axios.get("http://localhost:8080/api");
-    setArray(response.data);
+    setServerMessage(response.data);
   }
   useEffect(()=>{
     fetchAPI();
@@ -35,11 +35,9 @@ function App() {
         </p>
       </div>
       <div className='card'>
-        {array}
+        <h2>The following message comes from the server: </h2>
+        <p>{serverMessage}</p>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
