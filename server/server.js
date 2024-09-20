@@ -9,6 +9,6 @@ app.listen(8080,() => {
 })
 
 /* Routes */
-app.get("/api", (req,res) => {
+app.get("/", (req,res) => {
     res.json("THIS COMES FROM THE SERVER");
 })
