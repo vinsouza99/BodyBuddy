@@ -1,14 +1,30 @@
-const express = require("express");
-const cors = require("cors");
+import cors from 'cors';
+import express from 'express';
+import dotenv from 'dotenv';
+import routes from './routes/index.js';
 
+dotenv.config();
+
+const PORT = process.env.PORT || 8080;
 const app = express();
 
+app.use(express.json());
 app.use(cors());
-app.listen(8080,() => {
-    console.log("Server started on port 8080");
-})
+app.use(express.urlencoded({ extended: true }));
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
 
 /* Routes */
 app.get("/", (req,res) => {
-    res.json("THIS COMES FROM THE SERVER");
-})
+  res.json("THIS COMES FROM THE SERVER");
+});
+
+app.use("/api/", routes);
+
+app.use("*", (req, res) => {
+  res.status(404).json({
+    status: "404",
+    message: "Route not found"
+  });
+});
