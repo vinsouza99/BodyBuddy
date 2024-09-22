@@ -1,12 +1,15 @@
 import cors from 'cors';
 import express from 'express';
 import dotenv from 'dotenv';
+import swaggerSetup from './swagger.js';
 import routes from './routes/index.js';
 
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
 const app = express();
+
+swaggerSetup(app);
 
 app.use(express.json());
 app.use(cors());
