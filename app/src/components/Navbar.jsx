@@ -1,24 +1,50 @@
-import React from 'react'
-import { NavLink } from 'react-router-dom'
-import './Navbar.css'
+import React from "react";
+import { NavLink } from "react-router-dom";
+import Button from "@mui/material/Button";
+import "./Navbar.css";
 
 export const Navbar = () => {
   return (
     <>
-    <nav>
+      <nav>
         <ul>
-            <li>
-                <NavLink to="/">
-                    Dashboard
-                </NavLink>
-            </li>
-            <li>
-                <NavLink to="/profile">
-                    Profile
-                </NavLink>
-            </li>
+          <li>
+            <Button
+              component={NavLink}
+              to="/"
+              variant="contained"
+              sx={{
+                backgroundColor: "#cccccc",
+                color: "#999999",
+                "&:hover": {
+                  backgroundColor: "#999999",
+                  color: "white",
+                },
+              }}
+            >
+              Dashboard
+            </Button>
+          </li>
+          <li>
+            <Button
+              component={NavLink}
+              to="/profile"
+              variant="outlined"
+              sx={{
+                backgroundColor: "#ffffff",
+                color: "#999999",
+                border: "1px solid #999999",
+                "&:hover": {
+                  backgroundColor: "#eeeeee",
+                  color: "black",
+                },
+              }}
+            >
+              Profile
+            </Button>
+          </li>
         </ul>
-    </nav>
+      </nav>
     </>
-  )
-}
+  );
+};
