@@ -2,13 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from '@mediapipe/tasks-vision';
 import { Box, Button, Stack, Typography, createTheme, ThemeProvider, CssBaseline, Snackbar } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { createClient } from '@supabase/supabase-js';
-
-// Supabase setup for file storage
-// Note: Remove the key from here and use environment variables, authentication, or other secure methods
-const supabaseUrl = 'https://nahhyooxxbppqrsqaclo.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5haGh5b294eGJwcHFyc3FhY2xvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjY2MjIyMzksImV4cCI6MjA0MjE5ODIzOX0.sdmnqwQF236tcpyRHFFTxpiNksjOulhnBaeAD7W544E';
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '../supabaseClient';
 
 // For Mediapipe Pose Detection
 const landmarkNames = [
@@ -343,7 +337,7 @@ export const Routine = () => {
               autoHideDuration={3000}
               onClose={handleClose}
               message="File uploaded successfully!"
-              anchorOrigin={{ vertical: 'center', horizontal: 'center' }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
               ContentProps={{
                 style: {
                   backgroundColor: '#4CAF50',
