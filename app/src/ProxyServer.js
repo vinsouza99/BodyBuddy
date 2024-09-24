@@ -24,7 +24,7 @@ class ProxyServer {
    * @returns Promise
    */
   static async get(path, id) {
-    console.log(`Getting from /${id}...`);
+    console.log(`Getting from ${path}/${id}...`);
     const response = await axios.get(`${URL}${path}/${id}`);
     return response.data;
   }
@@ -58,7 +58,7 @@ class ProxyServer {
    * @returns Promise
    */
   static async delete(path, id) {
-    console.log(`Deleting from /${id}...`);
+    console.log(`Deleting from /${path}/${id}...`);
     const response = await axios.delete(`${URL}${path}/${id}`);
     return response.data;
   }
