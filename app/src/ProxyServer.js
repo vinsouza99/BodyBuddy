@@ -47,8 +47,8 @@ class ProxyServer {
    * @returns Promise
    */
   static async update(path, id, newObj) {
-    console.log(`Getting one from /${id}...`);
-    const response = await axios.get(`${URL}${path}/${id}`);
+    console.log(`Updating /${path}/${id}...`);
+    const response = await axios.put(`${URL}${path}/${id}`, newObj);
     return response.data;
   }
   /**
