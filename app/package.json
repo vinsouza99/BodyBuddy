@@ -12,8 +12,8 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@mui/material": "^6.1.1",
     "@mediapipe/tasks-vision": "^0.10.16",
+    "@mui/icons-material": "^6.1.1",
     "@mui/material": "^6.1.1",
     "@mui/x-data-grid": "^7.18.0",
     "@supabase/supabase-js": "^2.45.4",

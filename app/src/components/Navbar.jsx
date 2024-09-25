@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink } from "react-router-dom";
 import Button from "@mui/material/Button";
 import "./Navbar.css";
@@ -11,7 +10,7 @@ export const Navbar = () => {
           <li>
             <Button
               component={NavLink}
-              to="/"
+              to="/dashboard"
               variant="contained"
               sx={{
                 backgroundColor: "#cccccc",
