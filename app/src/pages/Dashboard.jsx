@@ -1,23 +1,22 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { default as server } from "../ProxyServer.js";
+import { useAuth } from "../AuthProvider.jsx";
+import { ProxyServerExample } from "../components/ProxyServerExample.jsx";
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "../theme.js";
+import { CssBaseline } from "@mui/material";
 
 export const Dashboard = () => {
-  const [serverMessage, setServerMessage] = useState([]);
-
-  const fetchAPI = async () => {
-    const response = await server.getAll("accounts");
-    const data = await response.data;
-    setServerMessage(JSON.stringify(data));
-  };
-  useEffect(() => {
-    fetchAPI();
-  }, []);
+  const { user, handleSignOut } = useAuth();
 
   return (
-    <>
-      <h1>Dashboard</h1>
-      <div>{serverMessage}</div>
-    </>
+    <ThemeProvider theme={theme}>
+      <CssBaseline>
+        <>
+          <h1>Dashboard</h1>
+          <p>Signed in as: {user.email}</p>
+          <button onClick={handleSignOut}>Sign Out</button>
+          <ProxyServerExample />
+        </>
+      </CssBaseline>
+    </ThemeProvider>
   );
 };
