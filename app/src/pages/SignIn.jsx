@@ -1,15 +1,30 @@
-import { useState } from 'react';
-import { supabase } from '../supabaseClient';
-import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Grid, Box, Typography, Container, Card, CardContent, Divider } from '@mui/material';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import GoogleIcon from '@mui/icons-material/Google';
+import { useState, useEffect } from "react";
+import { setPageTitle } from "../utils";
+import { supabase } from "../supabaseClient";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  Card,
+  CardContent,
+  Divider,
+} from "@mui/material";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import GoogleIcon from "@mui/icons-material/Google";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#37474F',
+      main: "#37474F",
     },
   },
 });
@@ -17,18 +32,22 @@ const theme = createTheme({
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © BodyBuddy '}
+      {"Copyright © BodyBuddy "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
 
-export const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export const SignIn = (props) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setPageTitle(props.title);
+  }, []);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -38,40 +57,38 @@ export const SignIn = () => {
         email,
         password,
       });
-      
+
       if (error) {
         throw error;
       }
 
-      console.log('SUCCESS: User signed in', data);
-      navigate('/dashboard');
-
+      console.log("SUCCESS: User signed in", data);
+      navigate("/dashboard");
     } catch (error) {
       setError(error.message);
-      console.log('ERROR: User signed in', error);
+      console.log("ERROR: User signed in", error);
     }
   };
-  
+
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
-          prompt: 'select_account'  // For testing, always disokay consent page
-        }
+          prompt: "select_account", // For testing, always disokay consent page
+        },
       });
-      
+
       if (error) {
         throw error;
       }
-      console.log('SUCCESS: User signed in with Google', data);
-      navigate('/dashboard');
-
+      console.log("SUCCESS: User signed in with Google", data);
+      navigate("/dashboard");
     } catch (error) {
       setError(error.message);
-      console.log('ERROR: User signed in with Google', error);
+      console.log("ERROR: User signed in with Google", error);
     }
   };
 
@@ -83,12 +100,12 @@ export const SignIn = () => {
           <CardContent>
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
             >
-              <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+              <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
                 <LockOutlinedIcon />
               </Avatar>
               <Typography component="h1" variant="h5">
@@ -105,10 +122,10 @@ export const SignIn = () => {
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#4285F4',
-                  color: 'white',
-                  '&:hover': {
-                    backgroundColor: '#357ae8',
+                  backgroundColor: "#4285F4",
+                  color: "white",
+                  "&:hover": {
+                    backgroundColor: "#357ae8",
                   },
                 }}
               >
@@ -116,10 +133,15 @@ export const SignIn = () => {
               </Button>
 
               {/* Divider */}
-              <Divider sx={{ width: '100%', my: 2 }}>or</Divider>
+              <Divider sx={{ width: "100%", my: 2 }}>or</Divider>
 
               {/* Email & Password Sign In Form */}
-              <Box component="form" noValidate onSubmit={handleSignIn} sx={{ mt: 1 }}>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSignIn}
+                sx={{ mt: 1 }}
+              >
                 <TextField
                   variant="outlined"
                   margin="normal"
@@ -151,9 +173,9 @@ export const SignIn = () => {
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
                   sx={{
-                    color: 'text.secondary',
-                    justifyContent: 'flex-start',
-                    width: '100%',
+                    color: "text.secondary",
+                    justifyContent: "flex-start",
+                    width: "100%",
                   }}
                 />
                 <Button

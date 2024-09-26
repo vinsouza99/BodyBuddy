@@ -1,24 +1,40 @@
-import { useState } from 'react';
-import { supabase } from '../supabaseClient';
-import { Link, useNavigate } from 'react-router-dom';
-import { Avatar, Button, CssBaseline, TextField, Grid, Box, Typography, Container, Card, CardContent } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useState, useEffect } from "react";
+import { setPageTitle } from "../utils";
+import { supabase } from "../supabaseClient";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  Card,
+  CardContent,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © BodyBuddy '}
+      {"Copyright © BodyBuddy "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
 
 export const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setPageTitle(props.title);
+  }, []);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -28,19 +44,18 @@ export const SignUp = () => {
         email,
         password,
       });
-      
+
       if (error) {
         throw error;
       }
-      console.log('SUCCESS: User signed up', data);
-      navigate('/dashboard');
-
+      console.log("SUCCESS: User signed up", data);
+      navigate("/dashboard");
     } catch (error) {
       setError(error.message);
-      console.log('ERROR: User signed up', error);
+      console.log("ERROR: User signed up", error);
     }
   };
-  
+
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -48,18 +63,23 @@ export const SignUp = () => {
         <CardContent>
           <Box
             sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
               Sign Up
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSignUp} sx={{ mt: 1 }}>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSignUp}
+              sx={{ mt: 1 }}
+            >
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -97,9 +117,7 @@ export const SignUp = () => {
               </Button>
               <Grid container justifyContent="center">
                 <Grid item>
-                  <Link to="/signin">
-                    Already have an account? Sign In
-                  </Link>
+                  <Link to="/signin">Already have an account? Sign In</Link>
                 </Grid>
               </Grid>
             </Box>
@@ -112,8 +130,6 @@ export const SignUp = () => {
     </Container>
   );
 };
-
-
 
 // import { useState } from 'react';
 // import { Link, useNavigate } from 'react-router-dom';
@@ -133,7 +149,7 @@ export const SignUp = () => {
 //         email,
 //         password,
 //       });
-      
+
 //       if (error) {
 //         throw error;
 //       }

@@ -1,21 +1,11 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { ExerciseByActivity } from './ExerciseByActivity';
-
-
+import React from "react";
 
 const ExerciseByMuscle = () => {
   return (
     <div>
-        <h1>ExerciseByMuscle</h1>
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<ExerciseByActivity />} />
-            </Routes>
-        </BrowserRouter>
+      <h1>ExerciseByMuscle</h1>
     </div>
-
-  )
-}
+  );
+};
 
 export default ExerciseByMuscle;

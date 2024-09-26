@@ -1,7 +1,10 @@
-import React from 'react'
+import React from "react";
+import { useEffect } from "react";
+import { setPageTitle } from "../utils";
 
 export const NotFound = () => {
-  return (
-    <h1>404 Not Found</h1>
-  )
-}
+  useEffect(() => {
+    setPageTitle(props.title);
+  }, []);
+  return <h1>404 Not Found</h1>;
+};
