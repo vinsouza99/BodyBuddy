@@ -5,6 +5,7 @@ import { CssBaseline } from "@mui/material";
 
 export const Profile = () => {
   return (
+
     <ThemeProvider theme={theme}>
       <CssBaseline>
         <>
