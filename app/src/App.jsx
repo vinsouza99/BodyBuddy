@@ -9,6 +9,8 @@ import { Routine } from './pages/Routine';
 import { NotFound } from './pages/NotFound';
 import { useAuth } from './AuthProvider';
 import { CircularProgress } from '@mui/material';
+import { ThemeProvider } from "@mui/material/styles";
+import theme from "./theme";
 
 function App() {
   const { user, loading } = useAuth();
@@ -39,7 +41,13 @@ function App() {
     )
   );
 
-  return <RouterProvider router={router}/>
+  return (
+    // Wrapped with ThemeProvider to apply theme.js styles
+    <ThemeProvider theme={theme}>
+      <RouterProvider router={router}/>
+    </ThemeProvider>
+  )
+  
 }
 
 export default App
