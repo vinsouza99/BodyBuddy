@@ -1,16 +1,16 @@
 import React from 'react'
+import { TrainingProgram } from './TrainingProgram';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { EditProfile } from './EditProfile';
 
 
 
-const CreateProfile = () => {
+const Assesment = () => {
   return (
     <div>
-        <h1>CreateProfile</h1>
+        <h1>Assesment</h1>
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<EditProfile />} />
+                <Route path="/" element={<TrainingProgram />} />
             </Routes>
         </BrowserRouter>
     </div>
@@ -18,4 +18,4 @@ const CreateProfile = () => {
   )
 }
 
-export default CreateProfile;
+export default Assesment;
