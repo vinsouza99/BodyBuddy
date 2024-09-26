@@ -99,12 +99,13 @@ export const SignIn = () => {
               <Button
                 variant="contained"
                 fullWidth
+                type="button"
                 startIcon={<GoogleIcon />}
                 onClick={handleGoogleSignIn}
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#4285F4', // Googleの青
+                  backgroundColor: '#4285F4',
                   color: 'white',
                   '&:hover': {
                     backgroundColor: '#357ae8',
@@ -128,7 +129,7 @@ export const SignIn = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  autoFocus
+                  // autoFocus
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
