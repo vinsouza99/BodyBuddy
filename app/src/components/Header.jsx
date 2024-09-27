@@ -1,10 +1,9 @@
 import React from 'react'
-import { Navbar } from './Navbar'
 
 export const Header = () => {
   return (
-    <>
-      <Navbar />
-    </>
+    <header className="header">
+      <h1 className="logo">BodyBuddy</h1>
+    </header>
   )
 }
