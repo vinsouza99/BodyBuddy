@@ -11,6 +11,7 @@ import { SignIn } from "./pages/SignIn";
 import { SignUp } from "./pages/SignUp";
 import { Dashboard } from "./pages/Dashboard";
 import { Profile } from "./pages/Profile";
+import { Learn } from "./pages/Learn";
 import { Routine } from "./pages/Routine";
 import { NotFound } from "./pages/NotFound";
 import { useAuth } from "./AuthProvider";
@@ -18,6 +19,7 @@ import { CircularProgress } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import TrainingProgram from "./pages/TrainingProgram";
+import { Landing } from "./pages/Landing";
 
 function App() {
   const { user, loading } = useAuth();
@@ -31,7 +33,7 @@ function App() {
       <>
         <Route
           index
-          element={user ? <Navigate to="/dashboard" /> : <SignIn />}
+          element={user ? <Navigate to="/dashboard" /> : <Landing />}
         />
         <Route path="/signin" element={<SignIn title="Sign In" />} />
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
@@ -43,6 +45,7 @@ function App() {
         >
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
+          <Route path="/learn" element={<Learn title="Learn" />} />
           <Route
             path="/training"
             element={<TrainingProgram title="Training" />}

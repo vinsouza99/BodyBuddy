@@ -26,7 +26,7 @@ function Copyright() {
   );
 }
 
-export const SignUp = () => {
+export const SignUp = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);

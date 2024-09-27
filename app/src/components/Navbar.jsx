@@ -35,7 +35,18 @@ export const Navbar = () => {
             size="large"
             fullWidth
           >
-            Training Program
+            Training
+          </Button>
+        </li>
+        <li>
+          <Button
+            component={NavLink}
+            to="/learn"
+            variant="text"
+            size="large"
+            fullWidth
+          >
+            Learn
           </Button>
         </li>
       </ul>
