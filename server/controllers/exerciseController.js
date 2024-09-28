@@ -42,11 +42,12 @@ export const getExercise = async (req, res) => {
 
 export const createExercise = async (req, res) => {
   try {
-    const { name, description, demo_url } = req.body;
+    const { name, description, demo_url, type } = req.body;
     const newExercise = await Exercise.create({
       name,
       description,
       demo_url,
+      type,
     });
     res.status(201).json({
       status: "201",

@@ -30,6 +30,9 @@ const router = express.Router();
  *         duration:
  *           type: integer
  *           description: The duration of the routine in milliseconds
+ *         name:
+ *           type: string
+ *           description: The name of the routine
  */
 
 /**
