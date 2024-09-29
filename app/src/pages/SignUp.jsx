@@ -31,6 +31,7 @@ export const SignUp = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [name, setName] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +45,11 @@ export const SignUp = (props) => {
       const { data, error }  = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          data: { 
+            full_name: name,
+          },
+        },
       });
 
       if (error) {
@@ -87,11 +93,22 @@ export const SignUp = (props) => {
                 margin="normal"
                 required
                 fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoFocus
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
                 id="email"
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                autoFocus
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />

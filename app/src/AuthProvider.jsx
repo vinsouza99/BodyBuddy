@@ -49,7 +49,7 @@ export function AuthProvider({ children }) {
               // In case of 404 error, add user to custom user table (= New user)
               const newAccountObj = {
                 id: session.user.id,
-                first_name: "",
+                first_name: session.user.user_metadata.full_name || "",
                 last_name: "",
               };
               server.add("users", newAccountObj)
