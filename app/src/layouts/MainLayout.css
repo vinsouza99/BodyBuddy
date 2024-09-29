@@ -24,7 +24,7 @@
   height: 100%;
 }
 
-nav {
+/* nav {
   width: 250px;
   background-color: #dddddd;
   position: fixed;
@@ -33,7 +33,7 @@ nav {
   height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
-}
+} */
 
 nav ul {
   list-style: none;
