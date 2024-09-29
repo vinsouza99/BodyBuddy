@@ -77,7 +77,7 @@ export const SignIn = (props) => {
     e.preventDefault();
 
     try {
-      const result = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
           prompt: "select_account", // For testing, always display consent page
@@ -85,9 +85,10 @@ export const SignIn = (props) => {
         },
       });
 
-      if (result.error) {
+      if (error) {
         throw error;
       }
+      console.log("SUCCESS: User signed in with Google", data);
 
     } catch (error) {
       setError(error.message);
