@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const URL = "http://localhost:8080/api/"; //the URL to the backend (refer to server/server.js line 7)
+const URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/';
+
 /**
  * This class acts as a proxy between the frontend and the backend
  * The methods are static, so there is no need to create an object
@@ -13,7 +14,7 @@ class ProxyServer {
    * @returns A response object
    */
   static async getAll(path) {
-    console.log(`Getting everything from /${path}...`);
+    console.log(`Getting everything from ${URL}${path}...`);
     const response = await axios.get(`${URL}${path}`);
     return response.data;
   }
@@ -24,7 +25,7 @@ class ProxyServer {
    * @returns Promise
    */
   static async get(path, id) {
-    console.log(`Getting from ${path}/${id}...`);
+    console.log(`Getting from ${URL}${path}/${id}...`);
     const response = await axios.get(`${URL}${path}/${id}`);
     return response.data;
   }

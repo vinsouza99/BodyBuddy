@@ -31,10 +31,8 @@ function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route
-          index
-          element={user ? <Navigate to="/dashboard" /> : <Landing />}
-        />
+        {/* No authentication required */}
+        <Route index element={<Landing title="BodyBoddy" />} />
         <Route path="/signin" element={<SignIn title="Sign In" />} />
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
 
@@ -43,22 +41,32 @@ function App() {
           path="/"
           element={user ? <MainLayout /> : <Navigate to="/signin" />}
         >
-          <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
-          <Route path="/profile" element={<Profile title="Profile" />} />
-          <Route path="/learn" element={<Learn title="Learn" />} />
+          <Route 
+            path="/dashboard" 
+            element={<Dashboard title="Dashboard" />} 
+          />
+          <Route 
+            path="/profile" 
+            element={<Profile title="Profile" />} 
+          />
+          <Route 
+            path="/learn" 
+            element={<Learn title="Learn" />} 
+          />
           <Route
             path="/training"
             element={<TrainingProgram title="Training" />}
           />
-          <Route path="*" element={<NotFound title="Not found" />} />
+          <Route 
+            path="*" 
+            element={<NotFound title="Not found" />} 
+          />
         </Route>
 
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
           path="/routine"
-          element={
-            user ? <Routine title="Routine" /> : <Navigate to="/signin" />
-          }
+          element={user ? <Routine title="Routine" /> : <Navigate to="/signin" />}
         />
       </>
     )

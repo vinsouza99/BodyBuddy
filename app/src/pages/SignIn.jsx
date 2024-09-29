@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils";
 import { supabase } from "../supabaseClient";
@@ -20,6 +21,8 @@ import {
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
+
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL || 'http://localhost:3000/';
 
 const theme = createTheme({
   palette: {
@@ -61,9 +64,9 @@ export const SignIn = (props) => {
       if (error) {
         throw error;
       }
-
       console.log("SUCCESS: User signed in", data);
       navigate("/dashboard");
+
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed in", error);
@@ -74,21 +77,22 @@ export const SignIn = (props) => {
     e.preventDefault();
 
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const result = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          prompt: "select_account", // For testing, always disokay consent page
+          prompt: "select_account", // For testing, always display consent page
+          redirectTo: `${BASE_URL}dashboard/`,
         },
       });
 
-      if (error) {
+      if (result.error) {
         throw error;
       }
-      console.log("SUCCESS: User signed in with Google", data);
-      navigate("/dashboard");
+
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed in with Google", error);
+      navigate("/signin");
     }
   };
 
@@ -203,4 +207,8 @@ export const SignIn = (props) => {
       </Container>
     </ThemeProvider>
   );
+};
+
+SignIn.propTypes = {
+  title: PropTypes.string,
 };

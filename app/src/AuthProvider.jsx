@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect, createContext, useContext } from 'react';
 import { supabase } from './supabaseClient';
+import { default as server } from "./ProxyServer.js";
 
 // For sharing the user state across the app
 const AuthContext = createContext();
@@ -34,17 +35,44 @@ export function AuthProvider({ children }) {
       setLoading(false);
     
       if (event === 'INITIAL_SESSION') {
-        // handle initial session
-      } else if (event === 'SIGNED_IN') {
-        // handle sign in event
+        // Handle initial session event
+      } else if (event === 'SIGNED_IN') {   
+        // Handle signed in event     
+        
+        // If this is the first sign-in, add info to custom user table
+        console.log(session.user.id);
+        server.get("users", session.user.id)
+          .then((response) => {
+            console.log("User already exists in the custom user table", response);
+          }).catch((error) => {
+            if (error.response.status === 404) {
+              // In case of 404 error, add user to custom user table (= New user)
+              const newAccountObj = {
+                id: session.user.id,
+                first_name: "",
+                last_name: "",
+              };
+              server.add("users", newAccountObj)
+                .then((response) => {
+                  console.log("SUCCESS: User signed up (Custom user table)", response);
+                })
+                .catch((error) => {
+                  console.log("ERROR: User signed up (Custom user table)", error);
+                });
+            } else {
+              // Other than 404 error
+              console.log("ERROR: Checking user existence in custom user table", error);
+            }
+          }
+        );
       } else if (event === 'SIGNED_OUT') {
-        // handle sign out event
+        // Handle sign out event
       } else if (event === 'PASSWORD_RECOVERY') {
-        // handle password recovery event
+        // Handle password recovery event
       } else if (event === 'TOKEN_REFRESHED') {
-        // handle token refreshed event
+        // Handle token refreshed event
       } else if (event === 'USER_UPDATED') {
-        // handle user updated event
+        // Handle user updated event
       }
     })
     

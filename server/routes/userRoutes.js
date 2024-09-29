@@ -89,7 +89,8 @@ router.get("/", getUsers);
  *       - in: path
  *         name: id
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
  *         required: true
  *         description: The ID of the User
  *     responses:
@@ -138,7 +139,7 @@ router.post("/", createUser);
  *       - in: path
  *         name: id
  *         schema:
- *           type: integer
+ *           type: UUID
  *         required: true
  *         description: The ID of the User
  *     requestBody:
