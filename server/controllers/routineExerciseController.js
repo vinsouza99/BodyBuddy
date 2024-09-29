@@ -42,7 +42,8 @@ export const getRoutineExercise = async (req, res) => {
 
 export const createRoutineExercise = async (req, res) => {
   try {
-    const { exercise_id, routine_id, reps, sets, order, duration } = req.body;
+    const { exercise_id, routine_id, reps, sets, order, duration, rest_time } =
+      req.body;
     const newRoutineExercise = await RoutineExercise.create({
       exercise_id,
       routine_id,
@@ -50,6 +51,7 @@ export const createRoutineExercise = async (req, res) => {
       sets,
       order,
       duration,
+      rest_time,
     });
     res.status(201).json({
       status: "201",
@@ -74,14 +76,14 @@ export const updateRoutineExercise = async (req, res) => {
     if (!routineExercise) {
       return res.status(404).json({
         status: "404",
-        message: "RoutineExercise not found",
+        message: "Routine Exercise not found",
       });
     }
 
     await routineExercise.update(updatedData);
     res.status(200).json({
       status: "200",
-      message: "RoutineExercise updated successfully",
+      message: "Routine Exercise updated successfully",
       data: routineExercise,
     });
   } catch (error) {
@@ -101,14 +103,14 @@ export const deleteRoutineExercise = async (req, res) => {
     if (!routineExercise) {
       return res.status(404).json({
         status: "404",
-        message: "RoutineExercise not found",
+        message: "Routine Exercise not found",
       });
     }
 
     await routineExercise.destroy();
     res.status(200).json({
       status: "200",
-      message: "RoutineExercise deleted successfully",
+      message: "Routine Exercise deleted successfully",
     });
   } catch (error) {
     console.error(error);

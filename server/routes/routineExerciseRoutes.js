@@ -41,7 +41,10 @@ const router = express.Router();
  *           description: The number of reps in each set
  *         duration:
  *           type: integer
- *           description: The duration of the full set+reps in seconds
+ *           description: The duration of the full set+reps in milliseconds
+ *         rest_time:
+ *           type: integer
+ *           description: The duration of rest between sets in milliseconds
  */
 
 /**

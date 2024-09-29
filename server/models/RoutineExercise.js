@@ -36,6 +36,11 @@ const RoutineExercise = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    rest_time: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      defaultValue: 30000,
+    },
   },
   {
     tableName: "routine exercise",
