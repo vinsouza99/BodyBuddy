@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 import {
   PoseLandmarker,
@@ -463,4 +464,8 @@ export const Routine = (props) => {
       </Stack>
     </ThemeProvider>
   );
+};
+
+Routine.propTypes = {
+  title: PropTypes.string,
 };
