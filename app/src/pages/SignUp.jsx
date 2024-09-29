@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils";
 import { supabase } from "../supabaseClient";
@@ -40,7 +41,7 @@ export const SignUp = (props) => {
     e.preventDefault();
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const { data, error }  = await supabase.auth.signUp({
         email,
         password,
       });
@@ -50,6 +51,7 @@ export const SignUp = (props) => {
       }
       console.log("SUCCESS: User signed up", data);
       navigate("/dashboard");
+
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed up", error);
@@ -131,65 +133,6 @@ export const SignUp = (props) => {
   );
 };
 
-// import { useState } from 'react';
-// import { Link, useNavigate } from 'react-router-dom';
-// import { supabase } from '../supabaseClient';
-
-// export const SignUp = () => {
-//   const [email, setEmail] = useState('');
-//   const [password, setPassword] = useState('');
-//   const [error, setError] = useState(null);
-//   const navigate = useNavigate();
-
-//   const handleSignUp = async (e) => {
-//     e.preventDefault();
-
-//     try {
-//       const { data, error } = await supabase.auth.signUp({
-//         email,
-//         password,
-//       });
-
-//       if (error) {
-//         throw error;
-//       }
-//       console.log('SUCCESS: User signed up', data);
-//       navigate('/dashboard');
-
-//     } catch (error) {
-//       setError(error.message);
-//       console.log('ERROR: User signed up', error);
-//     }
-//   };
-
-//   return (
-//     <div>
-//       <h1>Sign up</h1>
-//       <form onSubmit={handleSignUp}>
-//         <div>
-//           <label htmlFor="email">Email:</label>
-//           <input
-//             type="email"
-//             id="email"
-//             value={email}
-//             onChange={(e) => setEmail(e.target.value)}
-//             required
-//           />
-//         </div>
-//         <div>
-//           <label htmlFor="password">Password:</label>
-//           <input
-//             type="password"
-//             id="password"
-//             value={password}
-//             onChange={(e) => setPassword(e.target.value)}
-//             required
-//           />
-//         </div>
-//         <button type="submit">Sign Up</button>
-//       </form>
-//       <Link to="/signin">Sign in here</Link>
-//       {error && <p style={{ color: 'red' }}>{error}</p>}
-//     </div>
-//   );
-// };
+SignUp.propTypes = {
+  title: PropTypes.string,
+};
