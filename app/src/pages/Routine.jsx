@@ -20,19 +20,14 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Card,
+  CardContent,
 } from "@mui/material";
-// import { DataGrid } from "@mui/x-data-grid";
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { supabase } from "../supabaseClient";
 import { setPageTitle } from "../utils";
+import { exerciseCounterLoader } from '../exerciseLogic/exerciseCounterLoader'; 
 import { default as server } from "../ProxyServer.js";
-
-// !!! The following images are used tentatively for prototype purposes !!!
-import squat from "../assets/squat.gif";
-import plunk from "../assets/plunk.gif";
-import pushup from "../assets/pushup.gif";
-import lunge from "../assets/lunge.gif";
-const sampleExerciseImages = [squat, plunk, pushup, lunge];
 
 // For Mediapipe Pose Detection
 // const landmarkNames = [
@@ -77,12 +72,15 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const poseLandmarkerRef = useRef(null);
-  const runningMode = useRef("IMAGE");
+  const runningMode = useRef("VIDEO");
+  const animationFrameIdRef = useRef(null);
   // const lastUpdateRef = useRef(0);
 
   // const [landmarkData, setLandmarkData] = useState([]);
   const [routine, setRoutine] = useState([]);
+  const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
+  const [successCount, setSuccessCount] = useState(0);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -151,8 +149,27 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     }
   }, [routine]);
 
+  // Set exercise counter based on selected exercise
+  useEffect(() => {
+    console.log("Selected exercise:", selectedExercise);
+
+    if (selectedExercise) {
+      const CounterClass = exerciseCounterLoader[selectedExercise.name];
+      if (CounterClass) {
+        setExerciseCounter(new CounterClass());
+        console.log("Exercise counter is loaded.");
+      } else {
+        setExerciseCounter(null);
+        console.log("Exercise counter is not implemented.");
+      }
+    } else {
+      setExerciseCounter(null);
+      console.log("Exercise counter is not implemented.");
+    }
+  }, [selectedExercise]);
+
   const transformRoutineData = (routineData) => {
-    return routineData.map((item, index) => {
+    return routineData.map((item) => {
       let durationString;
       if (item.reps > 0) {
         durationString = `${item.sets} sets of ${item.reps} reps`;
@@ -165,17 +182,24 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       return {
         name: item.Exercise.name,
         duration: durationString,
-        image: sampleExerciseImages[index % sampleExerciseImages.length]
+        image: item.Exercise.demo_url
       };
     });
   };
 
   // Ttrack webcamRunning changes
   useEffect(() => {
-    if (webcamRunning) {
+    if (exerciseCounter && webcamRunning) {
       predictWebcam(); // Start prediction when webcam is running
     }
-  }, [webcamRunning]); // This effect runs when webcamRunning changes
+
+    // Cleanup
+    return () => {
+      if (animationFrameIdRef.current) {
+        window.cancelAnimationFrame(animationFrameIdRef.current);
+      }
+    };
+  }, [exerciseCounter, webcamRunning]); // This effect runs when webcamRunning changes
 
   const enableCam = async () => {
     if (!poseLandmarkerRef.current) {
@@ -235,10 +259,10 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
 
-    if (runningMode.current === "IMAGE") {
-      runningMode.current = "VIDEO";
-      await poseLandmarkerRef.current.setOptions({ runningMode: "VIDEO" });
-    }
+    // if (runningMode.current === "IMAGE") {
+    //   runningMode.current = "VIDEO";
+    //   await poseLandmarkerRef.current.setOptions({ runningMode: "VIDEO" });
+    // }
 
     const startTimeMs = performance.now();
 
@@ -248,25 +272,29 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         startTimeMs
       );
 
+      // Canvas for drawing pose landmarks
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
       if (results && results.landmarks && results.landmarks.length > 0) {
-        // const updatedLandmarkData = results.landmarks[0].map(
-        //   (landmark, index) => ({
-        //     id: index,
-        //     name: landmarkNames[index],
-        //     x: landmark?.x?.toFixed(2) ?? "NA",
-        //     y: landmark?.y?.toFixed(2) ?? "NA",
-        //     z: landmark?.z?.toFixed(2) ?? "NA",
-        //   })
-        // );
+        // Count exercise using exerciseCounter
+        const count = exerciseCounter?.processPose(results.landmarks[0]);
+        if (count !== undefined) {
+          setSuccessCount((prevSuccessCount) => {
+            if (count !== prevSuccessCount) {
+              // Read out the count
+              const utterance = new SpeechSynthesisUtterance(`${count}`);
+              utterance.rate = 1.5;
+              utterance.pitch = 1.8;
+              utterance.volume = 1.0;
 
-        // const now = performance.now();
-        // if (now - lastUpdateRef.current > 500) {
-        //   lastUpdateRef.current = now;
-        //   setLandmarkData(updatedLandmarkData);
-        // }
+              window.speechSynthesis.speak(utterance);
+              return count;
+            }
+            return prevSuccessCount;
+          });
+        }
 
+        // Draw pose landmarks and connections
         drawingUtils.drawConnectors(
           results.landmarks[0],
           PoseLandmarker.POSE_CONNECTIONS
@@ -297,7 +325,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
     // Continue predictions as long as webcam is running
     if (webcamRunning) {
-      window.requestAnimationFrame(predictWebcam);
+      animationFrameIdRef.current = window.requestAnimationFrame(predictWebcam);
     }
   };
   
@@ -372,8 +400,8 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
   // Handle camera consent dialog response
   const handleAgree = async () => {
-    setIsDialogOpen(false); // Close dialog
-    enableCam(); // Enable camera
+    setIsDialogOpen(false);
+    enableCam();
   };
 
   const handleDisagree = () => {
@@ -382,7 +410,8 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
   // MEMO: Need to confirm history table definition & APIs
   const finishRoutine = () => {
-    if (webcamRunning) enableCam(); // Disable webcam
+    // Disable webcam
+    if (webcamRunning) enableCam();
 
     // Retrieve routine/program information from the database
     const registerHistory = async () => {
@@ -413,14 +442,6 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     setIsFinished(false);
     navigate("/dashboard");
   };
-
-  // const columns = [
-  //   { field: "id", headerName: "ID", width: 30 },
-  //   { field: "name", headerName: "Landmark", minWidth: 140 },
-  //   { field: "x", headerName: "X", width: 70 },
-  //   { field: "y", headerName: "Y", width: 70 },
-  //   { field: "z", headerName: "Z", width: 70 },
-  // ];
 
   return (
     <>
@@ -485,6 +506,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               backgroundColor: "background.paper",
             }}
           >
+            {/* Webcam */}
             <video
               ref={videoRef}
               style={{
@@ -498,6 +520,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               autoPlay
               playsInline
             ></video>
+            {/* Pose Landmarks */}
             <canvas
               ref={canvasRef}
               style={{
@@ -509,6 +532,26 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 left: 0,
               }}
             ></canvas>
+            {/* Counter */}
+            <Card
+              sx={{
+                position: "absolute",
+                top: "20px",
+                right: "20px",
+                minWidth: 200,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                color: "white",
+              }}
+            >
+              <CardContent>
+                <Typography variant="h5" component="div" gutterBottom>
+                  Count
+                </Typography>
+                <Typography variant="h2" component="div" sx={{ fontWeight: "bold" }}>
+                  {successCount}
+                </Typography>
+              </CardContent>
+            </Card>
           </Box>
           <Box
             sx={{
@@ -520,7 +563,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               backgroundColor: "background.paper",
             }}
           >
-            <Typography variant="h4" component="h1" gutterBottom>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
               My Exercise Routine
             </Typography>
             {selectedExercise && selectedExercise.image && (
@@ -546,9 +589,9 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                     onClick={() => setSelectedExercise(exercise)}
                     sx={{
                       cursor: 'pointer',
-                      backgroundColor: selectedExercise === exercise ? 'rgba(0, 0, 255, 0.1)' : 'inherit', // ハイライトの背景色
+                      backgroundColor: selectedExercise === exercise ? 'rgba(0, 0, 255, 0.1)' : 'inherit',
                       '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 255, 0.2)', // hover時の色
+                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
                       }
                     }}
                   >
@@ -565,26 +608,6 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 ))}
               </List>
             </Box>
-
-            {/* <Typography variant="h4" component="h1" gutterBottom>
-              Pose Landmarks
-            </Typography>
-            <div style={{ height: "calc(100% - 50px)", width: "100%" }}>
-              <DataGrid
-                rows={landmarkData}
-                columns={columns}
-                pageSize={landmarkNames.length}
-                disableColumnMenu
-                hideFooter
-                sx={{
-                  "& .MuiDataGrid-cell": {
-                    padding: "4px",
-                    fontSize: "0.8rem",
-                  },
-                }}
-              />
-            </div> */}
-
           </Box>
         </Stack>
         <Box
