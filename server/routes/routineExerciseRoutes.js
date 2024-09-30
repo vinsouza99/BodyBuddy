@@ -5,6 +5,7 @@ import {
   createRoutineExercise,
   updateRoutineExercise,
   deleteRoutineExercise,
+  getRoutineExerciseByRoutineId,
 } from "../controllers/routineExerciseController.js";
 
 const router = express.Router();
@@ -89,6 +90,34 @@ router.get("/", getRoutineExercises);
  *         description: RoutineExercise not found
  */
 router.get("/:id", getRoutineExercise);
+
+/**
+ * @swagger
+ * /RoutineExercises/routine/{routine_id}:
+ *   get:
+ *     summary: Get exercises by routine_id
+ *     tags: [RoutineExercises]
+ *     parameters:
+ *       - in: path
+ *         name: routine_id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the Routine
+ *     responses:
+ *       200:
+ *         description: A list of exercises for the routine
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/RoutineExercise'
+ *       404:
+ *         description: Routine not found or no exercises for this routine
+ */
+router.get("/routine/:routine_id", getRoutineExerciseByRoutineId);
 
 /**
  * @swagger

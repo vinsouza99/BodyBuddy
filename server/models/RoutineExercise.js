@@ -1,21 +1,22 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
+import Exercise from "./Exercise.js";
 
 const RoutineExercise = sequelize.define(
   "RoutineExercise",
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
     },
     routine_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     exercise_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     order: {
@@ -47,5 +48,9 @@ const RoutineExercise = sequelize.define(
     timestamps: false,
   }
 );
+
+RoutineExercise.belongsTo(Exercise, {
+  foreignKey: "exercise_id",
+});
 
 export default RoutineExercise;
