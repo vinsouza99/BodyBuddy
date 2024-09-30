@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Header } from "../components/Header";
 import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
@@ -12,6 +12,7 @@ import RunCircleIcon from "@mui/icons-material/RunCircle";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import "./MainLayout.css";
 
+// Links to display in the left Navbar
 const NavBar = [
   {
     segment: "dashboard",
@@ -36,6 +37,20 @@ const NavBar = [
 ];
 
 export const MainLayout = () => {
+  // Set up routing
+  // Navigate for navigation, Location for current URL info
+  // Route paths are defined in App.jsx
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const router = {
+    pathname: location.pathname,
+    searchParams: new URLSearchParams(location.search),
+    navigate: (path) => {
+      navigate(path);
+    },
+  };
+
   return (
     <>
       <AppProvider
@@ -46,8 +61,9 @@ export const MainLayout = () => {
           logo: <img src="./src/assets/react.svg" alt="BodyBuddy" />,
           title: "BodyBuddy",
         }}
-        // Load NavBar
+        // Load NavBar and routing
         navigation={NavBar}
+        router={router}
       >
         <DashboardLayout>
           <Outlet />
