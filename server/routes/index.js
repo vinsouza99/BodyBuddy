@@ -1,5 +1,4 @@
 import express from "express";
-import accountRoutes from "./accountRoutes.js";
 import userRoutes from "./userRoutes.js";
 import programRoutes from "./programRoutes.js";
 import exerciseRoutes from "./exerciseRoutes.js";
@@ -9,9 +8,6 @@ import historyRoutes from "./historyRoutes.js";
 
 const router = express.Router();
 
-// For Account
-router.use("/accounts", accountRoutes);
-// For other routes
 router.use("/users", userRoutes);
 router.use("/programs", programRoutes);
 router.use("/exercises", exerciseRoutes);

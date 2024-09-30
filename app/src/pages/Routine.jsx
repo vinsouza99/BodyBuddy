@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   PoseLandmarker,
   FilesetResolver,
@@ -10,85 +11,93 @@ import {
   Button,
   Stack,
   Typography,
-  createTheme,
-  ThemeProvider,
-  CssBaseline,
   Snackbar,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+// import { DataGrid } from "@mui/x-data-grid";
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { supabase } from "../supabaseClient";
 import { setPageTitle } from "../utils";
+import { default as server } from "../ProxyServer.js";
+
+// !!! The following images are used tentatively for prototype purposes !!!
+import squat from "../assets/squat.gif";
+import plunk from "../assets/plunk.gif";
+import pushup from "../assets/pushup.gif";
+import lunge from "../assets/lunge.gif";
+const sampleExerciseImages = [squat, plunk, pushup, lunge];
 
 // For Mediapipe Pose Detection
-const landmarkNames = [
-  "NOSE",
-  "LEFT_EYE_INNER",
-  "LEFT_EYE",
-  "LEFT_EYE_OUTER",
-  "RIGHT_EYE_INNER",
-  "RIGHT_EYE",
-  "RIGHT_EYE_OUTER",
-  "LEFT_EAR",
-  "RIGHT_EAR",
-  "MOUTH_LEFT",
-  "MOUTH_RIGHT",
-  "LEFT_SHOULDER",
-  "RIGHT_SHOULDER",
-  "LEFT_ELBOW",
-  "RIGHT_ELBOW",
-  "LEFT_WRIST",
-  "RIGHT_WRIST",
-  "LEFT_PINKY",
-  "RIGHT_PINKY",
-  "LEFT_INDEX",
-  "RIGHT_INDEX",
-  "LEFT_THUMB",
-  "RIGHT_THUMB",
-  "LEFT_HIP",
-  "RIGHT_HIP",
-  "LEFT_KNEE",
-  "RIGHT_KNEE",
-  "LEFT_ANKLE",
-  "RIGHT_ANKLE",
-  "LEFT_HEEL",
-  "RIGHT_HEEL",
-  "LEFT_FOOT_INDEX",
-  "RIGHT_FOOT_INDEX",
-];
+// const landmarkNames = [
+//   "NOSE",
+//   "LEFT_EYE_INNER",
+//   "LEFT_EYE",
+//   "LEFT_EYE_OUTER",
+//   "RIGHT_EYE_INNER",
+//   "RIGHT_EYE",
+//   "RIGHT_EYE_OUTER",
+//   "LEFT_EAR",
+//   "RIGHT_EAR",
+//   "MOUTH_LEFT",
+//   "MOUTH_RIGHT",
+//   "LEFT_SHOULDER",
+//   "RIGHT_SHOULDER",
+//   "LEFT_ELBOW",
+//   "RIGHT_ELBOW",
+//   "LEFT_WRIST",
+//   "RIGHT_WRIST",
+//   "LEFT_PINKY",
+//   "RIGHT_PINKY",
+//   "LEFT_INDEX",
+//   "RIGHT_INDEX",
+//   "LEFT_THUMB",
+//   "RIGHT_THUMB",
+//   "LEFT_HIP",
+//   "RIGHT_HIP",
+//   "LEFT_KNEE",
+//   "RIGHT_KNEE",
+//   "LEFT_ANKLE",
+//   "RIGHT_ANKLE",
+//   "LEFT_HEEL",
+//   "RIGHT_HEEL",
+//   "LEFT_FOOT_INDEX",
+//   "RIGHT_FOOT_INDEX",
+// ];
 
-// Light gray theme for MUI
-const lightGrayTheme = createTheme({
-  palette: {
-    mode: "light",
-    background: {
-      default: "#f5f5f5",
-      paper: "#ffffff",
-    },
-    text: {
-      primary: "#333333",
-    },
-  },
-  typography: {
-    fontSize: 12,
-  },
-});
+export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37" }) => {
+  const navigate = useNavigate();
 
-export const Routine = (props) => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const poseLandmarkerRef = useRef(null);
+  const runningMode = useRef("IMAGE");
+  // const lastUpdateRef = useRef(0);
+
+  // const [landmarkData, setLandmarkData] = useState([]);
+  const [routine, setRoutine] = useState([]);
+  const [selectedExercise, setSelectedExercise] = useState(null);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
-  const runningMode = useRef("IMAGE");
-  const [landmarkData, setLandmarkData] = useState([]);
-  const lastUpdateRef = useRef(0);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(true); // 
+  const [isFinished, setIsFinished] = useState(false);
 
-  // Setup MediaPipe PoseLandmarker when component mounts
+  // Initialization
+  // - Set Page Title
+  // - Setup MediaPipe PoseLandmarker when component mounts
+  // - Retrieve routine/program information from the database
   useEffect(() => {
-    setPageTitle(props.title);
+    setPageTitle(title);
+
     // Overwrite the style of #root
     const rootElement = document.getElementById("root");
     rootElement.style.margin = "0";
@@ -96,6 +105,7 @@ export const Routine = (props) => {
     rootElement.style.width = "100%";
     rootElement.style.maxWidth = "100%";
 
+    // Setup MediaPipe PoseLandmarker when component mounts
     const createPoseLandmarker = async () => {
       try {
         const vision = await FilesetResolver.forVisionTasks(
@@ -115,9 +125,57 @@ export const Routine = (props) => {
         console.error("Error loading PoseLandmarker:", error);
       }
     };
-
     createPoseLandmarker();
+
+    // Retrieve routine/program information from the database
+    const fetchRoutine = async () => {
+      try {
+        const response = await server.get("RoutineExercises/routine", routineId)
+        console.log(response);
+        if (Number(response.status) !== 200) {
+          throw new Error('Failed to fetch routine info');
+        }
+        console.log(response.data);
+        setRoutine(transformRoutineData(response.data));
+        console.log(routine);
+      } catch (error) {
+        console.error('Error fetching routine:', error);
+      }
+    };
+    fetchRoutine();
   }, []);
+
+  useEffect(() => {
+    if (routine && routine.length > 0) {
+      setSelectedExercise(routine[0]);
+    }
+  }, [routine]);
+
+  const transformRoutineData = (routineData) => {
+    return routineData.map((item, index) => {
+      let durationString;
+      if (item.reps > 0) {
+        durationString = `${item.sets} sets of ${item.reps} reps`;
+      } else if (item.duration) {
+        durationString = `${item.duration / 1000} seconds`;
+      } else {
+        durationString = `${item.sets} sets`;
+      }
+  
+      return {
+        name: item.Exercise.name,
+        duration: durationString,
+        image: sampleExerciseImages[index % sampleExerciseImages.length]
+      };
+    });
+  };
+
+  // Ttrack webcamRunning changes
+  useEffect(() => {
+    if (webcamRunning) {
+      predictWebcam(); // Start prediction when webcam is running
+    }
+  }, [webcamRunning]); // This effect runs when webcamRunning changes
 
   const enableCam = async () => {
     if (!poseLandmarkerRef.current) {
@@ -160,13 +218,7 @@ export const Routine = (props) => {
     }
   };
 
-  // Add useEffect to track webcamRunning changes
-  useEffect(() => {
-    if (webcamRunning) {
-      predictWebcam(); // Start prediction when webcam is running
-    }
-  }, [webcamRunning]); // This effect runs when webcamRunning changes
-
+  // Perform posture detection on webcam feed
   const predictWebcam = async () => {
     const videoElement = videoRef.current;
     const canvasElement = canvasRef.current;
@@ -199,21 +251,21 @@ export const Routine = (props) => {
       canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 
       if (results && results.landmarks && results.landmarks.length > 0) {
-        const updatedLandmarkData = results.landmarks[0].map(
-          (landmark, index) => ({
-            id: index,
-            name: landmarkNames[index],
-            x: landmark?.x?.toFixed(2) ?? "NA",
-            y: landmark?.y?.toFixed(2) ?? "NA",
-            z: landmark?.z?.toFixed(2) ?? "NA",
-          })
-        );
+        // const updatedLandmarkData = results.landmarks[0].map(
+        //   (landmark, index) => ({
+        //     id: index,
+        //     name: landmarkNames[index],
+        //     x: landmark?.x?.toFixed(2) ?? "NA",
+        //     y: landmark?.y?.toFixed(2) ?? "NA",
+        //     z: landmark?.z?.toFixed(2) ?? "NA",
+        //   })
+        // );
 
-        const now = performance.now();
-        if (now - lastUpdateRef.current > 500) {
-          lastUpdateRef.current = now;
-          setLandmarkData(updatedLandmarkData);
-        }
+        // const now = performance.now();
+        // if (now - lastUpdateRef.current > 500) {
+        //   lastUpdateRef.current = now;
+        //   setLandmarkData(updatedLandmarkData);
+        // }
 
         drawingUtils.drawConnectors(
           results.landmarks[0],
@@ -248,7 +300,7 @@ export const Routine = (props) => {
       window.requestAnimationFrame(predictWebcam);
     }
   };
-
+  
   const startRecording = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
@@ -318,17 +370,108 @@ export const Routine = (props) => {
     }
   };
 
-  const columns = [
-    { field: "id", headerName: "ID", width: 30 },
-    { field: "name", headerName: "Landmark", minWidth: 140 },
-    { field: "x", headerName: "X", width: 70 },
-    { field: "y", headerName: "Y", width: 70 },
-    { field: "z", headerName: "Z", width: 70 },
-  ];
+  // Handle camera consent dialog response
+  const handleAgree = async () => {
+    setIsDialogOpen(false); // Close dialog
+    enableCam(); // Enable camera
+  };
+
+  const handleDisagree = () => {
+    navigate(-1); // Navigate back to previous page
+  };
+
+  // MEMO: Need to confirm history table definition & APIs
+  const finishRoutine = () => {
+    if (webcamRunning) enableCam(); // Disable webcam
+
+    // Retrieve routine/program information from the database
+    const registerHistory = async () => {
+      try {
+        const completedAt = new Date().toISOString();
+        const newHitoryObj = {
+          id: 0,
+          created_at: completedAt,
+          routine_id: routineId,
+          recording_URL: "",
+        };
+        const response = await server.add("Historys", newHitoryObj)
+        console.log(response);
+        if (Number(response.status) !== 200) {
+          throw new Error('Failed to insert history info');
+        }
+        console.log(response.data);
+      } catch (error) {
+        console.error('Error inserting history info:', error);
+      }
+    };
+    registerHistory();
+
+    setIsFinished(true);
+  };
+
+  const goBackToTrainingPage = () => {
+    setIsFinished(false);
+    navigate("/dashboard");
+  };
+
+  // const columns = [
+  //   { field: "id", headerName: "ID", width: 30 },
+  //   { field: "name", headerName: "Landmark", minWidth: 140 },
+  //   { field: "x", headerName: "X", width: 70 },
+  //   { field: "y", headerName: "Y", width: 70 },
+  //   { field: "z", headerName: "Z", width: 70 },
+  // ];
 
   return (
-    <ThemeProvider theme={lightGrayTheme}>
-      <CssBaseline />
+    <>
+      {/* Camera Consent Dialog */}
+      <Dialog
+        open={isDialogOpen}
+        fullScreen
+        PaperProps={{
+          style: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          }
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "center",
+            color: "#fff",
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 4
+          }}
+        >
+          <DialogTitle sx={{ color: "#fff", fontSize: "2rem" }}>
+            Are you ready to start?
+          </DialogTitle>
+          <DialogContent>
+            <Typography variant="body1" sx={{ color: "#fff", mb: 4 }}>
+              We need access to your web camera to proceed. Do you agree?
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={handleDisagree}
+              color="secondary"
+              variant="outlined"
+              sx={{ marginRight: 2 }}
+            >
+              No
+            </Button>
+            <Button onClick={handleAgree} color="primary" variant="contained">
+              Yes
+            </Button>
+          </DialogActions>
+        </Box>
+      </Dialog>
+
       <Stack
         sx={{ height: "100vh", backgroundColor: "background.default" }}
         spacing={2}
@@ -371,12 +514,59 @@ export const Routine = (props) => {
             sx={{
               flexBasis: "30%",
               padding: 1,
-              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
               maxHeight: "100%",
               backgroundColor: "background.paper",
             }}
           >
-            <Typography variant="h5" sx={{ marginBottom: 1 }}>
+            <Typography variant="h4" component="h1" gutterBottom>
+              My Exercise Routine
+            </Typography>
+            {selectedExercise && selectedExercise.image && (
+              <Box
+                component="img"
+                src={selectedExercise.image}
+                alt="exercise image"
+                sx={{
+                  width: "100%",
+                  height: "350px",
+                  objectFit: "cover",
+                  mb: 3,
+                  flexShrink: 0,
+                }}
+              />
+            )}
+            <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
+              <List>
+                {routine.map((exercise, index) => (
+                  <ListItem
+                    button="true"
+                    key={index}
+                    onClick={() => setSelectedExercise(exercise)}
+                    sx={{
+                      cursor: 'pointer',
+                      backgroundColor: selectedExercise === exercise ? 'rgba(0, 0, 255, 0.1)' : 'inherit', // ハイライトの背景色
+                      '&:hover': {
+                        backgroundColor: 'rgba(0, 0, 255, 0.2)', // hover時の色
+                      }
+                    }}
+                  >
+                    <ListItemIcon>
+                      <FitnessCenterIcon />
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={exercise.name}
+                      secondary={exercise.duration}
+                      primaryTypographyProps={{ sx: { fontSize: '1.5rem', fontWeight: 'bold' } }}
+                      secondaryTypographyProps={{ sx: { fontSize: '1.2rem' } }}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+
+            {/* <Typography variant="h4" component="h1" gutterBottom>
               Pose Landmarks
             </Typography>
             <div style={{ height: "calc(100% - 50px)", width: "100%" }}>
@@ -393,7 +583,8 @@ export const Routine = (props) => {
                   },
                 }}
               />
-            </div>
+            </div> */}
+
           </Box>
         </Stack>
         <Box
@@ -443,6 +634,12 @@ export const Routine = (props) => {
             >
               DOWNLOAD
             </Button>
+            <Button
+              variant="contained"
+              onClick={finishRoutine}
+            >
+              FINISH ROUTINE
+            </Button>            
             <Snackbar
               open={isSnackbarOpen}
               autoHideDuration={3000}
@@ -462,10 +659,35 @@ export const Routine = (props) => {
           </Stack>
         </Box>
       </Stack>
-    </ThemeProvider>
+
+      {/* Congratulations Modal */}
+      <Dialog
+        open={isFinished}
+        onClose={() => setIsFinished(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Congratulations!</DialogTitle>
+        <DialogContent>
+          <Typography variant="body1">
+            You have successfully completed the routine!
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            variant="contained"
+            onClick={goBackToTrainingPage}
+          >
+            Go Back to Training Page
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
+// Defining prop types
 Routine.propTypes = {
   title: PropTypes.string,
+  routineId: PropTypes.string,  // Expecting a UUID string
 };

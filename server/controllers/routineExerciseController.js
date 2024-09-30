@@ -1,4 +1,5 @@
 import RoutineExercise from "../models/RoutineExercise.js";
+import Exercise from "../models/Exercise.js";
 
 export const getRoutineExercises = async (req, res) => {
   try {
@@ -111,6 +112,41 @@ export const deleteRoutineExercise = async (req, res) => {
     res.status(200).json({
       status: "200",
       message: "Routine Exercise deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getRoutineExerciseByRoutineId = async (req, res) => {
+  try {
+    const { routine_id } = req.params;
+    
+    const routineExercises = await RoutineExercise.findAll({
+      where: { routine_id },
+      include: [
+        {
+          model: Exercise,
+          attributes: ['id', 'name', 'description', 'demo_url'],
+        }
+      ],
+      order: [['order', 'ASC']],
+    });
+
+    if (!routineExercises) {
+      return res.status(404).json({
+        status: "404",
+        message: "No exercises found for this routine",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routineExercises,
     });
   } catch (error) {
     console.error(error);
