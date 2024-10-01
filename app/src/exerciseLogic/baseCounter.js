@@ -3,6 +3,9 @@ export class BaseCounter {
     this.successCount = 0;
     this.up = false;
     this.down = false;
+    this.alert = null;
+    this.alertCount = 0;
+    this.alertThreshold = 100;
   }
 
   processPose(landmarks) {
