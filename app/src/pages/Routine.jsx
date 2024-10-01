@@ -28,43 +28,7 @@ import { supabase } from "../supabaseClient";
 import { setPageTitle } from "../utils";
 import { exerciseCounterLoader } from '../exerciseLogic/exerciseCounterLoader'; 
 import { default as server } from "../ProxyServer.js";
-
-// For Mediapipe Pose Detection
-// const landmarkNames = [
-//   "NOSE",
-//   "LEFT_EYE_INNER",
-//   "LEFT_EYE",
-//   "LEFT_EYE_OUTER",
-//   "RIGHT_EYE_INNER",
-//   "RIGHT_EYE",
-//   "RIGHT_EYE_OUTER",
-//   "LEFT_EAR",
-//   "RIGHT_EAR",
-//   "MOUTH_LEFT",
-//   "MOUTH_RIGHT",
-//   "LEFT_SHOULDER",
-//   "RIGHT_SHOULDER",
-//   "LEFT_ELBOW",
-//   "RIGHT_ELBOW",
-//   "LEFT_WRIST",
-//   "RIGHT_WRIST",
-//   "LEFT_PINKY",
-//   "RIGHT_PINKY",
-//   "LEFT_INDEX",
-//   "RIGHT_INDEX",
-//   "LEFT_THUMB",
-//   "RIGHT_THUMB",
-//   "LEFT_HIP",
-//   "RIGHT_HIP",
-//   "LEFT_KNEE",
-//   "RIGHT_KNEE",
-//   "LEFT_ANKLE",
-//   "RIGHT_ANKLE",
-//   "LEFT_HEEL",
-//   "RIGHT_HEEL",
-//   "LEFT_FOOT_INDEX",
-//   "RIGHT_FOOT_INDEX",
-// ];
+import { AngleMeter } from "../components/AngleMeter.jsx";
 
 export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37" }) => {
   const navigate = useNavigate();
@@ -74,13 +38,12 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
   const poseLandmarkerRef = useRef(null);
   const runningMode = useRef("VIDEO");
   const animationFrameIdRef = useRef(null);
-  // const lastUpdateRef = useRef(0);
 
-  // const [landmarkData, setLandmarkData] = useState([]);
   const [routine, setRoutine] = useState([]);
   const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [successCount, setSuccessCount] = useState(0);
+  const [hipKneeAngle, setHipKneeAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -149,7 +112,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     }
   }, [routine]);
 
-  // Set exercise counter based on selected exercise
+  // Dynamically load exercise counter class based on selected exercise
   useEffect(() => {
     console.log("Selected exercise:", selectedExercise);
 
@@ -168,6 +131,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     }
   }, [selectedExercise]);
 
+  // Transform routine data format for display
   const transformRoutineData = (routineData) => {
     return routineData.map((item) => {
       let durationString;
@@ -279,19 +243,19 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         // Count exercise using exerciseCounter
         const count = exerciseCounter?.processPose(results.landmarks[0]);
         if (count !== undefined) {
+          // Update success count
           setSuccessCount((prevSuccessCount) => {
             if (count !== prevSuccessCount) {
-              // Read out the count
-              const utterance = new SpeechSynthesisUtterance(`${count}`);
-              utterance.rate = 1.5;
-              utterance.pitch = 1.8;
-              utterance.volume = 1.0;
-
-              window.speechSynthesis.speak(utterance);
               return count;
             }
             return prevSuccessCount;
           });
+
+          // Update angle for the meter
+          const angle = exerciseCounter?.getAngle(results.landmarks[0]);
+          if (angle !== undefined) {
+            setHipKneeAngle(Math.round(angle));
+          }
         }
 
         // Draw pose landmarks and connections
@@ -329,6 +293,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     }
   };
   
+  // Read out the count
+  useEffect(() => {
+    if (successCount !== 0) {
+      const utterance = new SpeechSynthesisUtterance(`${successCount}`);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [successCount]);
+
   const startRecording = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
@@ -538,7 +510,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 position: "absolute",
                 top: "20px",
                 right: "20px",
-                minWidth: 200,
+                minWidth: 250,
                 backgroundColor: "rgba(0, 0, 0, 0.7)",
                 color: "white",
               }}
@@ -550,6 +522,24 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 <Typography variant="h2" component="div" sx={{ fontWeight: "bold" }}>
                   {successCount}
                 </Typography>
+              </CardContent>
+            </Card>
+              {/* Angle meter */}
+              <Card
+              sx={{
+                position: "absolute",
+                top: "200px",
+                right: "20px",
+                minWidth: 250,
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                color: "white",
+              }}
+            >
+              <CardContent>
+              <Typography variant="h5" component="div" gutterBottom>
+                  Angle Meter
+                </Typography>
+                <AngleMeter hipKneeAngle={hipKneeAngle} />
               </CardContent>
             </Card>
           </Box>

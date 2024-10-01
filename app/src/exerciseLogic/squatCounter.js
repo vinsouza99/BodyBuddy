@@ -5,6 +5,7 @@ import { calculateAngle } from './utils';
 export class SquatCounter extends BaseCounter {
   constructor() {
     super();
+    this.hipKneeAngle = null;
   }
 
   processPose(landmarks) {
@@ -14,25 +15,29 @@ export class SquatCounter extends BaseCounter {
     const leftAnkle = landmarks[landmarkNames.LEFT_ANKLE];
 
     const shoulderHipAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
-    const hipKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+    this.hipKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
   
-  // Judge Squat Up 
-  if (shoulderHipAngle > 170 && !this.up) {
-    this.up = true;
-    this.down = false;
-  }
+    // Judge Squat Up 
+    if (shoulderHipAngle > 170 && !this.up) {
+      this.up = true;
+      this.down = false;
+    }
 
-  // Judge Squat Down
-  if (this.up && hipKneeAngle < 100 && !this.down) {
-    this.down = true;
-    this.successCount += 1;
-  }
+    // Judge Squat Down
+    if (this.up && this.hipKneeAngle < 100 && !this.down) {
+      this.down = true;
+      this.successCount += 1;
+    }
 
-  // Reset Up state
-  if (this.down && shoulderHipAngle > 170) {
-    this.up = false;
-  }
+    // Reset Up state
+    if (this.down && shoulderHipAngle > 170) {
+      this.up = false;
+    }
 
     return this.successCount;
+  }
+
+  getAngle() {
+    return Number(this.hipKneeAngle);
   }
 }
