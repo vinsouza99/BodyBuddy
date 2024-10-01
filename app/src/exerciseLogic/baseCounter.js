@@ -8,4 +8,8 @@ export class BaseCounter {
   processPose(landmarks) {
     throw new Error("processPose() must be implemented in subclass");
   }
+
+  getAngle() {
+    throw new Error("getAngle() must be implemented in subclass");
+  }
 }
