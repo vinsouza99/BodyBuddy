@@ -43,6 +43,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
   const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [successCount, setSuccessCount] = useState(0);
+  const [postureAlert, setPostureAlert] = useState(null);
   const [hipKneeAngle, setHipKneeAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
@@ -241,9 +242,10 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const count = exerciseCounter?.processPose(results.landmarks[0]);
+        const { count = 0, alert = null } = exerciseCounter?.processPose(results.landmarks[0]) || {};
+
+        // Update success count
         if (count !== undefined) {
-          // Update success count
           setSuccessCount((prevSuccessCount) => {
             if (count !== prevSuccessCount) {
               return count;
@@ -257,6 +259,12 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
             setHipKneeAngle(Math.round(angle));
           }
         }
+
+        // Update alert if any posture issue
+        if (alert !== undefined) {
+          // Update success count
+          setPostureAlert(alert);
+        };         
 
         // Draw pose landmarks and connections
         drawingUtils.drawConnectors(
@@ -300,6 +308,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       window.speechSynthesis.speak(utterance);
     }
   }, [successCount]);
+
+  // Read out the alert
+  useEffect(() => {
+    if (postureAlert) {
+      const utterance = new SpeechSynthesisUtterance(`${postureAlert}`);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [postureAlert]);
 
   const startRecording = () => {
     if (videoRef.current && videoRef.current.srcObject) {

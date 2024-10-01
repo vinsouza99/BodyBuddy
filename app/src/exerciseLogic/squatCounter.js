@@ -5,6 +5,7 @@ import { calculateAngle } from './utils';
 export class SquatCounter extends BaseCounter {
   constructor() {
     super();
+    this.shoulderHipAngle = null;
     this.hipKneeAngle = null;
   }
 
@@ -14,11 +15,40 @@ export class SquatCounter extends BaseCounter {
     const leftKnee = landmarks[landmarkNames.LEFT_KNEE];
     const leftAnkle = landmarks[landmarkNames.LEFT_ANKLE];
 
-    const shoulderHipAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
+    // Process Alert
+    this.#processAlert(leftKnee, leftAnkle);
+
+    // Process Count
+    this.#processCount(leftShoulder, leftHip, leftKnee, leftAnkle);
+
+    return { count: this.successCount, alert: this.alert };
+  }
+
+  #processAlert(leftKnee, leftAnkle) {
+    // Calculate the angle between knee and ankle
+    const kneeAnkleAngle = calculateAngle(leftKnee, leftAnkle, { x: leftAnkle.x + 1, y: leftAnkle.y });
+    console.log("Knee Ankle Angle: ", kneeAnkleAngle);
+
+    // Check if knee goes beyond the toes by more than 10 degrees
+    if (kneeAnkleAngle < 70) {
+      this.alertCount += 1;
+    }
+
+    // Return alert message if knee goes beyond the toes for a certain number of frames
+    if (this.alertCount >= this.alertThreshold) {
+      this.alert = "Be careful not to let your knees go past your toes.";
+      this.alertCount = 0;
+    } else {
+      this.alert = null;
+    }
+  }
+
+  #processCount(leftShoulder, leftHip, leftKnee, leftAnkle) {
+    this.shoulderHipAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
     this.hipKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
-  
+
     // Judge Squat Up 
-    if (shoulderHipAngle > 170 && !this.up) {
+    if (this.shoulderHipAngle > 170 && !this.up) {
       this.up = true;
       this.down = false;
     }
@@ -30,11 +60,9 @@ export class SquatCounter extends BaseCounter {
     }
 
     // Reset Up state
-    if (this.down && shoulderHipAngle > 170) {
+    if (this.down && this.shoulderHipAngle > 170) {
       this.up = false;
     }
-
-    return this.successCount;
   }
 
   getAngle() {
