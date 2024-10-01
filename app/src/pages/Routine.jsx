@@ -504,44 +504,54 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 left: 0,
               }}
             ></canvas>
-            {/* Counter */}
-            <Card
+
+            <Box
               sx={{
                 position: "absolute",
                 top: "20px",
                 right: "20px",
-                minWidth: 250,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                color: "white",
+                bottom: "20px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: 2,
               }}
             >
-              <CardContent>
-                <Typography variant="h5" component="div" gutterBottom>
-                  Count
-                </Typography>
-                <Typography variant="h2" component="div" sx={{ fontWeight: "bold" }}>
-                  {successCount}
-                </Typography>
-              </CardContent>
-            </Card>
-              {/* Angle meter */}
+              {/* Counter - Height 30% */}
               <Card
-              sx={{
-                position: "absolute",
-                top: "200px",
-                right: "20px",
-                minWidth: 250,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                color: "white",
-              }}
-            >
-              <CardContent>
-              <Typography variant="h5" component="div" gutterBottom>
-                  Angle Meter
-                </Typography>
-                <AngleMeter hipKneeAngle={hipKneeAngle} />
-              </CardContent>
-            </Card>
+                sx={{
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  color: "white",
+                  flexGrow: 0,
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5" component="div" gutterBottom>
+                    Count
+                  </Typography>
+                  <Typography variant="h2" component="div" sx={{ fontWeight: "bold" }}>
+                    {successCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              {/* Angle Meter - Height 70% */}
+              <Card
+                sx={{
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  color: "white",
+                  flexGrow: 0,
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5" component="div" gutterBottom>
+                    Angle Meter
+                  </Typography>
+                  <AngleMeter angle={hipKneeAngle} />
+                </CardContent>
+              </Card>
+            </Box>
+
           </Box>
           <Box
             sx={{

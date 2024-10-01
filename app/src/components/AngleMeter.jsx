@@ -2,18 +2,18 @@ import PropTypes from "prop-types";
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 
-export const AngleMeter = ({ hipKneeAngle }) => {
-  const [displayedAngle, setDisplayedAngle] = useState(180);
+export const AngleMeter = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
+  const [displayedAngle, setDisplayedAngle] = useState(maxAngle);
   const [heightPercentage, setHeightPercentage] = useState(0);
   const animationFrameRef = useRef(null);
 
   const updateHeightAndAngle = () => {
-    // Normalize so that 170 degrees is the maximum and 90 degrees is the minimum.
-    const normalizedHeight = ((Math.max(Math.min(Number(hipKneeAngle), 170), 90) - 90) / (170 - 90)) * 100;
+    // Normalize based on the maxAngle and minAngle props
+    const normalizedHeight = ((Math.max(Math.min(Number(angle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
     setHeightPercentage(normalizedHeight);
 
     setDisplayedAngle((prevAngle) => {
-      const step = (hipKneeAngle - prevAngle) * 0.1;
+      const step = (angle - prevAngle) * 0.1;
       return prevAngle + step;
     });
   };
@@ -27,19 +27,36 @@ export const AngleMeter = ({ hipKneeAngle }) => {
 
     // Clean up
     return () => cancelAnimationFrame(animationFrameRef.current);
-  }, [hipKneeAngle]);
+  }, [angle, maxAngle, minAngle]);
 
   return (
-    <Box sx={{ position: 'relative', display: 'inline-flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Box sx={{ height: '200px', width: '30px', backgroundColor: '#ddd', position: 'relative' }}>
-        {/* Progress Bar */}
+    <Box 
+      sx={{ 
+        position: 'relative', 
+        display: 'inline-flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        height: '100%',
+        justifyContent: 'space-between'
+      }}
+    >
+      {/* Progress Bar */}
+      <Box 
+        sx={{ 
+          height: '300px',
+          width: '30px', 
+          backgroundColor: '#ddd', 
+          position: 'relative', 
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'flex-end'
+        }}
+      >
         <Box
           sx={{
             height: `${heightPercentage}%`,
             width: '100%',
             backgroundColor: '#FF5722',
-            position: 'absolute',
-            bottom: 0,
             transition: 'height 0.1s ease',
           }}
         />
@@ -57,5 +74,8 @@ export const AngleMeter = ({ hipKneeAngle }) => {
 };
 
 AngleMeter.propTypes = {
-  hipKneeAngle: PropTypes.number.isRequired,
+  angle: PropTypes.number.isRequired,
+  maxAngle: PropTypes.number,
+  minAngle: PropTypes.number,
 };
+
