@@ -467,7 +467,6 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
       <Stack
         sx={{ height: "100vh", backgroundColor: "background.default" }}
-        spacing={2}
       >
         <Stack direction="row" sx={{ flex: 1, overflow: "hidden" }}>
           <Box
@@ -488,6 +487,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 position: "absolute",
                 top: 0,
                 left: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
               }}
               autoPlay
               playsInline
