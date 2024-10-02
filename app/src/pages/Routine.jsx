@@ -29,6 +29,7 @@ import { setPageTitle } from "../utils";
 import { exerciseCounterLoader } from '../exerciseLogic/exerciseCounterLoader'; 
 import { default as server } from "../ProxyServer.js";
 import { AngleMeter } from "../components/AngleMeter.jsx";
+import { CountDown } from "../components/CountDown.jsx";
 
 export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37" }) => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(true); // 
   const [isFinished, setIsFinished] = useState(false);
+  const [countDownTrigger, setCountDownTrigger] = useState(false);
 
   // Initialization
   // - Set Page Title
@@ -122,6 +124,9 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       if (CounterClass) {
         setExerciseCounter(new CounterClass());
         console.log("Exercise counter is loaded.");
+
+        // Start countdown when exercise changes
+        startCountdown();
       } else {
         setExerciseCounter(null);
         console.log("Exercise counter is not implemented.");
@@ -262,9 +267,13 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
         // Update alert if any posture issue
         if (alert !== undefined) {
-          // Update success count
-          setPostureAlert(alert);
-        };         
+          setPostureAlert((prevAlert) => {
+            if (alert !== prevAlert) {
+              return alert;
+            }
+            return prevAlert;
+          });
+        }         
 
         // Draw pose landmarks and connections
         drawingUtils.drawConnectors(
@@ -396,6 +405,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     navigate(-1); // Navigate back to previous page
   };
 
+  const startCountdown = () => {
+    setCountDownTrigger(true);
+  };
+
+  const handleCountDownComplete = () => {
+    setCountDownTrigger(false);
+  };
+
   // MEMO: Need to confirm history table definition & APIs
   const finishRoutine = () => {
     // Disable webcam
@@ -493,6 +510,8 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               backgroundColor: "background.paper",
             }}
           >
+            {/* Countdown */}
+            <CountDown trigger={countDownTrigger} onComplete={handleCountDownComplete} />
             {/* Webcam */}
             <video
               ref={videoRef}
