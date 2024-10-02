@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect } from "react";
-import { setPageTitle } from "../utils.js";
+import { setPageTitle } from "../utils/utils";
 
 export const Profile = (props) => {
   useEffect(() => {

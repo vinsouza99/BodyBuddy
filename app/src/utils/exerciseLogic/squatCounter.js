@@ -1,6 +1,6 @@
-import { landmarkNames } from './landmarkNames';
-import { BaseCounter } from './baseCounter';
-import { calculateAngle } from './utils';
+import { landmarkNames } from "./landmarkNames";
+import { BaseCounter } from "./baseCounter";
+import { calculateAngle } from "../utils";
 
 export class SquatCounter extends BaseCounter {
   constructor() {
@@ -36,7 +36,10 @@ export class SquatCounter extends BaseCounter {
 
   #processAlert(leftKnee, leftAnkle) {
     // Calculate the angle between knee and ankle
-    const kneeAnkleAngle = calculateAngle(leftKnee, leftAnkle, { x: leftAnkle.x + 1, y: leftAnkle.y });
+    const kneeAnkleAngle = calculateAngle(leftKnee, leftAnkle, {
+      x: leftAnkle.x + 1,
+      y: leftAnkle.y,
+    });
 
     // Check if knee goes beyond the toes by more than 10 degrees
     if (kneeAnkleAngle < 70) {
@@ -56,7 +59,7 @@ export class SquatCounter extends BaseCounter {
     this.shoulderHipAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
     this.hipKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
 
-    // Judge Squat Up 
+    // Judge Squat Up
     if (this.shoulderHipAngle > 170 && !this.up) {
       this.up = true;
       this.down = false;

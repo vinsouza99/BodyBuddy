@@ -16,7 +16,26 @@ export const getRoutines = async (req, res) => {
     });
   }
 };
-
+export const getPresetRoutines = async (req, res) => {
+  try {
+    const routines = await Routine.findAndCountAll({
+      where: {
+        preset: true,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routines,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
 export const getRoutine = async (req, res) => {
   try {
     const routine = await Routine.findByPk(req.params.id);
