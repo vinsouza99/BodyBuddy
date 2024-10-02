@@ -23,14 +23,17 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import { supabase } from "../supabaseClient";
-import { setPageTitle } from "../utils";
-import { exerciseCounterLoader } from '../exerciseLogic/exerciseCounterLoader'; 
-import { default as server } from "../ProxyServer.js";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import { supabase } from "../utils/supabaseClient.js";
+import { setPageTitle } from "../utils/utils";
+import { exerciseCounterLoader } from "../utils/exerciseLogic/exerciseCounterLoader";
+import { default as server } from "../utils/ProxyServer.js";
 import { AngleMeter } from "../components/AngleMeter.jsx";
 
-export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37" }) => {
+export const Routine = ({
+  title = "Routine Session",
+  routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37",
+}) => {
   const navigate = useNavigate();
 
   const videoRef = useRef(null);
@@ -50,7 +53,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(true); // 
+  const [isDialogOpen, setIsDialogOpen] = useState(true); //
   const [isFinished, setIsFinished] = useState(false);
 
   // Initialization
@@ -92,16 +95,19 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     // Retrieve routine/program information from the database
     const fetchRoutine = async () => {
       try {
-        const response = await server.get("RoutineExercises/routine", routineId)
+        const response = await server.get(
+          "RoutineExercises/routine",
+          routineId
+        );
         console.log(response);
         if (Number(response.status) !== 200) {
-          throw new Error('Failed to fetch routine info');
+          throw new Error("Failed to fetch routine info");
         }
         console.log(response.data);
         setRoutine(transformRoutineData(response.data));
         console.log(routine);
       } catch (error) {
-        console.error('Error fetching routine:', error);
+        console.error("Error fetching routine:", error);
       }
     };
     fetchRoutine();
@@ -143,11 +149,11 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       } else {
         durationString = `${item.sets} sets`;
       }
-  
+
       return {
         name: item.Exercise.name,
         duration: durationString,
-        image: item.Exercise.demo_url
+        image: item.Exercise.demo_url,
       };
     });
   };
@@ -242,7 +248,8 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const { count = 0, alert = null } = exerciseCounter?.processPose(results.landmarks[0]) || {};
+        const { count = 0, alert = null } =
+          exerciseCounter?.processPose(results.landmarks[0]) || {};
 
         // Update success count
         if (count !== undefined) {
@@ -264,7 +271,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         if (alert !== undefined) {
           // Update success count
           setPostureAlert(alert);
-        };         
+        }
 
         // Draw pose landmarks and connections
         drawingUtils.drawConnectors(
@@ -300,7 +307,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       animationFrameIdRef.current = window.requestAnimationFrame(predictWebcam);
     }
   };
-  
+
   // Read out the count
   useEffect(() => {
     if (successCount !== 0) {
@@ -411,14 +418,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
           routine_id: routineId,
           recording_URL: "",
         };
-        const response = await server.add("Historys", newHitoryObj)
+        const response = await server.add("Historys", newHitoryObj);
         console.log(response);
         if (Number(response.status) !== 200) {
-          throw new Error('Failed to insert history info');
+          throw new Error("Failed to insert history info");
         }
         console.log(response.data);
       } catch (error) {
-        console.error('Error inserting history info:', error);
+        console.error("Error inserting history info:", error);
       }
     };
     registerHistory();
@@ -439,22 +446,22 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         fullScreen
         PaperProps={{
           style: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          }
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          },
         }}
       >
         <Box
           sx={{
             textAlign: "center",
             color: "#fff",
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 4
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 4,
           }}
         >
           <DialogTitle sx={{ color: "#fff", fontSize: "2rem" }}>
@@ -481,9 +488,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         </Box>
       </Dialog>
 
-      <Stack
-        sx={{ height: "100vh", backgroundColor: "background.default" }}
-      >
+      <Stack sx={{ height: "100vh", backgroundColor: "background.default" }}>
         <Stack direction="row" sx={{ flex: 1, overflow: "hidden" }}>
           <Box
             sx={{
@@ -545,7 +550,11 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                   <Typography variant="h5" component="div" gutterBottom>
                     Count
                   </Typography>
-                  <Typography variant="h2" component="div" sx={{ fontWeight: "bold" }}>
+                  <Typography
+                    variant="h2"
+                    component="div"
+                    sx={{ fontWeight: "bold" }}
+                  >
                     {successCount}
                   </Typography>
                 </CardContent>
@@ -567,7 +576,6 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 </CardContent>
               </Card>
             </Box>
-
           </Box>
           <Box
             sx={{
@@ -579,7 +587,12 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               backgroundColor: "background.paper",
             }}
           >
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{ fontSize: "1.5rem", fontWeight: "bold" }}
+            >
               My Exercise Routine
             </Typography>
             {selectedExercise && selectedExercise.image && (
@@ -604,11 +617,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                     key={index}
                     onClick={() => setSelectedExercise(exercise)}
                     sx={{
-                      cursor: 'pointer',
-                      backgroundColor: selectedExercise === exercise ? 'rgba(0, 0, 255, 0.1)' : 'inherit',
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                      }
+                      cursor: "pointer",
+                      backgroundColor:
+                        selectedExercise === exercise
+                          ? "rgba(0, 0, 255, 0.1)"
+                          : "inherit",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 255, 0.2)",
+                      },
                     }}
                   >
                     <ListItemIcon>
@@ -617,8 +633,10 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                     <ListItemText
                       primary={exercise.name}
                       secondary={exercise.duration}
-                      primaryTypographyProps={{ sx: { fontSize: '1.5rem', fontWeight: 'bold' } }}
-                      secondaryTypographyProps={{ sx: { fontSize: '1.2rem' } }}
+                      primaryTypographyProps={{
+                        sx: { fontSize: "1.5rem", fontWeight: "bold" },
+                      }}
+                      secondaryTypographyProps={{ sx: { fontSize: "1.2rem" } }}
                     />
                   </ListItem>
                 ))}
@@ -673,12 +691,9 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
             >
               DOWNLOAD
             </Button>
-            <Button
-              variant="contained"
-              onClick={finishRoutine}
-            >
+            <Button variant="contained" onClick={finishRoutine}>
               FINISH ROUTINE
-            </Button>            
+            </Button>
             <Snackbar
               open={isSnackbarOpen}
               autoHideDuration={3000}
@@ -713,10 +728,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            onClick={goBackToTrainingPage}
-          >
+          <Button variant="contained" onClick={goBackToTrainingPage}>
             Go Back to Training Page
           </Button>
         </DialogActions>
@@ -728,5 +740,5 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 // Defining prop types
 Routine.propTypes = {
   title: PropTypes.string,
-  routineId: PropTypes.string,  // Expecting a UUID string
+  routineId: PropTypes.string, // Expecting a UUID string
 };

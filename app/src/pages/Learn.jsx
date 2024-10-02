@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { setPageTitle } from "../utils";
+import { setPageTitle } from "../utils/utils";
 
 export const Learn = (props) => {
   useEffect(() => {
