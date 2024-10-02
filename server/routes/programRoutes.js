@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getPrograms,
+  getProgramsByUser,
   getProgram,
   createProgram,
   updateProgram,
@@ -50,6 +51,33 @@ const router = express.Router();
  *                 $ref: '#/components/schemas/Program'
  */
 router.get("/", getPrograms);
+
+/**
+
+/**
+ * @swagger
+ * /Programs/?user_id={user_id}:
+ *   get:
+ *     summary: Get all programs that has a specific user ID
+ *     tags: [Programs]
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: The Program details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Program'
+ *       404:
+ *         description: Program not found
+ */
+router.get("/?user_id=:user_id", getProgramsByUser);
 
 /**
  * @swagger

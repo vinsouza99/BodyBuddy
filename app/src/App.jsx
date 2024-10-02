@@ -14,7 +14,7 @@ import { Profile } from "./pages/Profile";
 import { Learn } from "./pages/Learn";
 import { Routine } from "./pages/Routine";
 import { NotFound } from "./pages/NotFound";
-import { useAuth } from "./AuthProvider";
+import { useAuth } from "./utils/AuthProvider";
 import { CircularProgress } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
@@ -42,32 +42,22 @@ function App() {
           path="/"
           element={user ? <MainLayout /> : <Navigate to="/signin" />}
         >
-          <Route 
-            path="/dashboard" 
-            element={<Dashboard title="Dashboard" />} 
-          />
-          <Route 
-            path="/profile" 
-            element={<Profile title="Profile" />} 
-          />
-          <Route 
-            path="/learn" 
-            element={<Learn title="Learn" />} 
-          />
+          <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
+          <Route path="/profile" element={<Profile title="Profile" />} />
+          <Route path="/learn" element={<Learn title="Learn" />} />
           <Route
             path="/training"
             element={<TrainingProgram title="Training" />}
           />
-          <Route 
-            path="*" 
-            element={<NotFound title="Not found" />} 
-          />
+          <Route path="*" element={<NotFound title="Not found" />} />
         </Route>
 
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
           path="/routine"
-          element={user ? <Routine title="Routine" /> : <Navigate to="/signin" />}
+          element={
+            user ? <Routine title="Routine" /> : <Navigate to="/signin" />
+          }
         />
       </>
     )

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { setPageTitle } from "../utils";
-import { supabase } from "../supabaseClient";
+import { setPageTitle } from "../utils/utils";
+import { supabase } from "../utils/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -42,11 +42,11 @@ export const SignUp = (props) => {
     e.preventDefault();
 
     try {
-      const { data, error }  = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          data: { 
+          data: {
             full_name: name,
           },
         },
@@ -57,7 +57,6 @@ export const SignUp = (props) => {
       }
       console.log("SUCCESS: User signed up", data);
       navigate("/dashboard");
-
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed up", error);

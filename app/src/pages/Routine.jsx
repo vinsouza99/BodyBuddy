@@ -23,50 +23,18 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import { supabase } from "../supabaseClient";
-import { setPageTitle } from "../utils";
-import { exerciseCounterLoader } from '../exerciseLogic/exerciseCounterLoader'; 
-import { default as server } from "../ProxyServer.js";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import { supabase } from "../utils/supabaseClient.js";
+import { setPageTitle } from "../utils/utils";
+import { exerciseCounterLoader } from "../utils/exerciseLogic/exerciseCounterLoader";
+import { default as server } from "../utils/ProxyServer.js";
+import { AngleMeter } from "../components/AngleMeter.jsx";
+import { CountDown } from "../components/CountDown.jsx";
 
-// For Mediapipe Pose Detection
-// const landmarkNames = [
-//   "NOSE",
-//   "LEFT_EYE_INNER",
-//   "LEFT_EYE",
-//   "LEFT_EYE_OUTER",
-//   "RIGHT_EYE_INNER",
-//   "RIGHT_EYE",
-//   "RIGHT_EYE_OUTER",
-//   "LEFT_EAR",
-//   "RIGHT_EAR",
-//   "MOUTH_LEFT",
-//   "MOUTH_RIGHT",
-//   "LEFT_SHOULDER",
-//   "RIGHT_SHOULDER",
-//   "LEFT_ELBOW",
-//   "RIGHT_ELBOW",
-//   "LEFT_WRIST",
-//   "RIGHT_WRIST",
-//   "LEFT_PINKY",
-//   "RIGHT_PINKY",
-//   "LEFT_INDEX",
-//   "RIGHT_INDEX",
-//   "LEFT_THUMB",
-//   "RIGHT_THUMB",
-//   "LEFT_HIP",
-//   "RIGHT_HIP",
-//   "LEFT_KNEE",
-//   "RIGHT_KNEE",
-//   "LEFT_ANKLE",
-//   "RIGHT_ANKLE",
-//   "LEFT_HEEL",
-//   "RIGHT_HEEL",
-//   "LEFT_FOOT_INDEX",
-//   "RIGHT_FOOT_INDEX",
-// ];
-
-export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37" }) => {
+export const Routine = ({
+  title = "Routine Session",
+  routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37",
+}) => {
   const navigate = useNavigate();
 
   const videoRef = useRef(null);
@@ -74,20 +42,21 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
   const poseLandmarkerRef = useRef(null);
   const runningMode = useRef("VIDEO");
   const animationFrameIdRef = useRef(null);
-  // const lastUpdateRef = useRef(0);
 
-  // const [landmarkData, setLandmarkData] = useState([]);
   const [routine, setRoutine] = useState([]);
   const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [successCount, setSuccessCount] = useState(0);
+  const [postureAlert, setPostureAlert] = useState(null);
+  const [hipKneeAngle, setHipKneeAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(true); // 
+  const [isDialogOpen, setIsDialogOpen] = useState(true); //
   const [isFinished, setIsFinished] = useState(false);
+  const [countDownTrigger, setCountDownTrigger] = useState(false);
 
   // Initialization
   // - Set Page Title
@@ -128,16 +97,19 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     // Retrieve routine/program information from the database
     const fetchRoutine = async () => {
       try {
-        const response = await server.get("RoutineExercises/routine", routineId)
+        const response = await server.get(
+          "RoutineExercises/routine",
+          routineId
+        );
         console.log(response);
         if (Number(response.status) !== 200) {
-          throw new Error('Failed to fetch routine info');
+          throw new Error("Failed to fetch routine info");
         }
         console.log(response.data);
         setRoutine(transformRoutineData(response.data));
         console.log(routine);
       } catch (error) {
-        console.error('Error fetching routine:', error);
+        console.error("Error fetching routine:", error);
       }
     };
     fetchRoutine();
@@ -149,7 +121,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     }
   }, [routine]);
 
-  // Set exercise counter based on selected exercise
+  // Dynamically load exercise counter class based on selected exercise
   useEffect(() => {
     console.log("Selected exercise:", selectedExercise);
 
@@ -158,6 +130,9 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       if (CounterClass) {
         setExerciseCounter(new CounterClass());
         console.log("Exercise counter is loaded.");
+
+        // Start countdown when exercise changes
+        startCountdown();
       } else {
         setExerciseCounter(null);
         console.log("Exercise counter is not implemented.");
@@ -168,6 +143,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     }
   }, [selectedExercise]);
 
+  // Transform routine data format for display
   const transformRoutineData = (routineData) => {
     return routineData.map((item) => {
       let durationString;
@@ -178,11 +154,11 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       } else {
         durationString = `${item.sets} sets`;
       }
-  
+
       return {
         name: item.Exercise.name,
         duration: durationString,
-        image: item.Exercise.demo_url
+        image: item.Exercise.demo_url,
       };
     });
   };
@@ -277,20 +253,32 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const count = exerciseCounter?.processPose(results.landmarks[0]);
+        const { count = 0, alert = null } =
+          exerciseCounter?.processPose(results.landmarks[0]) || {};
+
+        // Update success count
         if (count !== undefined) {
           setSuccessCount((prevSuccessCount) => {
             if (count !== prevSuccessCount) {
-              // Read out the count
-              const utterance = new SpeechSynthesisUtterance(`${count}`);
-              utterance.rate = 1.5;
-              utterance.pitch = 1.8;
-              utterance.volume = 1.0;
-
-              window.speechSynthesis.speak(utterance);
               return count;
             }
             return prevSuccessCount;
+          });
+
+          // Update angle for the meter
+          const angle = exerciseCounter?.getAngle(results.landmarks[0]);
+          if (angle !== undefined) {
+            setHipKneeAngle(Math.round(angle));
+          }
+        }
+
+        // Update alert if any posture issue
+        if (alert !== undefined) {
+          setPostureAlert((prevAlert) => {
+            if (alert !== prevAlert) {
+              return alert;
+            }
+            return prevAlert;
           });
         }
 
@@ -328,7 +316,23 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
       animationFrameIdRef.current = window.requestAnimationFrame(predictWebcam);
     }
   };
-  
+
+  // Read out the count
+  useEffect(() => {
+    if (successCount !== 0) {
+      const utterance = new SpeechSynthesisUtterance(`${successCount}`);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [successCount]);
+
+  // Read out the alert
+  useEffect(() => {
+    if (postureAlert) {
+      const utterance = new SpeechSynthesisUtterance(`${postureAlert}`);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [postureAlert]);
+
   const startRecording = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
@@ -408,6 +412,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
     navigate(-1); // Navigate back to previous page
   };
 
+  const startCountdown = () => {
+    setCountDownTrigger(true);
+  };
+
+  const handleCountDownComplete = () => {
+    setCountDownTrigger(false);
+  };
+
   // MEMO: Need to confirm history table definition & APIs
   const finishRoutine = () => {
     // Disable webcam
@@ -423,14 +435,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
           routine_id: routineId,
           recording_URL: "",
         };
-        const response = await server.add("Historys", newHitoryObj)
+        const response = await server.add("Historys", newHitoryObj);
         console.log(response);
         if (Number(response.status) !== 200) {
-          throw new Error('Failed to insert history info');
+          throw new Error("Failed to insert history info");
         }
         console.log(response.data);
       } catch (error) {
-        console.error('Error inserting history info:', error);
+        console.error("Error inserting history info:", error);
       }
     };
     registerHistory();
@@ -451,22 +463,22 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         fullScreen
         PaperProps={{
           style: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          }
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+          },
         }}
       >
         <Box
           sx={{
             textAlign: "center",
             color: "#fff",
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: 4
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 4,
           }}
         >
           <DialogTitle sx={{ color: "#fff", fontSize: "2rem" }}>
@@ -493,10 +505,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
         </Box>
       </Dialog>
 
-      <Stack
-        sx={{ height: "100vh", backgroundColor: "background.default" }}
-        spacing={2}
-      >
+      <Stack sx={{ height: "100vh", backgroundColor: "background.default" }}>
         <Stack direction="row" sx={{ flex: 1, overflow: "hidden" }}>
           <Box
             sx={{
@@ -506,6 +515,11 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               backgroundColor: "background.paper",
             }}
           >
+            {/* Countdown */}
+            <CountDown
+              trigger={countDownTrigger}
+              onComplete={handleCountDownComplete}
+            />
             {/* Webcam */}
             <video
               ref={videoRef}
@@ -516,6 +530,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 position: "absolute",
                 top: 0,
                 left: 0,
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
               }}
               autoPlay
               playsInline
@@ -532,26 +547,57 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                 left: 0,
               }}
             ></canvas>
-            {/* Counter */}
-            <Card
+
+            <Box
               sx={{
                 position: "absolute",
                 top: "20px",
                 right: "20px",
-                minWidth: 200,
-                backgroundColor: "rgba(0, 0, 0, 0.7)",
-                color: "white",
+                bottom: "20px",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                gap: 2,
               }}
             >
-              <CardContent>
-                <Typography variant="h5" component="div" gutterBottom>
-                  Count
-                </Typography>
-                <Typography variant="h2" component="div" sx={{ fontWeight: "bold" }}>
-                  {successCount}
-                </Typography>
-              </CardContent>
-            </Card>
+              {/* Counter - Height 30% */}
+              <Card
+                sx={{
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  color: "white",
+                  flexGrow: 0,
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5" component="div" gutterBottom>
+                    Count
+                  </Typography>
+                  <Typography
+                    variant="h2"
+                    component="div"
+                    sx={{ fontWeight: "bold" }}
+                  >
+                    {successCount}
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              {/* Angle Meter - Height 70% */}
+              <Card
+                sx={{
+                  backgroundColor: "rgba(0, 0, 0, 0.7)",
+                  color: "white",
+                  flexGrow: 0,
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h5" component="div" gutterBottom>
+                    Angle Meter
+                  </Typography>
+                  <AngleMeter angle={hipKneeAngle} />
+                </CardContent>
+              </Card>
+            </Box>
           </Box>
           <Box
             sx={{
@@ -563,7 +609,12 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
               backgroundColor: "background.paper",
             }}
           >
-            <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{ fontSize: "1.5rem", fontWeight: "bold" }}
+            >
               My Exercise Routine
             </Typography>
             {selectedExercise && selectedExercise.image && (
@@ -588,11 +639,14 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                     key={index}
                     onClick={() => setSelectedExercise(exercise)}
                     sx={{
-                      cursor: 'pointer',
-                      backgroundColor: selectedExercise === exercise ? 'rgba(0, 0, 255, 0.1)' : 'inherit',
-                      '&:hover': {
-                        backgroundColor: 'rgba(0, 0, 255, 0.2)',
-                      }
+                      cursor: "pointer",
+                      backgroundColor:
+                        selectedExercise === exercise
+                          ? "rgba(0, 0, 255, 0.1)"
+                          : "inherit",
+                      "&:hover": {
+                        backgroundColor: "rgba(0, 0, 255, 0.2)",
+                      },
                     }}
                   >
                     <ListItemIcon>
@@ -601,8 +655,10 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
                     <ListItemText
                       primary={exercise.name}
                       secondary={exercise.duration}
-                      primaryTypographyProps={{ sx: { fontSize: '1.5rem', fontWeight: 'bold' } }}
-                      secondaryTypographyProps={{ sx: { fontSize: '1.2rem' } }}
+                      primaryTypographyProps={{
+                        sx: { fontSize: "1.5rem", fontWeight: "bold" },
+                      }}
+                      secondaryTypographyProps={{ sx: { fontSize: "1.2rem" } }}
                     />
                   </ListItem>
                 ))}
@@ -657,12 +713,9 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
             >
               DOWNLOAD
             </Button>
-            <Button
-              variant="contained"
-              onClick={finishRoutine}
-            >
+            <Button variant="contained" onClick={finishRoutine}>
               FINISH ROUTINE
-            </Button>            
+            </Button>
             <Snackbar
               open={isSnackbarOpen}
               autoHideDuration={3000}
@@ -697,10 +750,7 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button
-            variant="contained"
-            onClick={goBackToTrainingPage}
-          >
+          <Button variant="contained" onClick={goBackToTrainingPage}>
             Go Back to Training Page
           </Button>
         </DialogActions>
@@ -712,5 +762,5 @@ export const Routine = ({ title = "Routine Session", routineId = "d6a5fb5e-976f-
 // Defining prop types
 Routine.propTypes = {
   title: PropTypes.string,
-  routineId: PropTypes.string,  // Expecting a UUID string
+  routineId: PropTypes.string, // Expecting a UUID string
 };

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
-import { setPageTitle } from "../utils";
-import { supabase } from "../supabaseClient";
+import { setPageTitle } from "../utils/utils";
+import { supabase } from "../utils/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Avatar,
@@ -22,7 +22,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import GoogleIcon from "@mui/icons-material/Google";
 
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL || 'http://localhost:3000/';
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
 const theme = createTheme({
   palette: {
@@ -66,7 +66,6 @@ export const SignIn = (props) => {
       }
       console.log("SUCCESS: User signed in", data);
       navigate("/dashboard");
-
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed in", error);
@@ -89,7 +88,6 @@ export const SignIn = (props) => {
         throw error;
       }
       console.log("SUCCESS: User signed in with Google", data);
-
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed in with Google", error);
