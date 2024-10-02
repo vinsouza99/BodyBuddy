@@ -42,10 +42,14 @@ export const getHistory = async (req, res) => {
 
 export const createHistory = async (req, res) => {
   try {
-    const { user_id, duration } = req.body;
+    const { user_id, program_id, routine_id, recording_URL, description, created_at } = req.body;
     const newHistory = await History.create({
       user_id,
-      duration,
+      program_id,
+      routine_id,
+      recording_URL,
+      description,
+      created_at,
     });
     res.status(201).json({
       status: "201",

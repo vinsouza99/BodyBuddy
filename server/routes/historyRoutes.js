@@ -18,7 +18,8 @@ const router = express.Router();
  *       required: none
  *       properties:
  *         id:
- *           type: integer
+ *           type: string
+ *           format: uuid
  *           description: The auto-generated ID of the History
  *         created_at:
  *           type: string
@@ -26,15 +27,27 @@ const router = express.Router();
  *           description: The timestamp when the History was created
  *         program_id:
  *           type: string
+ *           format: uuid
  *           description: The program that has this program
- *         duration:
- *           type: integer
+ *         routine_id:
+ *           type: string
+ *           format: uuid
+ *           description: The program that has this program
+ *         user_id:
+ *           type: string
+ *           format: uuid
+ *           description: The program that has this program
+ *         description:
+ *           type: string
  *           description: The duration of the program in milliseconds
+ *         recording_url:
+ *          type: string
+ *          description: The recording url of the session
  */
 
 /**
  * @swagger
- * /Historys:
+ * /History:
  *   get:
  *     summary: Returns a list of all Historys
  *     tags: [Historys]
@@ -52,7 +65,7 @@ router.get("/", getHistorys);
 
 /**
  * @swagger
- * /Historys/{id}:
+ * /History/{id}:
  *   get:
  *     summary: Get a specific History by ID
  *     tags: [Historys]
@@ -77,7 +90,7 @@ router.get("/:id", getHistory);
 
 /**
  * @swagger
- * /Historys:
+ * /History:
  *   post:
  *     summary: Create a new History
  *     tags: [Historys]
@@ -101,7 +114,7 @@ router.post("/", createHistory);
 
 /**
  * @swagger
- * /Historys/{id}:
+ * /History/{id}:
  *   put:
  *     summary: Update an existing History by ID
  *     tags: [Historys]
@@ -134,7 +147,7 @@ router.put("/:id", updateHistory);
 
 /**
  * @swagger
- * /Historys/{id}:
+ * /History/{id}:
  *   delete:
  *     summary: Delete an History by ID
  *     tags: [Historys]
