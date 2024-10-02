@@ -5,7 +5,7 @@ const History = sequelize.define(
   "History",
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
@@ -16,24 +16,28 @@ const History = sequelize.define(
       defaultValue: DataTypes.NOW,
     },
     user_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
     },
     program_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: true,
     },
     routine_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: true,
     },
-    recording_url: {
-      type: DataTypes.TEXT,
+    recording_URL: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
   {
-    tableName: "history",
+    tableName: "user_activity",
     timestamps: false,
   }
 );

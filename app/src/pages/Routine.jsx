@@ -23,18 +23,20 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import { useAuth } from "../utils/AuthProvider.jsx";
 import { supabase } from "../utils/supabaseClient.js";
 import { setPageTitle } from "../utils/utils";
 import { exerciseCounterLoader } from "../utils/exerciseLogic/exerciseCounterLoader";
 import { default as server } from "../utils/ProxyServer.js";
 import { AngleMeter } from "../components/AngleMeter.jsx";
 import { CountDown } from "../components/CountDown.jsx";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 export const Routine = ({
   title = "Routine Session",
   routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37",
 }) => {
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const videoRef = useRef(null);
@@ -430,14 +432,16 @@ export const Routine = ({
       try {
         const completedAt = new Date().toISOString();
         const newHitoryObj = {
-          id: 0,
+          user_id: user.id,
           created_at: completedAt,
           routine_id: routineId,
-          recording_URL: "",
+          program_id: null,
+          recording_URL: null,
+          description: null,
         };
-        const response = await server.add("Historys", newHitoryObj);
+        const response = await server.add("History", newHitoryObj);
         console.log(response);
-        if (Number(response.status) !== 200) {
+        if (Number(response.status) !== 201) {
           throw new Error("Failed to insert history info");
         }
         console.log(response.data);
