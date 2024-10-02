@@ -29,6 +29,7 @@ import { setPageTitle } from "../utils/utils";
 import { exerciseCounterLoader } from "../utils/exerciseLogic/exerciseCounterLoader";
 import { default as server } from "../utils/ProxyServer.js";
 import { AngleMeter } from "../components/AngleMeter.jsx";
+import { CountDown } from "../components/CountDown.jsx";
 
 export const Routine = ({
   title = "Routine Session",
@@ -55,6 +56,7 @@ export const Routine = ({
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(true); //
   const [isFinished, setIsFinished] = useState(false);
+  const [countDownTrigger, setCountDownTrigger] = useState(false);
 
   // Initialization
   // - Set Page Title
@@ -128,6 +130,9 @@ export const Routine = ({
       if (CounterClass) {
         setExerciseCounter(new CounterClass());
         console.log("Exercise counter is loaded.");
+
+        // Start countdown when exercise changes
+        startCountdown();
       } else {
         setExerciseCounter(null);
         console.log("Exercise counter is not implemented.");
@@ -269,8 +274,12 @@ export const Routine = ({
 
         // Update alert if any posture issue
         if (alert !== undefined) {
-          // Update success count
-          setPostureAlert(alert);
+          setPostureAlert((prevAlert) => {
+            if (alert !== prevAlert) {
+              return alert;
+            }
+            return prevAlert;
+          });
         }
 
         // Draw pose landmarks and connections
@@ -403,6 +412,14 @@ export const Routine = ({
     navigate(-1); // Navigate back to previous page
   };
 
+  const startCountdown = () => {
+    setCountDownTrigger(true);
+  };
+
+  const handleCountDownComplete = () => {
+    setCountDownTrigger(false);
+  };
+
   // MEMO: Need to confirm history table definition & APIs
   const finishRoutine = () => {
     // Disable webcam
@@ -498,6 +515,11 @@ export const Routine = ({
               backgroundColor: "background.paper",
             }}
           >
+            {/* Countdown */}
+            <CountDown
+              trigger={countDownTrigger}
+              onComplete={handleCountDownComplete}
+            />
             {/* Webcam */}
             <video
               ref={videoRef}
