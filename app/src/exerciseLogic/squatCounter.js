@@ -15,6 +15,12 @@ export class SquatCounter extends BaseCounter {
     const leftKnee = landmarks[landmarkNames.LEFT_KNEE];
     const leftAnkle = landmarks[landmarkNames.LEFT_ANKLE];
 
+    // Check if the user is too close to the camera
+    if (!this.#isTooClose(leftShoulder)) {
+      this.alert = null;
+      return { count: this.successCount, alert: this.alert };
+    }
+
     // Process Alert
     this.#processAlert(leftKnee, leftAnkle);
 
@@ -24,10 +30,13 @@ export class SquatCounter extends BaseCounter {
     return { count: this.successCount, alert: this.alert };
   }
 
+  #isTooClose(leftShoulder) {
+    return leftShoulder.z > -0.3 || leftShoulder.y < 0.1;
+  }
+
   #processAlert(leftKnee, leftAnkle) {
     // Calculate the angle between knee and ankle
     const kneeAnkleAngle = calculateAngle(leftKnee, leftAnkle, { x: leftAnkle.x + 1, y: leftAnkle.y });
-    console.log("Knee Ankle Angle: ", kneeAnkleAngle);
 
     // Check if knee goes beyond the toes by more than 10 degrees
     if (kneeAnkleAngle < 70) {
