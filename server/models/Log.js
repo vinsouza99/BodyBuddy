@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
 
-const History = sequelize.define(
-  "History",
+const Log = sequelize.define(
+  "Log",
   {
     id: {
       type: DataTypes.UUID,
@@ -42,4 +42,4 @@ const History = sequelize.define(
   }
 );
 
-export default History;
+export default Log;

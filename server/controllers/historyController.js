@@ -1,8 +1,8 @@
-import History from "../models/History.js";
+import Log from "../models/Log.js";
 
-export const getHistorys = async (req, res) => {
+export const getLogs = async (req, res) => {
   try {
-    const logs = await History.findAll();
+    const logs = await Log.findAll();
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -17,13 +17,13 @@ export const getHistorys = async (req, res) => {
   }
 };
 
-export const getHistory = async (req, res) => {
+export const getLog = async (req, res) => {
   try {
-    const log = await History.findByPk(req.params.id);
+    const log = await Log.findByPk(req.params.id);
     if (!log) {
       return res.status(404).json({
         status: "404",
-        message: "History not found",
+        message: "Log not found",
       });
     }
     res.status(200).json({
@@ -40,10 +40,17 @@ export const getHistory = async (req, res) => {
   }
 };
 
-export const createHistory = async (req, res) => {
+export const createLog = async (req, res) => {
   try {
-    const { user_id, program_id, routine_id, recording_URL, description, created_at } = req.body;
-    const newHistory = await History.create({
+    const {
+      user_id,
+      program_id,
+      routine_id,
+      recording_URL,
+      description,
+      created_at,
+    } = req.body;
+    const newLog = await Log.create({
       user_id,
       program_id,
       routine_id,
@@ -53,8 +60,8 @@ export const createHistory = async (req, res) => {
     });
     res.status(201).json({
       status: "201",
-      message: "History created successfully",
-      data: newHistory,
+      message: "Log created successfully",
+      data: newLog,
     });
   } catch (error) {
     console.error(error);
@@ -65,23 +72,23 @@ export const createHistory = async (req, res) => {
   }
 };
 
-export const updateHistory = async (req, res) => {
+export const updateLog = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
 
-    const log = await History.findByPk(id);
+    const log = await Log.findByPk(id);
     if (!log) {
       return res.status(404).json({
         status: "404",
-        message: "History not found",
+        message: "Log not found",
       });
     }
 
     await log.update(updatedData);
     res.status(200).json({
       status: "200",
-      message: "History updated successfully",
+      message: "Log updated successfully",
       data: log,
     });
   } catch (error) {
@@ -93,22 +100,22 @@ export const updateHistory = async (req, res) => {
   }
 };
 
-export const deleteHistory = async (req, res) => {
+export const deleteLog = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const log = await History.findByPk(id);
+    const log = await Log.findByPk(id);
     if (!log) {
       return res.status(404).json({
         status: "404",
-        message: "History not found",
+        message: "Log not found",
       });
     }
 
     await log.destroy();
     res.status(200).json({
       status: "200",
-      message: "History deleted successfully",
+      message: "Log deleted successfully",
     });
   } catch (error) {
     console.error(error);

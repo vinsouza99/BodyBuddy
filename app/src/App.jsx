@@ -19,7 +19,7 @@ import { CircularProgress } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { CssBaseline } from "@mui/material";
-import TrainingProgram from "./pages/TrainingProgram";
+import { TrainingProgram } from "./pages/TrainingProgram";
 import { Landing } from "./pages/Landing";
 
 function App() {

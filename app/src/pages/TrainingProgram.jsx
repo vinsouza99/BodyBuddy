@@ -1,19 +1,20 @@
-// import React from "react";
+import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import TrainingCard from "../components/TrainingCard";
 
-const TrainingProgram = (props) => {
+export const TrainingProgram = (props) => {
   useEffect(() => {
     setPageTitle(props.title);
-  }, [props.title]);
+  }, []);
 
   return (
     <div>
       <h1>TrainingProgram</h1>
-      <TrainingCard title={props.title} />
+      <TrainingCard />
     </div>
   );
 };
-
-export default TrainingProgram;
+TrainingProgram.propTypes = {
+  title: PropTypes.string,
+};

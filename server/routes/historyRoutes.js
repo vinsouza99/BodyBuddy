@@ -1,10 +1,10 @@
 import express from "express";
 import {
-  getHistorys,
-  getHistory,
-  createHistory,
-  updateHistory,
-  deleteHistory,
+  getLogs,
+  getLog,
+  createLog,
+  updateLog,
+  deleteLog,
 } from "../controllers/historyController.js";
 
 const router = express.Router();
@@ -13,18 +13,18 @@ const router = express.Router();
  * @swagger
  * components:
  *   schemas:
- *     History:
+ *     Log:
  *       type: object
  *       required: none
  *       properties:
  *         id:
  *           type: string
  *           format: uuid
- *           description: The auto-generated ID of the History
+ *           description: The auto-generated ID of the Log
  *         created_at:
  *           type: string
  *           format: date-time
- *           description: The timestamp when the History was created
+ *           description: The timestamp when the Log was created
  *         program_id:
  *           type: string
  *           format: uuid
@@ -47,123 +47,123 @@ const router = express.Router();
 
 /**
  * @swagger
- * /History:
+ * /Log:
  *   get:
- *     summary: Returns a list of all Historys
- *     tags: [Historys]
+ *     summary: Returns a list of all Logs
+ *     tags: [Logs]
  *     responses:
  *       200:
- *         description: A list of Historys
+ *         description: A list of Logs
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/History'
+ *                 $ref: '#/components/schemas/Log'
  */
-router.get("/", getHistorys);
+router.get("/", getLogs);
 
 /**
  * @swagger
- * /History/{id}:
+ * /Log/{id}:
  *   get:
- *     summary: Get a specific History by ID
- *     tags: [Historys]
+ *     summary: Get a specific Log by ID
+ *     tags: [Logs]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the History
+ *         description: The ID of the Log
  *     responses:
  *       200:
- *         description: The History details
+ *         description: The Log details
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/History'
+ *               $ref: '#/components/schemas/Log'
  *       404:
- *         description: History not found
+ *         description: Log not found
  */
-router.get("/:id", getHistory);
+router.get("/:id", getLog);
 
 /**
  * @swagger
- * /History:
+ * /Log:
  *   post:
- *     summary: Create a new History
- *     tags: [Historys]
+ *     summary: Create a new Log
+ *     tags: [Logs]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/History'
+ *             $ref: '#/components/schemas/Log'
  *     responses:
  *       201:
- *         description: The History was successfully created
+ *         description: The Log was successfully created
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/History'
+ *               $ref: '#/components/schemas/Log'
  *       500:
  *         description: Server error
  */
-router.post("/", createHistory);
+router.post("/", createLog);
 
 /**
  * @swagger
- * /History/{id}:
+ * /Log/{id}:
  *   put:
- *     summary: Update an existing History by ID
- *     tags: [Historys]
+ *     summary: Update an existing Log by ID
+ *     tags: [Logs]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the History
+ *         description: The ID of the Log
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/History'
+ *             $ref: '#/components/schemas/Log'
  *     responses:
  *       200:
- *         description: The History was successfully updated
+ *         description: The Log was successfully updated
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/History'
+ *               $ref: '#/components/schemas/Log'
  *       404:
- *         description: History not found
+ *         description: Log not found
  *       500:
  *         description: Server error
  */
-router.put("/:id", updateHistory);
+router.put("/:id", updateLog);
 
 /**
  * @swagger
- * /History/{id}:
+ * /Log/{id}:
  *   delete:
- *     summary: Delete an History by ID
- *     tags: [Historys]
+ *     summary: Delete an Log by ID
+ *     tags: [Logs]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: integer
  *         required: true
- *         description: The ID of the History
+ *         description: The ID of the Log
  *     responses:
  *       200:
- *         description: History was successfully deleted
+ *         description: Log was successfully deleted
  *       404:
- *         description: History not found
+ *         description: Log not found
  */
-router.delete("/:id", deleteHistory);
+router.delete("/:id", deleteLog);
 
 export default router;
