@@ -31,6 +31,10 @@ const Routine = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: "routine",

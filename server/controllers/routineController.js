@@ -66,6 +66,7 @@ export const createRoutine = async (req, res) => {
       program_id,
       duration,
       name,
+      description,
     });
     res.status(201).json({
       status: "201",
