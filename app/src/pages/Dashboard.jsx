@@ -12,6 +12,7 @@ export const Dashboard = (props) => {
       const routines = await getAllPresetRoutines();
       console.log(routines);
     }
+    console.log(user.id);
     getRoutines();
   }, []);
 

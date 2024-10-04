@@ -27,6 +27,14 @@ const Program = sequelize.define(
       type: DataTypes.BIGINT,
       allowNull: false,
     },
+    name: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: "program",

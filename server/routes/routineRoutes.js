@@ -2,6 +2,7 @@ import express from "express";
 import {
   getRoutines,
   getPresetRoutines,
+  getRoutinesByProgram,
   getRoutine,
   createRoutine,
   updateRoutine,
@@ -95,7 +96,30 @@ router.get("/:id", getRoutine);
  *         description: Routine not found
  */
 router.get("/?preset=:preset", getPresetRoutines);
-
+/**
+ * @swagger
+ * /Routines/program/{program_id}:
+ *   get:
+ *     summary: Get routines of a program
+ *     tags: [Routines]
+ *     parameters:
+ *       - in: path
+ *         name: program_id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the program
+ *     responses:
+ *       200:
+ *         description: The Routine details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Routine'
+ *       404:
+ *         description: Routine not found
+ */
+router.get("/program/:program_id", getRoutinesByProgram);
 /**
  * @swagger
  * /Routines:

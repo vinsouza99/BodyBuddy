@@ -21,7 +21,9 @@ const getProgram = async (id) => {
       data.created_at,
       data.completed_at,
       data.duration,
-      data.user_id
+      data.user_id,
+      data.name,
+      data.description
     );
     const programRoutines = await getRoutinesFromProgram(program.id);
     programRoutines.forEach((routine) => program.addRoutine(routine));
@@ -32,23 +34,29 @@ const getProgram = async (id) => {
 };
 const getAllUserPrograms = async (user_id) => {
   try {
-    console.log(`${API_ROUTE}/?user_id=${user_id}`);
-    const response = await axios.get(`${API_ROUTE}/?user_id=${user_id}`);
+    if (!user_id) throw new Error("user id is null");
+    console.log(`${API_ROUTE}/user/${user_id}`);
+    const response = await axios.get(`${API_ROUTE}/user/${user_id}`);
     const data = await response.data;
-    const programs = data.data.map(
+    console.log(data.data.rows);
+    const programs = data.data.rows.map(
       (program) =>
         new Program(
           program.id,
           program.created_at,
           program.completed_at,
           program.duration,
-          program.user_id
+          program.user_id,
+          program.name,
+          program.description
         )
     );
     programs.forEach(async (program) => {
       const programRoutines = await getRoutinesFromProgram(program.id);
-      programRoutines.forEach((routine) => program.addRoutine(routine));
+      if (programRoutines)
+        programRoutines.forEach((routine) => program.addRoutine(routine));
     });
+    console.log(programs);
     return programs;
   } catch (e) {
     console.log(e);

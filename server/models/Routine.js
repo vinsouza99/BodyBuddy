@@ -24,7 +24,7 @@ const Routine = sequelize.define(
       allowNull: true,
     },
     program_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.TEXT,
       allowNull: true,
     },
     name: {

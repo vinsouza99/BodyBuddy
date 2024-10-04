@@ -56,7 +56,7 @@ router.get("/", getPrograms);
 
 /**
  * @swagger
- * /Programs/?user_id={user_id}:
+ * /Programs/user/{user_id}:
  *   get:
  *     summary: Get all programs that has a specific user ID
  *     tags: [Programs]
@@ -77,7 +77,7 @@ router.get("/", getPrograms);
  *       404:
  *         description: Program not found
  */
-router.get("/?user_id=:user_id", getProgramsByUser);
+router.get("/user/:user_id", getProgramsByUser);
 
 /**
  * @swagger

@@ -53,7 +53,7 @@ const TrainingCard = ({ routine }) => {
 
   // Navigate to the Routine page with the specific ID
   const handleStartRoutine = (id) => {
-    console.log(`LOADING ROUTINE WITH ID: ${id}`, selectedRoutine);
+    //console.log(`LOADING ROUTINE WITH ID: ${id}`, selectedRoutine);
     navigate(`/routine/${id}`);
   };
 
@@ -71,7 +71,6 @@ const TrainingCard = ({ routine }) => {
             <Typography variant="h6" component="h3" align="center">
               {/* Cocoy: ternary to display routine name */}
               {routine.name ? routine.name : "Name is undefined or null"}{" "}
-              {console.log(routine)}
             </Typography>
             <Typography variant="p" align="center">
               {/* Cocoy: ternary to display routine description */}

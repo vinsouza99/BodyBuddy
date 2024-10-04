@@ -8,9 +8,9 @@ const API_ROUTE = URL + TABLE;
 
 const getRoutinesFromProgram = async (program_id) => {
   try {
-    const response = await axios.get(`${API_ROUTE}/?program_id=${program_id}`);
+    const response = await axios.get(`${API_ROUTE}/program/${program_id}`);
     const data = await response.data;
-    const routines = await data.data.map((routine) => {
+    const routines = await data.data.rows.map((routine) => {
       new Routine(
         routine.id,
         routine.created_at,
@@ -21,10 +21,14 @@ const getRoutinesFromProgram = async (program_id) => {
         routine.description
       );
     });
-    routines.forEach(async (routine) => {
-      const routineExercises = await getExercisesFromRoutine(routine.id);
-      routineExercises.forEach((exercise) => routine.addExercise(exercise));
-    });
+    if (routines && routines.length > 0) {
+      routines.forEach(async (routine) => {
+        if (routine) {
+          const routineExercises = await getExercisesFromRoutine(routine.id);
+          routineExercises.forEach((exercise) => routine.addExercise(exercise));
+        }
+      });
+    }
     return routines;
   } catch (e) {
     console.log(e);
@@ -47,7 +51,7 @@ const getAllPresetRoutines = async () => {
           routine.description
         )
     );
-    if (routines)
+    if (routines && routines.length > 0)
       routines.forEach(async (routine) => {
         const routineExercises = await getExercisesFromRoutine(routine.id);
         routineExercises.forEach((exercise) => routine.addExercise(exercise));

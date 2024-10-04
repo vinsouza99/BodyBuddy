@@ -11,13 +11,24 @@ export class Program {
    * @param {string} user_id
    * @param {Array} routines - an Array that contains all the routines that are part of this program
    */
-  constructor(id, created_at, completed_at, duration, user_id, routines) {
+  constructor(
+    id,
+    created_at,
+    completed_at,
+    duration,
+    user_id,
+    name,
+    description,
+    routines = new Array()
+  ) {
     this.id = id;
     this.created_at = created_at;
     this.completed_at = completed_at;
     this.duration = duration;
     this.user_id = user_id;
-    this.routines = routines || [];
+    this.name = name;
+    this.description = description;
+    this.routines = routines;
   }
 
   /**

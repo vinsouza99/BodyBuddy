@@ -16,6 +16,30 @@ export const getRoutines = async (req, res) => {
     });
   }
 };
+
+export const getRoutinesByProgram = async (req, res) => {
+  try {
+    console.log(req.params);
+    const { program_id } = req.params;
+    console.log(program_id);
+    const routines = await Routine.findAndCountAll({
+      where: {
+        program_id: program_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routines,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
 export const getPresetRoutines = async (req, res) => {
   try {
     const routines = await Routine.findAndCountAll({
@@ -61,7 +85,7 @@ export const getRoutine = async (req, res) => {
 
 export const createRoutine = async (req, res) => {
   try {
-    const { program_id, duration, name } = req.body;
+    const { program_id, duration, name } = req.params;
     const newRoutine = await Routine.create({
       program_id,
       duration,
@@ -85,7 +109,7 @@ export const createRoutine = async (req, res) => {
 export const updateRoutine = async (req, res) => {
   try {
     const { id } = req.params;
-    const updatedData = req.body;
+    const { updatedData } = req.params;
 
     const routine = await Routine.findByPk(id);
     if (!routine) {
