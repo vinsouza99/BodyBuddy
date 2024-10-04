@@ -5,7 +5,7 @@ const Routine = sequelize.define(
   "Routine",
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
       autoIncrement: true,
@@ -24,7 +24,7 @@ const Routine = sequelize.define(
       allowNull: true,
     },
     program_id: {
-      type: DataTypes.TEXT,
+      type: DataTypes.UUID,
       allowNull: true,
     },
     name: {
@@ -33,6 +33,10 @@ const Routine = sequelize.define(
     },
     description: {
       type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    preset: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
   },

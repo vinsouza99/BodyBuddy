@@ -57,6 +57,50 @@ router.get("/", getRoutines);
 
 /**
  * @swagger
+ * /Routines/presets:
+ *   get:
+ *     summary: Get all preset routines
+ *     tags: [Routines]
+ *     responses:
+ *       200:
+ *         description: The Routine details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Routine'
+ *       404:
+ *         description: Routine not found
+ */
+router.get("/presets", getPresetRoutines);
+
+/**
+ * @swagger
+ * /Routines/program/{program_id}:
+ *   get:
+ *     summary: Get routines of a program
+ *     tags: [Routines]
+ *     parameters:
+ *       - in: path
+ *         name: program_id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the program
+ *     responses:
+ *       200:
+ *         description: The Routine details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Routine'
+ *       404:
+ *         description: Routine not found
+ */
+router.get("/program/:program_id", getRoutinesByProgram);
+
+/**
+ * @swagger
  * /Routines/{id}:
  *   get:
  *     summary: Get a specific Routine by ID
@@ -79,47 +123,7 @@ router.get("/", getRoutines);
  *         description: Routine not found
  */
 router.get("/:id", getRoutine);
-/**
- * @swagger
- * /Routines/presets:
- *   get:
- *     summary: Get all preset routines
- *     tags: [Routines]
- *     responses:
- *       200:
- *         description: The Routine details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Routine'
- *       404:
- *         description: Routine not found
- */
-router.get("/?preset=:preset", getPresetRoutines);
-/**
- * @swagger
- * /Routines/program/{program_id}:
- *   get:
- *     summary: Get routines of a program
- *     tags: [Routines]
- *     parameters:
- *       - in: path
- *         name: program_id
- *         schema:
- *           type: string
- *         required: true
- *         description: The ID of the program
- *     responses:
- *       200:
- *         description: The Routine details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Routine'
- *       404:
- *         description: Routine not found
- */
-router.get("/program/:program_id", getRoutinesByProgram);
+
 /**
  * @swagger
  * /Routines:

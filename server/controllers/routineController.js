@@ -40,8 +40,10 @@ export const getRoutinesByProgram = async (req, res) => {
     });
   }
 };
+
 export const getPresetRoutines = async (req, res) => {
   try {
+    console.log("TEST")
     const routines = await Routine.findAndCountAll({
       where: {
         preset: true,
@@ -60,6 +62,7 @@ export const getPresetRoutines = async (req, res) => {
     });
   }
 };
+
 export const getRoutine = async (req, res) => {
   try {
     const routine = await Routine.findByPk(req.params.id);

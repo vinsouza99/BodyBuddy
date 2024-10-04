@@ -13,6 +13,6 @@ router.use("/programs", programRoutes);
 router.use("/exercises", exerciseRoutes);
 router.use("/routines", routineRoutes);
 router.use("/routineExercises", routineExerciseRoutes);
-router.use("/history", historyRoutes);
+router.use("/log", historyRoutes);
 
 export default router;

@@ -68,31 +68,6 @@ router.get("/", getRoutineExercises);
 
 /**
  * @swagger
- * /RoutineExercises/{id}:
- *   get:
- *     summary: Get a specific RoutineExercise by ID
- *     tags: [RoutineExercises]
- *     parameters:
- *       - in: path
- *         name: id
- *         schema:
- *           type: integer
- *         required: true
- *         description: The ID of the RoutineExercise
- *     responses:
- *       200:
- *         description: The RoutineExercise details
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/RoutineExercise'
- *       404:
- *         description: RoutineExercise not found
- */
-router.get("/:id", getRoutineExercise);
-
-/**
- * @swagger
  * /RoutineExercises/routine/{routine_id}:
  *   get:
  *     summary: Get exercises by routine_id
@@ -118,6 +93,31 @@ router.get("/:id", getRoutineExercise);
  *         description: Routine not found or no exercises for this routine
  */
 router.get("/routine/:routine_id", getRoutineExerciseByRoutineId);
+
+/**
+ * @swagger
+ * /RoutineExercises/{id}:
+ *   get:
+ *     summary: Get a specific RoutineExercise by ID
+ *     tags: [RoutineExercises]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the RoutineExercise
+ *     responses:
+ *       200:
+ *         description: The RoutineExercise details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RoutineExercise'
+ *       404:
+ *         description: RoutineExercise not found
+ */
+router.get("/:id", getRoutineExercise);
 
 /**
  * @swagger
