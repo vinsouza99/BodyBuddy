@@ -8,7 +8,7 @@ const API_ROUTE = URL + TABLE;
 
 const getExercisesFromRoutine = async (routine_id) => {
   try {
-    const response = await axios.get(`${API_ROUTE}/?routine_id=${routine_id}`);
+    const response = await axios.get(`${API_ROUTE}/routine/${routine_id}`);
     const data = await response.data;
     const routineExercises = await data.data.map(
       (exercise) =>
