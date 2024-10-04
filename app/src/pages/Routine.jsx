@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   PoseLandmarker,
   FilesetResolver,
@@ -34,8 +34,9 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 export const Routine = ({
   title = "Routine Session",
-  routineId = "eda82242-2a77-42dc-9243-92c48fd08661",
+  // routineId = "eda82242-2a77-42dc-9243-92c48fd08661",
 }) => {
+  const { routineId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -46,6 +47,7 @@ export const Routine = ({
   const animationFrameIdRef = useRef(null);
 
   const [routine, setRoutine] = useState([]);
+  const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [successCount, setSuccessCount] = useState(0);
@@ -176,7 +178,7 @@ export const Routine = ({
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseCounter, webcamRunning]); // This effect runs when webcamRunning changes
+  }, [exerciseCounter, webcamRunning]);
 
   const enableCam = async () => {
     if (!poseLandmarkerRef.current) {
@@ -369,6 +371,7 @@ export const Routine = ({
   };
 
   const handleUploadRecording = async () => {
+    const supabaseStorageUrl = import.meta.env.VITE_SUPABASE_STORAGE_URL;
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
       const fileName = `recorded_video_${Date.now()}.webm`;
@@ -382,8 +385,10 @@ export const Routine = ({
       if (error) {
         console.error("Error uploading file:", error);
       } else {
-        setRecordedChunks([]);
         console.log("File uploaded successfully:", data);
+        console.log("Public URL:", `${supabaseStorageUrl}${fileName}`);
+        setExerciseVideo(`${supabaseStorageUrl}${fileName}`);
+        setRecordedChunks([]);
 
         // Show Snackbar
         setIsSnackbarOpen(true);
@@ -440,7 +445,7 @@ export const Routine = ({
           created_at: completedAt,
           routine_id: routineId,
           program_id: null,
-          recording_URL: null,
+          recording_URL: exerciseVideo,
           description: null,
         };
         const response = await server.add("History", newHitoryObj);
@@ -460,7 +465,7 @@ export const Routine = ({
 
   const handleMoveToTrainingPage = () => {
     setIsFinished(false);
-    navigate("/dashboard");
+    navigate("/training");
   };
 
   return (
@@ -724,6 +729,8 @@ export const Routine = ({
             <Button variant="contained" onClick={handleFinishRoutine}>
               FINISH ROUTINE
             </Button>
+
+            {/* Snack bar to display successful video upload  */}
             <Snackbar
               open={isSnackbarOpen}
               autoHideDuration={3000}
@@ -751,11 +758,20 @@ export const Routine = ({
         fullWidth
         maxWidth="sm"
       >
-        <DialogTitle>Congratulations!</DialogTitle>
+        <DialogTitle>You have successfully completed the routine!</DialogTitle>
         <DialogContent>
-          <Typography variant="body1">
-            You have successfully completed the routine!
-          </Typography>
+          {routine && routine.length > 0 && (
+            <Box>
+              <Typography variant="h6">Completed Exercises:</Typography>
+              <List>
+                {routine.map((exercise, index) => (
+                  <ListItem key={index}>
+                    <ListItemText primary={exercise.name} />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
+          )}
         </DialogContent>
         <DialogActions>
           <Button variant="contained" onClick={handleMoveToTrainingPage}>
@@ -770,5 +786,5 @@ export const Routine = ({
 // Defining prop types
 Routine.propTypes = {
   title: PropTypes.string,
-  routineId: PropTypes.string, // Expecting a UUID string
+  // routineId: PropTypes.string, // Expecting a UUID string
 };
