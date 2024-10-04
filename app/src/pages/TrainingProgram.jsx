@@ -7,15 +7,21 @@ import { getAllUserPrograms } from "../controllers/ProgramController"; // Teru: 
 import TrainingCard from "../components/TrainingCard"; // Cocoy: Load TrainingCard component
 import { Typography } from "@mui/material";
 
+import { useAuth } from "../utils/AuthProvider.jsx";
+
 export const TrainingProgram = (props) => {
   const [programs, setPrograms] = useState([]); // Teru: Declare a state variable to hold the list of routines and a function to update it
   const [routines, setRoutines] = useState([]); // Cocoy: Declare a state variable to hold the list of routines and a function to update it
+
+  const { user } = useAuth();
+  console.log(user);
+  
 
   useEffect(() => {
     setPageTitle(props.title);
 
     const loadData = async () => {
-      const Allprograms = await getAllUserPrograms(); // Teru: Load all programs
+      const Allprograms = await getAllUserPrograms(user.id); // Teru: Load all programs
       setPrograms(Allprograms); // Teru: update the state with the loaded routines
 
       const presetRoutines = await getAllPresetRoutines(); // Cocoy: Load preset routines
