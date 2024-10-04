@@ -34,7 +34,7 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 
 export const Routine = ({
   title = "Routine Session",
-  routineId = "d6a5fb5e-976f-496b-9728-5b53ec305a37",
+  routineId = "eda82242-2a77-42dc-9243-92c48fd08661",
 }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -103,13 +103,10 @@ export const Routine = ({
           "RoutineExercises/routine",
           routineId
         );
-        console.log(response);
         if (Number(response.status) !== 200) {
           throw new Error("Failed to fetch routine info");
         }
-        console.log(response.data);
         setRoutine(transformRoutineData(response.data));
-        console.log(routine);
       } catch (error) {
         console.error("Error fetching routine:", error);
       }
@@ -173,10 +170,12 @@ export const Routine = ({
 
     // Cleanup
     return () => {
+      clearCanvas();
       if (animationFrameIdRef.current) {
         window.cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseCounter, webcamRunning]); // This effect runs when webcamRunning changes
 
   const enableCam = async () => {
@@ -186,9 +185,6 @@ export const Routine = ({
     }
 
     const videoElement = videoRef.current;
-    const canvasElement = canvasRef.current;
-    const canvasCtx = canvasElement.getContext("2d");
-
     if (webcamRunning) {
       // Stop webcam
       const stream = videoElement.srcObject;
@@ -196,9 +192,8 @@ export const Routine = ({
       tracks.forEach((track) => track.stop());
       videoElement.srcObject = null;
       setWebcamRunning(false); // Update state
+      clearCanvas();
       console.log("Webcam disabled");
-
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     } else {
       // Start webcam
       const constraints = { video: true };
@@ -242,16 +237,17 @@ export const Routine = ({
     //   await poseLandmarkerRef.current.setOptions({ runningMode: "VIDEO" });
     // }
 
-    const startTimeMs = performance.now();
+    // const startTimeMs = performance.now();
 
     try {
       const results = await poseLandmarkerRef.current.detectForVideo(
         videoElement,
-        startTimeMs
+        performance.now()
       );
 
       // Canvas for drawing pose landmarks
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      // canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+      clearCanvas();
 
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
@@ -335,7 +331,16 @@ export const Routine = ({
     }
   }, [postureAlert]);
 
-  const startRecording = () => {
+  // Clear posture detection landmarks and lines
+  const clearCanvas = () => {
+    const canvasElement = canvasRef.current;
+    if (canvasElement) {
+      const canvasCtx = canvasElement.getContext("2d");
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    }
+  };
+
+  const handleStartRecording = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
       const options = { mimeType: "video/webm" };
@@ -354,7 +359,7 @@ export const Routine = ({
     }
   };
 
-  const stopRecording = () => {
+  const handleStopRecording = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
       setMediaRecorder(null);
@@ -363,7 +368,7 @@ export const Routine = ({
     }
   };
 
-  const uploadToSupabase = async () => {
+  const handleUploadRecording = async () => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
       const fileName = `recorded_video_${Date.now()}.webm`;
@@ -386,11 +391,7 @@ export const Routine = ({
     }
   };
 
-  const handleClose = () => {
-    setIsSnackbarOpen(false);
-  };
-
-  const downloadRecording = () => {
+  const handleDownloadRecording = () => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
       const url = URL.createObjectURL(blob);
@@ -402,6 +403,10 @@ export const Routine = ({
       setRecordedChunks([]);
       console.log("Recording downloaded");
     }
+  };
+
+  const handleClose = () => {
+    setIsSnackbarOpen(false);
   };
 
   // Handle camera consent dialog response
@@ -418,12 +423,11 @@ export const Routine = ({
     setCountDownTrigger(true);
   };
 
-  const handleCountDownComplete = () => {
+  const endCountdown = () => {
     setCountDownTrigger(false);
   };
 
-  // MEMO: Need to confirm history table definition & APIs
-  const finishRoutine = () => {
+  const handleFinishRoutine = () => {
     // Disable webcam
     if (webcamRunning) enableCam();
 
@@ -454,7 +458,7 @@ export const Routine = ({
     setIsFinished(true);
   };
 
-  const goBackToTrainingPage = () => {
+  const handleMoveToTrainingPage = () => {
     setIsFinished(false);
     navigate("/dashboard");
   };
@@ -522,7 +526,7 @@ export const Routine = ({
             {/* Countdown */}
             <CountDown
               trigger={countDownTrigger}
-              onComplete={handleCountDownComplete}
+              onComplete={endCountdown}
             />
             {/* Webcam */}
             <video
@@ -691,33 +695,33 @@ export const Routine = ({
             </Button>
             <Button
               variant="contained"
-              onClick={startRecording}
+              onClick={handleStartRecording}
               disabled={isRecording || !webcamRunning}
             >
               START RECORDING
             </Button>
             <Button
               variant="contained"
-              onClick={stopRecording}
+              onClick={handleStopRecording}
               disabled={!isRecording}
             >
               STOP RECORDING
             </Button>
             <Button
               variant="contained"
-              onClick={uploadToSupabase}
+              onClick={handleUploadRecording}
               disabled={recordedChunks.length === 0}
             >
               UPLOAD TO STORAGE
             </Button>
             <Button
               variant="contained"
-              onClick={downloadRecording}
+              onClick={handleDownloadRecording}
               disabled={recordedChunks.length === 0}
             >
               DOWNLOAD
             </Button>
-            <Button variant="contained" onClick={finishRoutine}>
+            <Button variant="contained" onClick={handleFinishRoutine}>
               FINISH ROUTINE
             </Button>
             <Snackbar
@@ -754,7 +758,7 @@ export const Routine = ({
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" onClick={goBackToTrainingPage}>
+          <Button variant="contained" onClick={handleMoveToTrainingPage}>
             Go Back to Training Page
           </Button>
         </DialogActions>
