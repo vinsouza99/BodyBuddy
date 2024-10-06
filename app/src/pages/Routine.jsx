@@ -494,7 +494,9 @@ export const Routine = ({title = "Routine Session"}) => {
           setSuccessRepCount((prevSuccessRepCount) => {
             if (count !== prevSuccessRepCount) {
               // When the rep count reaches the target, increment the set count
-              if (count >= routine[selectedExerciseIndex].reps) {
+              if (count >= routine[selectedExerciseIndex].reps
+                && routine[selectedExerciseIndex].reps !== 0
+              ) {
                 // Count up the set count
                 incrementSetsCount();
 
