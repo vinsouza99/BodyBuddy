@@ -1,11 +1,8 @@
 import PropTypes from "prop-types";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  PoseLandmarker,
-  FilesetResolver,
-  DrawingUtils,
-} from "@mediapipe/tasks-vision";
+import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
+import { Counter, AngleMeter, Timer, RestTime } from "../components/routine-session";
 import {
   Box,
   Button,
@@ -20,39 +17,32 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Card,
-  CardContent,
 } from "@mui/material";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { supabase } from "../utils/supabaseClient.js";
 import { setPageTitle } from "../utils/utils";
-import { exerciseCounterLoader } from "../utils/exerciseLogic/exerciseCounterLoader";
+import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
 import { default as server } from "../utils/ProxyServer.js";
-import { AngleMeter } from "../components/AngleMeter.jsx";
-import { CountDown } from "../components/CountDown.jsx";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"; // Can be replaced later
 
-export const Routine = ({
-  title = "Routine Session",
-  // routineId = "eda82242-2a77-42dc-9243-92c48fd08661",
-}) => {
+export const Routine = ({title = "Routine Session"}) => {
+  useEffect(() => {
+    console.log("Rendering Test: Routine Component");
+  });
+
   const { routineId } = useParams();
-  const { user } = useAuth();
   const navigate = useNavigate();
+  const { user } = useAuth(); // For session management
 
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
-  const poseLandmarkerRef = useRef(null);
-  const runningMode = useRef("VIDEO");
-  const animationFrameIdRef = useRef(null);
-
+  // --- State ---
   const [routine, setRoutine] = useState([]);
   const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
-  const [selectedExercise, setSelectedExercise] = useState(null);
-  const [successCount, setSuccessCount] = useState(0);
+  const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(0);
+  const [successSetCount, setSuccessSetCount] = useState(0);
+  const [successRepCount, setSuccessRepCount] = useState(0);
   const [postureAlert, setPostureAlert] = useState(null);
-  const [hipKneeAngle, setHipKneeAngle] = useState(180);
+  const [angle, setAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -60,12 +50,24 @@ export const Routine = ({
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(true); //
   const [isFinished, setIsFinished] = useState(false);
-  const [countDownTrigger, setCountDownTrigger] = useState(false);
+  const [isResting, setIsResting] = useState(false);
+  const [restForSetIncrement, setRestForSetIncrement] = useState(false);
+  const [restForNextExercise, setRestForNextExercise] = useState(false);
 
-  // Initialization
-  // - Set Page Title
-  // - Setup MediaPipe PoseLandmarker when component mounts
-  // - Retrieve routine/program information from the database
+
+  // --- Refs ---
+  const videoRef = useRef(null);
+  const canvasRef = useRef(null);
+  const poseLandmarkerRef = useRef(null);
+  const runningMode = useRef("VIDEO");
+  const animationFrameIdRef = useRef(null);
+
+
+  // ---------------------------------------------------------
+  //                      useEffect Hooks
+  // ---------------------------------------------------------
+
+  // Initialization (MediaPipe PoseLandmarker, Retrieve routine/program information)
   useEffect(() => {
     setPageTitle(title);
 
@@ -108,7 +110,7 @@ export const Routine = ({
         if (Number(response.status) !== 200) {
           throw new Error("Failed to fetch routine info");
         }
-        setRoutine(transformRoutineData(response.data));
+        setRoutine(createRoutineTimeSchedule(response.data));
       } catch (error) {
         console.error("Error fetching routine:", error);
       }
@@ -116,58 +118,47 @@ export const Routine = ({
     fetchRoutine();
   }, []);
 
+  // Reset selected exercise index when routine changes
   useEffect(() => {
     if (routine && routine.length > 0) {
-      setSelectedExercise(routine[0]);
+      setSelectedExerciseIndex(0);
     }
   }, [routine]);
 
   // Dynamically load exercise counter class based on selected exercise
   useEffect(() => {
-    console.log("Selected exercise:", selectedExercise);
+    console.log("Selected exercise:", routine[selectedExerciseIndex]);
 
+    // Reset success count when exercise changes
+    setSuccessRepCount(0);
+    setSuccessSetCount(0);
+    
+    const selectedExercise = routine[selectedExerciseIndex]
     if (selectedExercise) {
       const CounterClass = exerciseCounterLoader[selectedExercise.name];
       if (CounterClass) {
         setExerciseCounter(new CounterClass());
         console.log("Exercise counter is loaded.");
-
-        // Start countdown when exercise changes
-        startCountdown();
       } else {
         setExerciseCounter(null);
         console.log("Exercise counter is not implemented.");
       }
+
+      // Start countdown for break exercise
+      // if (selectedExercise.name == "Break") {
+      //   startRestCountdown();
+      //   return;
+      // }
     } else {
       setExerciseCounter(null);
       console.log("Exercise counter is not implemented.");
     }
-  }, [selectedExercise]);
-
-  // Transform routine data format for display
-  const transformRoutineData = (routineData) => {
-    return routineData.map((item) => {
-      let durationString;
-      if (item.reps > 0) {
-        durationString = `${item.sets} sets of ${item.reps} reps`;
-      } else if (item.duration) {
-        durationString = `${item.duration / 1000} seconds`;
-      } else {
-        durationString = `${item.sets} sets`;
-      }
-
-      return {
-        name: item.Exercise.name,
-        duration: durationString,
-        image: item.Exercise.demo_url,
-      };
-    });
-  };
+  }, [selectedExerciseIndex, routine]);
 
   // Ttrack webcamRunning changes
   useEffect(() => {
-    if (exerciseCounter && webcamRunning) {
-      predictWebcam(); // Start prediction when webcam is running
+    if (exerciseCounter && webcamRunning && !isResting) {
+      predictPosture(); // Start prediction when webcam is running and not resting
     }
 
     // Cleanup
@@ -178,152 +169,30 @@ export const Routine = ({
       }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exerciseCounter, webcamRunning]);
+  }, [exerciseCounter, webcamRunning, isResting]);
 
-  const enableCam = async () => {
-    if (!poseLandmarkerRef.current) {
-      console.error("PoseLandmarker not loaded.");
-      return;
-    }
-
-    const videoElement = videoRef.current;
-    if (webcamRunning) {
-      // Stop webcam
-      const stream = videoElement.srcObject;
-      const tracks = stream.getTracks();
-      tracks.forEach((track) => track.stop());
-      videoElement.srcObject = null;
-      setWebcamRunning(false); // Update state
-      clearCanvas();
-      console.log("Webcam disabled");
-    } else {
-      // Start webcam
-      const constraints = { video: true };
-
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia(constraints);
-        videoElement.srcObject = stream;
-        videoElement.addEventListener("loadeddata", () => {
-          console.log(
-            "Webcam video loaded:",
-            videoElement.videoWidth,
-            videoElement.videoHeight
-          );
-          setWebcamRunning(true); // Update state
-        });
-      } catch (error) {
-        console.error("Error accessing the webcam: ", error);
-      }
-    }
-  };
-
-  // Perform posture detection on webcam feed
-  const predictWebcam = async () => {
-    const videoElement = videoRef.current;
-    const canvasElement = canvasRef.current;
-    const canvasCtx = canvasElement.getContext("2d");
-    const drawingUtils = new DrawingUtils(canvasCtx);
-
-    // Check if video element is available
-    if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
-      console.log("Video element not available or has been stopped.");
-      return;
-    }
-
-    // Adjust canvas size to match video
-    canvasElement.width = videoElement.videoWidth;
-    canvasElement.height = videoElement.videoHeight;
-
-    // if (runningMode.current === "IMAGE") {
-    //   runningMode.current = "VIDEO";
-    //   await poseLandmarkerRef.current.setOptions({ runningMode: "VIDEO" });
-    // }
-
-    // const startTimeMs = performance.now();
-
-    try {
-      const results = await poseLandmarkerRef.current.detectForVideo(
-        videoElement,
-        performance.now()
-      );
-
-      // Canvas for drawing pose landmarks
-      // canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-      clearCanvas();
-
-      if (results && results.landmarks && results.landmarks.length > 0) {
-        // Count exercise using exerciseCounter
-        const { count = 0, alert = null } =
-          exerciseCounter?.processPose(results.landmarks[0]) || {};
-
-        // Update success count
-        if (count !== undefined) {
-          setSuccessCount((prevSuccessCount) => {
-            if (count !== prevSuccessCount) {
-              return count;
-            }
-            return prevSuccessCount;
-          });
-
-          // Update angle for the meter
-          const angle = exerciseCounter?.getAngle(results.landmarks[0]);
-          if (angle !== undefined) {
-            setHipKneeAngle(Math.round(angle));
-          }
-        }
-
-        // Update alert if any posture issue
-        if (alert !== undefined) {
-          setPostureAlert((prevAlert) => {
-            if (alert !== prevAlert) {
-              return alert;
-            }
-            return prevAlert;
-          });
-        }
-
-        // Draw pose landmarks and connections
-        drawingUtils.drawConnectors(
-          results.landmarks[0],
-          PoseLandmarker.POSE_CONNECTIONS
-        );
-
-        drawingUtils.drawLandmarks(results.landmarks[0], {
-          radius: (data) => {
-            return DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1);
-          },
-          color: (data) => {
-            return data.index === 0 ? "green" : "green";
-          },
-        });
-
-        results.landmarks[0].forEach((landmark, index) => {
-          const x = landmark.x * canvasElement.width;
-          const y = landmark.y * canvasElement.height;
-
-          canvasCtx.font = "10px Roboto";
-          canvasCtx.fillStyle = "blue";
-          canvasCtx.fontWeight = "bold";
-          canvasCtx.fillText(`ID ${index}`, x, y);
-        });
-      }
-    } catch (error) {
-      console.error("Error during pose detection:", error);
-    }
-
-    // Continue predictions as long as webcam is running
-    if (webcamRunning) {
-      animationFrameIdRef.current = window.requestAnimationFrame(predictWebcam);
-    }
-  };
-
-  // Read out the count
+  // Enable webcam when consent dialog is closed
   useEffect(() => {
-    if (successCount !== 0) {
-      const utterance = new SpeechSynthesisUtterance(`${successCount}`);
+    if (!isDialogOpen) {
+      toggleWebCam();
+    }
+  }, [isDialogOpen]);
+
+  // Read out the rep count
+  useEffect(() => {
+    if (successRepCount !== 0) {
+      const utterance = new SpeechSynthesisUtterance(`${successRepCount}`);
       window.speechSynthesis.speak(utterance);
     }
-  }, [successCount]);
+  }, [successRepCount]);
+
+  // Read out the set count
+  useEffect(() => {
+    if (successSetCount !== 0) {
+      const utterance = new SpeechSynthesisUtterance(`Great Job!`);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, [successSetCount]);
 
   // Read out the alert
   useEffect(() => {
@@ -333,15 +202,12 @@ export const Routine = ({
     }
   }, [postureAlert]);
 
-  // Clear posture detection landmarks and lines
-  const clearCanvas = () => {
-    const canvasElement = canvasRef.current;
-    if (canvasElement) {
-      const canvasCtx = canvasElement.getContext("2d");
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    }
-  };
+  
+  // ---------------------------------------------------------
+  //                      Event Handlers
+  // ---------------------------------------------------------
 
+  // Start Recording
   const handleStartRecording = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject;
@@ -361,6 +227,7 @@ export const Routine = ({
     }
   };
 
+  // Stop recording
   const handleStopRecording = () => {
     if (mediaRecorder) {
       mediaRecorder.stop();
@@ -370,6 +237,7 @@ export const Routine = ({
     }
   };
 
+  // Upload recording to Supabase Storage
   const handleUploadRecording = async () => {
     const supabaseStorageUrl = import.meta.env.VITE_SUPABASE_STORAGE_URL;
     if (recordedChunks.length) {
@@ -396,6 +264,7 @@ export const Routine = ({
     }
   };
 
+  // Download recording
   const handleDownloadRecording = () => {
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
@@ -410,6 +279,7 @@ export const Routine = ({
     }
   };
 
+  // Handle snackbar close
   const handleClose = () => {
     setIsSnackbarOpen(false);
   };
@@ -417,24 +287,25 @@ export const Routine = ({
   // Handle camera consent dialog response
   const handleAgree = async () => {
     setIsDialogOpen(false);
-    enableCam();
   };
 
+  // Handle camera consent dialog response
   const handleDisagree = () => {
     navigate(-1); // Navigate back to previous page
   };
 
-  const startCountdown = () => {
-    setCountDownTrigger(true);
+  // Handle quitting the routine
+  const handleQuitRoutine = () => {
+    // Disable webcam
+    if (webcamRunning) toggleWebCam();
+
+    handleMoveToTrainingPage();
   };
 
-  const endCountdown = () => {
-    setCountDownTrigger(false);
-  };
-
+  // Handle finishing the routine (Insert log info to the database)
   const handleFinishRoutine = () => {
     // Disable webcam
-    if (webcamRunning) enableCam();
+    if (webcamRunning) toggleWebCam();
 
     // Retrieve routine/program information from the database
     const registerHistory = async () => {
@@ -448,14 +319,14 @@ export const Routine = ({
           recording_URL: exerciseVideo,
           description: null,
         };
-        const response = await server.add("History", newHitoryObj);
+        const response = await server.add("Log", newHitoryObj);
         console.log(response);
         if (Number(response.status) !== 201) {
-          throw new Error("Failed to insert history info");
+          throw new Error("Failed to insert log info");
         }
         console.log(response.data);
       } catch (error) {
-        console.error("Error inserting history info:", error);
+        console.error("Error inserting log info:", error);
       }
     };
     registerHistory();
@@ -463,10 +334,271 @@ export const Routine = ({
     setIsFinished(true);
   };
 
+  // Handle moving to the training page
   const handleMoveToTrainingPage = () => {
     setIsFinished(false);
     navigate("/training");
   };
+
+  // Start Rest Time Countdown
+  const startRestCountdown = (breakType) => {
+    setIsResting(true);
+    if (breakType === "exercise") {
+      setRestForNextExercise(true);
+    } else if (breakType === "set") {
+      setRestForSetIncrement(true);
+    }
+  };
+
+  // End and hide Rest Time Countdown
+  const endRestCountdown = (breakType) => {
+    setIsResting(false);
+    if (breakType === "exercise") {
+      setRestForNextExercise(false);
+    } else if (breakType === "set") {
+      setRestForSetIncrement(false);
+    }
+  };
+
+  // ---------------------------------------------------------
+  //                      Helper Functions
+  // ---------------------------------------------------------
+
+  // Create routine time schedule
+  const createRoutineTimeSchedule = (routineData) => {
+    const transformedRoutine = [];
+  
+    routineData.forEach((item) => {
+      let goalString;
+      if (item.reps > 0) {
+        goalString = `${item.sets} sets of ${item.reps} reps`;
+      } else if (item.duration) {
+        goalString = `${item.duration / 1000} seconds`;
+      } else {
+        goalString = `${item.sets} sets`;
+      }
+  
+      // If reps is available, set duration to 0
+      if (item.reps !== 0 && item.duration !== 0) {
+        item.duration = 0;
+      }
+  
+      // Add current exercise to the transformed array
+      transformedRoutine.push({
+        name: item.Exercise.name,
+        goal: goalString,
+        sets: item.sets ? item.sets : 0,
+        reps: item.reps ? item.reps : 0,
+        duration: item.duration ? (item.duration / 1000) : 0,
+        rest_time: (item.rest_time / 1000) ? (item.rest_time / 1000) : 0,
+        image: item.Exercise.demo_url,
+      });
+  
+      // Insert a break between routine items
+      // if (index < routineData.length - 1) {
+      //   const nextExercise = routineData[index + 1];
+      //   transformedRoutine.push({
+      //     name: "Break",
+      //     goal: `20 seconds`,
+      //     sets: 0,
+      //     reps: 0,
+      //     duration: 0,
+      //     rest_time: 20,
+      //     image: nextExercise.Exercise.demo_url, // Use the next exercise's image as the break image
+      //   });
+      // }
+    });
+  
+    return transformedRoutine;
+  };
+
+  // Control Webcam Enable/Disable
+  const toggleWebCam = async () => {
+
+    // If MediaPipe PoseLandmarker is not loaded, return
+    if (!poseLandmarkerRef.current) {
+      console.error("PoseLandmarker not loaded.");
+      return;
+    }
+
+    const videoElement = videoRef.current;
+    if (webcamRunning) {
+      // Stop webcam
+      const stream = videoElement.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop());
+      videoElement.srcObject = null;
+      setWebcamRunning(false); // Update state
+      clearCanvas();
+      console.log("Webcam disabled");
+    } else {
+      // Start webcam
+      const constraints = { video: true };
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        videoElement.srcObject = stream;
+        videoElement.addEventListener("loadeddata", () => {
+          // console.log(
+          //   "Webcam video loaded:",
+          //   videoElement.videoWidth,
+          //   videoElement.videoHeight
+          // );
+          setWebcamRunning(true); // Update state
+        });
+      } catch (error) {
+        console.error("Error accessing the webcam: ", error);
+      }
+    }
+  };
+
+  // Perform posture detection on webcam feed and count reps
+  const predictPosture = async () => {
+    // Skip posture detection during rest time
+    if (isResting) {
+      console.log("Rest time. Skipping posture detection.");
+      return;
+    }
+
+    const videoElement = videoRef.current;
+    const canvasElement = canvasRef.current;
+    const canvasCtx = canvasElement.getContext("2d");
+    const drawingUtils = new DrawingUtils(canvasCtx);
+
+    // Check if video element is available
+    if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
+      console.log("Video element not available or has been stopped.");
+      return;
+    }
+
+    // Adjust canvas size to match video
+    canvasElement.width = videoElement.videoWidth;
+    canvasElement.height = videoElement.videoHeight;
+
+    try {
+      const results = await poseLandmarkerRef.current.detectForVideo(
+        videoElement,
+        performance.now()
+      );
+
+      // Canvas for drawing pose landmarks
+      clearCanvas();
+
+      if (results && results.landmarks && results.landmarks.length > 0) {
+        // Count exercise using exerciseCounter
+        const { count = 0, alert = null } =
+          exerciseCounter?.processPose(results.landmarks[0]) || {};
+
+        // Update success count
+        if (count !== undefined) {
+          setSuccessRepCount((prevSuccessRepCount) => {
+            if (count !== prevSuccessRepCount) {
+              // When the rep count reaches the target, increment the set count
+              if (count >= routine[selectedExerciseIndex].reps) {
+                // Count up the set count
+                incrementSetsCount();
+
+                // Reset count for next set
+                exerciseCounter.resetCount(); 
+
+                // Rest time after each set
+                if (successSetCount + 1 < routine[selectedExerciseIndex].sets) {
+                  startRestCountdown("set");
+                }
+
+                // Reset rep count
+                return 0;
+              }
+              // Count up the rep count
+              return count;
+            }
+            return prevSuccessRepCount;
+          });
+
+          // Update angle for the meter
+          const angle = exerciseCounter?.getAngle(results.landmarks[0]);
+          if (angle !== undefined) {
+            setAngle(Math.round(angle));
+          }
+        }
+
+        // Update alert if any posture issue
+        if (alert !== undefined) {
+          setPostureAlert((prevAlert) => {
+            if (alert !== prevAlert) {
+              return alert;
+            }
+            return prevAlert;
+          });
+        }
+
+        // Draw pose landmarks and connections
+        drawingUtils.drawConnectors(
+          results.landmarks[0],
+          PoseLandmarker.POSE_CONNECTIONS
+        );
+        drawingUtils.drawLandmarks(results.landmarks[0], {
+          radius: (data) => {
+            return DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1);
+          },
+          color: (data) => {
+            return data.index === 0 ? "green" : "green";
+          },
+        });
+        results.landmarks[0].forEach((landmark, index) => {
+          const x = landmark.x * canvasElement.width;
+          const y = landmark.y * canvasElement.height;
+
+          canvasCtx.font = "10px Roboto";
+          canvasCtx.fillStyle = "blue";
+          canvasCtx.fontWeight = "bold";
+          canvasCtx.fillText(`ID ${index}`, x, y);
+        });
+      }
+    } catch (error) {
+      console.error("Error during pose detection:", error);
+    }
+
+    // Continue predictions as long as webcam is running
+    if (webcamRunning) {
+      animationFrameIdRef.current = window.requestAnimationFrame(predictPosture);
+    }
+  };
+
+  // Increment the success set count by reps or duration
+  const incrementSetsCount = useCallback(() => {
+    setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
+  }, []);
+  // const incrementSetsCount = () => {
+  //   setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
+  // };
+
+  // Move to the next exercise in the routine
+  const moveToNextExercise = () => {
+    if (selectedExerciseIndex + 1 < routine.length) {
+      setSelectedExerciseIndex((prevIndex) => prevIndex + 1);
+
+      // Start rest time after each exercise
+      startRestCountdown("exercise");
+    } else {
+      // Automatically finish when the last exercise is completed
+      handleFinishRoutine(); 
+    }
+  };
+
+  // Clear posture detection landmarks and lines
+  const clearCanvas = () => {
+    const canvasElement = canvasRef.current;
+    if (canvasElement) {
+      const canvasCtx = canvasElement.getContext("2d");
+      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    }
+  };
+
+
+  // ---------------------------------------------------------
+  //                      JSX Return
+  // ---------------------------------------------------------
 
   return (
     <>
@@ -495,12 +627,26 @@ export const Routine = ({
           }}
         >
           <DialogTitle sx={{ color: "#fff", fontSize: "2rem" }}>
-            Are you ready to start?
+            We need access to your web camera to proceed. Do you agree?
           </DialogTitle>
           <DialogContent>
-            <Typography variant="body1" sx={{ color: "#fff", mb: 4 }}>
-              We need access to your web camera to proceed. Do you agree?
-            </Typography>
+            <Box sx={{ color: "#fff", mb: 4, p: 2, backgroundColor: "rgba(0, 0, 0, 0.6)", borderRadius: 2 }}>
+              <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
+                To ensure the AI functions correctly, please follow these instructions:
+              </Typography>
+              <List sx={{ listStyleType: 'disc', pl: 3 }}>
+                <ListItem sx={{ display: 'list-item', pl: 0, mb: 2 }}>
+                  <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+                    Maintain a distance that allows your entire body, from head to toe, to be visible on the screen.
+                  </Typography>
+                </ListItem>
+                <ListItem sx={{ display: 'list-item', pl: 0 }}>
+                  <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
+                    Ensure that no other people are visible on the screen.
+                  </Typography>
+                </ListItem>
+              </List>
+            </Box>
           </DialogContent>
           <DialogActions>
             <Button
@@ -518,240 +664,214 @@ export const Routine = ({
         </Box>
       </Dialog>
 
-      <Stack sx={{ height: "100vh", backgroundColor: "background.default" }}>
-        <Stack direction="row" sx={{ flex: 1, overflow: "hidden" }}>
-          <Box
-            sx={{
-              flexBasis: "70%",
-              position: "relative",
-              overflow: "hidden",
-              backgroundColor: "background.paper",
-            }}
-          >
-            {/* Countdown */}
-            <CountDown
-              trigger={countDownTrigger}
-              onComplete={endCountdown}
-            />
-            {/* Webcam */}
-            <video
-              ref={videoRef}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                position: "absolute",
-                top: 0,
-                left: 0,
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-              }}
-              autoPlay
-              playsInline
-            ></video>
-            {/* Pose Landmarks */}
-            <canvas
-              ref={canvasRef}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                position: "absolute",
-                top: 0,
-                left: 0,
-              }}
-            ></canvas>
-
+      {/* After the above dialog closes, start rendering */}
+      {!isDialogOpen && (
+        <Stack sx={{ height: "100vh", backgroundColor: "background.default" }}>
+          <Stack direction="row" sx={{ flex: 1, overflow: "hidden" }}>
             <Box
               sx={{
-                position: "absolute",
-                top: "20px",
-                right: "20px",
-                bottom: "20px",
+                flexBasis: "70%",
+                position: "relative",
+                overflow: "hidden",
+                backgroundColor: "background.paper",
+              }}
+            >
+              {/* Rest Time Countdown for sets increment */}
+              <RestTime trigger={restForSetIncrement} duration={routine[selectedExerciseIndex]?.rest_time || 0} onComplete={() => endRestCountdown("set")} />
+              {/* Rest Time Countdown for moving to next exercise */}
+              <RestTime trigger={restForNextExercise} duration={20} onComplete={() => endRestCountdown("exercise")} />
+              {/* Webcam */}
+              <video
+                ref={videoRef}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                  backgroundColor: "rgba(0, 0, 0, 0.1)",
+                }}
+                autoPlay
+                playsInline
+              ></video>
+              {/* Pose Landmarks */}
+              <canvas
+                ref={canvasRef}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  position: "absolute",
+                  top: 0,
+                  left: 0,
+                }}
+              ></canvas>
+
+              <Box
+                sx={{
+                  width: "150px",
+                  position: "absolute",
+                  top: "20px",
+                  right: "20px",
+                  bottom: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                {/* When Counter(Sets) reached the target, move to the next exercise. */}
+                <Counter title={"Sets"} count={successSetCount} target = {routine[selectedExerciseIndex]?.sets || 0} onComplete={moveToNextExercise} />
+                <Counter title={"Reps"} count={successRepCount} target = {routine[selectedExerciseIndex]?.reps || 0} /> {/* Regarding increment Rep count, refer to "predictPosture" */}
+                <Timer title={"Duration"} duration={routine[selectedExerciseIndex]?.duration || 0} onComplete = {incrementSetsCount} />
+                <AngleMeter title={"Angle"} angle={angle} />
+              </Box>
+
+            </Box>
+            <Box
+              sx={{
+                flexBasis: "30%",
+                padding: 1,
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "space-between",
-                gap: 2,
+                maxHeight: "100%",
+                backgroundColor: "background.paper",
               }}
             >
-              {/* Counter - Height 30% */}
-              <Card
-                sx={{
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  color: "white",
-                  flexGrow: 0,
-                }}
+              <Typography
+                variant="h4"
+                component="h1"
+                gutterBottom
+                sx={{ fontSize: "1.5rem", fontWeight: "bold" }}
               >
-                <CardContent>
-                  <Typography variant="h5" component="div" gutterBottom>
-                    Count
-                  </Typography>
-                  <Typography
-                    variant="h2"
-                    component="div"
-                    sx={{ fontWeight: "bold" }}
-                  >
-                    {successCount}
-                  </Typography>
-                </CardContent>
-              </Card>
-
-              {/* Angle Meter - Height 70% */}
-              <Card
-                sx={{
-                  backgroundColor: "rgba(0, 0, 0, 0.7)",
-                  color: "white",
-                  flexGrow: 0,
-                }}
-              >
-                <CardContent>
-                  <Typography variant="h5" component="div" gutterBottom>
-                    Angle Meter
-                  </Typography>
-                  <AngleMeter angle={hipKneeAngle} />
-                </CardContent>
-              </Card>
+                Routine Menu
+              </Typography>
+              {routine[selectedExerciseIndex] && routine[selectedExerciseIndex].image && (
+                <Box
+                  component="img"
+                  src={routine[selectedExerciseIndex].image}
+                  alt="exercise image"
+                  sx={{
+                    width: "100%",
+                    height: "350px",
+                    objectFit: "cover",
+                    mb: 3,
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
+                <List>
+                  {routine.map((exercise, index) => (
+                    <ListItem
+                      // button="true"
+                      // onClick={() => setSelectedExerciseIndex(index)}
+                      key={index}
+                      sx={{
+                        // cursor: "pointer",
+                        cursor: "default",
+                        backgroundColor:
+                          selectedExerciseIndex === index
+                            ? "rgba(0, 0, 255, 0.1)"
+                            : "inherit",
+                        // "&:hover": {
+                        //   backgroundColor: "rgba(0, 0, 255, 0.2)",
+                        // },
+                      }}
+                    >
+                      <ListItemIcon>
+                        <FitnessCenterIcon />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary={exercise.name}
+                        secondary={exercise.goal}
+                        primaryTypographyProps={{
+                          sx: { fontSize: "1.5rem", fontWeight: "bold" },
+                        }}
+                        secondaryTypographyProps={{ sx: { fontSize: "1.2rem" } }}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
             </Box>
-          </Box>
+          </Stack>
+
+          { /* Control Buttons */}
           <Box
             sx={{
-              flexBasis: "30%",
-              padding: 1,
-              display: "flex",
-              flexDirection: "column",
-              maxHeight: "100%",
+              padding: 2,
               backgroundColor: "background.paper",
+              textAlign: "center",
+              borderTop: 1,
+              borderTopColor: "divider",
+              borderTopStyle: "solid",
             }}
           >
-            <Typography
-              variant="h4"
-              component="h1"
-              gutterBottom
-              sx={{ fontSize: "1.5rem", fontWeight: "bold" }}
+            <Stack
+              direction="row"
+              spacing={2}
+              justifyContent="center"
+              alignItems="center"
             >
-              My Exercise Routine
-            </Typography>
-            {selectedExercise && selectedExercise.image && (
-              <Box
-                component="img"
-                src={selectedExercise.image}
-                alt="exercise image"
-                sx={{
-                  width: "100%",
-                  height: "350px",
-                  objectFit: "cover",
-                  mb: 3,
-                  flexShrink: 0,
-                }}
-              />
-            )}
-            <Box sx={{ flexGrow: 1, overflowY: "auto" }}>
-              <List>
-                {routine.map((exercise, index) => (
-                  <ListItem
-                    button="true"
-                    key={index}
-                    onClick={() => setSelectedExercise(exercise)}
-                    sx={{
-                      cursor: "pointer",
-                      backgroundColor:
-                        selectedExercise === exercise
-                          ? "rgba(0, 0, 255, 0.1)"
-                          : "inherit",
-                      "&:hover": {
-                        backgroundColor: "rgba(0, 0, 255, 0.2)",
-                      },
-                    }}
-                  >
-                    <ListItemIcon>
-                      <FitnessCenterIcon />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={exercise.name}
-                      secondary={exercise.duration}
-                      primaryTypographyProps={{
-                        sx: { fontSize: "1.5rem", fontWeight: "bold" },
-                      }}
-                      secondaryTypographyProps={{ sx: { fontSize: "1.2rem" } }}
-                    />
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
+              <Button variant="contained" onClick={toggleWebCam}>
+                {webcamRunning ? "DISABLE WEBCAM" : "ENABLE WEBCAM"}
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleStartRecording}
+                disabled={isRecording || !webcamRunning}
+              >
+                START RECORDING
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleStopRecording}
+                disabled={!isRecording}
+              >
+                STOP RECORDING
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleUploadRecording}
+                disabled={recordedChunks.length === 0}
+              >
+                UPLOAD TO STORAGE
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleDownloadRecording}
+                disabled={recordedChunks.length === 0}
+              >
+                DOWNLOAD
+              </Button>
+              <Button variant="contained" onClick={handleQuitRoutine}>
+                QUIT ROUTINE
+              </Button>
+            </Stack>
           </Box>
         </Stack>
-        <Box
-          sx={{
-            padding: 2,
-            backgroundColor: "background.paper",
-            textAlign: "center",
-            borderTop: 1,
-            borderTopColor: "divider",
-            borderTopStyle: "solid",
-          }}
-        >
-          <Stack
-            direction="row"
-            spacing={2}
-            justifyContent="center"
-            alignItems="center"
-          >
-            <Button variant="contained" onClick={enableCam}>
-              {webcamRunning ? "DISABLE WEBCAM" : "ENABLE WEBCAM"}
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleStartRecording}
-              disabled={isRecording || !webcamRunning}
-            >
-              START RECORDING
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleStopRecording}
-              disabled={!isRecording}
-            >
-              STOP RECORDING
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleUploadRecording}
-              disabled={recordedChunks.length === 0}
-            >
-              UPLOAD TO STORAGE
-            </Button>
-            <Button
-              variant="contained"
-              onClick={handleDownloadRecording}
-              disabled={recordedChunks.length === 0}
-            >
-              DOWNLOAD
-            </Button>
-            <Button variant="contained" onClick={handleFinishRoutine}>
-              FINISH ROUTINE
-            </Button>
+      )}
 
-            {/* Snack bar to display successful video upload  */}
-            <Snackbar
-              open={isSnackbarOpen}
-              autoHideDuration={3000}
-              onClose={handleClose}
-              message="File uploaded successfully!"
-              anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-              ContentProps={{
-                style: {
-                  backgroundColor: "#4CAF50",
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  borderRadius: "8px",
-                },
-              }}
-            />
-          </Stack>
-        </Box>
-      </Stack>
+      {/* Snack bar to display successful video upload  */}
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={handleClose}
+        message="File uploaded successfully!"
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        ContentProps={{
+          style: {
+            backgroundColor: "#4CAF50",
+            color: "#FFFFFF",
+            fontWeight: "bold",
+            fontSize: "1.2rem",
+            borderRadius: "8px",
+          },
+        }}
+      />
 
-      {/* Congratulations Modal */}
+      {/* Routine Completion Modal */}
       <Dialog
         open={isFinished}
         onClose={() => setIsFinished(false)}
@@ -765,9 +885,11 @@ export const Routine = ({
               <Typography variant="h6">Completed Exercises:</Typography>
               <List>
                 {routine.map((exercise, index) => (
-                  <ListItem key={index}>
-                    <ListItemText primary={exercise.name} />
-                  </ListItem>
+                  exercise.name !== "Break" && (
+                    <ListItem key={index}>
+                      <ListItemText primary={exercise.name} />
+                    </ListItem>
+                  )
                 ))}
               </List>
             </Box>
@@ -786,5 +908,4 @@ export const Routine = ({
 // Defining prop types
 Routine.propTypes = {
   title: PropTypes.string,
-  // routineId: PropTypes.string, // Expecting a UUID string
 };
