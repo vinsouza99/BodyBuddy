@@ -16,8 +16,7 @@ export class SquatCounter extends BaseCounter {
     const leftAnkle = landmarks[landmarkNames.LEFT_ANKLE];
 
     // Check if the user is too close to the camera
-    if (!this.#isTooClose(leftShoulder)) {
-      this.alert = null;
+    if(!this._checkFullBodyInFrame(landmarks)) {
       return { count: this.successCount, alert: this.alert };
     }
 
@@ -28,10 +27,6 @@ export class SquatCounter extends BaseCounter {
     this.#processCount(leftShoulder, leftHip, leftKnee, leftAnkle);
 
     return { count: this.successCount, alert: this.alert };
-  }
-
-  #isTooClose(leftShoulder) {
-    return leftShoulder.z > -0.3 || leftShoulder.y < 0.1;
   }
 
   #processAlert(leftKnee, leftAnkle) {
