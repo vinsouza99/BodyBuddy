@@ -8,6 +8,9 @@ export class BaseCounter {
     this.alert = null;
     this.alertCount = 0;
     this.alertThreshold = 100;
+
+    this.previousLandmarks = null; // Store the previous frame's landmarks
+    this.movementThreshold = 0.1; // Threshold for detecting large movements
   }
 
   processPose(landmarks) {
@@ -28,6 +31,33 @@ export class BaseCounter {
         landmark.y >= 0 && landmark.y <= 1
       );
     });
+  }
+
+  _isLandmarkUnstable(landmark) {
+    if (!this.previousLandmarks) {
+      this.previousLandmarks = landmark;
+      return false; // First frame, no comparison possible
+    }
+
+    // Calculate the movement of landmarks between frames
+    let unstable = false;
+    landmark.forEach((landmark, index) => {
+      const prevLandmark = this.previousLandmarks[index];
+      const dx = landmark.x - prevLandmark.x;
+      const dy = landmark.y - prevLandmark.y;
+
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // If the landmark moves more than the threshold, mark as unstable
+      if (distance > this.movementThreshold) {
+        unstable = true;
+      }
+    });
+
+    // Update previous landmarks
+    this.previousLandmarks = landmark;
+
+    return unstable;
   }
 
   getAngle() {

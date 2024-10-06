@@ -20,6 +20,11 @@ export class SquatCounter extends BaseCounter {
       return { count: this.successCount, alert: this.alert };
     }
 
+    // Check if the posture detection is unstable
+    if(this._isLandmarkUnstable(landmarks)) {
+      return { count: this.successCount, alert: this.alert };
+    }
+
     // Process Alert
     this.#processAlert(leftKnee, leftAnkle);
 
