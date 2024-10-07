@@ -138,20 +138,10 @@ export const Routine = ({title = "Routine Session"}) => {
     setSuccessRepCount(0);
     setSuccessSetCount(0);
     
+    // Load exercise counter based on the selected exercise
     const selectedExercise = routine[selectedExerciseIndex]
-    if (selectedExercise) {
-      const CounterClass = exerciseCounterLoader[selectedExercise.name];
-      if (CounterClass) {
-        setExerciseCounter(new CounterClass());
-        console.log("Exercise counter is loaded.");
-      } else {
-        setExerciseCounter(null);
-        console.log("Exercise counter is not implemented.");
-      }
-    } else {
-      setExerciseCounter(null);
-      console.log("Exercise counter is not implemented.");
-    }
+    const CounterClass = loadExerciseCounter(selectedExercise);
+    setExerciseCounter(CounterClass);
   }, [selectedExerciseIndex, routine]);
 
   // Ttrack webcamRunning changes
@@ -180,24 +170,21 @@ export const Routine = ({title = "Routine Session"}) => {
   // Read out the rep count
   useEffect(() => {
     if (successRepCount !== 0) {
-      const utterance = new SpeechSynthesisUtterance(`${successRepCount}`);
-      window.speechSynthesis.speak(utterance);
+      readoutText(successRepCount);
     }
   }, [successRepCount]);
 
   // Read out the set count
   useEffect(() => {
     if (successSetCount !== 0) {
-      const utterance = new SpeechSynthesisUtterance(`Great Job!`);
-      window.speechSynthesis.speak(utterance);
+      readoutText(`Great Job!`);
     }
   }, [successSetCount]);
 
   // Read out the alert
   useEffect(() => {
     if (postureAlert) {
-      const utterance = new SpeechSynthesisUtterance(`${postureAlert}`);
-      window.speechSynthesis.speak(utterance);
+      readoutText(postureAlert);
     }
   }, [postureAlert]);
 
@@ -253,12 +240,12 @@ export const Routine = ({title = "Routine Session"}) => {
     setIsSnackbarOpen(false);
   };
 
-  // Handle camera consent dialog response
+  // Handle camera consent dialog response （Agree）
   const handleAgreeWebCamConsent = async () => {
     setIsDialogOpen(false);
   };
 
-  // Handle camera consent dialog response
+  // Handle camera consent dialog response (Disagree)
   const handleDisagreeWebCamConsent = () => {
     handleMoveToTrainingPage();
   };
@@ -319,7 +306,8 @@ export const Routine = ({title = "Routine Session"}) => {
       if (item.reps > 0) {
         goalString = `${item.sets} sets of ${item.reps} reps`;
       } else if (item.duration) {
-        goalString = `${item.duration / 1000} seconds`;
+        if (item.sets === 0) item.sets = 1;
+        goalString = `${item.sets} sets of ${item.duration / 1000} seconds`;
       } else {
         goalString = `${item.sets} sets`;
       }
@@ -438,6 +426,23 @@ export const Routine = ({title = "Routine Session"}) => {
     }
   }, [mediaRecorder, setMediaRecorder, setIsRecording]);
 
+  // Load exercise counter based on the selected exercise
+  const loadExerciseCounter = (selectedExercise) => {
+    if (selectedExercise) {
+      const CounterClass = exerciseCounterLoader[selectedExercise.name];
+      if (CounterClass) {
+        console.log("Exercise counter is loaded.", selectedExercise.name);
+        return new CounterClass();
+      } else {
+        console.error("Exercise counter is not implemented for:", selectedExercise.name);
+        return null;
+      }
+    } else {
+      console.error("Selected exercise is not valid.");
+      return null;
+    }
+  }
+
   // Perform posture detection on webcam feed and count reps
   const predictPosture = async () => {
     // Skip posture detection during rest time
@@ -462,14 +467,16 @@ export const Routine = ({title = "Routine Session"}) => {
     canvasElement.height = videoElement.videoHeight;
 
     try {
+      // Detect posture landmarks from a video element (Execute Mediapipe posture detection model.)
       const results = await poseLandmarkerRef.current.detectForVideo(
         videoElement,
         performance.now()
       );
 
-      // Canvas for drawing pose landmarks
+      // Reset canvas before drawing with the latest landmarks data
       clearCanvas();
 
+      // Process detected landmarks data
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
         const { count = 0, alert = null } =
@@ -551,6 +558,9 @@ export const Routine = ({title = "Routine Session"}) => {
 
     // Continue predictions as long as webcam is running
     if (webcamRunning) {
+      // Note:
+      // The specified callback function is executed when the next frame is ready to be rendered.
+      // It is typically executed 60 times per second.
       animationFrameIdRef.current = window.requestAnimationFrame(predictPosture);
     }
   };
@@ -602,6 +612,11 @@ export const Routine = ({title = "Routine Session"}) => {
     }
   };
 
+  // Text to Speech
+  function readoutText(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utterance);
+  }
 
   // ---------------------------------------------------------
   //                      JSX Return

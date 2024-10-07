@@ -5,25 +5,15 @@ import { calculateAngle } from "../utils";
 export class SquatCounter extends BaseCounter {
   constructor() {
     super();
-    this.shoulderHipAngle = null;
-    this.hipKneeAngle = null;
+    this.shoulderHipKneeAngle = null;
+    this.hipKneeAnkleAngle = null;
   }
 
-  processPose(landmarks) {
+  _processSpecificPose(landmarks) {
     const leftShoulder = landmarks[landmarkNames.LEFT_SHOULDER];
     const leftHip = landmarks[landmarkNames.LEFT_HIP];
     const leftKnee = landmarks[landmarkNames.LEFT_KNEE];
     const leftAnkle = landmarks[landmarkNames.LEFT_ANKLE];
-
-    // Check if the user is too close to the camera
-    if(!this._checkFullBodyInFrame(landmarks)) {
-      return { count: this.successCount, alert: this.alert };
-    }
-
-    // Check if the posture detection is unstable
-    if(this._isLandmarkUnstable(landmarks)) {
-      return { count: this.successCount, alert: this.alert };
-    }
 
     // Process Alert
     this.#processAlert(leftKnee, leftAnkle);
@@ -56,28 +46,28 @@ export class SquatCounter extends BaseCounter {
   }
 
   #processCount(leftShoulder, leftHip, leftKnee, leftAnkle) {
-    this.shoulderHipAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
-    this.hipKneeAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+    this.shoulderHipKneeAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
+    this.hipKneeAnkleAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
 
     // Judge Squat Up
-    if (this.shoulderHipAngle > 170 && !this.up) {
+    if (this.shoulderHipKneeAngle > 170 && !this.up) {
       this.up = true;
       this.down = false;
     }
 
     // Judge Squat Down
-    if (this.up && this.hipKneeAngle < 100 && !this.down) {
+    if (this.up && this.hipKneeAnkleAngle < 100 && !this.down) {
       this.down = true;
       this.successCount += 1;
     }
 
     // Reset Up state
-    if (this.down && this.shoulderHipAngle > 170) {
+    if (this.down && this.shoulderHipKneeAngle > 170) {
       this.up = false;
     }
   }
 
   getAngle() {
-    return Number(this.hipKneeAngle);
+    return Number(this.hipKneeAnkleAngle);
   }
 }

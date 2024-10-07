@@ -14,7 +14,23 @@ export class BaseCounter {
   }
 
   processPose(landmarks) {
-    throw new Error("processPose() must be implemented in subclass",landmarks);
+    // Check if the user is too close to the camera
+    if (!this._checkFullBodyInFrame(landmarks)) {
+      return { count: this.successCount, alert: this.alert };
+    }
+
+    // Check if the posture detection is unstable
+    if (this._isLandmarkUnstable(landmarks)) {
+      return { count: this.successCount, alert: this.alert };
+    }
+
+    // Process the specific pose (Overridden in derived classes)
+    return this._processSpecificPose(landmarks);
+  }
+
+  // Process the specific pose (Overridden in derived classes)
+  _processSpecificPose(landmarks) {
+    throw new Error("This method must be implemented in a derived class", landmarks);
   }
 
   _checkFullBodyInFrame(landmarks) {
