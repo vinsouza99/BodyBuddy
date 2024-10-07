@@ -6,7 +6,7 @@ import { getAllUserPrograms } from "../controllers/ProgramController"; // Teru: 
 import { useAuth } from "../utils/AuthProvider.jsx";
 
 import TrainingCard from "../components/TrainingCard"; // Cocoy: Load TrainingCard component
-import { Typography } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 
 export const TrainingProgram = (props) => {
   const { user, handleSignOut } = useAuth();
@@ -28,31 +28,43 @@ export const TrainingProgram = (props) => {
   }, [props.title]);
 
   return (
-    <div>
+    <div padding="1rem">
       <h1>Training</h1>
       <div>
-        <Typography variant="h4" align="left">
+        <Typography variant="h4" align="left" marginTop="1rem">
           My Program
         </Typography>
-        {/* Create TrainingCard for program */}
-        {programs
-          ? programs.map((routine) => (
-              <TrainingCard key={routine.id} routine={routine} />
-            ))
-          : ""}
       </div>
 
+        {/* TrainingCard is alined horizontaly to use "Grid" */}
+        {/* Create TrainingCard for program */}
+      <Grid container spacing={2} justifyContent="flex-start">
+        {programs
+          ? programs.map((routine) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={routine.id}>
+              <TrainingCard key={routine.id} routine={routine} />
+            </Grid>
+            ))
+          : ""}
+      </Grid>
+
+
       <div>
-        <Typography variant="h4" align="left">
+        <Typography variant="h4" align="left" marginTop="1rem">
           Routines
         </Typography>
+      </div>
+
+      <Grid container spacing={2} justifyContent="flex-start">
         {/* Create TrainingCard for each routine */}
         {routines
           ? routines.map((routine) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={routine.id}>
               <TrainingCard key={routine.id} routine={routine} />
+            </Grid>
             ))
           : ""}
-      </div>
+      </Grid>
     </div>
   );
 };
