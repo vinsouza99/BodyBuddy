@@ -14,7 +14,7 @@ const router = express.Router();
  * @swagger
  * components:
  *   schemas:
- *     RoutineExercise:
+ *     Routine Exercise:
  *       type: object
  *       required: none
  *       properties:
