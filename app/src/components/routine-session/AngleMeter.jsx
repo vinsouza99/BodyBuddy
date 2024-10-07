@@ -3,19 +3,20 @@ import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 
 export const AngleMeter = ({ title = "Timer", angle = 180, minAngle = 90, maxAngle = 170 }) => {
-  // const [displayedAngle, setDisplayedAngle] = useState(maxAngle);
+  const [displayedAngle, setDisplayedAngle] = useState(maxAngle);
   const [heightPercentage, setHeightPercentage] = useState(0);
   const animationFrameRef = useRef(null);
 
   const updateHeightAndAngle = () => {
     // Normalize based on the maxAngle and minAngle props
-    const normalizedHeight = ((Math.max(Math.min(Number(angle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
+    // const normalizedHeight = ((Math.max(Math.min(Number(angle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
+    const normalizedHeight = ((Math.max(Math.min(Number(displayedAngle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
     setHeightPercentage(normalizedHeight);
 
-    // setDisplayedAngle((prevAngle) => {
-    //   const step = (angle - prevAngle) * 0.1;
-    //   return prevAngle + step;
-    // });
+    setDisplayedAngle((prevAngle) => {
+      const step = (angle - prevAngle) * 0.1;
+      return prevAngle + step;
+    });
   };
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Card, CardContent, Typography } from "@mui/material";
 
-export const Timer = ({ title = "Timer", duration = 0, onComplete }) => {
+export const Timer = ({ title = "Timer", duration = 0, onComplete, disabled = false }) => {
   const [completed, setCompleted] = useState(true);
   const [remainingTime, setRemainingTime] = useState(duration);
 
@@ -14,6 +14,11 @@ export const Timer = ({ title = "Timer", duration = 0, onComplete }) => {
   }, [duration]);
 
   useEffect(() => {
+    if (disabled) {
+      // If resting, do not start the countdown
+      return;
+    }
+
     if (remainingTime > 0) {
       const timerId = setInterval(() => {
         setRemainingTime((prevTime) => prevTime - 1);
@@ -26,7 +31,7 @@ export const Timer = ({ title = "Timer", duration = 0, onComplete }) => {
       onComplete();
       setCompleted(true); // This is to prevent onComplete from being called multiple times
     }
-  }, [remainingTime, completed, onComplete]);
+  }, [remainingTime, completed, onComplete, disabled]);
 
   return (
     <Card
@@ -60,4 +65,5 @@ Timer.propTypes = {
   title: PropTypes.string,
   duration: PropTypes.number.isRequired,
   onComplete: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
 };
