@@ -7,7 +7,7 @@ export class BaseCounter {
     this.down = false;
     this.alert = null;
     this.alertCount = 0;
-    this.alertThreshold = 100;
+    this.alertThreshold = 150;
 
     this.previousLandmarks = null; // Store the previous frame's landmarks
     this.movementThreshold = 0.1; // Threshold for detecting large movements
@@ -24,6 +24,11 @@ export class BaseCounter {
       return { count: this.successCount, alert: this.alert };
     }
 
+    if (!this._validateCustomConditions(landmarks)) {
+      console.log("Custom conditions not met");
+      return { count: this.successCount, alert: this.alert };
+    }
+
     // Process the specific pose (Overridden in derived classes)
     return this._processSpecificPose(landmarks);
   }
@@ -31,6 +36,11 @@ export class BaseCounter {
   // Process the specific pose (Overridden in derived classes)
   _processSpecificPose(landmarks) {
     throw new Error("This method must be implemented in a derived class", landmarks);
+  }
+
+  // Validate custom conditions (Overridden in derived classes)
+  _validateCustomConditions(landmarks) {
+    return true;
   }
 
   _checkFullBodyInFrame(landmarks) {

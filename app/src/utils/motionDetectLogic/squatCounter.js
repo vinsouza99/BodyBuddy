@@ -7,6 +7,7 @@ export class SquatCounter extends BaseCounter {
     super();
     this.shoulderHipKneeAngle = null;
     this.hipKneeAnkleAngle = null;
+    this.kneeAnkleAngle = null;
   }
 
   _processSpecificPose(landmarks) {
@@ -26,13 +27,13 @@ export class SquatCounter extends BaseCounter {
 
   #processAlert(leftKnee, leftAnkle) {
     // Calculate the angle between knee and ankle
-    const kneeAnkleAngle = calculateAngle(leftKnee, leftAnkle, {
+    this.kneeAnkleAngle = calculateAngle(leftKnee, leftAnkle, {
       x: leftAnkle.x + 1,
       y: leftAnkle.y,
     });
 
     // Check if knee goes beyond the toes by more than 10 degrees
-    if (kneeAnkleAngle < 70) {
+    if (this.kneeAnkleAngle < 70) {
       this.alertCount += 1;
     }
 
@@ -49,19 +50,19 @@ export class SquatCounter extends BaseCounter {
     this.shoulderHipKneeAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
     this.hipKneeAnkleAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
 
-    // Judge Squat Up
+    // Judge Squat Up (top position)
     if (this.shoulderHipKneeAngle > 170 && !this.up) {
       this.up = true;
       this.down = false;
     }
 
-    // Judge Squat Down
+    // Judge Squat Down (bottom position)
     if (this.up && this.hipKneeAnkleAngle < 100 && !this.down) {
       this.down = true;
       this.successCount += 1;
     }
 
-    // Reset Up state
+    // Reset Up state when user returns to the top position
     if (this.down && this.shoulderHipKneeAngle > 170) {
       this.up = false;
     }
