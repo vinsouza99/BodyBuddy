@@ -12,7 +12,7 @@ const RelatedGoal = sequelize.define(
     },
     user_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true,
       foreingKey: true,
     },
     goal_id: {
