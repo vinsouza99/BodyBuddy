@@ -2,18 +2,19 @@ import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getAllPresetRoutines } from "../controllers/RoutineController.js";
+import { getResponse } from "../utils/openaiService.js";
 export const Dashboard = (props) => {
   const { user, handleSignOut } = useAuth();
 
   useEffect(() => {
     setPageTitle(props.title);
-    async function getRoutines() {
-      const routines = await getAllPresetRoutines();
-      console.log(routines);
+    async function getGPTResponse(prompt) {
+      const response = await getResponse(prompt);
+      console.log(response);
     }
-    console.log(user.id);
-    getRoutines();
+    getGPTResponse(
+      "Give me the list of provinces of Canada with their respective capitals in JSON format"
+    );
   }, []);
 
   return (
