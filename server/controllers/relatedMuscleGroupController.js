@@ -42,11 +42,14 @@ export const getRelatedMuscleGroup = async (req, res) => {
 
 export const createRelatedMuscleGroup = async (req, res) => {
   try {
-    const { id, name, description } = req.body;
+    const { id, muscle_group_id, exercise_id, routine_id, program_id } =
+      req.body;
     const newRelatedMuscleGroup = await RelatedMuscleGroup.create({
       id,
-      name,
-      description,
+      muscle_group_id,
+      exercise_id,
+      routine_id,
+      program_id,
     });
     res.status(201).json({
       status: "201",

@@ -14,10 +14,6 @@ const MuscleGroup = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
   },
   {
     tableName: "local_muscle_group",

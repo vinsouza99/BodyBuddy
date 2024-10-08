@@ -1,12 +1,12 @@
-import MuscleGroup from "../models/MuscleGroup.js";
+import RelatedGoal from "../models/RelatedGoal.js";
 
-export const getMuscleGroups = async (req, res) => {
+export const getRelatedGoals = async (req, res) => {
   try {
-    const muscleGroups = await MuscleGroup.findAll();
+    const relatedGoals = await RelatedGoal.findAll();
     res.status(200).json({
       status: "200",
       message: "Success",
-      data: muscleGroups,
+      data: relatedGoals,
     });
   } catch (error) {
     console.error(error);
@@ -17,19 +17,19 @@ export const getMuscleGroups = async (req, res) => {
   }
 };
 
-export const getMuscleGroup = async (req, res) => {
+export const getRelatedGoal = async (req, res) => {
   try {
-    const muscleGroup = await MuscleGroup.findByPk(req.params.id);
-    if (!muscleGroup) {
+    const relatedGoal = await RelatedGoal.findByPk(req.params.id);
+    if (!relatedGoal) {
       return res.status(404).json({
         status: "404",
-        message: "Muscle Group not found",
+        message: "Related Goal not found",
       });
     }
     res.status(200).json({
       status: "200",
       message: "Success",
-      data: muscleGroup,
+      data: relatedGoal,
     });
   } catch (error) {
     console.error(error);
@@ -40,17 +40,22 @@ export const getMuscleGroup = async (req, res) => {
   }
 };
 
-export const createMuscleGroup = async (req, res) => {
+export const createRelatedGoal = async (req, res) => {
   try {
-    const { id, name } = req.body;
-    const newMuscleGroup = await MuscleGroup.create({
+    const { id, user_id, goal_id, exercise_id, routine_id, program_id } =
+      req.body;
+    const newRelatedGoal = await RelatedGoal.create({
       id,
-      name,
+      user_id,
+      goal_id,
+      exercise_id,
+      routine_id,
+      program_id,
     });
     res.status(201).json({
       status: "201",
-      message: "Muscle Group created successfully",
-      data: newMuscleGroup,
+      message: "Related Goal created successfully",
+      data: newRelatedGoal,
     });
   } catch (error) {
     console.error(error);
@@ -61,24 +66,24 @@ export const createMuscleGroup = async (req, res) => {
   }
 };
 
-export const updateMuscleGroup = async (req, res) => {
+export const updateRelatedGoal = async (req, res) => {
   try {
     const { id } = req.params;
     const updatedData = req.body;
 
-    const muscleGroup = await MuscleGroup.findByPk(id);
-    if (!muscleGroup) {
+    const relatedGoal = await RelatedGoal.findByPk(id);
+    if (!relatedGoal) {
       return res.status(404).json({
         status: "404",
-        message: "Muscle Group not found",
+        message: "Related Goal not found",
       });
     }
 
-    await muscleGroup.update(updatedData);
+    await relatedGoal.update(updatedData);
     res.status(200).json({
       status: "200",
-      message: "Muscle Group updated successfully",
-      data: muscleGroup,
+      message: "Related Goal updated successfully",
+      data: relatedGoal,
     });
   } catch (error) {
     console.error(error);
@@ -89,22 +94,22 @@ export const updateMuscleGroup = async (req, res) => {
   }
 };
 
-export const deleteMuscleGroup = async (req, res) => {
+export const deleteRelatedGoal = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const muscleGroup = await MuscleGroup.findByPk(id);
-    if (!muscleGroup) {
+    const relatedGoal = await RelatedGoal.findByPk(id);
+    if (!relatedGoal) {
       return res.status(404).json({
         status: "404",
-        message: "Muscle Group not found",
+        message: "Related Goal not found",
       });
     }
 
-    await muscleGroup.destroy();
+    await relatedGoal.destroy();
     res.status(200).json({
       status: "200",
-      message: "Muscle Group deleted successfully",
+      message: "Related Goal deleted successfully",
     });
   } catch (error) {
     console.error(error);
