@@ -22,7 +22,6 @@ router.post("/set-cookie", (req, res) => {
   if (!access_token) {
     return res.status(400).json({ message: "Token is required" });
   }
-
   // Set JWT token in HttpOnly cookie
   res.cookie('access_token', access_token, {
     httpOnly: true,  // Can't be accessed using JavaScript
@@ -31,6 +30,17 @@ router.post("/set-cookie", (req, res) => {
     maxAge: 60 * 60 * 1000  // 60 minutes
   });
   res.status(200).json({ message: "Accesstoken set in HttpOnly cookie" });
+});
+
+// clear-cookie endpoint for Access Token (JWT)
+router.post("/clear-cookie", (req, res) => {
+  // Clear the 'access_token' cookie
+  res.clearCookie('access_token', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'Strict',
+  });
+  res.status(200).json({ message: "Logged out and cookie cleared" });
 });
 
 export default router;
