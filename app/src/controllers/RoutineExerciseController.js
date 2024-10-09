@@ -1,14 +1,17 @@
-import axios from "axios";
+// import axios from "axios";
+import axiosClient from '../utils/axiosClient';
 import { RoutineExercise } from "../models/RoutineExercise";
 import { getExercise } from "./ExerciseController";
 
-const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
-const TABLE = "routineExercises";
-const API_ROUTE = URL + TABLE;
+// Note: API BASE URL is set in axisoClient.js with other required common settings.
+// const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
+// const TABLE = "routineExercises";
+// const API_ROUTE = URL + TABLE;
+const API_ROUTE = "routineExercises";
 
 const getExercisesFromRoutine = async (routine_id) => {
   try {
-    const response = await axios.get(`${API_ROUTE}/routine/${routine_id}`);
+    const response = await axiosClient.get(`${API_ROUTE}/routine/${routine_id}`);
     const data = await response.data;
     const routineExercises = await data.data.map(
       (exercise) =>

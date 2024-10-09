@@ -1,20 +1,22 @@
-import axios from "axios";
+import axiosClient from '../utils/axiosClient';
 import { Program } from "../models/Program";
 import { getRoutinesFromProgram } from "./RoutineController";
 
-const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
-const TABLE = "programs";
-const API_ROUTE = URL + TABLE;
+// Note: API BASE URL is set in axisoClient.js with other required common settings.
+// const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
+// const TABLE = "programs";
+// const API_ROUTE = URL + TABLE;
+const API_ROUTE = "programs";
 
 const getAllPrograms = async () => {
   console.log(`Getting everything from ${API_ROUTE}...`);
-  const response = await axios.get(`${API_ROUTE}`);
+  const response = await axiosClient.get(`${API_ROUTE}`);
   return response.data;
 };
 const getProgram = async (id) => {
   console.log(`Getting from ${API_ROUTE}/${id}...`);
   try {
-    const response = await axios.get(`${API_ROUTE}/${id}`);
+    const response = await axiosClient.get(`${API_ROUTE}/${id}`);
     const data = await response.data;
     const program = new Program(
       data.id,
@@ -36,7 +38,7 @@ const getAllUserPrograms = async (user_id) => {
   try {
     if (!user_id) throw new Error("user id is null");
     console.log(`${API_ROUTE}/user/${user_id}`);
-    const response = await axios.get(`${API_ROUTE}/user/${user_id}`);
+    const response = await axiosClient.get(`${API_ROUTE}/user/${user_id}`);
     const data = await response.data;
     console.log(data.data.rows);
     const programs = data.data.rows.map(

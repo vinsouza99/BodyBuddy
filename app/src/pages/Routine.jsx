@@ -22,7 +22,7 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import { supabase } from "../utils/supabaseClient.js";
 import { setPageTitle } from "../utils/utils";
 import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
-import { default as server } from "../utils/ProxyServer.js";
+import axiosClient from '../utils/axiosClient';
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"; // Can be replaced later
 
 export const Routine = ({title = "Routine Session"}) => {
@@ -108,14 +108,14 @@ export const Routine = ({title = "Routine Session"}) => {
     // Retrieve routine/program information from the database
     const fetchRoutine = async () => {
       try {
-        const response = await server.get(
-          "RoutineExercises/routine",
-          routineId
+        const response = await axiosClient.get(
+          `RoutineExercises/routine/${routineId}`
         );
         if (Number(response.status) !== 200) {
           throw new Error("Failed to fetch routine info");
         }
-        setRoutine(createRoutineTimeSchedule(response.data));
+        console.log(response.data);
+        setRoutine(createRoutineTimeSchedule(response.data.data));
       } catch (error) {
         console.error("Error fetching routine:", error);
       }
@@ -266,7 +266,7 @@ export const Routine = ({title = "Routine Session"}) => {
     const registerHistory = async () => {
       try {
         const completedAt = new Date().toISOString();
-        const newHitoryObj = {
+        const newHistoryObj = {
           user_id: user.id,
           created_at: completedAt,
           routine_id: routineId,
@@ -274,7 +274,8 @@ export const Routine = ({title = "Routine Session"}) => {
           recording_URL: exerciseVideo,
           description: null,
         };
-        const response = await server.add("Log", newHitoryObj);
+        // const response = await server.add("Log", newHitoryObj);
+        const response = await axiosClient.post("Log", newHistoryObj);
         console.log(response);
         if (Number(response.status) !== 201) {
           throw new Error("Failed to insert log info");
