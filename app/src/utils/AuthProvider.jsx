@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import axios from "axios";
+import axiosClient from '../utils/axiosClient';
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabaseClient";
 
@@ -11,26 +12,6 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-  // Send the access token (JWT) to the server
-  const sendTokenToServer = async (access_token) => {
-    if (access_token) {
-      try {
-        await axios.post(`${API_BASE_URL}set-cookie`, 
-          { access_token: access_token},
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            withCredentials: true,
-          }
-        );
-        console.log('Access token sent to server and cookie set.');
-      } catch (error) {
-        console.error('Error setting cookie:', error);
-      }
-    }
-  };
 
   useEffect(() => {
     const fetchSession = async () => {
@@ -88,16 +69,50 @@ export function AuthProvider({ children }) {
   }, []);
 
   const handleSignOut = async () => {
+    // Sign out from supabase autehtication
     try {
       const { error } = await supabase.auth.signOut();
       if (error) {
         throw error;
       }
       console.log("User signed out");
+      setUser(null);
     } catch (error) {
       console.log("User failed to sign out", error);
-    } finally {
-      setUser(null);
+      return;
+    }
+
+    // Clear the HTTP-Only cookie
+    try {
+      const response = await axiosClient.post('/clear-cookie');
+      
+      if (response.status === 200) {
+        console.log('HTTP-Only cookie cleared successfully');
+      } else {
+        throw new Error('Failed to clear HTTP-Only cookie');
+      }
+    } catch (error) {
+      console.error('Error clearing HTTP-Only cookie:', error);
+    }
+  };
+
+  // Send the access token (JWT) to the server
+  const sendTokenToServer = async (access_token) => {
+    if (access_token) {
+      try {
+        await axios.post(`${API_BASE_URL}set-cookie`, 
+          { access_token: access_token},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+          }
+        );
+        console.log('Access token sent to server and cookie set.');
+      } catch (error) {
+        console.error('Error setting cookie:', error);
+      }
     }
   };
 
