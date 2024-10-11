@@ -1,15 +1,18 @@
 import PropTypes from "prop-types";
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
+import { useTheme } from '@mui/material/styles';
 
 export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
   const [displayedAngle, setDisplayedAngle] = useState(maxAngle);
   const [widthPercentage, setWidthPercentage] = useState(0);
   const animationFrameRef = useRef(null);
+  const theme = useTheme();
 
   const updateWidthAndAngle = () => {
     // Normalize based on the maxAngle and minAngle props
-    const normalizedWidth = ((Math.max(Math.min(Number(displayedAngle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
+    // const normalizedWidth = ((Math.max(Math.min(Number(displayedAngle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
+    const normalizedWidth = 100 - ((Math.max(Math.min(Number(displayedAngle), maxAngle), minAngle) - minAngle) / (maxAngle - minAngle)) * 100;
     setWidthPercentage(normalizedWidth);
 
     setDisplayedAngle((prevAngle) => {
@@ -43,7 +46,7 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
         component="div"
         sx={{ 
           fontWeight: 'bold', 
-          color: 'white',
+          color: `${theme.palette.secondary.main}`,
           textAlign: 'left',
         }}
       >
@@ -56,26 +59,28 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
           flexDirection: 'row',
           alignItems: 'center', 
           width: '100%',
-          border: '1px solid #ccc',
+          border: `1px solid ${theme.palette.secondary.main}`,
+          borderRadius: '15px',
         }}
       >
         {/* Progress Bar */}
         <Box 
           sx={{ 
             width: '100%',
-            height: '15px',
+            height: '10px',
             position: 'relative', 
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'flex-start'
+            justifyContent: 'flex-start',
           }}
         >
           <Box
             sx={{
               width: `${widthPercentage}%`,
               height: '100%',
-              backgroundColor: '#FF5722',
+              backgroundColor: `${theme.palette.secondary.main}`,
               transition: 'width 0.1s ease',
+              borderRadius: '15px',
             }}
           />
         </Box>
