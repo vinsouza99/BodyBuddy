@@ -51,13 +51,6 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
         color: '#fff',
       }}
     >
-      <Typography
-        variant="h6" 
-        component="div"
-        sx={{ fontWeight: "bold", mb: 5 }}
-      >
-        {title}
-      </Typography>
       <CountdownCircleTimer
         isPlaying={trigger}
         duration={duration}
@@ -73,6 +66,13 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
           </Typography>
         )}
       </CountdownCircleTimer>
+      <Typography
+        variant="h6" 
+        component="div"
+        sx={{ fontWeight: "bold", mt: 5 }}
+      >
+        {title}
+      </Typography>
     </Box>
   );
 };
