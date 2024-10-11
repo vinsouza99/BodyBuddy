@@ -35,10 +35,10 @@ export const RestTime = ({ title = "Rest Timer", trigger, duration, onComplete }
     <Box
       sx={{
         position: 'absolute',
-        top: '50%',
-        left: '50%',
-        width: '30%',
-        height: '30%',
+        top: '0px',
+        left: '0px',
+        width: '100%',
+        height: '100%',
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         display: 'flex',
         flexDirection: 'column',
@@ -46,7 +46,7 @@ export const RestTime = ({ title = "Rest Timer", trigger, duration, onComplete }
         alignItems: 'center',
         zIndex: 1000,
         color: '#fff',
-        transform: 'translate(-50%, -50%)',
+        // transform: 'translate(-50%, -50%)',
       }}
     >
       <Typography
