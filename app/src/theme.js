@@ -105,8 +105,9 @@ const theme = createTheme({
       fontWeight: 700,
     },
     h6: {
+      // H6 is used by BodyBuddy logo in header
       fontFamily: "'Urbanist', 'Arial', sans-serif",
-      fontSize: "1rem",
+      fontSize: "1.5rem",
       fontWeight: 700,
     },
 
@@ -118,81 +119,17 @@ const theme = createTheme({
     },
     body2: {
       fontFamily: "'Montserrat', 'Arial', sans-serif",
-      fontSize: "0.875rem",
+      fontSize: "0.85rem",
+      fontWeight: 400,
+    },
+    body3: {
+      fontFamily: "'Montserrat', 'Arial', sans-serif",
+      fontSize: "0.75rem",
       fontWeight: 400,
     },
   },
 
   components: {
-    /****************************************/
-    /*             GLOBAL STYLES            */
-    /****************************************/
-
-    /* Global styles for common tags */
-    /* Tags need to be wrapped with: */
-    /*
-        return (
-          <ThemeProvider theme={theme}>
-            <CssBaseline>
-              <>
-                <h1>Heading Here</h1>
-                <p>Lorem ipsum dolor sit amet</p>
-              </>
-            </CssBaseline>
-          </ThemeProvider>
-        );
-    */
-
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          fontFamily: "'Montserrat', 'Arial', sans-serif",
-        },
-
-        p: {
-          fontFamily: "'Montserrat', 'Arial', sans-serif",
-          fontSize: "1.5rem",
-          fontWeight: 300,
-        },
-
-        h1: {
-          fontFamily: "'Urbanist', 'Arial', sans-serif",
-          fontSize: "3rem",
-          fontWeight: 700,
-        },
-
-        h2: {
-          fontFamily: "'Urbanist', 'Arial', sans-serif",
-          fontSize: "2rem",
-          fontWeight: 700,
-        },
-
-        h3: {
-          fontFamily: "'Urbanist', 'Arial', sans-serif",
-          fontSize: "1.75rem",
-          fontWeight: 700,
-        },
-
-        h4: {
-          fontFamily: "'Urbanist', 'Arial', sans-serif",
-          fontSize: "1.5rem",
-          fontWeight: 700,
-        },
-
-        h5: {
-          fontFamily: "'Urbanist', 'Arial', sans-serif",
-          fontSize: "1.25rem",
-          fontWeight: 700,
-        },
-
-        h6: {
-          fontFamily: "'Urbanist', 'Arial', sans-serif",
-          fontSize: "1rem",
-          fontWeight: 700,
-        },
-      },
-    },
-
     /****************************************/
     /*           BUTTON COMPONENT           */
     /****************************************/
@@ -233,6 +170,75 @@ const theme = createTheme({
     /****************************************/
     /*          ADD COMPONENT NAME          */
     /****************************************/
+
+    /****************************************/
+    /*      GLOBAL STYLES (NOT IN USE)      */
+    /****************************************/
+
+    /* Global styles for common tags */
+    /* Tags need to be wrapped with: */
+    /*
+        return (
+          <ThemeProvider theme={theme}>
+            <CssBaseline>
+              <>
+                <h1>Heading Here</h1>
+                <p>Lorem ipsum dolor sit amet</p>
+              </>
+            </CssBaseline>
+          </ThemeProvider>
+        );
+    */
+
+    // MuiCssBaseline: {
+    //   styleOverrides: {
+    //     body: {
+    //       fontFamily: "'Montserrat', 'Arial', sans-serif",
+    //     },
+
+    //     p: {
+    //       fontFamily: "'Montserrat', 'Arial', sans-serif",
+    //       fontSize: "1.5rem",
+    //       fontWeight: 300,
+    //     },
+
+    //     h1: {
+    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
+    //       fontSize: "3rem",
+    //       fontWeight: 700,
+    //     },
+
+    //     h2: {
+    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
+    //       fontSize: "2rem",
+    //       fontWeight: 700,
+    //     },
+
+    //     h3: {
+    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
+    //       fontSize: "1.75rem",
+    //       fontWeight: 700,
+    //     },
+
+    //     h4: {
+    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
+    //       fontSize: "1.5rem",
+    //       fontWeight: 700,
+    //     },
+
+    //     h5: {
+    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
+    //       fontSize: "1.25rem",
+    //       fontWeight: 700,
+    //     },
+
+    //     h6: {
+    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
+    //       fontSize: "1rem",
+    //       fontWeight: 700,
+    //     },
+    //   },
+    // },
   },
 });
 

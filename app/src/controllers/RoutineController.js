@@ -1,14 +1,16 @@
-import axios from "axios";
+import axiosClient from '../utils/axiosClient';
 import Routine from "../models/Routine";
 import { getExercisesFromRoutine } from "./RoutineExerciseController";
 
-const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
-const TABLE = "routines";
-const API_ROUTE = URL + TABLE;
+// Note: API BASE URL is set in axisoClient.js with other required common settings.
+// const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
+// const TABLE = "routines";
+// const API_ROUTE = URL + TABLE;
+const API_ROUTE = "routines";
 
 const getRoutinesFromProgram = async (program_id) => {
   try {
-    const response = await axios.get(`${API_ROUTE}/program/${program_id}`);
+    const response = await axiosClient.get(`${API_ROUTE}/program/${program_id}`);
     const data = await response.data;
     const routines = await data.data.rows.map((routine) => {
       new Routine(
@@ -37,8 +39,9 @@ const getRoutinesFromProgram = async (program_id) => {
 
 const getAllPresetRoutines = async () => {
   try {
-    const response = await axios.get(`${API_ROUTE}/?preset=true`);
+    const response = await axiosClient.get(`${API_ROUTE}/?preset=true`);
     const data = await response.data;
+    console.log(data);
     const routines = data.data.map(
       (routine) =>
         new Routine(

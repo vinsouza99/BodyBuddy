@@ -49,9 +49,8 @@ function App() {
             path="/training"
             element={<TrainingProgram title="Training" />}
           />
-          <Route path="*" element={<NotFound title="Not found" />} />
         </Route>
-
+        <Route path="*" element={<NotFound title="Not found" />} />
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
           path="/routine/:routineId"

@@ -1,7 +1,10 @@
 import PropTypes from "prop-types";
+import axios from "axios";
+import axiosClient from '../utils/axiosClient';
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabaseClient";
-import { default as server } from "./ProxyServer.js";
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
 
 // For sharing the user state across the app
 const AuthContext = createContext();
@@ -17,10 +20,12 @@ export function AuthProvider({ children }) {
         if (error) {
           throw error;
         }
+        console.log(data?.session);
         setUser(data?.session?.user ?? null);
-        setLoading(false);
       } catch (error) {
         console.error(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -28,60 +33,30 @@ export function AuthProvider({ children }) {
     fetchSession();
 
     // Listener for changes on auth state
-    const { data } = supabase.auth.onAuthStateChange((event, session) => {
-      //console.log(event, session)
-
+    const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
       setUser(session?.user ?? null);
       setLoading(false);
+
+      // JWT token provided by supabase
+      const access_token = session?.access_token;
 
       if (event === "INITIAL_SESSION") {
         // Handle initial session event
       } else if (event === "SIGNED_IN") {
         // Handle signed in event
+        await sendTokenToServer(access_token);
 
-        // If this is the first sign-in, add info to custom user table
-        //console.log(session.user.id);
-        server
-          .get("users", session.user.id)
-          .then((response) => {
-            //console.log("User already exists in the custom user table", response);
-          })
-          .catch((error) => {
-            if (error.response.status === 404) {
-              // In case of 404 error, add user to custom user table (= New user)
-              const newAccountObj = {
-                id: session.user.id,
-                first_name: session.user.user_metadata.full_name || "",
-                last_name: "",
-              };
-              server
-                .add("users", newAccountObj)
-                .then((response) => {
-                  console.log(
-                    "SUCCESS: User signed up (Custom user table)",
-                    response
-                  );
-                })
-                .catch((error) => {
-                  console.log(
-                    "ERROR: User signed up (Custom user table)",
-                    error
-                  );
-                });
-            } else {
-              // Other than 404 error
-              console.log(
-                "ERROR: Checking user existence in custom user table",
-                error
-              );
-            }
-          });
+        // Note: Code about coping user info to public.user table was replace with a trigger & function in the database
       } else if (event === "SIGNED_OUT") {
         // Handle sign out event
+        setUser(null);
+        console.log("User signed out");
       } else if (event === "PASSWORD_RECOVERY") {
         // Handle password recovery event
       } else if (event === "TOKEN_REFRESHED") {
         // Handle token refreshed event
+        await sendTokenToServer(access_token);
+        console.log("Access token refreshed");
       } else if (event === "USER_UPDATED") {
         // Handle user updated event
       }
@@ -94,15 +69,50 @@ export function AuthProvider({ children }) {
   }, []);
 
   const handleSignOut = async () => {
+    // Sign out from supabase autehtication
     try {
       const { error } = await supabase.auth.signOut();
-
       if (error) {
         throw error;
       }
-      console.log("SUCCESS: User signed out");
+      console.log("User signed out");
+      setUser(null);
     } catch (error) {
-      console.log("ERROR: User signed up", error);
+      console.log("User failed to sign out", error);
+      return;
+    }
+
+    // Clear the HTTP-Only cookie
+    try {
+      const response = await axiosClient.post('/clear-cookie');
+      
+      if (response.status === 200) {
+        console.log('HTTP-Only cookie cleared successfully');
+      } else {
+        throw new Error('Failed to clear HTTP-Only cookie');
+      }
+    } catch (error) {
+      console.error('Error clearing HTTP-Only cookie:', error);
+    }
+  };
+
+  // Send the access token (JWT) to the server
+  const sendTokenToServer = async (access_token) => {
+    if (access_token) {
+      try {
+        await axios.post(`${API_BASE_URL}set-cookie`, 
+          { access_token: access_token},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+          }
+        );
+        console.log('Access token sent to server and cookie set.');
+      } catch (error) {
+        console.error('Error setting cookie:', error);
+      }
     }
   };
 

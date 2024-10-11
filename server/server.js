@@ -3,6 +3,7 @@ import express from "express";
 import dotenv from "dotenv";
 import swaggerSetup from "./swagger.js";
 import routes from "./routes/index.js";
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -12,8 +13,12 @@ const app = express();
 swaggerSetup(app);
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', // Clarify client URL (origin)
+  credentials: true,  // Allow cookies
+}));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
