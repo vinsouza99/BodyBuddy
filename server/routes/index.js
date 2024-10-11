@@ -5,13 +5,14 @@ import exerciseRoutes from "./exerciseRoutes.js";
 import routineExerciseRoutes from "./routineExerciseRoutes.js";
 import routineRoutes from "./routineRoutes.js";
 import historyRoutes from "./historyRoutes.js";
-import authenticateToken from '../authenticateToken.js';
+import authenticateToken from "../authenticateToken.js";
 import goalRoutes from "./goalRoutes.js";
 import relatedGoalRoutes from "./relatedGoalRoutes.js";
 import achievementRoutes from "./achievementRoutes.js";
 import relatedAchievementRoutes from "./relatedAchievementRoutes.js";
 import muscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import relatedMuscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
+import openaiapiRoutes from "./openaiapiRoutes.js";
 
 const router = express.Router();
 
@@ -27,6 +28,7 @@ router.use("/achievements", achievementRoutes);
 router.use("/relatedAchievements", relatedAchievementRoutes);
 router.use("/muscleGroups", muscleGroupRoutes);
 router.use("/relatedMuscleGroups", relatedMuscleGroupRoutes);
+router.use("/openai", openaiapiRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
 router.post("/set-cookie", (req, res) => {
@@ -35,11 +37,11 @@ router.post("/set-cookie", (req, res) => {
     return res.status(400).json({ message: "Token is required" });
   }
   // Set JWT token in HttpOnly cookie
-  res.cookie('access_token', access_token, {
-    httpOnly: true,  // Can't be accessed using JavaScript
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict',
-    maxAge: 60 * 60 * 1000  // 60 minutes
+  res.cookie("access_token", access_token, {
+    httpOnly: true, // Can't be accessed using JavaScript
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 60 * 60 * 1000, // 60 minutes
   });
   res.status(200).json({ message: "Accesstoken set in HttpOnly cookie" });
 });
@@ -47,13 +49,12 @@ router.post("/set-cookie", (req, res) => {
 // clear-cookie endpoint for Access Token (JWT)
 router.post("/clear-cookie", (req, res) => {
   // Clear the 'access_token' cookie
-  res.clearCookie('access_token', {
+  res.clearCookie("access_token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'Strict',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
   });
   res.status(200).json({ message: "Logged out and cookie cleared" });
 });
-router.use("/openai", openaiapiRoutes);
 
 export default router;
