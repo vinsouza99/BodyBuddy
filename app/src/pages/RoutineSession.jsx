@@ -738,6 +738,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '2rem',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
               }}
             >
               <AngleMeter2 title={"Angle"} angle={angle} />
@@ -769,6 +770,14 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 top: '10px',
                 right: '10px',
                 zIndex: 1000,
+                fontSize: '2.5rem',
+                color: 'white',
+                backgroundColor: 'gray',
+                padding: '0.5rem',
+                borderRadius: '50%',
+                '&:hover': {
+                  backgroundColor: 'darkgray',
+                }
               }}
             >
               <CloseIcon />
@@ -785,6 +794,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 justifyContent: 'space-between',
                 alignItems: 'center',
                 padding: '0 20px',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
               }}
             >
               {/* Demo Image */}
@@ -840,6 +850,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                     fontSize: "1.5rem",
                     fontWeight: "bold",
                     textAlign: "left",
+                    color: `${theme.palette.secondary.main}`,
                   }}
                 >
                   Next ＞
@@ -853,8 +864,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 >
                   <List
                     sx={{
-                      margin: 0,  // 上下のマージンを0に設定
-                      padding: 0, // 必要に応じてパディングも0に設定
+                      margin: 0,
+                      padding: 0,
                     }}
                   >
                     {routine.map((exercise, index) => (
@@ -865,10 +876,12 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                         sx={{
                           // cursor: "pointer",
                           cursor: "default",
+                          color: selectedExerciseIndex === index ? "white" : "black",
                           backgroundColor:
                             selectedExerciseIndex === index
-                              ? "rgba(173, 216, 230, 0.8)"
+                              ? `${theme.palette.secondary.main}`
                               : "inherit",
+                          opacity: selectedExerciseIndex === index ? 0.6 : 1,
                         }}
                       >
                         <ListItemIcon>
@@ -878,9 +891,17 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                           primary={exercise.name}
                           secondary={exercise.goal}
                           primaryTypographyProps={{
-                            sx: { fontSize: "1.0rem", fontWeight: "bold" },
+                            sx: {
+                              fontSize: "1.0rem",
+                              fontWeight: "bold",
+                            },
                           }}
-                          secondaryTypographyProps={{ sx: { fontSize: "1.0rem" } }}
+                          secondaryTypographyProps={{
+                            sx: { 
+                              fontSize: "1.0rem",
+                              color: selectedExerciseIndex === index ? "white" : "black",
+                            }
+                          }}
                         />
                       </ListItem>
                     ))}
