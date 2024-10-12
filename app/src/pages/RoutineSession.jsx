@@ -1,8 +1,7 @@
+// Reat and Material-UI
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
-import { Counter2, AngleMeter2, RestTime2 } from "../components/routine-session";
 import {
   Box,
   Button,
@@ -19,16 +18,40 @@ import {
   DialogActions,
   IconButton,
 } from "@mui/material";
+// Custom Components for Routine Session
+import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
+import { Counter2, AngleMeter2, RestTime2, MetricCard } from "../components/routine-session";
+import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+// Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { useTheme } from '@mui/material/styles';
 import { supabase } from "../utils/supabaseClient.js";
-import { setPageTitle } from "../utils/utils";
-import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
 import axiosClient from '../utils/axiosClient';
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter"; // Can be replaced later
-import CloseIcon from "@mui/icons-material/Close"; // Can be replaced later
+import { setPageTitle } from "../utils/utils";
+// Icons & Images
+import CloseIcon from "@mui/icons-material/Close";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import Logo from "../assets/bodybuddy.svg";
+// Style Object (for sx prop)
+const videoStyles = {
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  backgroundColor: "rgba(0, 0, 0, 0.1)",
+  filter: "brightness(1.0) contrast(1.2)",
+};
+const canvasStyles = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  top: 0,
+  left: 0,
+};
 
 export const RoutineSession = ({title = "Routine Session"}) => {
   const theme = useTheme();
@@ -610,6 +633,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   };
 
+  const toggleIsResting = () => {
+    setIsResting((prevIsResting) => !prevIsResting);
+  };
+
   // Text to Speech
   function readoutText(text) {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -696,36 +723,16 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             }}
           >
             {/* Are you ready? */}
-            <RestTime2 title="Are you ready?" trigger={true} duration={10} onComplete={() => setIsResting(false)} />
+            <RestTime2 title="Are you ready?" trigger={true} duration={5} onComplete={() => setIsResting(false)} />
             {/* Rest Time Countdown for sets increment */}
             <RestTime2 title = "Time for resting" trigger={restForSetIncrement} duration={routine[selectedExerciseIndex]?.rest_time || 0} onComplete={() => endRestCountdown("set")} />
             {/* Rest Time Countdown for moving to next exercise */}
-            <RestTime2 title = "Time for resting" trigger={restForNextExercise} duration={20} onComplete={() => endRestCountdown("exercise")} />
+            <RestTime2 title = "Time for resting" trigger={restForNextExercise} duration={10} onComplete={() => endRestCountdown("exercise")} />
+
             {/* Webcam */}
-            <video
-              ref={videoRef}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                backgroundColor: "rgba(0, 0, 0, 0.1)",
-                filter: 'brightness(1.0) contrast(1.2)', 
-              }}
-              autoPlay
-              playsInline
-            ></video>
+            <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
             {/* Pose Landmarks */}
-            <canvas
-              ref={canvasRef}
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                position: "absolute",
-                top: 0,
-                left: 0,
-              }}
-            ></canvas>
+            <canvas ref={canvasRef} style={canvasStyles}></canvas>
             {/* Exercise Counter */}
             <Box
               sx={{
@@ -814,8 +821,24 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 />
               )}
 
+              {/* Calories */}
+              <MetricCard title="Calories" />
+
+              {/* Puase & Play */}
+              <IconButton 
+                onClick={toggleIsResting}
+                onMouseDown={(e) => e.preventDefault()}
+                style={{ fontSize: 50 }}>
+                {isResting ? (
+                  <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+                ) : (
+                  <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
+                )}
+              </IconButton>
+
               {/* Timer */}
               <CountdownCircleTimer
+                key={isResting} // Reset the timer when isResting changes
                 isPlaying={!isResting}
                 duration={routine[selectedExerciseIndex]?.duration || 0} 
                 colors={theme.palette.secondary.main}
@@ -831,7 +854,18 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                   </Typography>
                 )}
               </CountdownCircleTimer>                  
-                
+
+              {/* Next Exercise */}
+              <IconButton 
+                onClick={moveToNextExercise}
+                onMouseDown={(e) => e.preventDefault()}
+                style={{ fontSize: 50 }}>
+                <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
+              </IconButton>
+
+              {/* Score */}
+              <MetricCard title="Score" />
+
               {/* Exercise Menu */}
               <Box
                 sx={{
@@ -868,42 +902,41 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                       padding: 0,
                     }}
                   >
-                    {routine.map((exercise, index) => (
-                      <ListItem
-                        // button="true"
-                        // onClick={() => setSelectedExerciseIndex(index)}
-                        key={index}
-                        sx={{
-                          // cursor: "pointer",
-                          cursor: "default",
-                          color: selectedExerciseIndex === index ? "white" : "black",
-                          backgroundColor:
-                            selectedExerciseIndex === index
-                              ? `${theme.palette.secondary.main}`
-                              : "inherit",
-                          opacity: selectedExerciseIndex === index ? 0.6 : 1,
-                        }}
-                      >
-                        <ListItemIcon>
-                          <FitnessCenterIcon />
-                        </ListItemIcon>
-                        <ListItemText
-                          primary={exercise.name}
-                          secondary={exercise.goal}
-                          primaryTypographyProps={{
-                            sx: {
-                              fontSize: "1.0rem",
-                              fontWeight: "bold",
-                            },
+                    {routine
+                      .slice(selectedExerciseIndex)
+                      .map((exercise, index) => (
+                        <ListItem
+                          key={index + selectedExerciseIndex}
+                          sx={{
+                            cursor: "default",
+                            color: index === 0 ? "white" : "black",
+                            backgroundColor:
+                              index === 0
+                                ? `${theme.palette.secondary.main}`
+                                : "inherit",
+                            opacity: index === 0 ? 0.6 : 1,
                           }}
-                          secondaryTypographyProps={{
-                            sx: { 
-                              fontSize: "1.0rem",
-                              color: selectedExerciseIndex === index ? "white" : "black",
-                            }
-                          }}
-                        />
-                      </ListItem>
+                        >
+                          <ListItemIcon>
+                            <FitnessCenterIcon />
+                          </ListItemIcon>
+                          <ListItemText
+                            primary={exercise.name}
+                            secondary={exercise.goal}
+                            primaryTypographyProps={{
+                              sx: {
+                                fontSize: "1.0rem",
+                                fontWeight: "bold",
+                              },
+                            }}
+                            secondaryTypographyProps={{
+                              sx: { 
+                                fontSize: "1.0rem",
+                                color: index === 0 ? "white" : "black",
+                              }
+                            }}
+                          />
+                        </ListItem>
                     ))}
                   </List>
                 </Box>
