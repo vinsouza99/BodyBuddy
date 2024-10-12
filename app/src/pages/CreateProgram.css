@@ -1,0 +1,22 @@
+.formWrapper {
+  max-width: 650px;
+}
+
+.formAccordion {
+  box-shadow: none !important;
+  border-bottom: none !important;
+}
+.formAccordion .details {
+  text-align: left;
+  padding-left: 3rem;
+}
+.createProgramForm {
+  width: 100%;
+  max-width: 550px;
+  margin: auto;
+}
+
+.inlineRadioButton {
+  min-width: 30px;
+  max-width: 60px;
+}
