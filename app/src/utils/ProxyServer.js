@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/';
+const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
 
 /**
  * This class acts as a proxy between the frontend and the backend
@@ -14,7 +14,6 @@ class ProxyServer {
    * @returns A response object
    */
   static async getAll(path) {
-    console.log(`Getting everything from ${URL}${path}...`);
     const response = await axios.get(`${URL}${path}`);
     return response.data;
   }
@@ -25,7 +24,6 @@ class ProxyServer {
    * @returns Promise
    */
   static async get(path, id) {
-    console.log(`Getting from ${URL}${path}/${id}...`);
     const response = await axios.get(`${URL}${path}/${id}`);
     return response.data;
   }
@@ -36,7 +34,6 @@ class ProxyServer {
    * @returns A response object
    */
   static async add(path, obj) {
-    console.log(`Adding to /${path}...`);
     const response = await axios.post(`${URL}${path}`, obj);
     return response.data;
   }
@@ -48,7 +45,6 @@ class ProxyServer {
    * @returns Promise
    */
   static async update(path, id, newObj) {
-    console.log(`Updating /${path}/${id}...`);
     const response = await axios.put(`${URL}${path}/${id}`, newObj);
     return response.data;
   }
@@ -59,7 +55,6 @@ class ProxyServer {
    * @returns Promise
    */
   static async delete(path, id) {
-    console.log(`Deleting from /${path}/${id}...`);
     const response = await axios.delete(`${URL}${path}/${id}`);
     return response.data;
   }
