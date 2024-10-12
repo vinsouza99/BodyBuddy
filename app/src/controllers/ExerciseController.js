@@ -1,4 +1,4 @@
-import axiosClient from '../utils/axiosClient';
+import axiosClient from "../utils/axiosClient";
 import { Exercise } from "../models/Exercise";
 
 // Note: API BASE URL is set in axisoClient.js with other required common settings.
@@ -8,7 +8,6 @@ import { Exercise } from "../models/Exercise";
 const API_ROUTE = "exercises";
 
 const getAllExercises = async () => {
-  console.log(`Getting everything from ${API_ROUTE}...`);
   const response = await axiosClient.get(`${API_ROUTE}`);
   return response.data;
 };
