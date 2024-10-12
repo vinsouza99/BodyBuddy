@@ -21,6 +21,7 @@ import theme from "./theme";
 import { CssBaseline } from "@mui/material";
 import { TrainingProgram } from "./pages/TrainingProgram";
 import { Landing } from "./pages/Landing";
+import CreateProgram from "./pages/CreateProgram";
 
 function App() {
   const { user, loading } = useAuth();
@@ -50,6 +51,7 @@ function App() {
             element={<TrainingProgram title="Training" />}
           />
         </Route>
+        <Route path="/create-program" element={<CreateProgram />}></Route>
         <Route path="*" element={<NotFound title="Not found" />} />
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
