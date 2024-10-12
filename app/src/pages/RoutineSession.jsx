@@ -727,7 +727,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             {/* Rest Time Countdown for sets increment */}
             <RestTime2 title = "Time for resting" trigger={restForSetIncrement} duration={routine[selectedExerciseIndex]?.rest_time || 0} onComplete={() => endRestCountdown("set")} />
             {/* Rest Time Countdown for moving to next exercise */}
-            <RestTime2 title = "Time for resting" trigger={restForNextExercise} duration={10} onComplete={() => endRestCountdown("exercise")} />
+            <RestTime2 title = "Time for resting" trigger={restForNextExercise} duration={0} onComplete={() => endRestCountdown("exercise")} />
 
             {/* Webcam */}
             <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
@@ -838,7 +838,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
               {/* Timer */}
               <CountdownCircleTimer
-                key={isResting} // Reset the timer when isResting changes
+                key={selectedExerciseIndex} // To reset timer when exercise changes
                 isPlaying={!isResting}
                 duration={routine[selectedExerciseIndex]?.duration || 0} 
                 colors={theme.palette.secondary.main}
