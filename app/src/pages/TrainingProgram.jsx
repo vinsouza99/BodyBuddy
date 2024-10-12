@@ -4,9 +4,13 @@ import { setPageTitle } from "../utils/utils";
 import { getAllPresetRoutines } from "../controllers/RoutineController"; // Cocoy: Import the function to display Routines
 import { getAllUserPrograms } from "../controllers/ProgramController"; // Teru: Import the function to display Programs
 import { useAuth } from "../utils/AuthProvider.jsx";
-
 import TrainingCard from "../components/TrainingCard"; // Cocoy: Load TrainingCard component
-import { Typography, Grid } from "@mui/material";
+import { Typography } from "@mui/material";
+import Grid from "@mui/material/Grid2";
+import Box from '@mui/material/Box';
+
+
+
 
 export const TrainingProgram = (props) => {
   const { user, handleSignOut } = useAuth();
@@ -25,46 +29,48 @@ export const TrainingProgram = (props) => {
     };
 
     loadData();
-  }, [props.title]);
+  }, [props.title, user.id]);
 
   return (
-    <div padding="1rem">
+    <div>
       <h1>Training</h1>
+
+      {/* MY PROPGRAM Section */}
       <div>
-        <Typography variant="h4" align="left" marginTop="1rem">
+        <Typography variant="h4" align="left">
           My Program
         </Typography>
       </div>
 
         {/* TrainingCard is alined horizontaly to use "Grid" */}
         {/* Create TrainingCard for program */}
-      <Grid container spacing={2} justifyContent="flex-start">
+      <Grid container spacing={2}>
         {programs
           ? programs.map((routine) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={routine.id}>
+            <Grid size={{xs:12, sm:6, md:4}} key={routine.id} >
               <TrainingCard key={routine.id} routine={routine} />
             </Grid>
             ))
           : ""}
       </Grid>
 
-
-      <div>
-        <Typography variant="h4" align="left" marginTop="1rem">
+      {/* ROUTINE Section */}
+      <Box>
+        <Typography variant="h4" align="left">
           Routines
         </Typography>
-      </div>
+      </Box>
 
-      <Grid container spacing={2} justifyContent="flex-start">
-        {/* Create TrainingCard for each routine */}
+      <Grid container spacing={2}>
         {routines
           ? routines.map((routine) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={routine.id}>
-              <TrainingCard key={routine.id} routine={routine} />
+            <Grid size={{xs:12, sm:6, md:4}} key={routine.id} >
+                  <TrainingCard key={routine.id} routine={routine} />
             </Grid>
             ))
-          : ""}
+        :""}
       </Grid>
+
     </div>
   );
 };
