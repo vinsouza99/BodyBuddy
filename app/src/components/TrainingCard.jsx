@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../components/ImageLists";
+// import { theme } from "../../src/theme";
 
 const theme = createTheme({
   components: {
