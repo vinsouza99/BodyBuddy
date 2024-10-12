@@ -1,9 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
+import Grid from "@mui/material/Grid2";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
+import { Box, Typography } from "@mui/material";
 
 const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
   height: 10,
@@ -24,12 +25,29 @@ const BorderLinearProgress = styled(LinearProgress)(({ theme }) => ({
 }));
 
 const ProgressBar = ({ progress }) => {
-  //return <div>{`Progress: ${progress.toFixed(2)}%`}</div>;
-  return <BorderLinearProgress variant="determinate" value={progress} />;
-};
-
-ProgressBar.propTypes = {
-  progress: "Number",
+  return (
+    <>
+      <Grid container direction={"row"} spacing={2} sx={{ width: "100%" }}>
+        <Box
+          component={"div"}
+          flexitem="true"
+          flexGrow={1}
+          alignContent={"center"}
+        >
+          <BorderLinearProgress
+            variant="determinate"
+            value={progress}
+            sx={{ width: "100%" }}
+          />
+        </Box>
+        <Box component={"div"} flexitem="true">
+          <Typography variant={"body1"} sx={{ display: "block" }}>
+            {progress.toFixed(2)}%
+          </Typography>
+        </Box>
+      </Grid>
+    </>
+  );
 };
 
 export default ProgressBar;
