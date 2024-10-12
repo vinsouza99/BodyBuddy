@@ -235,7 +235,7 @@ const CreateProgram = () => {
               key={index}
               value={day}
               control={<Checkbox />}
-              label={day.substring(0, 4)}
+              label={day.substring(0, 3)}
               labelPlacement="bottom"
               onChange={(e) => toggleOptions(availability, e.target.value)}
             />
