@@ -35,6 +35,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import BodyBuddy from "../assets/bodybuddy_logo_color.svg";
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -966,31 +967,45 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       <Dialog
         open={isFinished}
         onClose={() => setIsFinished(false)}
-        fullWidth
-        maxWidth="sm"
+        fullScreen
       >
-        <DialogTitle>You have successfully completed the routine!</DialogTitle>
-        <DialogContent>
-          {routine && routine.length > 0 && (
-            <Box>
-              <Typography variant="h6">Completed Exercises:</Typography>
-              <List>
-                {routine.map((exercise, index) => (
-                  exercise.name !== "Break" && (
-                    <ListItem key={index}>
-                      <ListItemText primary={exercise.name} />
-                    </ListItem>
-                  )
-                ))}
-              </List>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleMoveToTrainingPage}>
+        <DialogContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            width: '50%',
+            margin: '0 auto',
+          }}
+        >
+          <Box
+            component="img"
+            src={BodyBuddy}
+            alt="Completed Exercise"
+            sx={{
+              maxHeight: '300px',
+              objectFit: 'contain',
+              marginBottom: 4,
+            }}
+          />
+          <Typography variant="h6" sx={{ fontWeight: 'normal', marginBottom: 4, textAlign: 'center' }}>
+            Yay! You&apos;ve completed exercising. <br />
+            Let&apos;s see what you&apos;ve achieved today!
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+            <MetricCard title="Mins" />
+            <MetricCard title="Calories" />
+            <MetricCard title="Score" />
+          </Box>
+          <Button variant="outlined" sx={{ width: '50%', marginBottom: 2, fontSize: '1.2rem' }} disabled>
+            Check my upcoming schedule
+          </Button>
+          <Button variant="contained" sx={{ width: '50%', fontSize: '1.2rem'}} onClick={handleMoveToTrainingPage}>
             Go Back to Training Page
           </Button>
-        </DialogActions>
+        </DialogContent>
       </Dialog>
     </>
   );

@@ -14,7 +14,7 @@ export const Logo = () => {
         width: '50px',
         height: '50px',
         objectFit: 'contain',
-        zIndex: 1000,
+        zIndex: 1500,
       }}
     />
   )
