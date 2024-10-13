@@ -58,13 +58,13 @@ function App() {
         <Route
           path="/routine/:routineId"
           element={
-            user ? <Routine title="Routine" /> : <Navigate to="/signin" />
+            user ? <RoutineSession title="RoutineSession" /> : <Navigate to="/signin" />
           }
         />
         <Route
           path="/session/:routineId"
           element={
-            user ? <RoutineSession title="RoutineSession" /> : <Navigate to="/signin" />
+            user ? <Routine title="Routine" /> : <Navigate to="/signin" />
           }
         />
       </>
