@@ -40,7 +40,7 @@ export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerc
     skipExercise();
   };
   
-  if (!isVisible) return null;
+  if (!isVisible || currentExerciseInfo == null ) return null;
 
   return (
     <Box
@@ -50,7 +50,7 @@ export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerc
         left: '0px',
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.9)',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -116,21 +116,18 @@ export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerc
             }}
           >
             <Typography
-              variant="h6" 
               component="div"
               sx={{ fontWeight: "bold", mr: 5 }}
             >
               Next &gt;
             </Typography>
             <Typography
-              variant="h6" 
               component="div"
               sx={{ fontWeight: "bold", mr: 5 }}
             >
               {nextExerciseInfo ? nextExerciseInfo.name : 'No Exercise Available'}
             </Typography>
             <Typography
-              variant="h6" 
               component="div"
               sx={{ fontWeight: "normal", mr: 5 }}
             >
@@ -142,7 +139,6 @@ export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerc
               variant="contained"
               type="button"
               sx={{
-                fontSize: theme.typography.h6.fontSize,
                 marginLeft: 'auto',
               }}
             >
@@ -181,7 +177,7 @@ export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerc
           </CountdownCircleTimer>
 
           <Typography
-            variant="h1" 
+            variant="h2" 
             component="div"
             sx={{ fontWeight: "bold", mt: 5 }}
           >

@@ -6,7 +6,7 @@ export const MetricCard = ({ value="N/A", title="N/A" }) => {
   const theme = useTheme();
   return (
     <Card sx={{ backgroundColor: "transparent", boxShadow: "none" }}>
-      <CardContent>
+      <CardContent sx={{ textAlign: 'center' }}>
         <Typography variant="h2" component="div" color={theme.palette.text.primary}>
           {value}
         </Typography>

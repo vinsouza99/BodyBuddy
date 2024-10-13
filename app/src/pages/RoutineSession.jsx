@@ -34,6 +34,8 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import BodyBuddy from "../assets/bodybuddy_logo_color.svg";
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -73,7 +75,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   const [recordedChunks, setRecordedChunks] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
-  const [isDialogOpen, setIsDialogOpen] = useState(true); //
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
   const [isResting, setIsResting] = useState(true);
   const [restForSetIncrement, setRestForSetIncrement] = useState(false);
@@ -133,7 +135,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     createPoseLandmarker();
 
     // Retrieve routine/program information from the database
-    const fetchRoutine = async () => {
+    const fetchRoutineInfo = async () => {
       try {
         const response = await axiosClient.get(
           `RoutineExercises/routine/${routineId}`
@@ -147,8 +149,21 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.error("Error fetching routine:", error);
       }
     };
-    fetchRoutine();
+    fetchRoutineInfo();
   }, []);
+
+  // Enable webcam when videoRef is available
+  useEffect(() => {
+    if (videoRef.current) {
+      toggleWebCam();
+    }
+
+    // Cleanup
+    return () => {
+      // Disable Webcam
+      if (webcamRunning) toggleWebCam();
+    };
+  }, [videoRef.current]);
 
   // Reset selected exercise index when routine changes
   useEffect(() => {
@@ -171,7 +186,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     setExerciseCounter(CounterClass);
   }, [selectedExerciseIndex, routine]);
 
-  // Ttrack webcamRunning changes
+  // Start prediction when webcam is running and not resting
   useEffect(() => {
     console.log(exerciseCounter, webcamRunning, isResting);
     if (exerciseCounter && webcamRunning && !isResting) {
@@ -187,13 +202,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseCounter, webcamRunning, isResting]);
-
-  // Enable webcam when consent dialog is closed
-  useEffect(() => {
-    if (!isDialogOpen) {
-      toggleWebCam();
-    }
-  }, [isDialogOpen]);
 
   // Read out the rep count
   useEffect(() => {
@@ -268,21 +276,19 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     setIsSnackbarOpen(false);
   };
 
-  // Handle camera consent dialog response （Agree）
-  const handleAgreeWebCamConsent = async () => {
-    setIsDialogOpen(false);
-  };
-
-  // Handle camera consent dialog response (Disagree)
-  const handleDisagreeWebCamConsent = () => {
-    handleMoveToTrainingPage();
-  };
-
   // Handle quitting the routine
   const handleQuitRoutine = () => {
+    // Diablog for confirmation
+    setIsConfirmDialogOpen(true)
+  };
+  const handleConfirmQuit = () => {
+    setIsConfirmDialogOpen(false);
     // Disable Webcam
     if (webcamRunning) toggleWebCam();
     handleMoveToTrainingPage();
+  };
+  const handleCancelQuit = () => {
+    setIsConfirmDialogOpen(false);
   };
 
   // Handle finishing the routine (Insert log info to the database)
@@ -374,10 +380,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
   // Enable WebCam
   const startWebCam = async () => {
-    if (!poseLandmarkerRef.current) {
-      console.error("PoseLandmarker not loaded.");
-      return;
-    }
+    // if (!poseLandmarkerRef.current) {
+    //   console.error("PoseLandmarker not loaded.");
+    //   return;
+    // }
   
     const videoElement = videoRef.current;
     const constraints = { video: true };
@@ -647,70 +653,11 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
   return (
     <>
-      {/* Camera Consent Dialog */}
-      <Dialog
-        open={isDialogOpen}
-        fullScreen
-        PaperProps={{
-          style: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-          },
-        }}
-      >
-        <Box
-          sx={{
-            textAlign: "center",
-            color: "#fff",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 4,
-          }}
-        >
-          <DialogTitle sx={{ color: "#fff", fontSize: "2rem" }}>
-            We need access to your web camera to proceed. Do you agree?
-          </DialogTitle>
-          <DialogContent>
-            <Box sx={{ color: "#fff", mb: 4, p: 2, backgroundColor: "rgba(0, 0, 0, 0.6)", borderRadius: 2 }}>
-              <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold', textAlign: 'center' }}>
-                To ensure the AI functions correctly, please follow these instructions:
-              </Typography>
-              <List sx={{ listStyleType: 'disc', pl: 3 }}>
-                <ListItem sx={{ display: 'list-item', pl: 0, mb: 2 }}>
-                  <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-                    Maintain a distance that allows your entire body, from head to toe, to be visible on the screen.
-                  </Typography>
-                </ListItem>
-                <ListItem sx={{ display: 'list-item', pl: 0 }}>
-                  <Typography variant="body1" sx={{ lineHeight: 1.6 }}>
-                    Ensure that no other people are visible on the screen.
-                  </Typography>
-                </ListItem>
-              </List>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              onClick={handleDisagreeWebCamConsent}
-              color="secondary"
-              variant="outlined"
-              sx={{ marginRight: 2 }}
-            >
-              No
-            </Button>
-            <Button onClick={handleAgreeWebCamConsent} color="primary" variant="contained">
-              Yes
-            </Button>
-          </DialogActions>
+      {routine.length === 0 ? (
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+          <Typography variant="h4">Loading...</Typography>
         </Box>
-      </Dialog>
-
-      {/* After the above dialog closes, start rendering */}
-      {!isDialogOpen && (      
+      ) : (  
         <Box
           sx={{
             height: "100vh",
@@ -747,7 +694,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
           {/* Logo */}
           <Logo/>
 
-          { /* Close Button */}
+          {/* Quit Button */}
           <IconButton 
             onClick={handleQuitRoutine} 
             aria-label="close"
@@ -758,7 +705,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               zIndex: 1000,
               fontSize: '2.5rem',
               color: 'white',
-              backgroundColor: 'gray',
+              backgroundColor: 'lightgray',
               padding: '0.5rem',
               borderRadius: '50%',
               '&:hover': {
@@ -768,6 +715,62 @@ export const RoutineSession = ({title = "Routine Session"}) => {
           >
             <CloseIcon />
           </IconButton>
+
+          {/* Quit Dialogue */}
+          <Dialog
+            open={isConfirmDialogOpen}
+            onClose={handleCancelQuit}
+            fullWidth
+            maxWidth="sm"
+            sx={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
+          >
+            <DialogTitle sx={{ textAlign: 'center' }}>
+              <ErrorOutlineIcon style={{ fontSize: 50 }} />
+              <IconButton
+                aria-label="close"
+                onClick={handleCancelQuit}
+                sx={{
+                  position: 'absolute',
+                  right: 8,
+                  top: 8,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+            <DialogContent
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                textAlign: 'center',
+                width: '70%',
+                margin: '0 auto',
+                fontSize: '1.2rem',
+              }}
+            >
+              <p>You haven&apos;t completed the routine yet. Save progress and continue later?</p>
+            </DialogContent>
+            <DialogActions
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '60%',
+                margin: '0 auto',
+                gap: 2,
+                marginBottom: '2rem',
+              }}
+            >
+              <Button variant="outlined" color="secondary" sx={{ fontSize: '1.2rem' }} fullWidth disabled>
+                Save and continue later
+              </Button>
+              <Button variant="contained" onClick={handleConfirmQuit} color="primary" sx={{ fontSize: '1.2rem' }} fullWidth>
+                Exit
+              </Button>
+            </DialogActions>
+          </Dialog>
 
           {/* Exercise Counter */}
           <Box
@@ -804,21 +807,19 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             }}
           >
             {/* Demo Image */}
-            {routine[selectedExerciseIndex] && routine[selectedExerciseIndex].image && (
-              <Box
-                component="img"
-                src={routine[selectedExerciseIndex].image}
-                alt="exercise image"
-                sx={{
-                  width: '20%',
-                  height: '200px',
-                  objectFit: 'contain',
-                  backgroundColor: 'rgba(255, 255, 255)',
-                  borderRadius: '15px',
-                  alignItems: 'left',
-                }}
-              />
-            )}
+            <Box
+              component="img"
+              src={routine[selectedExerciseIndex].image}
+              alt="exercise image"
+              sx={{
+                width: '20%',
+                height: '200px',
+                objectFit: 'contain',
+                backgroundColor: 'rgba(255, 255, 255)',
+                borderRadius: '15px',
+                alignItems: 'left',
+              }}
+            />
 
             {/* Calories */}
             <MetricCard title="Calories" />
@@ -966,31 +967,45 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       <Dialog
         open={isFinished}
         onClose={() => setIsFinished(false)}
-        fullWidth
-        maxWidth="sm"
+        fullScreen
       >
-        <DialogTitle>You have successfully completed the routine!</DialogTitle>
-        <DialogContent>
-          {routine && routine.length > 0 && (
-            <Box>
-              <Typography variant="h6">Completed Exercises:</Typography>
-              <List>
-                {routine.map((exercise, index) => (
-                  exercise.name !== "Break" && (
-                    <ListItem key={index}>
-                      <ListItemText primary={exercise.name} />
-                    </ListItem>
-                  )
-                ))}
-              </List>
-            </Box>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button variant="contained" onClick={handleMoveToTrainingPage}>
+        <DialogContent
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            width: '50%',
+            margin: '0 auto',
+          }}
+        >
+          <Box
+            component="img"
+            src={BodyBuddy}
+            alt="Completed Exercise"
+            sx={{
+              maxHeight: '300px',
+              objectFit: 'contain',
+              marginBottom: 4,
+            }}
+          />
+          <Typography variant="h6" sx={{ fontWeight: 'normal', marginBottom: 4, textAlign: 'center' }}>
+            Yay! You&apos;ve completed exercising. <br />
+            Let&apos;s see what you&apos;ve achieved today!
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+            <MetricCard title="Mins" />
+            <MetricCard title="Calories" />
+            <MetricCard title="Score" />
+          </Box>
+          <Button variant="outlined" sx={{ width: '50%', marginBottom: 2, fontSize: '1.2rem' }} disabled>
+            Check my upcoming schedule
+          </Button>
+          <Button variant="contained" sx={{ width: '50%', fontSize: '1.2rem'}} onClick={handleMoveToTrainingPage}>
             Go Back to Training Page
           </Button>
-        </DialogActions>
+        </DialogContent>
       </Dialog>
     </>
   );
