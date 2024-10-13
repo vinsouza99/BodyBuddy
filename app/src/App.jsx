@@ -13,6 +13,7 @@ import { Dashboard } from "./pages/Dashboard";
 import { Profile } from "./pages/Profile";
 import { Learn } from "./pages/Learn";
 import { Routine } from "./pages/Routine";
+import { RoutineSession } from "./pages/RoutineSession";
 import { NotFound } from "./pages/NotFound";
 import { useAuth } from "./utils/AuthProvider";
 import { CircularProgress } from "@mui/material";
@@ -58,6 +59,12 @@ function App() {
           path="/routine/:routineId"
           element={
             user ? <Routine title="Routine" /> : <Navigate to="/signin" />
+          }
+        />
+        <Route
+          path="/session/:routineId"
+          element={
+            user ? <RoutineSession title="RoutineSession" /> : <Navigate to="/signin" />
           }
         />
       </>
