@@ -1,18 +1,23 @@
 import React from "react";
-import { useEffect } from "react";
-import { setPageTitle } from "../utils/utils";
 import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import { setPageTitle } from "../utils/utils";
+import { useAuth } from "../utils/AuthProvider.jsx";
+import { getAllExercises } from "../controllers/ExerciseController.js";
 import Grid from "@mui/material/Grid2";
-import Box from "@mui/material/Box";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import Button from "@mui/material/Button";
-import { LearningCard } from "../components/LearningCard";
+import {
+  Box,
+  Tabs,
+  Tab,
+  InputLabel,
+  MenuItem,
+  FormControl,
+  Select,
+  Button,
+} from "@mui/material";
+import LearningCard from "../components/LearningCard";
 
+// Custom tab panel to display content conditionally based on the selected tab
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -28,6 +33,7 @@ function CustomTabPanel(props) {
   );
 }
 
+// Defining prop types for the CustomTabPanel component
 CustomTabPanel.propTypes = {
   children: PropTypes.node,
   index: PropTypes.number.isRequired,
@@ -35,22 +41,47 @@ CustomTabPanel.propTypes = {
 };
 
 export const Learn = (props) => {
+  const { user, handleSignOut } = useAuth();
+  const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
+
   useEffect(() => {
-    setPageTitle(props.title);
-  }, [props.title]);
+    setPageTitle(props.title); // Set the page title
 
-  const [value, setValue] = React.useState(0);
+    // Log user id
+    console.log(user.id);
 
-  const [age, setAge] = React.useState("");
+    const loadData = async () => {
+      // Cocoy: Load exercises
+      const response = await getAllExercises();
+
+      // Log the full response
+      console.log("Loaded exercises:", response);
+
+      // Access exercises from the response.data property
+      const exercisesData = response.data;
+
+      // Log the exercises data
+      console.log("Exercises Data:", exercisesData);
+
+      // Check if exercisesData is an array
+      setExercises(Array.isArray(exercisesData) ? exercisesData : []);
+    };
+
+    loadData();
+  }, [props.title, user.id]);
+
+  const [value, setValue] = React.useState(0); // State for managing which tab is selected
+  const [difficulty, setDifficulty] = React.useState(""); // State for managing selected difficulty level
 
   const handleChange = (event, newValue) => {
-    setValue(newValue);
-    setAge(event.target.value);
+    setValue(newValue); // Update selected tab
+    setDifficulty(event.target.value); // Update selected difficulty level
   };
 
   return (
     <>
       <Box display="flex" alignItems="flex-start">
+        {/* Tabs for selecting categories (Muscle or Goal) */}
         <Tabs
           value={value}
           onChange={handleChange}
@@ -61,15 +92,17 @@ export const Learn = (props) => {
         </Tabs>
       </Box>
 
+      {/* Tab for Exercises by Muscle */}
       <CustomTabPanel value={value} index={0}>
         <Box display="flex" gap={1} sx={{ marginTop: 2, marginBottom: 4 }}>
           <FormControl sx={{ width: 200 }}>
+            {/* Dropdown for selecting difficulty */}
             <InputLabel id="demo-simple-select-label">Difficulty</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={age}
-              label="Age"
+              value={difficulty}
+              label="Difficulty"
               onChange={handleChange}
             >
               <MenuItem value={10}>All Levels</MenuItem>
@@ -78,6 +111,8 @@ export const Learn = (props) => {
               <MenuItem value={30}>Advanced</MenuItem>
             </Select>
           </FormControl>
+
+          {/* Buttons for filtering exercises by muscle groups */}
           <Button variant="contained">Shoulders</Button>
           <Button variant="contained">Chest</Button>
           <Button variant="contained">Back</Button>
@@ -87,37 +122,32 @@ export const Learn = (props) => {
           <Button variant="contained">Legs</Button>
         </Box>
 
+        {/* Grid to display LearningCard components */}
         <Grid container spacing={3}>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
+          {Array.isArray(exercises) && exercises.length > 0 ? (
+            exercises.map((exercise, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <LearningCard exercise={exercise} />
+              </Grid>
+            ))
+          ) : (
+            // Show a message if there are no exercises
+            <p>No exercises available.</p>
+          )}
         </Grid>
       </CustomTabPanel>
 
+      {/* Tab for Exercises by Goal */}
       <CustomTabPanel value={value} index={1}>
         <Box display="flex" gap={1} sx={{ marginTop: 2, marginBottom: 4 }}>
           <FormControl sx={{ width: 200 }}>
+            {/* Dropdown for selecting difficulty */}
             <InputLabel id="demo-simple-select-label">Difficulty</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={age}
-              label="Age"
+              value={difficulty}
+              label="Difficulty"
               onChange={handleChange}
             >
               <MenuItem value={10}>All Levels</MenuItem>
@@ -126,6 +156,7 @@ export const Learn = (props) => {
               <MenuItem value={30}>Advanced</MenuItem>
             </Select>
           </FormControl>
+          {/* Buttons for filtering exercises by fitness goals */}
           <Button variant="contained">Gain Muscle</Button>
           <Button variant="contained">Lose Body Fat</Button>
           <Button variant="contained">Get Stronger</Button>
@@ -133,25 +164,18 @@ export const Learn = (props) => {
           <Button variant="contained">Warm Up</Button>
         </Box>
 
+        {/* Grid to display LearningCard components */}
+
         <Grid container spacing={3}>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
-          <Grid size={4}>
-            <LearningCard />
-          </Grid>
+          {Array.isArray(exercises) && exercises.length > 0 ? (
+            exercises.map((exercise, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <LearningCard exercise={exercise} />
+              </Grid>
+            ))
+          ) : (
+            <p>No exercises available.</p> // Show a message if there are no exercises
+          )}
         </Grid>
       </CustomTabPanel>
     </>

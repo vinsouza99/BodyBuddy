@@ -12,5 +12,6 @@ export class Exercise {
     this.name = name;
     this.description = description;
     this.demo_url = demo_url;
+    this.types = types;
   }
 }
