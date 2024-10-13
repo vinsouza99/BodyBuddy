@@ -5,7 +5,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Button,
-  Stack,
   Typography,
   Snackbar,
   List,
@@ -20,7 +19,7 @@ import {
 } from "@mui/material";
 // Custom Components for Routine Session
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
-import { Counter2, AngleMeter2, RestTime2, MetricCard } from "../components/routine-session";
+import { Counter2, AngleMeter2, RestTime2, MetricCard, DemoExercise, Logo } from "../components/routine-session";
 import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 // Common Components
@@ -35,7 +34,6 @@ import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-import Logo from "../assets/bodybuddy.svg";
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -79,7 +77,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   const [isFinished, setIsFinished] = useState(false);
   const [isResting, setIsResting] = useState(true);
   const [restForSetIncrement, setRestForSetIncrement] = useState(false);
-  const [restForNextExercise, setRestForNextExercise] = useState(false);
+  const [restForNextExercise, setRestForNextExercise] = useState(true);
 
   // --- Refs ---
   const videoRef = useRef(null);
@@ -712,240 +710,238 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       </Dialog>
 
       {/* After the above dialog closes, start rendering */}
-      {!isDialogOpen && (
-        <Stack sx={{ height: "100vh", backgroundColor: "background.default" }}>          
-          <Box
+      {!isDialogOpen && (      
+        <Box
+          sx={{
+            height: "100vh",
+            flexBasis: "100%",
+            position: "relative",
+            overflow: "hidden",
+            backgroundColor: "background.paper",
+          }}
+        >
+          {/* Rest screen before transitioning to the next exercise */}
+          <DemoExercise
+            trigger={restForNextExercise}
+            duration={5}
+            currentExerciseInfo={routine[selectedExerciseIndex]}
+            nextExerciseInfo={routine[selectedExerciseIndex + 1]}
+            onComplete={() => endRestCountdown("exercise")}
+            skipExercise={moveToNextExercise}
+          />
+
+          {/* Rest screen before transitioning to the next set */}
+          <RestTime2
+            title = "Time for resting"
+            trigger={restForSetIncrement}
+            duration={routine[selectedExerciseIndex]?.rest_time || 0} 
+            onComplete={() => endRestCountdown("set")}
+          />
+
+          {/* Webcam */}
+          <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
+
+          {/* Pose Landmarks */}
+          <canvas ref={canvasRef} style={canvasStyles}></canvas>
+
+          {/* Logo */}
+          <Logo/>
+
+          { /* Close Button */}
+          <IconButton 
+            onClick={handleQuitRoutine} 
+            aria-label="close"
             sx={{
-              flexBasis: "100%",
-              position: "relative",
-              overflow: "hidden",
-              backgroundColor: "background.paper",
+              position: 'absolute',
+              top: '10px',
+              right: '10px',
+              zIndex: 1000,
+              fontSize: '2.5rem',
+              color: 'white',
+              backgroundColor: 'gray',
+              padding: '0.5rem',
+              borderRadius: '50%',
+              '&:hover': {
+                backgroundColor: 'darkgray',
+              }
             }}
           >
-            {/* Are you ready? */}
-            <RestTime2 title="Are you ready?" trigger={true} duration={5} onComplete={() => setIsResting(false)} />
-            {/* Rest Time Countdown for sets increment */}
-            <RestTime2 title = "Time for resting" trigger={restForSetIncrement} duration={routine[selectedExerciseIndex]?.rest_time || 0} onComplete={() => endRestCountdown("set")} />
-            {/* Rest Time Countdown for moving to next exercise */}
-            <RestTime2 title = "Time for resting" trigger={restForNextExercise} duration={10} onComplete={() => endRestCountdown("exercise")} />
+            <CloseIcon />
+          </IconButton>
 
-            {/* Webcam */}
-            <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
-            {/* Pose Landmarks */}
-            <canvas ref={canvasRef} style={canvasStyles}></canvas>
-            {/* Exercise Counter */}
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '10px',
-                left: '100px',
-                right: '100px',
-                display: 'flex',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '2rem',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              <AngleMeter2 title={"Angle"} angle={angle} />
-              <Counter2 title={"Reps"} count={successRepCount} target = {routine[selectedExerciseIndex]?.reps || 0} /> {/* Regarding increment Rep count, refer to "predictPosture" */}
-              <Counter2 title={"Sets"} count={successSetCount} target = {routine[selectedExerciseIndex]?.sets || 0} onComplete={moveToNextExercise} />
-            </Box>
-
-            {/* Logo */}
-            <Box
-              component="img"
-              src={Logo}
-              alt="BodyBuddy"
-              sx={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                width: '50px',
-                height: '50px',
-                objectFit: 'contain',
-                zIndex: 1000,
-              }}
-            />
-            { /* Close Button */}
-            <IconButton 
-              onClick={handleQuitRoutine} 
-              aria-label="close"
-              sx={{
-                position: 'absolute',
-                top: '10px',
-                right: '10px',
-                zIndex: 1000,
-                fontSize: '2.5rem',
-                color: 'white',
-                backgroundColor: 'gray',
-                padding: '0.5rem',
-                borderRadius: '50%',
-                '&:hover': {
-                  backgroundColor: 'darkgray',
-                }
-              }}
-            >
-              <CloseIcon />
-            </IconButton>
-            
-            {/* Bottom Menu */}
-            <Box
-              sx={{
-                position: 'absolute',
-                bottom: '10px',
-                width: '100%',
-                height: '200px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '0 20px',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
-              }}
-            >
-              {/* Demo Image */}
-              {routine[selectedExerciseIndex] && routine[selectedExerciseIndex].image && (
-                <Box
-                  component="img"
-                  src={routine[selectedExerciseIndex].image}
-                  alt="exercise image"
-                  sx={{
-                    width: '20%',
-                    height: '200px',
-                    objectFit: 'contain',
-                    backgroundColor: 'rgba(255, 255, 255)',
-                    borderRadius: '15px',
-                    alignItems: 'left',
-                  }}
-                />
-              )}
-
-              {/* Calories */}
-              <MetricCard title="Calories" />
-
-              {/* Puase & Play */}
-              <IconButton 
-                onClick={toggleIsResting}
-                onMouseDown={(e) => e.preventDefault()}
-                style={{ fontSize: 50 }}>
-                {isResting ? (
-                  <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
-                ) : (
-                  <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
-                )}
-              </IconButton>
-
-              {/* Timer */}
-              <CountdownCircleTimer
-                key={selectedExerciseIndex} // To reset timer when exercise changes
-                isPlaying={!isResting}
-                duration={routine[selectedExerciseIndex]?.duration || 0} 
-                colors={theme.palette.secondary.main}
-                onComplete={incrementSetsCount}
-              >
-                {({ remainingTime }) => (
-                  <Typography
-                    variant="h1"
-                    component="div"
-                    sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
-                  >
-                    {remainingTime >= 0 ? remainingTime : 0} 
-                  </Typography>
-                )}
-              </CountdownCircleTimer>                  
-
-              {/* Next Exercise */}
-              <IconButton 
-                onClick={moveToNextExercise}
-                onMouseDown={(e) => e.preventDefault()}
-                style={{ fontSize: 50 }}>
-                <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
-              </IconButton>
-
-              {/* Score */}
-              <MetricCard title="Score" />
-
-              {/* Exercise Menu */}
+          {/* Exercise Counter */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '10px',
+              left: '100px',
+              right: '100px',
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2rem',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            <AngleMeter2 title={"Angle"} angle={angle} />
+            <Counter2 title={"Reps"} count={successRepCount} target = {routine[selectedExerciseIndex]?.reps || 0} /> {/* Regarding increment Rep count, refer to "predictPosture" */}
+            <Counter2 title={"Sets"} count={successSetCount} target = {routine[selectedExerciseIndex]?.sets || 0} onComplete={moveToNextExercise} />
+          </Box>
+          
+          {/* Bottom Menu */}
+          <Box
+            sx={{
+              position: 'absolute',
+              bottom: '10px',
+              width: '100%',
+              height: '200px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '0 20px',
+              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            {/* Demo Image */}
+            {routine[selectedExerciseIndex] && routine[selectedExerciseIndex].image && (
               <Box
+                component="img"
+                src={routine[selectedExerciseIndex].image}
+                alt="exercise image"
                 sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  overflowY: 'auto',
                   width: '20%',
-                  height: '100%',
+                  height: '200px',
+                  objectFit: 'contain',
+                  backgroundColor: 'rgba(255, 255, 255)',
+                  borderRadius: '15px',
+                  alignItems: 'left',
+                }}
+              />
+            )}
+
+            {/* Calories */}
+            <MetricCard title="Calories" />
+
+            {/* Puase & Play */}
+            <IconButton 
+              onClick={toggleIsResting}
+              onMouseDown={(e) => e.preventDefault()}
+              style={{ fontSize: 50 }}>
+              {isResting ? (
+                <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+              ) : (
+                <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
+              )}
+            </IconButton>
+
+            {/* Timer */}
+            <CountdownCircleTimer
+              key={selectedExerciseIndex} // To reset timer when exercise changes
+              isPlaying={!isResting}
+              duration={routine[selectedExerciseIndex]?.duration || 0} 
+              colors={theme.palette.secondary.main}
+              onComplete={incrementSetsCount}
+            >
+              {({ remainingTime }) => (
+                <Typography
+                  variant="h1"
+                  component="div"
+                  sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
+                >
+                  {remainingTime >= 0 ? remainingTime : 0} 
+                </Typography>
+              )}
+            </CountdownCircleTimer>                  
+
+            {/* Next Exercise */}
+            <IconButton 
+              onClick={moveToNextExercise}
+              onMouseDown={(e) => e.preventDefault()}
+              style={{ fontSize: 50 }}>
+              <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
+            </IconButton>
+
+            {/* Score */}
+            <MetricCard title="Score" />
+
+            {/* Exercise Menu */}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                overflowY: 'auto',
+                width: '20%',
+                height: '100%',
+              }}
+            >
+              <Typography
+                variant="h4"
+                component="h1"
+                gutterBottom
+                sx={{
+                  fontSize: "1.5rem",
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  color: `${theme.palette.secondary.main}`,
                 }}
               >
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  gutterBottom
+                Next ＞
+              </Typography>
+              <Box 
+                sx={{ 
+                  height: '100%',
+                  overflowY: "auto",
+                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                }}
+              >
+                <List
                   sx={{
-                    fontSize: "1.5rem",
-                    fontWeight: "bold",
-                    textAlign: "left",
-                    color: `${theme.palette.secondary.main}`,
+                    margin: 0,
+                    padding: 0,
                   }}
                 >
-                  Next ＞
-                </Typography>
-                <Box 
-                  sx={{ 
-                    height: '100%',
-                    overflowY: "auto",
-                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-                  }}
-                >
-                  <List
-                    sx={{
-                      margin: 0,
-                      padding: 0,
-                    }}
-                  >
-                    {routine
-                      .slice(selectedExerciseIndex)
-                      .map((exercise, index) => (
-                        <ListItem
-                          key={index + selectedExerciseIndex}
-                          sx={{
-                            cursor: "default",
-                            color: index === 0 ? "white" : "black",
-                            backgroundColor:
-                              index === 0
-                                ? `${theme.palette.secondary.main}`
-                                : "inherit",
-                            opacity: index === 0 ? 0.6 : 1,
+                  {routine
+                    .slice(selectedExerciseIndex)
+                    .map((exercise, index) => (
+                      <ListItem
+                        key={index + selectedExerciseIndex}
+                        sx={{
+                          cursor: "default",
+                          color: index === 0 ? "white" : "black",
+                          backgroundColor:
+                            index === 0
+                              ? `${theme.palette.secondary.main}`
+                              : "inherit",
+                          opacity: index === 0 ? 0.6 : 1,
+                        }}
+                      >
+                        <ListItemIcon>
+                          <FitnessCenterIcon />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={exercise.name}
+                          secondary={exercise.goal}
+                          primaryTypographyProps={{
+                            sx: {
+                              fontSize: "1.0rem",
+                              fontWeight: "bold",
+                            },
                           }}
-                        >
-                          <ListItemIcon>
-                            <FitnessCenterIcon />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={exercise.name}
-                            secondary={exercise.goal}
-                            primaryTypographyProps={{
-                              sx: {
-                                fontSize: "1.0rem",
-                                fontWeight: "bold",
-                              },
-                            }}
-                            secondaryTypographyProps={{
-                              sx: { 
-                                fontSize: "1.0rem",
-                                color: index === 0 ? "white" : "black",
-                              }
-                            }}
-                          />
-                        </ListItem>
-                    ))}
-                  </List>
-                </Box>
+                          secondaryTypographyProps={{
+                            sx: { 
+                              fontSize: "1.0rem",
+                              color: index === 0 ? "white" : "black",
+                            }
+                          }}
+                        />
+                      </ListItem>
+                  ))}
+                </List>
               </Box>
-
             </Box>
-
           </Box>
-        </Stack>
+        </Box>
       )}
 
       {/* Snack bar to display successful video upload  */}

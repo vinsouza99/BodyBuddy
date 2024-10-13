@@ -1,37 +1,38 @@
+// Reat and Material-UI
 import PropTypes from "prop-types";
 import { useState, useEffect } from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
+// Custom Components for Routine Session
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+// Common Components
 import { useTheme } from '@mui/material/styles';
+// Icons & Images
+import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
+import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
+import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 
 export const RestTime2 = ({ title = "Time for resting", trigger, duration, onComplete }) => {
-  const [count, setCount] = useState(duration);
-  const [isVisible, setIsVisible] = useState(false);
   const theme = useTheme();
+  const [isVisible, setIsVisible] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
     console.log(`Rest timer triggered: ${duration} seconds`);
     if (trigger) {
       setIsVisible(true);
-      setCount(duration);
+      setIsPlaying(true);
     }
   }, [trigger]);
 
-  useEffect(() => {
-    let timer;
-    if (isVisible && count > 0) {
-      timer = setTimeout(() => {
-        setCount(count - 1);
-      }, 1000);
-    } else if (count === 0 && isVisible) {
-      setIsVisible(false);
-      // Notify the parent component that the countdown is complete
-      onComplete(); 
-    }
+  const togglePlayPause = () => {
+    setIsPlaying(prev => !prev);
+  };
 
-    return () => clearTimeout(timer);
-  }, [count, isVisible, onComplete]);
-
+  const handleTimerComplete = () => {
+    setIsVisible(false);
+    onComplete();
+  };
+  
   if (!isVisible) return null;
 
   return (
@@ -52,9 +53,10 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
       }}
     >
       <CountdownCircleTimer
-        isPlaying={trigger}
+        isPlaying={isPlaying}
         duration={duration}
         colors={theme.palette.secondary.main}
+        onComplete={handleTimerComplete}
       >
         {({ remainingTime }) => (
           <Typography
@@ -73,6 +75,35 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
       >
         {title}
       </Typography>
+
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: 2,
+        }}
+      >
+        {/* Puase & Play */}
+        <IconButton 
+          onClick={togglePlayPause}
+          onMouseDown={(e) => e.preventDefault()}
+          style={{ fontSize: 50, color: "#fff" }}>
+          {isPlaying ? (
+            <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
+          ) : (
+            <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+          )}
+        </IconButton>
+
+        {/* Next Exercise */}
+        <IconButton 
+          onClick={handleTimerComplete}
+          onMouseDown={(e) => e.preventDefault()}
+          style={{ fontSize: 50, color: "#fff" }}>
+          <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
+        </IconButton>
+      </Box>
     </Box>
   );
 };

@@ -7,3 +7,5 @@ export { AngleMeter2 } from "./AngleMeter2.jsx";
 export { RestTime } from "./RestTime.jsx";
 export { RestTime2 } from "./RestTime2.jsx";
 export { MetricCard } from "./MetricCard.jsx";
+export { DemoExercise } from "./DemoExercise.jsx";
+export { Logo } from "./Logo.jsx";
