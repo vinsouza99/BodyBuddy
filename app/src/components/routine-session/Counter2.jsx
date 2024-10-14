@@ -1,11 +1,16 @@
+// React and Material-UI
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
+// Custom Components for Routine Session
+import { useLandscapeMode } from "./useLandscapeMode";
+// Common Components
 import { useTheme } from '@mui/material/styles';
 
 export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete }) => {
-  const [completed, setCompleted] = useState(true);
   const theme = useTheme();
+  const isLandscapeMode = useLandscapeMode();
+  const [completed, setCompleted] = useState(true);
 
   useEffect(() => {
     if (count < target) {
@@ -22,8 +27,11 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
   return (
     <Box sx={{ fontWeight: "bold", color: `${theme.palette.secondary.main}` }}>
       <Typography
-        variant="h6"
-        component="div"
+        sx={{
+          fontWeight: 'normal',
+          fontSize: isLandscapeMode ? '1rem' : '1.2rem',
+          textAlign: 'center',
+        }}
       >
         {title}
       </Typography>
@@ -35,15 +43,21 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
         }}
       >
         <Typography
-          variant="h2"
-          component="span"
+          sx={{
+            fontWeight: 'bold',
+            fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+            textAlign: 'center',
+          }}
         >
           {count}
         </Typography>
         <Typography
-          variant="h6"
-          component="span"
-          sx={{ marginLeft: "8px"}}
+          sx={{
+            fontWeight: 'bold',
+            fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+            textAlign: 'center',
+            marginLeft: 1,
+          }}
         >
           {target ? `/ ${target}` : ''}
         </Typography>

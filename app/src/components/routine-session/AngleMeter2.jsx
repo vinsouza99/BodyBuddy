@@ -1,7 +1,10 @@
+// React and Material-UI
 import PropTypes from "prop-types";
 import { Box, Typography } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
+// Custom Components for Routine Session
 import { useLandscapeMode } from './useLandscapeMode';
+// Common Components
 import { useTheme } from '@mui/material/styles';
 
 export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
@@ -44,12 +47,12 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
       }}
     >
       <Typography
-        variant="h2"
-        component="div"
         sx={{ 
-          fontWeight: 'bold', 
+          fontWeight: 'bold',
+          fontSize: isLandscapeMode ? '1.2rem' : '1.5rem',
           color: `${theme.palette.secondary.main}`,
           textAlign: 'left',
+          
         }}
       >
         {`${Math.round(widthPercentage)}% Posture corrects`}

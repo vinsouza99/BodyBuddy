@@ -1,24 +1,28 @@
-// Reat and Material-UI
+// React and Material-UI
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   Box,
-  Button,
   Typography,
   Snackbar,
   List,
   ListItem,
   ListItemText,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   IconButton,
 } from "@mui/material";
 // Custom Components for Routine Session
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
-import { Counter2, AngleMeter2, RestTime2, MetricCard, DemoExercise, Logo } from "../components/routine-session";
+import { 
+  Counter2, 
+  AngleMeter2, 
+  RestTime2, 
+  MetricCard, 
+  DemoExercise, 
+  Logo, 
+  ExitRoutineSessionModal,
+  CompleteRoutineSessionModal,
+} from "../components/routine-session";
 import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useLandscapeMode } from "../components/routine-session/useLandscapeMode";
@@ -33,10 +37,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import BodyBuddy from "../assets/bodybuddy_logo_color.svg";
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -54,12 +57,14 @@ const canvasStyles = {
   left: 0,
 };
 
-export const RoutineSession = ({title = "Routine Session", record = false}) => {
+export const RoutineSession = ({title = "Routine Session"}) => {
   const theme = useTheme();
   const { user } = useAuth(); // For session management
-  const { routineId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { routineId } = useParams();
   const isLandscapeMode = useLandscapeMode();
+  const { record = false } = location.state || {}; // Receive from the StartRoutineModal as a prop
   const angleChangeThreshold = 3;
   let previousAngle = null;
 
@@ -755,61 +760,12 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
             <CloseIcon />
           </IconButton>
 
-          {/* Quit Dialogue */}
-          <Dialog
+          {/* Quit Routine SEssion Dialogue */}
+          <ExitRoutineSessionModal
             open={isConfirmDialogOpen}
             onClose={handleCancelQuit}
-            fullWidth
-            maxWidth="sm"
-            sx={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
-          >
-            <DialogTitle sx={{ textAlign: 'center' }}>
-              <ErrorOutlineIcon style={{ fontSize: 50 }} />
-              <IconButton
-                aria-label="close"
-                onClick={handleCancelQuit}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: 8,
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </DialogTitle>
-            <DialogContent
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                width: '70%',
-                margin: '0 auto',
-                fontSize: '1.2rem',
-              }}
-            >
-              <p>You haven&apos;t completed the routine yet. Save progress and continue later?</p>
-            </DialogContent>
-            <DialogActions
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '60%',
-                margin: '0 auto',
-                gap: 2,
-                marginBottom: '2rem',
-              }}
-            >
-              <Button variant="outlined" color="secondary" sx={{ fontSize: '1.2rem' }} fullWidth disabled>
-                Save and continue later
-              </Button>
-              <Button variant="contained" onClick={handleConfirmQuit} color="primary" sx={{ fontSize: '1.2rem' }} fullWidth>
-                Exit
-              </Button>
-            </DialogActions>
-          </Dialog>
+            onComplete={handleConfirmQuit}
+          />
 
           {/* Exercise Counter */}
           <Box
@@ -880,7 +836,8 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
               key={selectedExerciseIndex} // To reset timer when exercise changes
               isPlaying={!isResting}
               duration={routine[selectedExerciseIndex]?.duration || 0}
-              size={isLandscapeMode ? 100 : 120} 
+              size={isLandscapeMode ? 100 : 120}
+              strokeWidth={isLandscapeMode ? 6 : 12}
               colors={theme.palette.secondary.main}
               onComplete={incrementSetsCount}
             >
@@ -1008,75 +965,10 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
       />
 
       {/* Routine Completion Modal */}
-      <Dialog
-        open={isFinished}
-        onClose={() => setIsFinished(false)}
-        fullScreen
-      >
-        <DialogContent
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-            width: '50%',
-            margin: '0 auto',
-            overflow: 'hidden',
-          }}
-        >
-          <Box
-            component="img"
-            src={BodyBuddy}
-            alt="Completed Exercise"
-            sx={{
-              maxHeight: isLandscapeMode ? '100px' : '300px',
-              objectFit: 'contain',
-              marginBottom: isLandscapeMode ? 2 : 4,
-            }}
-          />
-          <Typography
-            sx={{
-              fontWeight: 'normal',
-              fontSize: isLandscapeMode ? '1rem' : '1.2rem',
-              textAlign: 'center',
-              marginBottom: isLandscapeMode ? 2 : 4,
-            }}>
-            Yay! You&apos;ve completed exercising. <br />
-            Let&apos;s see what you&apos;ve achieved today!
-          </Typography>
-          <Box 
-            sx={{
-              display: 'flex', 
-              justifyContent: 'center', 
-              gap: 4, 
-              marginBottom: isLandscapeMode ? 0 : 4 }}>
-            <MetricCard title="Mins" />
-            <MetricCard title="Calories" />
-            <MetricCard title="Score" />
-          </Box>
-          <Button 
-            variant="outlined" 
-            sx={{
-              width: '70%',
-              fontSize: isLandscapeMode ? '1rem' : '1.2rem',
-              marginBottom: 2,
-            }} 
-            disabled
-          >
-            Check my upcoming schedule
-          </Button>
-          <Button
-            variant="contained" 
-            sx={{ 
-              width: '70%', 
-              fontSize: isLandscapeMode ? '1rem' : '1.2rem'
-            }} 
-            onClick={handleMoveToTrainingPage}>
-            Go Back to Training Page
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <CompleteRoutineSessionModal 
+        open={isFinished} 
+        onComplete={handleMoveToTrainingPage}
+      />
     </>
   );
 };

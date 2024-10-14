@@ -7,4 +7,6 @@ export { RestTime } from "./RestTime.jsx"; // Deprecated
 export { RestTime2 } from "./RestTime2.jsx";
 export { MetricCard } from "./MetricCard.jsx";
 export { DemoExercise } from "./DemoExercise.jsx";
+export { ExitRoutineSessionModal } from "./ExitRoutineSessionModal.jsx";
+export { CompleteRoutineSessionModal } from "./CompleteRoutineSessionModal.jsx";
 export { Logo } from "./Logo.jsx";
