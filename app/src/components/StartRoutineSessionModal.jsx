@@ -71,7 +71,7 @@ export const StartRoutineSessionModal = ( {open = false, routineId = null, onClo
           <CloseIcon />
         </IconButton>
         <Box textAlign="center">
-          {record === 'true' ? <PhotoCameraIcon fontSize="large" /> : <NoPhotographyIcon fontSize="large" />}
+          {record ? <PhotoCameraIcon fontSize="large" /> : <NoPhotographyIcon fontSize="large" />}
         </Box>
         <Typography textAlign="center">
           Would you like to record your exercise session?
