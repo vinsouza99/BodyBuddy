@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 // Custom Components for Routine Session
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useLandscapeMode } from './useLandscapeMode';
 // Common Components
 import { useTheme } from '@mui/material/styles';
 // Icons & Images
@@ -15,6 +16,7 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
   const theme = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const isLandscapeMode = useLandscapeMode();
 
   useEffect(() => {
     if (trigger) {
@@ -54,6 +56,7 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
       <CountdownCircleTimer
         isPlaying={isPlaying}
         duration={duration}
+        size={isLandscapeMode ? 100 : 180}
         colors={theme.palette.secondary.main}
         onComplete={handleTimerComplete}
       >
@@ -68,9 +71,12 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
         )}
       </CountdownCircleTimer>
       <Typography
-        variant="h6" 
         component="div"
-        sx={{ fontWeight: "bold", mt: 5 }}
+        sx={{ 
+          fontWeight: "bold", 
+          mt: 2,
+          fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+        }}
       >
         {title}
       </Typography>

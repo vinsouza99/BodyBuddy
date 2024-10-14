@@ -10,7 +10,6 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -22,6 +21,7 @@ import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-
 import { Counter2, AngleMeter2, RestTime2, MetricCard, DemoExercise, Logo } from "../components/routine-session";
 import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useLandscapeMode } from "../components/routine-session/useLandscapeMode";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { useTheme } from '@mui/material/styles';
@@ -30,7 +30,6 @@ import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
@@ -60,6 +59,7 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
   const { user } = useAuth(); // For session management
   const { routineId } = useParams();
   const navigate = useNavigate();
+  const isLandscapeMode = useLandscapeMode();
   const angleChangeThreshold = 3;
   let previousAngle = null;
 
@@ -837,7 +837,7 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
               position: 'absolute',
               bottom: '10px',
               width: '100%',
-              height: '200px',
+              height: isLandscapeMode ? '100px' : '150px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -852,7 +852,7 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
               alt="exercise image"
               sx={{
                 width: '20%',
-                height: '200px',
+                height: isLandscapeMode ? '100px' : '150px',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
                 borderRadius: '15px',
@@ -879,7 +879,8 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
             <CountdownCircleTimer
               key={selectedExerciseIndex} // To reset timer when exercise changes
               isPlaying={!isResting}
-              duration={routine[selectedExerciseIndex]?.duration || 0} 
+              duration={routine[selectedExerciseIndex]?.duration || 0}
+              size={isLandscapeMode ? 100 : 120} 
               colors={theme.palette.secondary.main}
               onComplete={incrementSetsCount}
             >
@@ -917,12 +918,10 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
               }}
             >
               <Typography
-                variant="h4"
-                component="h1"
                 gutterBottom
                 onClick={handleToggleExerciseMenu} 
                 sx={{
-                  fontSize: "1.5rem",
+                  fontSize: isLandscapeMode ? "1.2rem" : "1.5rem",
                   fontWeight: "bold",
                   textAlign: "right",
                   display: 'flex',
@@ -965,21 +964,18 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
                           padding: "0.2rem 0.5rem",
                         }}
                       >
-                        <ListItemIcon>
-                          <FitnessCenterIcon />
-                        </ListItemIcon>
                         <ListItemText
                           primary={exercise.name}
                           secondary={exercise.goal}
                           primaryTypographyProps={{
                             sx: {
-                              fontSize: "1.0rem",
+                              fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               fontWeight: "bold",
                             },
                           }}
                           secondaryTypographyProps={{
                             sx: { 
-                              fontSize: "1.0rem",
+                              fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               color: index === 0 ? "white" : "black",
                             }
                           }}
@@ -1034,24 +1030,49 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
             src={BodyBuddy}
             alt="Completed Exercise"
             sx={{
-              maxHeight: '300px',
+              maxHeight: isLandscapeMode ? '100px' : '300px',
               objectFit: 'contain',
-              marginBottom: 4,
+              marginBottom: isLandscapeMode ? 2 : 4,
             }}
           />
-          <Typography variant="h6" sx={{ fontWeight: 'normal', marginBottom: 4, textAlign: 'center' }}>
+          <Typography
+            sx={{
+              fontWeight: 'normal',
+              fontSize: isLandscapeMode ? '1rem' : '1.2rem',
+              textAlign: 'center',
+              marginBottom: isLandscapeMode ? 2 : 4,
+            }}>
             Yay! You&apos;ve completed exercising. <br />
             Let&apos;s see what you&apos;ve achieved today!
           </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
+          <Box 
+            sx={{
+              display: 'flex', 
+              justifyContent: 'center', 
+              gap: 4, 
+              marginBottom: isLandscapeMode ? 0 : 4 }}>
             <MetricCard title="Mins" />
             <MetricCard title="Calories" />
             <MetricCard title="Score" />
           </Box>
-          <Button variant="outlined" sx={{ width: '50%', marginBottom: 2, fontSize: '1.2rem' }} disabled>
+          <Button 
+            variant="outlined" 
+            sx={{
+              width: '70%',
+              fontSize: isLandscapeMode ? '1rem' : '1.2rem',
+              marginBottom: 2,
+            }} 
+            disabled
+          >
             Check my upcoming schedule
           </Button>
-          <Button variant="contained" sx={{ width: '50%', fontSize: '1.2rem'}} onClick={handleMoveToTrainingPage}>
+          <Button
+            variant="contained" 
+            sx={{ 
+              width: '70%', 
+              fontSize: isLandscapeMode ? '1rem' : '1.2rem'
+            }} 
+            onClick={handleMoveToTrainingPage}>
             Go Back to Training Page
           </Button>
         </DialogContent>

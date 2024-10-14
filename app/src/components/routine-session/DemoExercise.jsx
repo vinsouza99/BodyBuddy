@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Box, Typography, IconButton, Button } from '@mui/material';
 // Custom Components for Routine Session
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useLandscapeMode } from './useLandscapeMode';
 // Common Components
 import { useTheme } from '@mui/material/styles';
 // Icons & Images
@@ -14,6 +15,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=null, nextExerciseInfo=null, onComplete, skipExercise }) => {
   const theme = useTheme();
+  const isLandscapeMode = useLandscapeMode();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const [timerKey, setTimerKey] = useState(0); // to reset the timer
@@ -47,8 +49,8 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
         position: 'absolute',
         top: '0px',
         left: '0px',
-        width: '100%',
-        height: '100%',
+        width: '100vw',
+        height: '100vh',
         backgroundColor: 'rgba(0, 0, 0, 0.9)',
         display: 'flex',
         flexDirection: 'column',
@@ -67,11 +69,12 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
         }}
       >
         <Typography
-          variant="h2" 
+          // variant="h2" 
           component="div"
           sx={{
             display: 'flex',
             alignItems: 'center',
+            fontSize: isLandscapeMode ? '1.2rem' : '2rem',
           }}
         >
           <ErrorOutlineIcon style={{ fontSize: 50, marginRight: 10 }} />
@@ -98,7 +101,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
             alt="exercise image"
             sx={{
               width: '100%',
-              height: '500px',
+              height: '40vh',
               objectFit: 'contain',
               backgroundColor: 'rgba(255, 255, 255)',
               borderRadius: '15px',
@@ -109,28 +112,31 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 2,
+              gap: 3,
               width: '100%',
               marginTop: 3,
             }}
           >
             <Typography
               component="div"
-              sx={{ fontWeight: "bold", mr: 5 }}
+              sx={{ fontWeight: "bold" }}
             >
               Next &gt;
             </Typography>
             <Typography
               component="div"
-              sx={{ fontWeight: "bold", mr: 5 }}
+              sx={{ fontWeight: "bold" }}
             >
-              {nextExerciseInfo ? nextExerciseInfo.name : 'No Exercise Available'}
+              {nextExerciseInfo ? nextExerciseInfo.name : 'N/A'}
             </Typography>
             <Typography
               component="div"
-              sx={{ fontWeight: "normal", mr: 5 }}
+              sx={{ 
+                fontWeight: "normal",
+                display: isLandscapeMode ? 'none' : 'block',
+              }}
             >
-              {nextExerciseInfo ? nextExerciseInfo.goal : 'No Exercise Available'}
+              {nextExerciseInfo ? nextExerciseInfo.goal : 'N/A'}
             </Typography>
             <Button
               onClick={handleSkipExercise}
@@ -161,14 +167,17 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
             key={timerKey}
             isPlaying={isPlaying}
             duration={duration}
+            size={isLandscapeMode ? 100 : 180}
             colors={theme.palette.secondary.main}
             onComplete={handleTimerComplete}
           >
             {({ remainingTime }) => (
               <Typography
-                variant="h1"
                 component="div"
-                sx={{ fontWeight: "bold" }}
+                sx={{ 
+                  fontWeight: "bold",
+                  fontSize: isLandscapeMode ? '1.5rem' : '3rem',
+                }}
               >
                 {remainingTime}
               </Typography>
@@ -176,16 +185,23 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
           </CountdownCircleTimer>
 
           <Typography
-            variant="h2" 
             component="div"
-            sx={{ fontWeight: "bold", mt: 5 }}
+            sx={{
+              fontWeight: "bold", 
+              mt: 2,
+              fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+            }}
           >
             {currentExerciseInfo.name}
           </Typography>
           <Typography
-            variant="h6" 
             component="div"
-            sx={{ fontWeight: "normal", mt: 2, mb: 5 }}
+            sx={{
+              fontWeight: "normal",
+              fontSize: isLandscapeMode ? '1rem' : '1.5rem',
+              mt: 2,
+              mb: 2,
+            }}
           >
             {currentExerciseInfo.goal}
           </Typography>
