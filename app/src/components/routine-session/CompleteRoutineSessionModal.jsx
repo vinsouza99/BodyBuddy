@@ -94,6 +94,5 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false }
 // Defining prop types
 CompleteRoutineSessionModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
   onComplete: PropTypes.func.isRequired,
 }
