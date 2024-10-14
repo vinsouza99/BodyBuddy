@@ -31,6 +31,11 @@ const theme = createTheme({
       dark: "#3CB534", // Darker shade for hover effects (1 shade darker)
       contrastText: "#FFFFFF", // Text color for accent buttons
     },
+    background: {
+      default: "#fafafa", // Default background color
+      paper: "#fff", // Background color for paper components
+      light: "#ccc", // Light background color
+    },
     text: {
       // Black
       primary: "#000000", // Primary text color
@@ -56,10 +61,6 @@ const theme = createTheme({
       light: "#03a9f4", // Lighter info color
       dark: "#01579b", // Darker info color
       contrastText: "#fff", // Text color for info buttons
-    },
-    background: {
-      default: "#fafafa", // Default background color
-      paper: "#fff", // Background color for paper components
     },
     action: {
       active: "#000000", // Active state color
