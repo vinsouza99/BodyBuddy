@@ -19,7 +19,6 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
   const [timerKey, setTimerKey] = useState(0); // to reset the timer
 
   useEffect(() => {
-    console.log(`Rest timer triggered: ${duration} seconds`);
     if (trigger) {
       setIsVisible(true);
       setIsPlaying(true);

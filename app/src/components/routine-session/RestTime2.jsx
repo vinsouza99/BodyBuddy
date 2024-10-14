@@ -17,7 +17,6 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
   const [isPlaying, setIsPlaying] = useState(true);
 
   useEffect(() => {
-    console.log(`Rest timer triggered: ${duration} seconds`);
     if (trigger) {
       setIsVisible(true);
       setIsPlaying(true);
