@@ -743,18 +743,21 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             onClick={handleQuitRoutine} 
             aria-label="close"
             sx={{
+              // Layout and positioning
               position: 'absolute',
               top: '10px',
               right: '10px',
-              zIndex: 1000,
+              zIndex: 2000,
+              // Box model
+              padding: '0.5rem',
+              borderRadius: '50%',
+              // Visual effects
               fontSize: '2.5rem',
               color: 'white',
               backgroundColor: '#333333',
-              padding: '0.5rem',
-              borderRadius: '50%',
               '&:hover': {
                 backgroundColor: '#4F4F4F',
-              }
+              },
             }}
           >
             <CloseIcon />
@@ -837,7 +840,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               isPlaying={!isResting}
               duration={routine[selectedExerciseIndex]?.duration || 0}
               size={isLandscapeMode ? 100 : 120}
-              strokeWidth={isLandscapeMode ? 6 : 12}
+              strokeWidth={isLandscapeMode ? 6 : 8}
               colors={theme.palette.secondary.main}
               onComplete={incrementSetsCount}
             >

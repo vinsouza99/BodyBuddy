@@ -23,13 +23,13 @@ const modalStyle = {
   width: '100vw',
   height: '100vh',
   padding: 4,
-  borderRadius: '15px',
   backgroundColor: 'rgba(0, 0, 0, 0.9)',
   // Flexbox alignment
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
+  gap: 2,
   // Visual effects
   color: '#fff',
 };
@@ -69,22 +69,6 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
       open={trigger}
     >
       <Box sx={modalStyle}>
-      {/* <Box
-        sx={{
-          position: 'absolute',
-          top: '0px',
-          left: '0px',
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.9)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000,
-          color: '#fff',
-        }}
-      > */}
         <Box
           sx={{
             width: '90%',
@@ -127,7 +111,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               alt="exercise image"
               sx={{
                 width: '100%',
-                height: '40vh',
+                height: isLandscapeMode ? '40vh' : '50vh',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
                 borderRadius: '15px',
@@ -190,7 +174,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               isPlaying={isPlaying}
               duration={duration}
               size={isLandscapeMode ? 100 : 180}
-              strokeWidth={isLandscapeMode ? 6 : 12}
+              strokeWidth={isLandscapeMode ? 6 : 8}
               colors={theme.palette.secondary.main}
               onComplete={handleTimerComplete}
             >

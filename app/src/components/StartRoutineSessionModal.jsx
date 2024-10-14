@@ -106,6 +106,6 @@ export const StartRoutineSessionModal = ( {open = false, routineId = null, onClo
 // Defining prop types
 StartRoutineSessionModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  routineId: PropTypes.number.isRequired,
+  routineId: PropTypes.string.isRequired,
   onClose: PropTypes.func.isRequired,
 }
