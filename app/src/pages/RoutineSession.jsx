@@ -180,7 +180,7 @@ export const RoutineSession = ({title = "Routine Session", record = false}) => {
       // Stop recording
       if (isRecording) stopRecording();
     };
-  }, [webcamRunning]);
+  }, [webcamRunning, record, isRecording]);
 
   // Reset selected exercise index when routine changes
   useEffect(() => {

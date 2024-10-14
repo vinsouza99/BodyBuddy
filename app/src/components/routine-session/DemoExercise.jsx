@@ -12,7 +12,7 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
-export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerciseInfo, onComplete, skipExercise }) => {
+export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=null, nextExerciseInfo=null, onComplete, skipExercise }) => {
   const theme = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -231,7 +231,7 @@ DemoExercise.propTypes = {
   trigger: PropTypes.bool.isRequired,
   duration: PropTypes.number.isRequired,
   currentExerciseInfo: PropTypes.object.isRequired,
-  nextExerciseInfo: PropTypes.object.isRequired,
+  nextExerciseInfo: PropTypes.object,
   onComplete: PropTypes.func.isRequired,
   skipExercise: PropTypes.func.isRequired,
 };
