@@ -35,6 +35,8 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import BodyBuddy from "../assets/bodybuddy_logo_color.svg";
 // Style Object (for sx prop)
 const videoStyles = {
@@ -53,7 +55,7 @@ const canvasStyles = {
   left: 0,
 };
 
-export const RoutineSession = ({title = "Routine Session"}) => {
+export const RoutineSession = ({title = "Routine Session", record = false}) => {
   const theme = useTheme();
   const { user } = useAuth(); // For session management
   const { routineId } = useParams();
@@ -62,6 +64,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   let previousAngle = null;
 
   // --- State ---
+  // NOTE: useReducer might be a better choice for managing multiple states
   const [routine, setRoutine] = useState([]);
   const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
@@ -73,11 +76,12 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
+  const [isExerciseMenuOpen, setIsExerciseMenuOpen] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [isResting, setIsResting] = useState(true);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [isResting, setIsResting] = useState(true);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [restForSetIncrement, setRestForSetIncrement] = useState(false);
   const [restForNextExercise, setRestForNextExercise] = useState(true);
 
@@ -153,7 +157,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   }, []);
 
   // Enable webcam when videoRef is available
-  useEffect(() => {
+  useEffect( () => {
     if (videoRef.current) {
       toggleWebCam();
     }
@@ -164,6 +168,19 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       if (webcamRunning) toggleWebCam();
     };
   }, [videoRef.current]);
+
+  // Enable recoding when webcam is running (ONLY WHEN RECORDING IS APPROVED)
+  useEffect(() => {
+    if (webcamRunning && record && !isRecording) {
+      toggleRecording();
+    }
+
+    // Cleanup
+    return () => {
+      // Stop recording
+      if (isRecording) stopRecording();
+    };
+  }, [webcamRunning]);
 
   // Reset selected exercise index when routine changes
   useEffect(() => {
@@ -188,7 +205,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
   // Start prediction when webcam is running and not resting
   useEffect(() => {
-    console.log(exerciseCounter, webcamRunning, isResting);
     if (exerciseCounter && webcamRunning && !isResting) {
       predictPosture(); // Start prediction when webcam is running and not resting
     }
@@ -224,6 +240,13 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   }, [postureAlert]);
 
+  // Upload user activity log
+  useEffect(() => {
+    if ( isFinished && exerciseVideo ) {
+      registerUserActivity();
+    }
+  }, [isFinished, exerciseVideo]);
+
   
   // ---------------------------------------------------------
   //                      Event Handlers
@@ -246,7 +269,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.error("Error uploading file:", error);
       } else {
         console.log("File uploaded successfully:", data);
-        console.log("Public URL:", `${supabaseStorageUrl}${fileName}`);
+        console.log("Public URL:", );
         setExerciseVideo(`${supabaseStorageUrl}${fileName}`);
         setRecordedChunks([]);
 
@@ -256,20 +279,21 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   };
 
+  // NOTE: This function is not used in the current implementation
   // Download recording
-  const handleDownloadRecording = () => {
-    if (recordedChunks.length) {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recorded_video.webm";
-      document.body.appendChild(a);
-      a.click();
-      setRecordedChunks([]);
-      console.log("Recording downloaded");
-    }
-  };
+  // const handleDownloadRecording = () => {
+  //   if (recordedChunks.length) {
+  //     const blob = new Blob(recordedChunks, { type: "video/webm" });
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "recorded_video.webm";
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     setRecordedChunks([]);
+  //     console.log("Recording downloaded");
+  //   }
+  // };
 
   // Handle snackbar close
   const handleCloseSnackbar = () => {
@@ -281,51 +305,43 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     // Diablog for confirmation
     setIsConfirmDialogOpen(true)
   };
+
+  // Handle quitting the routine (Confirm)
   const handleConfirmQuit = () => {
     setIsConfirmDialogOpen(false);
     // Disable Webcam
     if (webcamRunning) toggleWebCam();
     handleMoveToTrainingPage();
   };
+
+  // Handle quitting the routine (Cancel)
   const handleCancelQuit = () => {
     setIsConfirmDialogOpen(false);
   };
 
   // Handle finishing the routine (Insert log info to the database)
-  const handleFinishRoutine = () => {
+  const handleFinishRoutine = async () => {
     // Disable Webcam
     if (webcamRunning) toggleWebCam();
 
-    // Retrieve routine/program information from the database
-    const registerHistory = async () => {
-      try {
-        const completedAt = new Date().toISOString();
-        const newHistoryObj = {
-          user_id: user.id,
-          created_at: completedAt,
-          routine_id: routineId,
-          program_id: null,
-          recording_URL: exerciseVideo,
-          description: null,
-        };
-        // const response = await server.add("Log", newHitoryObj);
-        const response = await axiosClient.post("Log", newHistoryObj);
-        console.log(response);
-        if (Number(response.status) !== 201) {
-          throw new Error("Failed to insert log info");
-        }
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error inserting log info:", error);
-      }
-    };
-    registerHistory();
+    // Stop recording and upload the video before registering the history
+    if (isRecording) {
+      stopRecording();
+      handleUploadRecording();
+    }
+ 
+    // Show completion modal
     setIsFinished(true);
   };
 
   // Handle moving to the training page
   const handleMoveToTrainingPage = () => {
     navigate("/training");
+  };
+
+  // Handle toggling the exercise menu
+  const handleToggleExerciseMenu = () => {
+    setIsExerciseMenuOpen((prev) => !prev);
   };
 
   // ---------------------------------------------------------
@@ -442,7 +458,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         }
       };
 
-      recorder.start();
+      recorder.start(1000);
       setMediaRecorder(recorder);
       setIsRecording(true);
       console.log("Recording started");
@@ -473,7 +489,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         return null;
       }
     } else {
-      console.error("Selected exercise is not valid.");
       return null;
     }
   }
@@ -482,7 +497,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   const predictPosture = async () => {
     // Skip posture detection during rest time
     if (isResting) {
-      console.log("Rest time. Skipping posture detection.");
+      console.log("Resting time. Skipping posture detection.");
       return;
     }
 
@@ -595,6 +610,30 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
   }, []);
 
+  // Insert user activity log info to the database
+  const registerUserActivity = async () => {
+    try {
+      const completedAt = new Date().toISOString();
+      const newHistoryObj = {
+        user_id: user.id,
+        created_at: completedAt,
+        routine_id: routineId,
+        program_id: null,
+        recording_URL: exerciseVideo,
+        description: null,
+      };
+      
+      const response = await axiosClient.post("Log", newHistoryObj);
+      if (Number(response.status) !== 201) {
+        throw new Error("Failed to insert log info");
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error inserting log info:", error);
+      throw error; // Throw to handle error where the function is called
+    }
+  };
+
   // Start Rest Time Countdown
   const startRestCountdown = (breakType) => {
     setIsResting(true);
@@ -705,11 +744,11 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               zIndex: 1000,
               fontSize: '2.5rem',
               color: 'white',
-              backgroundColor: 'lightgray',
+              backgroundColor: '#333333',
               padding: '0.5rem',
               borderRadius: '50%',
               '&:hover': {
-                backgroundColor: 'darkgray',
+                backgroundColor: '#4F4F4F',
               }
             }}
           >
@@ -869,9 +908,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             {/* Exercise Menu */}
             <Box
               sx={{
+                position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                overflowY: 'auto',
+                justifyContent: 'flex-end',
                 width: '20%',
                 height: '100%',
               }}
@@ -880,19 +920,26 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 variant="h4"
                 component="h1"
                 gutterBottom
+                onClick={handleToggleExerciseMenu} 
                 sx={{
                   fontSize: "1.5rem",
                   fontWeight: "bold",
-                  textAlign: "left",
+                  textAlign: "right",
+                  display: 'flex',
+                  alignItems: 'center', 
+                  justifyContent: 'flex-end',
                   color: `${theme.palette.secondary.main}`,
+                  cursor: 'pointer',
                 }}
               >
-                Next ＞
+                Next {isExerciseMenuOpen ? <KeyboardArrowDownIcon sx={{ fontSize: '2rem' }} /> : <KeyboardArrowUpIcon sx={{ fontSize: '2rem' }} />}
               </Typography>
+
               <Box 
                 sx={{ 
-                  height: '100%',
-                  overflowY: "auto",
+                  maxHeight: isExerciseMenuOpen ? '200px' : '0',
+                  overflowY: "scroll",
+                  transition: 'max-Height 0.5s ease',
                   backgroundColor: 'rgba(255, 255, 255, 0.6)',
                 }}
               >
@@ -915,6 +962,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                               ? `${theme.palette.secondary.main}`
                               : "inherit",
                           opacity: index === 0 ? 0.6 : 1,
+                          padding: "0.2rem 0.5rem",
                         }}
                       >
                         <ListItemIcon>
@@ -978,6 +1026,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             height: '100%',
             width: '50%',
             margin: '0 auto',
+            overflow: 'hidden',
           }}
         >
           <Box
@@ -1014,4 +1063,5 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 // Defining prop types
 RoutineSession.propTypes = {
   title: PropTypes.string,
+  record: PropTypes.bool,
 };

@@ -50,7 +50,7 @@ export const DemoExercise = ({ trigger, duration, currentExerciseInfo, nextExerc
         left: '0px',
         width: '100%',
         height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        backgroundColor: 'rgba(0, 0, 0, 0.9)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
