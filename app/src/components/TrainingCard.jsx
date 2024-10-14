@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../components/ImageLists";
+import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 // import { theme } from "../../src/theme";
 
 const theme = createTheme({
@@ -83,43 +84,7 @@ const TrainingCard = ({ routine }) => {
               <Button onClick={handleOpen}>Learn More...</Button>
             </div>
             <div>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  <Typography variant="h6" component="h3" align="center">
-                    {/* Cocoy: display the routine description */}
-                    {selectedRoutine?.name}
-                  </Typography>
-                  <div>
-                    <Typography align="center">
-                      {/* Cocoy: display the routine name */}
-                      {selectedRoutine?.description}
-                    </Typography>
-
-                    <Typography variant="body2" align="center">
-                      {/*
-                        Cocoy: Check if the selected routine has exercises.
-                        If it does, map through them and display each exercise name.
-                        Otherwise, display "No exercises available".
-                      */}
-                      {selectedRoutine?.exercises?.length
-                        ? selectedRoutine.exercises.map((exercise, index) => (
-                            <div key={index}>{exercise.name}</div>
-                          ))
-                        : "No exercises available"}
-                    </Typography>
-                    <Box display="flex" justifyContent="center">
-                      <Button onClick={() => handleStartRoutine(routine.id)}>
-                        Start Routine
-                      </Button>
-                    </Box>
-                  </div>
-                </Box>
-              </Modal>
+              <StartRoutineSessionModal open = {open} routineId = {routine.id} onClose = {handleClose} />
             </div>
           </Box>
         </Paper>
