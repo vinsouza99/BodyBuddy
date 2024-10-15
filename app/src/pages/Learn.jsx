@@ -63,8 +63,8 @@ export const Learn = (props) => {
       // Log the exercises data
       console.log("Exercises Data:", exercisesData);
 
-      // Check if exercisesData is an array
-      setExercises(Array.isArray(exercisesData) ? exercisesData : []);
+      // Update the state with the loaded routines
+      setExercises(exercisesData);
     };
 
     loadData();
@@ -124,16 +124,13 @@ export const Learn = (props) => {
 
         {/* Grid to display LearningCard components */}
         <Grid container spacing={3}>
-          {Array.isArray(exercises) && exercises.length > 0 ? (
-            exercises.map((exercise, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                <LearningCard exercise={exercise} />
-              </Grid>
-            ))
-          ) : (
-            // Show a message if there are no exercises
-            <p>No exercises available.</p>
-          )}
+          {exercises.length > 0
+            ? exercises.map((exercise, index) => (
+                <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                  <LearningCard exercise={exercise} />
+                </Grid>
+              ))
+            : null}
         </Grid>
       </CustomTabPanel>
 
