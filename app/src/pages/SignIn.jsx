@@ -2,12 +2,11 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/AuthProvider.jsx";
 import {
   Button,
   TextField,
-  FormControlLabel,
-  Checkbox,
   Box,
   Typography,
   Container,
@@ -20,23 +19,14 @@ import { Onboarding } from "../components/Onboarding";
 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © BodyBuddy "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-
 export const SignIn = (props) => {
+  const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  // Initialization
   useEffect(() => {
     setPageTitle(props.title);
   }, []);
@@ -52,7 +42,7 @@ export const SignIn = (props) => {
     e.preventDefault();
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -60,7 +50,6 @@ export const SignIn = (props) => {
       if (error) {
         throw error;
       }
-      setUser(data.user);
     } catch (error) {
       setError(error.message);
       console.error("User failed to signed in", error);
@@ -197,7 +186,7 @@ export const SignIn = (props) => {
 
               {/* Start Here link */}
               <Typography variant="body2">
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <Button
                   variant="text"
                   color="primary"
