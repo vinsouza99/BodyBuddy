@@ -1,5 +1,6 @@
 import Grid from "@mui/material/Grid2";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ProgressBar from "../components/ProgressBar";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
@@ -20,10 +21,13 @@ import {
 } from "@mui/material";
 import "./CreateProgram.css";
 import { getAllGoals } from "../controllers/GoalsController.js";
+import { useAuth } from "../utils/AuthProvider.jsx";
 import { getResponse } from "../utils/openaiService.js";
 import { PromptInfo } from "../models/PromptInfo.js";
 
 const CreateProgram = () => {
+  const { user, handleSignOut } = useAuth();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState("female");
   const [primaryGoals, setPrimaryGoals] = useState([]);
@@ -245,19 +249,27 @@ const CreateProgram = () => {
     );
   }
   async function submitForm() {
-    try {
-      const response = await getResponse(
-        new PromptInfo(
-          gender,
-          primaryGoals,
-          pastExerciseFrequency,
-          intensity,
-          availability
-        )
-      );
-      console.log(response);
-    } catch (e) {
-      console.log(e);
+    /**
+     *  const [gender, setGender] = useState("female");
+  const [primaryGoals, setPrimaryGoals] = useState([]);
+  const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
+  const [intensity, setIntensity] = useState("");
+  const [availability, setAvailability] = useState([]);
+  const [primaryGoalsOptions, setPrimaryGoalsOptions] = useState([]);
+     */
+    const formResponse = {
+      gender: gender,
+      primaryGoals: primaryGoals,
+      pastExerciseFrequency: pastExerciseFrequency,
+      intensity: intensity,
+      availability: availability,
+    };
+    if (user) {
+      navigate("/dashboard", {
+        state: { userProgramPreferences: formResponse },
+      });
+    } else {
+      navigate("/signup", { state: { userProgramPreferences: formResponse } });
     }
   }
   return (

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -28,6 +28,8 @@ function Copyright() {
 }
 
 export const SignUp = (props) => {
+  const location = useLocation();
+  const { userProgramPreferences } = location.state;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -36,6 +38,7 @@ export const SignUp = (props) => {
 
   useEffect(() => {
     setPageTitle(props.title);
+    console.log(userProgramPreferences); //just to check if the signup is receiving the answers from the user
   }, []);
 
   const handleSignUp = async (e) => {
@@ -51,6 +54,7 @@ export const SignUp = (props) => {
           },
         },
       });
+      //TODO: use userProgramPreferences state and create the rows on User and UserSettings tables. Also, generate the program
 
       if (error) {
         throw error;
