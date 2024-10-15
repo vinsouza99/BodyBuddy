@@ -763,7 +763,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <CloseIcon />
           </IconButton>
 
-          {/* Quit Routine SEssion Dialogue */}
+          {/* Quit Routine Session Dialogue */}
           <ExitRoutineSessionModal
             open={isConfirmDialogOpen}
             onClose={handleCancelQuit}
@@ -796,7 +796,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               position: 'absolute',
               bottom: '10px',
               width: '100%',
-              height: isLandscapeMode ? '100px' : '150px',
+              height: isLandscapeMode ? '80px' : '100px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -811,7 +811,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               alt="exercise image"
               sx={{
                 width: '20%',
-                height: isLandscapeMode ? '100px' : '150px',
+                height: isLandscapeMode ? '80px' : '100px',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
                 borderRadius: '15px',
@@ -839,7 +839,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               key={selectedExerciseIndex} // To reset timer when exercise changes
               isPlaying={!isResting}
               duration={routine[selectedExerciseIndex]?.duration || 0}
-              size={isLandscapeMode ? 100 : 120}
+              size={isLandscapeMode ? 80 : 100}
               strokeWidth={isLandscapeMode ? 6 : 8}
               colors={theme.palette.secondary.main}
               onComplete={incrementSetsCount}
@@ -921,7 +921,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                               ? `${theme.palette.secondary.main}`
                               : "inherit",
                           opacity: index === 0 ? 0.6 : 1,
-                          padding: "0.2rem 0.5rem",
+                          padding: "0.25rem 0.5rem",
+                          margin: "0rem",
                         }}
                       >
                         <ListItemText
