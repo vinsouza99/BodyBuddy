@@ -1,11 +1,11 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import { UserSettings } from "./UserSettings.js";
+import { User } from "./User.js";
 
-const User = sequelize.define(
-  "User",
+const UserSettings = sequelize.define(
+  "UserSettings",
   {
-    id: {
+    user_id: {
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
@@ -42,12 +42,11 @@ const User = sequelize.define(
     },
   },
   {
-    tableName: "user",
+    tableName: "user_settings",
     timestamps: false,
   }
 );
-User.hasOne(UserSettings, {
-  foreignKey: "user_id",
-});
 
-export default User;
+UserSettings.belongsTo(User);
+
+export default UserSettings;

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -16,6 +16,7 @@ import {
 import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
+import { createUser } from "../controllers/UserController";
 
 // function Copyright() {
 //   return (
@@ -33,6 +34,8 @@ export const SignUp = (props) => {
   const [error, setError] = useState(null);
   const [name, setName] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { userProgramPreferences } = location.state;
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -55,7 +58,15 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
-      console.log("SUCCESS: User signed up", data);
+      const user = {
+        firstName: name,
+        settings: userProgramPreferences,
+      };
+      const { response, error2 } = await createUser(user);
+      if (error2) {
+        throw error2;
+      }
+      console.log("SUCCESS: User signed up", data, response);
       navigate("/dashboard");
     } catch (error) {
       setError(error.message);
@@ -93,7 +104,9 @@ export const SignUp = (props) => {
             </Box>
 
             {/* Welcome message */}
-            <Typography>We have created a perfect exercise plan for you!</Typography>
+            <Typography>
+              We have created a perfect exercise plan for you!
+            </Typography>
 
             <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
               Sign Up
@@ -164,7 +177,6 @@ export const SignUp = (props) => {
                   Sign In
                 </Button>
               </Typography>
-
             </Box>
           </Box>
         </Container>
