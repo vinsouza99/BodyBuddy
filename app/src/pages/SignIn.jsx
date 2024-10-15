@@ -70,7 +70,7 @@ export const SignIn = (props) => {
         provider: "google",
         options: {
           prompt: "select_account", // For testing, always display consent page
-          redirectTo: `${BASE_URL}dashboard/`,
+          redirectTo: `${BASE_URL}dashboard`,
         },
       });
 
