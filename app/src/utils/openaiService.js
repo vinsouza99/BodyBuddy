@@ -31,4 +31,4 @@ const getPromptText = (obj) => {
   return "";
 };
 
-export { generateProgram };
+export { generateProgram, getResponse };
