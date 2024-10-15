@@ -10,8 +10,6 @@ import Grid from "@mui/material/Grid2";
 import Box from '@mui/material/Box';
 
 
-
-
 export const TrainingProgram = (props) => {
   const { user, handleSignOut } = useAuth();
   const [programs, setPrograms] = useState([]); // Teru: Declare a state variable to hold the list of routines and a function to update it
