@@ -70,7 +70,7 @@ export function Landing() {
                   height: "100%",
                   objectFit: "cover",
                   opacity: currentSlide === index ? 1 : 0,
-                  transition: "opacity 1s ease-in-out",
+                  transition: "opacity 0.5s ease-in-out",
                 }}
               />
             ))}
@@ -139,7 +139,7 @@ export function Landing() {
           ) : (
             <>
               {/* Logo */}
-              <Box sx={{ marginBottom: 2 }}>
+              <Box sx={{ marginBottom: 1 }}>
                 <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
               </Box>
 
@@ -215,7 +215,7 @@ export function Landing() {
                 color="primary"
                 sx={{ marginBottom: 2 }}
                 component={NavLink}
-                to="/CreateProgram"
+                to="/create-program"
               >
                 Create my exercise plan
               </Button>
