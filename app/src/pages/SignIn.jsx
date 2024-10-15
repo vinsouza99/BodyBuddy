@@ -3,23 +3,20 @@ import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
 import { Link, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import {
-  Avatar,
   Button,
-  CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
   Box,
   Typography,
   Container,
-  Card,
-  CardContent,
   Divider,
-  Grid,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Grid from "@mui/material/Grid2";
 import GoogleIcon from "@mui/icons-material/Google";
+import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
@@ -86,21 +83,32 @@ export const SignIn = (props) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Card sx={{ boxShadow: 3 }}>
-        <CardContent>
+    <>
+      <Grid size={{ xs: 12, md: 8 }}>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 4,
+          }}
+        >
           <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
+            component="form"
+            noValidate
+            onSubmit={handleSignIn}
+            sx={{ mt: 1 }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
+            {/* Logo */}
+            <Box sx={{ mb: 1 }}>
+              <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
+            </Box>
+
+            {/* Welcome message */}
+            <Typography>Welcome back!</Typography>
+
+            <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
               Sign In
             </Typography>
 
@@ -116,74 +124,83 @@ export const SignIn = (props) => {
             </Button>
 
             {/* Divider */}
-            <Divider sx={{ width: "100%", my: 2 }}>or</Divider>
+            <Divider sx={{ width: "100%", mt: 2 }}>or</Divider>
 
             {/* Email & Password Sign In Form */}
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSignIn}
-              sx={{ mt: 1 }}
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              // autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            {error && <Typography color="error">{error}</Typography>}
+
+            {/* <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+              sx={{
+                color: "text.secondary",
+                justifyContent: "flex-start",
+                width: "100%",
+              }}
+            /> */}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
             >
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                // autoFocus
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {error && <Typography color="error">{error}</Typography>}
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-                sx={{
-                  color: "text.secondary",
-                  justifyContent: "flex-start",
-                  width: "100%",
-                }}
-              />
+              Sign In
+            </Button>
+
+            {/* Sign In link */}
+            <Typography variant="body2">
+              Don't have an account?{" "}
               <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                onClick={() => setIsSignIn(true)} // Set state to true when Sign In is clicked
+                variant="text"
+                color="primary"
+                component={NavLink}
+                to="/create-program"
               >
-                Sign In
+                Start here
               </Button>
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <Link to="/signup">
-                    Don&apos;t have an account? Sign Up
-                  </Link>
-                </Grid>
-              </Grid>
-            </Box>
+            </Typography>
           </Box>
-          <Box mt={5}>
-            <Copyright />
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+        </Container>
+      </Grid>
+      <Box>
+        {/* Disclaimer */}
+        <Typography variant="body2">
+          (*) BodyBuddy provides general fitness guidance and real-time feedback
+          to help improve your workout form. It is not a substitute for
+          professional medical advice, diagnosis, or treatment. Always consult
+          your physician before starting a new exercise program, especially if
+          you have any pre-existing medical conditions.
+        </Typography>
+      </Box>
+    </>
   );
 };
 
