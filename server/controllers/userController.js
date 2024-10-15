@@ -42,14 +42,25 @@ export const getUser = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { id, first_name, last_name, birthday, profile_picture_url } =
-      req.body;
-    const newUser = await User.create({
-      id, 
+    const {
+      id,
       first_name,
       last_name,
       birthday,
+      last_login,
+      is_active,
       profile_picture_url,
+      gender,
+    } = req.body;
+    const newUser = await User.create({
+      id,
+      first_name,
+      last_name,
+      birthday,
+      last_login,
+      is_active,
+      profile_picture_url,
+      gender,
     });
     res.status(201).json({
       status: "201",

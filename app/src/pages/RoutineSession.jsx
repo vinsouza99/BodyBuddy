@@ -1,27 +1,31 @@
-// Reat and Material-UI
+// React and Material-UI
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import {
   Box,
-  Button,
   Typography,
   Snackbar,
   List,
   ListItem,
   ListItemText,
-  ListItemIcon,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   IconButton,
 } from "@mui/material";
 // Custom Components for Routine Session
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
-import { Counter2, AngleMeter2, RestTime2, MetricCard, DemoExercise, Logo } from "../components/routine-session";
+import { 
+  Counter2, 
+  AngleMeter2, 
+  RestTime2, 
+  MetricCard, 
+  DemoExercise, 
+  Logo, 
+  ExitRoutineSessionModal,
+  CompleteRoutineSessionModal,
+} from "../components/routine-session";
 import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useLandscapeMode } from "../components/routine-session/useLandscapeMode";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { useTheme } from '@mui/material/styles';
@@ -30,12 +34,12 @@ import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
-import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import BodyBuddy from "../assets/bodybuddy_logo_color.svg";
+// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -56,12 +60,16 @@ const canvasStyles = {
 export const RoutineSession = ({title = "Routine Session"}) => {
   const theme = useTheme();
   const { user } = useAuth(); // For session management
-  const { routineId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { routineId } = useParams();
+  const isLandscapeMode = useLandscapeMode();
+  const { record = false } = location.state || {}; // Receive from the StartRoutineModal as a prop
   const angleChangeThreshold = 3;
   let previousAngle = null;
 
   // --- State ---
+  // NOTE: useReducer might be a better choice for managing multiple states
   const [routine, setRoutine] = useState([]);
   const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
@@ -73,11 +81,12 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
+  const [isExerciseMenuOpen, setIsExerciseMenuOpen] = useState(true);
   const [isRecording, setIsRecording] = useState(false);
-  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const [isResting, setIsResting] = useState(true);
   const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [isResting, setIsResting] = useState(true);
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [restForSetIncrement, setRestForSetIncrement] = useState(false);
   const [restForNextExercise, setRestForNextExercise] = useState(true);
 
@@ -153,7 +162,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   }, []);
 
   // Enable webcam when videoRef is available
-  useEffect(() => {
+  useEffect( () => {
     if (videoRef.current) {
       toggleWebCam();
     }
@@ -164,6 +173,19 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       if (webcamRunning) toggleWebCam();
     };
   }, [videoRef.current]);
+
+  // Enable recoding when webcam is running (ONLY WHEN RECORDING IS APPROVED)
+  useEffect(() => {
+    if (webcamRunning && record && !isRecording) {
+      toggleRecording();
+    }
+
+    // Cleanup
+    return () => {
+      // Stop recording
+      if (isRecording) stopRecording();
+    };
+  }, [webcamRunning, record, isRecording]);
 
   // Reset selected exercise index when routine changes
   useEffect(() => {
@@ -188,7 +210,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
   // Start prediction when webcam is running and not resting
   useEffect(() => {
-    console.log(exerciseCounter, webcamRunning, isResting);
     if (exerciseCounter && webcamRunning && !isResting) {
       predictPosture(); // Start prediction when webcam is running and not resting
     }
@@ -224,6 +245,13 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   }, [postureAlert]);
 
+  // Upload user activity log
+  useEffect(() => {
+    if ( isFinished && exerciseVideo ) {
+      registerUserActivity();
+    }
+  }, [isFinished, exerciseVideo]);
+
   
   // ---------------------------------------------------------
   //                      Event Handlers
@@ -246,7 +274,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.error("Error uploading file:", error);
       } else {
         console.log("File uploaded successfully:", data);
-        console.log("Public URL:", `${supabaseStorageUrl}${fileName}`);
+        console.log("Public URL:", );
         setExerciseVideo(`${supabaseStorageUrl}${fileName}`);
         setRecordedChunks([]);
 
@@ -256,20 +284,21 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   };
 
+  // NOTE: This function is not used in the current implementation
   // Download recording
-  const handleDownloadRecording = () => {
-    if (recordedChunks.length) {
-      const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "recorded_video.webm";
-      document.body.appendChild(a);
-      a.click();
-      setRecordedChunks([]);
-      console.log("Recording downloaded");
-    }
-  };
+  // const handleDownloadRecording = () => {
+  //   if (recordedChunks.length) {
+  //     const blob = new Blob(recordedChunks, { type: "video/webm" });
+  //     const url = URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "recorded_video.webm";
+  //     document.body.appendChild(a);
+  //     a.click();
+  //     setRecordedChunks([]);
+  //     console.log("Recording downloaded");
+  //   }
+  // };
 
   // Handle snackbar close
   const handleCloseSnackbar = () => {
@@ -281,51 +310,43 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     // Diablog for confirmation
     setIsConfirmDialogOpen(true)
   };
+
+  // Handle quitting the routine (Confirm)
   const handleConfirmQuit = () => {
     setIsConfirmDialogOpen(false);
     // Disable Webcam
     if (webcamRunning) toggleWebCam();
     handleMoveToTrainingPage();
   };
+
+  // Handle quitting the routine (Cancel)
   const handleCancelQuit = () => {
     setIsConfirmDialogOpen(false);
   };
 
   // Handle finishing the routine (Insert log info to the database)
-  const handleFinishRoutine = () => {
+  const handleFinishRoutine = async () => {
     // Disable Webcam
     if (webcamRunning) toggleWebCam();
 
-    // Retrieve routine/program information from the database
-    const registerHistory = async () => {
-      try {
-        const completedAt = new Date().toISOString();
-        const newHistoryObj = {
-          user_id: user.id,
-          created_at: completedAt,
-          routine_id: routineId,
-          program_id: null,
-          recording_URL: exerciseVideo,
-          description: null,
-        };
-        // const response = await server.add("Log", newHitoryObj);
-        const response = await axiosClient.post("Log", newHistoryObj);
-        console.log(response);
-        if (Number(response.status) !== 201) {
-          throw new Error("Failed to insert log info");
-        }
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error inserting log info:", error);
-      }
-    };
-    registerHistory();
+    // Stop recording and upload the video before registering the history
+    if (isRecording) {
+      stopRecording();
+      handleUploadRecording();
+    }
+ 
+    // Show completion modal
     setIsFinished(true);
   };
 
   // Handle moving to the training page
   const handleMoveToTrainingPage = () => {
     navigate("/training");
+  };
+
+  // Handle toggling the exercise menu
+  const handleToggleExerciseMenu = () => {
+    setIsExerciseMenuOpen((prev) => !prev);
   };
 
   // ---------------------------------------------------------
@@ -442,7 +463,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         }
       };
 
-      recorder.start();
+      recorder.start(1000);
       setMediaRecorder(recorder);
       setIsRecording(true);
       console.log("Recording started");
@@ -473,7 +494,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         return null;
       }
     } else {
-      console.error("Selected exercise is not valid.");
       return null;
     }
   }
@@ -482,7 +502,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   const predictPosture = async () => {
     // Skip posture detection during rest time
     if (isResting) {
-      console.log("Rest time. Skipping posture detection.");
+      console.log("Resting time. Skipping posture detection.");
       return;
     }
 
@@ -595,6 +615,30 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
   }, []);
 
+  // Insert user activity log info to the database
+  const registerUserActivity = async () => {
+    try {
+      const completedAt = new Date().toISOString();
+      const newHistoryObj = {
+        user_id: user.id,
+        created_at: completedAt,
+        routine_id: routineId,
+        program_id: null,
+        recording_URL: exerciseVideo,
+        description: null,
+      };
+      
+      const response = await axiosClient.post("Log", newHistoryObj);
+      if (Number(response.status) !== 201) {
+        throw new Error("Failed to insert log info");
+      }
+      return response.data;
+    } catch (error) {
+      console.error("Error inserting log info:", error);
+      throw error; // Throw to handle error where the function is called
+    }
+  };
+
   // Start Rest Time Countdown
   const startRestCountdown = (breakType) => {
     setIsResting(true);
@@ -699,78 +743,32 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             onClick={handleQuitRoutine} 
             aria-label="close"
             sx={{
+              // Layout and positioning
               position: 'absolute',
               top: '10px',
               right: '10px',
               zIndex: 1000,
-              fontSize: '2.5rem',
-              color: 'white',
-              backgroundColor: 'lightgray',
+              // Box model
               padding: '0.5rem',
               borderRadius: '50%',
+              // Visual effects
+              fontSize: '2.5rem',
+              color: 'white',
+              backgroundColor: '#333333',
               '&:hover': {
-                backgroundColor: 'darkgray',
-              }
+                backgroundColor: '#4F4F4F',
+              },
             }}
           >
             <CloseIcon />
           </IconButton>
 
-          {/* Quit Dialogue */}
-          <Dialog
+          {/* Quit Routine Session Dialogue */}
+          <ExitRoutineSessionModal
             open={isConfirmDialogOpen}
             onClose={handleCancelQuit}
-            fullWidth
-            maxWidth="sm"
-            sx={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
-          >
-            <DialogTitle sx={{ textAlign: 'center' }}>
-              <ErrorOutlineIcon style={{ fontSize: 50 }} />
-              <IconButton
-                aria-label="close"
-                onClick={handleCancelQuit}
-                sx={{
-                  position: 'absolute',
-                  right: 8,
-                  top: 8,
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-            </DialogTitle>
-            <DialogContent
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                textAlign: 'center',
-                width: '70%',
-                margin: '0 auto',
-                fontSize: '1.2rem',
-              }}
-            >
-              <p>You haven&apos;t completed the routine yet. Save progress and continue later?</p>
-            </DialogContent>
-            <DialogActions
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '60%',
-                margin: '0 auto',
-                gap: 2,
-                marginBottom: '2rem',
-              }}
-            >
-              <Button variant="outlined" color="secondary" sx={{ fontSize: '1.2rem' }} fullWidth disabled>
-                Save and continue later
-              </Button>
-              <Button variant="contained" onClick={handleConfirmQuit} color="primary" sx={{ fontSize: '1.2rem' }} fullWidth>
-                Exit
-              </Button>
-            </DialogActions>
-          </Dialog>
+            onComplete={handleConfirmQuit}
+          />
 
           {/* Exercise Counter */}
           <Box
@@ -798,7 +796,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               position: 'absolute',
               bottom: '10px',
               width: '100%',
-              height: '200px',
+              height: isLandscapeMode ? '80px' : '120px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -813,7 +811,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               alt="exercise image"
               sx={{
                 width: '20%',
-                height: '200px',
+                height: isLandscapeMode ? '80px' : '120px',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
                 borderRadius: '15px',
@@ -840,7 +838,9 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <CountdownCircleTimer
               key={selectedExerciseIndex} // To reset timer when exercise changes
               isPlaying={!isResting}
-              duration={routine[selectedExerciseIndex]?.duration || 0} 
+              duration={routine[selectedExerciseIndex]?.duration || 0}
+              size={isLandscapeMode ? 80 : 120}
+              strokeWidth={isLandscapeMode ? 6 : 8}
               colors={theme.palette.secondary.main}
               onComplete={incrementSetsCount}
             >
@@ -869,30 +869,36 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             {/* Exercise Menu */}
             <Box
               sx={{
+                position: 'relative',
                 display: 'flex',
                 flexDirection: 'column',
-                overflowY: 'auto',
+                justifyContent: 'flex-end',
                 width: '20%',
                 height: '100%',
               }}
             >
               <Typography
-                variant="h4"
-                component="h1"
                 gutterBottom
+                onClick={handleToggleExerciseMenu} 
                 sx={{
-                  fontSize: "1.5rem",
+                  fontSize: isLandscapeMode ? "1.2rem" : "1.5rem",
                   fontWeight: "bold",
-                  textAlign: "left",
+                  textAlign: "right",
+                  display: 'flex',
+                  alignItems: 'center', 
+                  justifyContent: 'flex-end',
                   color: `${theme.palette.secondary.main}`,
+                  cursor: 'pointer',
                 }}
               >
-                Next ＞
+                Next {isExerciseMenuOpen ? <KeyboardArrowDownIcon sx={{ fontSize: '2rem' }} /> : <KeyboardArrowUpIcon sx={{ fontSize: '2rem' }} />}
               </Typography>
+
               <Box 
                 sx={{ 
-                  height: '100%',
-                  overflowY: "auto",
+                  maxHeight: isExerciseMenuOpen ? '200px' : '0',
+                  overflowY: "scroll",
+                  transition: 'max-Height 0.5s ease',
                   backgroundColor: 'rgba(255, 255, 255, 0.6)',
                 }}
               >
@@ -915,23 +921,22 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                               ? `${theme.palette.secondary.main}`
                               : "inherit",
                           opacity: index === 0 ? 0.6 : 1,
+                          padding: "0.25rem 0.5rem",
+                          margin: "0rem",
                         }}
                       >
-                        <ListItemIcon>
-                          <FitnessCenterIcon />
-                        </ListItemIcon>
                         <ListItemText
                           primary={exercise.name}
                           secondary={exercise.goal}
                           primaryTypographyProps={{
                             sx: {
-                              fontSize: "1.0rem",
+                              fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               fontWeight: "bold",
                             },
                           }}
                           secondaryTypographyProps={{
                             sx: { 
-                              fontSize: "1.0rem",
+                              fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               color: index === 0 ? "white" : "black",
                             }
                           }}
@@ -964,49 +969,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       />
 
       {/* Routine Completion Modal */}
-      <Dialog
-        open={isFinished}
-        onClose={() => setIsFinished(false)}
-        fullScreen
-      >
-        <DialogContent
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            height: '100%',
-            width: '50%',
-            margin: '0 auto',
-          }}
-        >
-          <Box
-            component="img"
-            src={BodyBuddy}
-            alt="Completed Exercise"
-            sx={{
-              maxHeight: '300px',
-              objectFit: 'contain',
-              marginBottom: 4,
-            }}
-          />
-          <Typography variant="h6" sx={{ fontWeight: 'normal', marginBottom: 4, textAlign: 'center' }}>
-            Yay! You&apos;ve completed exercising. <br />
-            Let&apos;s see what you&apos;ve achieved today!
-          </Typography>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 4, marginBottom: 4 }}>
-            <MetricCard title="Mins" />
-            <MetricCard title="Calories" />
-            <MetricCard title="Score" />
-          </Box>
-          <Button variant="outlined" sx={{ width: '50%', marginBottom: 2, fontSize: '1.2rem' }} disabled>
-            Check my upcoming schedule
-          </Button>
-          <Button variant="contained" sx={{ width: '50%', fontSize: '1.2rem'}} onClick={handleMoveToTrainingPage}>
-            Go Back to Training Page
-          </Button>
-        </DialogContent>
-      </Dialog>
+      <CompleteRoutineSessionModal 
+        open={isFinished} 
+        onComplete={handleMoveToTrainingPage}
+      />
     </>
   );
 };
@@ -1014,4 +980,5 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 // Defining prop types
 RoutineSession.propTypes = {
   title: PropTypes.string,
+  record: PropTypes.bool,
 };

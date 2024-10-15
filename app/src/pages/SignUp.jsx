@@ -2,30 +2,30 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Button,
-  CssBaseline,
   TextField,
-  Grid,
   Box,
   Typography,
   Container,
   Card,
   CardContent,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Grid from "@mui/material/Grid2";
+import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
+import { Onboarding } from "../components/Onboarding";
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {"Copyright © BodyBuddy "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+// function Copyright() {
+//   return (
+//     <Typography variant="body2" color="textSecondary" align="center">
+//       {"Copyright © BodyBuddy "}
+//       {new Date().getFullYear()}
+//       {"."}
+//     </Typography>
+//   );
+// }
 
 export const SignUp = (props) => {
   const [email, setEmail] = useState("");
@@ -64,23 +64,41 @@ export const SignUp = (props) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Card sx={{ boxShadow: 3 }}>
-        <CardContent>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
+    <Grid container>
+      {/* Left section with image slider */}
+      <Grid
+        size={{ sm: 12, md: 6 }}
+        sx={{
+          display: { xs: "none", md: "block" }, // Hide on extra small and small screens, show on medium and above
+        }}
+      >
+        <Onboarding />
+      </Grid>
+
+      {/* Right section with sign-up form */}
+      <Grid item size={{ xs: 12, md: 6 }}>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 4,
+          }}
+        >
+          <Box>
+            {/* Logo */}
+            <Box sx={{ mb: 1 }}>
+              <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
+            </Box>
+
+            {/* Welcome message */}
+            <Typography>We have created a perfect exercise plan for you!</Typography>
+
+            <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
               Sign Up
             </Typography>
+
             <Box
               component="form"
               noValidate
@@ -133,19 +151,35 @@ export const SignUp = (props) => {
               >
                 Sign Up
               </Button>
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <Link to="/signin">Already have an account? Sign In</Link>
-                </Grid>
-              </Grid>
+
+              {/* Start Here link */}
+              <Typography variant="body2">
+                Already have an account?{" "}
+                <Button
+                  variant="text"
+                  color="primary"
+                  component={NavLink}
+                  to="/signin"
+                >
+                  Sign In
+                </Button>
+              </Typography>
+
             </Box>
           </Box>
-          <Box mt={5}>
-            <Copyright />
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+        </Container>
+        <Box sx={{ mx: 4 }}>
+          {/* Disclaimer */}
+          <Typography variant="body2">
+            (*) BodyBuddy provides general fitness guidance and real-time
+            feedback to help improve your workout form. It is not a substitute
+            for professional medical advice, diagnosis, or treatment. Always
+            consult your physician before starting a new exercise program,
+            especially if you have any pre-existing medical conditions.
+          </Typography>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

@@ -1,9 +1,11 @@
-import React from "react";
+import { useState, useMemo } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { AppProvider } from "@toolpad/core/AppProvider";
+import { useAuth } from "../utils/AuthProvider.jsx";
+
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import RunCircleIcon from "@mui/icons-material/RunCircle";
@@ -59,30 +61,25 @@ export const MainLayout = () => {
   // Route paths are defined in App.jsx
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, handleSignOut } = useAuth();
 
-  // Session State from Toolpad Core (to update)
-  const [session, setSession] = React.useState({
+  // Session State from Toolpad Core
+  const [session] = useState({
     user: {
-      name: "John Doe",
-      email: "johndoe@mylangara.ca",
-      image: "",
+      name: user.user_metadata.full_name,
+      email: user.email,
+      image: user.user_metadata.avatar_url ? user.user_metadata.avatar_url : "",
     },
   });
 
-  // Authentication logic from Toolpad Core (to update)
-  const authentication = React.useMemo(() => {
+  // Authentication logic from Toolpad Core
+  const authentication = useMemo(() => {
     return {
       signIn: () => {
-        setSession({
-          user: {
-            name: "John Doe",
-            email: "johndoe@mylangara.ca",
-            image: "",
-          },
-        });
+        navigate("/dashboard");
       },
       signOut: () => {
-        setSession(null);
+        handleSignOut();
       },
     };
   }, []);

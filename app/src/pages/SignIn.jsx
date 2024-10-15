@@ -2,24 +2,21 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Avatar,
   Button,
-  CssBaseline,
   TextField,
   FormControlLabel,
   Checkbox,
   Box,
   Typography,
   Container,
-  Card,
-  CardContent,
   Divider,
-  Grid,
 } from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import Grid from "@mui/material/Grid2";
 import GoogleIcon from "@mui/icons-material/Google";
+import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
+import { Onboarding } from "../components/Onboarding";
 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
@@ -37,17 +34,25 @@ export const SignIn = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     setPageTitle(props.title);
   }, []);
 
+  // Transition to Dashboard when user authentication is successful
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+  
   const handleSignIn = async (e) => {
     e.preventDefault();
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -55,7 +60,7 @@ export const SignIn = (props) => {
       if (error) {
         throw error;
       }
-      navigate("/dashboard");
+      setUser(data.user);
     } catch (error) {
       setError(error.message);
       console.error("User failed to signed in", error);
@@ -70,13 +75,14 @@ export const SignIn = (props) => {
         provider: "google",
         options: {
           prompt: "select_account", // For testing, always display consent page
-          redirectTo: `${BASE_URL}dashboard/`,
+          redirectTo: `${BASE_URL}dashboard`,
         },
       });
 
       if (error) {
         throw error;
       }
+      
       console.log("User signed in with Google", data);
     } catch (error) {
       setError(error.message);
@@ -86,21 +92,38 @@ export const SignIn = (props) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <Card sx={{ boxShadow: 3 }}>
-        <CardContent>
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: "primary.main" }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
+    <Grid container>
+      {/* Left section with image slider */}
+      <Grid
+        size={{ sm: 12, md: 6 }}
+        sx={{
+          display: { xs: "none", md: "block" }, // Hide on extra small and small screens, show on medium and above
+        }}
+      >
+        <Onboarding />
+      </Grid>
+
+      {/* Right section with sign-in form */}
+      <Grid item size={{ xs: 12, md: 6 }}>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: 4,
+          }}
+        >
+          <Box>
+            {/* Logo */}
+            <Box sx={{ mb: 1 }}>
+              <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
+            </Box>
+
+            {/* Welcome message */}
+            <Typography>Welcome back!</Typography>
+
+            <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
               Sign In
             </Typography>
 
@@ -116,7 +139,7 @@ export const SignIn = (props) => {
             </Button>
 
             {/* Divider */}
-            <Divider sx={{ width: "100%", my: 2 }}>or</Divider>
+            <Divider sx={{ width: "100%", mt: 2 }}>or</Divider>
 
             {/* Email & Password Sign In Form */}
             <Box
@@ -152,15 +175,17 @@ export const SignIn = (props) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               {error && <Typography color="error">{error}</Typography>}
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-                sx={{
-                  color: "text.secondary",
-                  justifyContent: "flex-start",
-                  width: "100%",
-                }}
-              />
+
+              {/* <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+              sx={{
+                color: "text.secondary",
+                justifyContent: "flex-start",
+                width: "100%",
+              }}
+            /> */}
+
               <Button
                 type="submit"
                 fullWidth
@@ -169,21 +194,35 @@ export const SignIn = (props) => {
               >
                 Sign In
               </Button>
-              <Grid container justifyContent="center">
-                <Grid item>
-                  <Link to="/signup">
-                    Don&apos;t have an account? Sign Up
-                  </Link>
-                </Grid>
-              </Grid>
+
+              {/* Start Here link */}
+              <Typography variant="body2">
+                Don't have an account?{" "}
+                <Button
+                  variant="text"
+                  color="primary"
+                  component={NavLink}
+                  to="/create-program"
+                >
+                  Start here
+                </Button>
+              </Typography>
             </Box>
           </Box>
-          <Box mt={5}>
-            <Copyright />
-          </Box>
-        </CardContent>
-      </Card>
-    </Container>
+        </Container>
+
+        <Box sx={{ mx: 4 }}>
+          {/* Disclaimer */}
+          <Typography variant="body2">
+            (*) BodyBuddy provides general fitness guidance and real-time
+            feedback to help improve your workout form. It is not a substitute
+            for professional medical advice, diagnosis, or treatment. Always
+            consult your physician before starting a new exercise program,
+            especially if you have any pre-existing medical conditions.
+          </Typography>
+        </Box>
+      </Grid>
+    </Grid>
   );
 };
 

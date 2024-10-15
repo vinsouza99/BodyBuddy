@@ -1,9 +1,10 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
 import { useState, useEffect } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
+import { Modal, Box, Typography, IconButton } from '@mui/material';
 // Custom Components for Routine Session
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useLandscapeMode } from './useLandscapeMode';
 // Common Components
 import { useTheme } from '@mui/material/styles';
 // Icons & Images
@@ -11,13 +12,34 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 
+const modalStyle = {
+  // Layout and positioning
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: 1000,
+  // Box model
+  width: '100vw',
+  height: '100vh',
+  padding: 4,
+  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  // Flexbox alignment
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: 2,
+  // Visual effects
+  color: '#fff',
+};
+
 export const RestTime2 = ({ title = "Time for resting", trigger, duration, onComplete }) => {
   const theme = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const isLandscapeMode = useLandscapeMode();
 
   useEffect(() => {
-    console.log(`Rest timer triggered: ${duration} seconds`);
     if (trigger) {
       setIsVisible(true);
       setIsPlaying(true);
@@ -36,75 +58,68 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
   if (!isVisible) return null;
 
   return (
-    <Box
-      sx={{
-        position: 'absolute',
-        top: '0px',
-        left: '0px',
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.9)',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 1000,
-        color: '#fff',
-      }}
+    <Modal 
+      open={trigger}
     >
-      <CountdownCircleTimer
-        isPlaying={isPlaying}
-        duration={duration}
-        colors={theme.palette.secondary.main}
-        onComplete={handleTimerComplete}
-      >
-        {({ remainingTime }) => (
-          <Typography
-            variant="h1"
-            component="div"
-            sx={{ fontWeight: "bold" }}
-          >
-            {remainingTime}
-          </Typography>
-        )}
-      </CountdownCircleTimer>
-      <Typography
-        variant="h6" 
-        component="div"
-        sx={{ fontWeight: "bold", mt: 5 }}
-      >
-        {title}
-      </Typography>
-
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 2,
-        }}
-      >
-        {/* Puase & Play */}
-        <IconButton 
-          onClick={togglePlayPause}
-          onMouseDown={(e) => e.preventDefault()}
-          style={{ fontSize: 50, color: "#fff" }}>
-          {isPlaying ? (
-            <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
-          ) : (
-            <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+      <Box sx={modalStyle}>
+        <CountdownCircleTimer
+          isPlaying={isPlaying}
+          duration={duration}
+          size={isLandscapeMode ? 100 : 180}
+          strokeWidth={isLandscapeMode ? 6 : 8}
+          colors={theme.palette.secondary.main}
+          onComplete={handleTimerComplete}
+        >
+          {({ remainingTime }) => (
+            <Typography
+              sx={{ 
+                fontWeight: "bold",
+                fontSize: isLandscapeMode ? '1.5rem' : '3rem',
+              }}
+            >
+              {remainingTime}
+            </Typography>
           )}
-        </IconButton>
+        </CountdownCircleTimer>
+        <Typography
+          sx={{ 
+            fontWeight: "bold", 
+            fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+          }}
+        >
+          {title}
+        </Typography>
 
-        {/* Next Exercise */}
-        <IconButton 
-          onClick={handleTimerComplete}
-          onMouseDown={(e) => e.preventDefault()}
-          style={{ fontSize: 50, color: "#fff" }}>
-          <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
-        </IconButton>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 2,
+          }}
+        >
+          {/* Puase & Play */}
+          <IconButton 
+            onClick={togglePlayPause}
+            onMouseDown={(e) => e.preventDefault()}
+            style={{ fontSize: 50, color: "#fff" }}>
+            {isPlaying ? (
+              <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
+            ) : (
+              <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+            )}
+          </IconButton>
+
+          {/* Next Exercise */}
+          <IconButton 
+            onClick={handleTimerComplete}
+            onMouseDown={(e) => e.preventDefault()}
+            style={{ fontSize: 50, color: "#fff" }}>
+            <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
+          </IconButton>
+        </Box>
       </Box>
-    </Box>
+    </Modal>
   );
 };
 

@@ -1,22 +1,32 @@
-/**
- *This single class represents all programs
- */
 export class User {
   /**
    *
    * @param {string} id
-   * @param {UserSettings} settings
+   * @param {string} firstName
+   * @param {string} lastName
+   * @param {string} birthday
+   * @param {date} last_login
+   * @param {boolean} is_active;
+   * @param {string} profile_picture_url
+   * @param {string} gender
    */
-  constructor(id, settings) {
+  constructor(
+    id,
+    firstName,
+    lastName,
+    birthday,
+    last_login,
+    is_active,
+    profile_picture_url,
+    gender
+  ) {
     this.id = id;
-    this.settings = settings;
-  }
-
-  /**
-   *
-   * @param {Routine} routine - an object of the Routine class
-   */
-  setSettings(settings) {
-    this.settings = settings;
+    this.firstName = firstName;
+    this.lastName = lastName;
+    this.birthday = birthday;
+    this.last_login = last_login;
+    this.is_active = is_active;
+    this.profile_picture_url = profile_picture_url;
+    this.gender = gender;
   }
 }
