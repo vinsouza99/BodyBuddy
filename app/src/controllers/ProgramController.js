@@ -1,4 +1,4 @@
-import axiosClient from '../utils/axiosClient';
+import axiosClient from "../utils/axiosClient";
 import { Program } from "../models/Program";
 import { getRoutinesFromProgram } from "./RoutineController";
 
@@ -65,4 +65,15 @@ const getAllUserPrograms = async (user_id) => {
   }
 };
 
-export { getAllPrograms, getProgram, getAllUserPrograms };
+const createProgram = async (user_id, generatedProgramObj) => {
+  try {
+    if (!user_id) throw new Error("User ID is null");
+    const program = new Program(); //TODO
+    //TODO call routine controller
+    axiosClient.post(`${API_ROUTE}`, program);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export { getAllPrograms, getProgram, getAllUserPrograms, createProgram };
