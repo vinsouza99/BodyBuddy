@@ -74,7 +74,6 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
             width: '90%',
             display: 'flex',
             justifyContent: 'center',
-            padding: 2,
           }}
         >
           <Typography
@@ -111,7 +110,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               alt="exercise image"
               sx={{
                 width: '100%',
-                height: isLandscapeMode ? '40vh' : '50vh',
+                height: '50vh',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
                 borderRadius: '15px',
@@ -166,7 +165,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               flexDirection: 'column',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: 2,
+              gap: isLandscapeMode ? 1 : 2,
             }}
           >
             <CountdownCircleTimer
@@ -194,7 +193,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               textAlign="center"
               sx={{
                 fontWeight: "bold", 
-                fontSize: isLandscapeMode ? '1.2rem' : '2rem',
+                fontSize: isLandscapeMode ? '1.0rem' : '2rem',
               }}
             >
               {currentExerciseInfo.name}
