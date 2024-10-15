@@ -41,7 +41,7 @@ function App() {
         {/* Authentication required (MainLayout is applied) */}
         <Route
           path="/"
-          element={user ? <MainLayout /> : <Navigate to="/signin" />}
+          element={user ? <MainLayout /> : <Navigate to="/" />}
         >
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
