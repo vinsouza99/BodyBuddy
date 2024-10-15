@@ -2,8 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Button,
   TextField,
@@ -17,6 +16,7 @@ import {
 import Grid from "@mui/material/Grid2";
 import GoogleIcon from "@mui/icons-material/Google";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
+import { Onboarding } from "../components/Onboarding";
 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
@@ -83,8 +83,19 @@ export const SignIn = (props) => {
   };
 
   return (
-    <>
-      <Grid size={{ xs: 12, md: 8 }}>
+    <Grid container>
+      {/* Left section with image slider */}
+      <Grid
+        size={{ sm: 12, md: 6 }}
+        sx={{
+          display: { xs: "none", md: "block" }, // Hide on extra small and small screens, show on medium and above
+        }}
+      >
+        <Onboarding />
+      </Grid>
+
+      {/* Right section with sign-in form */}
+      <Grid item size={{ xs: 12, md: 6 }}>
         <Container
           sx={{
             display: "flex",
@@ -94,12 +105,7 @@ export const SignIn = (props) => {
             paddingTop: 4,
           }}
         >
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSignIn}
-            sx={{ mt: 1 }}
-          >
+          <Box>
             {/* Logo */}
             <Box sx={{ mb: 1 }}>
               <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
@@ -127,35 +133,41 @@ export const SignIn = (props) => {
             <Divider sx={{ width: "100%", mt: 2 }}>or</Divider>
 
             {/* Email & Password Sign In Form */}
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
-              // autoFocus
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            {error && <Typography color="error">{error}</Typography>}
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSignIn}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                // autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              {error && <Typography color="error">{error}</Typography>}
 
-            {/* <FormControlLabel
+              {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
               sx={{
@@ -165,42 +177,43 @@ export const SignIn = (props) => {
               }}
             /> */}
 
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Sign In
-            </Button>
-
-            {/* Sign In link */}
-            <Typography variant="body2">
-              Don't have an account?{" "}
               <Button
-                onClick={() => setIsSignIn(true)} // Set state to true when Sign In is clicked
-                variant="text"
-                color="primary"
-                component={NavLink}
-                to="/create-program"
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
               >
-                Start here
+                Sign In
               </Button>
-            </Typography>
+
+              {/* Start Here link */}
+              <Typography variant="body2">
+                Don't have an account?{" "}
+                <Button
+                  variant="text"
+                  color="primary"
+                  component={NavLink}
+                  to="/create-program"
+                >
+                  Start here
+                </Button>
+              </Typography>
+            </Box>
           </Box>
         </Container>
+
+        <Box sx={{ mx: 4 }}>
+          {/* Disclaimer */}
+          <Typography variant="body2">
+            (*) BodyBuddy provides general fitness guidance and real-time
+            feedback to help improve your workout form. It is not a substitute
+            for professional medical advice, diagnosis, or treatment. Always
+            consult your physician before starting a new exercise program,
+            especially if you have any pre-existing medical conditions.
+          </Typography>
+        </Box>
       </Grid>
-      <Box>
-        {/* Disclaimer */}
-        <Typography variant="body2">
-          (*) BodyBuddy provides general fitness guidance and real-time feedback
-          to help improve your workout form. It is not a substitute for
-          professional medical advice, diagnosis, or treatment. Always consult
-          your physician before starting a new exercise program, especially if
-          you have any pre-existing medical conditions.
-        </Typography>
-      </Box>
-    </>
+    </Grid>
   );
 };
 
