@@ -35,6 +35,10 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: true,
     },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: "user",
