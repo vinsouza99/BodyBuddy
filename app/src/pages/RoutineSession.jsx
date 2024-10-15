@@ -796,7 +796,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               position: 'absolute',
               bottom: '10px',
               width: '100%',
-              height: isLandscapeMode ? '80px' : '100px',
+              height: isLandscapeMode ? '80px' : '120px',
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -811,7 +811,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               alt="exercise image"
               sx={{
                 width: '20%',
-                height: isLandscapeMode ? '80px' : '100px',
+                height: isLandscapeMode ? '80px' : '120px',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
                 borderRadius: '15px',
@@ -839,7 +839,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               key={selectedExerciseIndex} // To reset timer when exercise changes
               isPlaying={!isResting}
               duration={routine[selectedExerciseIndex]?.duration || 0}
-              size={isLandscapeMode ? 80 : 100}
+              size={isLandscapeMode ? 80 : 120}
               strokeWidth={isLandscapeMode ? 6 : 8}
               colors={theme.palette.secondary.main}
               onComplete={incrementSetsCount}
