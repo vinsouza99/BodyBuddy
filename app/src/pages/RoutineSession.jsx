@@ -747,7 +747,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               position: 'absolute',
               top: '10px',
               right: '10px',
-              zIndex: 2000,
+              zIndex: 1000,
               // Box model
               padding: '0.5rem',
               borderRadius: '50%',
