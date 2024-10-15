@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import { User } from "./User.js";
+import User from "./User.js";
 
 const UserSettings = sequelize.define(
   "UserSettings",
@@ -46,7 +46,5 @@ const UserSettings = sequelize.define(
     timestamps: false,
   }
 );
-
-UserSettings.belongsTo(User);
 
 export default UserSettings;

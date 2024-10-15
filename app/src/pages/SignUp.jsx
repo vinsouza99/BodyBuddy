@@ -17,6 +17,7 @@ import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
 import { createUser } from "../controllers/UserController";
+import { useAuth } from "../utils/AuthProvider";
 
 // function Copyright() {
 //   return (
@@ -32,10 +33,11 @@ export const SignUp = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
-  const [name, setName] = useState(null);
+  const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { userProgramPreferences } = location.state;
+  // For session management
+  const userProgramPreferences = location.state ? location.state : null;
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -58,16 +60,28 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
-      const user = {
-        firstName: name,
+      console.log(data);
+      const newUser = {
+        id: data.user.id,
+        first_name: name.split(" ")[0],
+        last_name: "",
+        birthday: null,
+        last_login: Date.now(),
+        is_active: true,
+        profile_picture_url: "",
+        gender: userProgramPreferences.gender
+          ? userProgramPreferences.gender
+          : null,
         settings: userProgramPreferences,
       };
-      const { response, error2 } = await createUser(user);
-      if (error2) {
-        throw error2;
-      }
-      console.log("SUCCESS: User signed up", data, response);
-      navigate("/dashboard");
+      createUser(newUser)
+        .then((response) => {
+          console.log("SUCCESS: User signed up", data, response);
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          throw error;
+        });
     } catch (error) {
       setError(error.message);
       console.log("ERROR: User signed up", error);

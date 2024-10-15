@@ -1,4 +1,4 @@
-export class User {
+export default class User {
   /**
    *
    * @param {string} id

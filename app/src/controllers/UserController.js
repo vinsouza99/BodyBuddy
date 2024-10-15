@@ -1,6 +1,6 @@
 import axiosClient from "../utils/axiosClient";
-import { User } from "../models/User";
-import { UserSettings } from "../models/UserSettings";
+import User from "../models/User";
+import UserSettings from "../models/UserSettings";
 
 const API_ROUTE = "users";
 const API_ROUTE_2 = "user_preferences";
@@ -22,6 +22,7 @@ const getUserSettings = async (id) => {
 };
 const createUserSettings = async (userSettingsObj) => {
   try {
+    if (!userSettingsObj) throw new Error("User settings is null");
     const settings = new UserSettings(
       userSettingsObj.user_id,
       userSettingsObj.pastExerciseFrequency,
@@ -38,15 +39,17 @@ const createUser = async (userObj) => {
   try {
     const user = new User(
       userObj.id,
-      userObj.firstName,
-      userObj.lastName,
+      userObj.first_name,
+      userObj.last_name,
       userObj.birthday,
       userObj.last_login,
       userObj.is_active,
       userObj.profile_picture_url,
       userObj.gender
     );
-    const response = await axiosClient.post(`${API_ROUTE}`, user);
+    let response = await axiosClient.post(`${API_ROUTE}`, user);
+    if (response.status() >= 200 && response.status() < 300)
+      response = await createUserSettings(userObj.settings);
     return response;
   } catch (e) {
     console.log(e);
