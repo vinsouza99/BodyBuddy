@@ -76,7 +76,7 @@ export const MainLayout = () => {
   const authentication = useMemo(() => {
     return {
       signIn: () => {
-        navigate("/");
+        navigate("/dashboard");
       },
       signOut: () => {
         handleSignOut();

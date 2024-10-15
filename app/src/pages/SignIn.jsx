@@ -34,17 +34,25 @@ export const SignIn = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     setPageTitle(props.title);
   }, []);
 
+  // Transition to Dashboard when user authentication is successful
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
+  
   const handleSignIn = async (e) => {
     e.preventDefault();
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -52,7 +60,7 @@ export const SignIn = (props) => {
       if (error) {
         throw error;
       }
-      navigate("/dashboard");
+      setUser(data.user);
     } catch (error) {
       setError(error.message);
       console.error("User failed to signed in", error);
@@ -74,6 +82,7 @@ export const SignIn = (props) => {
       if (error) {
         throw error;
       }
+      
       console.log("User signed in with Google", data);
     } catch (error) {
       setError(error.message);
