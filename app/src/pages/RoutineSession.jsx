@@ -37,7 +37,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 // Style Object (for sx prop)
@@ -854,8 +853,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               duration={routine[selectedExerciseIndex]?.duration || 0}
               size={isLandscapeMode ? 80 : 120}
               strokeWidth={isLandscapeMode ? 6 : 8}
-              // colors={theme.palette.secondary.main}
               colors='white'
+              trailColor='transparent'
               onComplete={incrementSetsCount}
             >
               {({ remainingTime }) => (
@@ -864,7 +863,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                   component="div"
                   sx={{ 
                     fontWeight: "bold", 
-                    // color: theme.palette.secondary.main
                     color: 'white'
                   }}
                 >

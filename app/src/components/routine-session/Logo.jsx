@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import LogoImage from "../../assets/bodybuddy_logo_color.svg";
+import LogoImage from "../../assets/bodybuddy_logo_white.svg";
 
 export const Logo = () => {
   return (
