@@ -33,7 +33,7 @@ function UserInfo() {
 return (
   <>
 
-  <Card sx={{ padding: 3, borderRadius: 2}}>
+  <Card sx={{ marginLeft: 2, padding: 3, borderRadius: 2}}>
     <Box sx={{ display: 'flex', justifyContent: 'center' }}>
       <Avatar alt="Haley Grimes" src="/static/images/avatar/1.jpg" sx={{ width: 100, height: 100 }} />
     </Box>
@@ -41,38 +41,13 @@ return (
     <Typography variant="h3" component="p" align='center' sx={{ margin: 3 }}>
       Haley Grimes
     </Typography>
-    <Grid container spacing={1} sx={{ margin: 3 }} >
-      <Grid size={{ sm: 12, md: 6 }}>
-        <Card style={{ border: "none", boxShadow: "none" }}>
-          <Grid>
             <Typography variant="body2" component="p">
               Birthday: June 19,1995
             </Typography>
-            <Typography variant="body2" component="p">
-              Plan: Premium
-            </Typography>
-            <Typography variant="body2" component="p">
-              Daily Goal: 5 sets
-            </Typography>
-          </Grid>
-        </Card>
-      </Grid>
-      <Grid size={{ sm: 12, md: 6 }}>
-        <Card style={{ border: "none", boxShadow: "none" }}>
-          <Typography variant="body2" component="p">
-            Bio: I tries hard to establish a routine of working out to stay healthy and energetic, but among work and family responsibilities, I struggles to find time to do so.
-          </Typography>
-        </Card>
-      </Grid>
-    </Grid>
 
-    <Box sx={{ display: "flex", gap: 5, justifyContent: "center", margin: 3 }}>
-      <Chip label="SETTING" variant="outlined" onClick={handleClick} />
-      <Chip label="LOGOUT" variant="outlined" onClick={handleClick} />
-    </Box>
 
       <Grid>
-        <Box sx={{ padding: 3, display: "flex", gap: 5, justifyContent: "center", borderTop: 1　}}>
+        <Box sx={{ padding: 3, display: "flex", gap: 5, justifyContent: "center", borderBottom: 1 }}>
           <CardContent>
               <Typography variant="body2" component="p">
                         Reach Goals
@@ -82,17 +57,6 @@ return (
               </Typography>
               <Typography variant="body2" component="p">
                         /times
-              </Typography>
-          </CardContent>
-          <CardContent>
-              <Typography variant="body2" component="p">
-                        Highest Scores
-              </Typography>
-              <Typography variant="h3" component="p">
-                        98
-              </Typography>
-              <Typography variant="body2" component="p">
-                        /Marks
               </Typography>
           </CardContent>
           <CardContent>
@@ -108,6 +72,12 @@ return (
           </CardContent>
         </Box>
       </Grid>
+
+      <Box sx={{ display: "flex", gap: 5, justifyContent: "center", margin: 3 }}>
+      <Chip label="SETTING" variant="outlined" onClick={handleClick} />
+      <Chip label="LOGOUT" variant="outlined" onClick={handleClick} />
+    </Box>
+
   </Card>
 
 </>
