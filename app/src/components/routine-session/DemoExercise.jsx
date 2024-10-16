@@ -189,25 +189,6 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               )}
             </CountdownCircleTimer>
 
-            <Typography
-              textAlign="center"
-              sx={{
-                fontWeight: "bold", 
-                fontSize: isLandscapeMode ? '1.0rem' : '2rem',
-              }}
-            >
-              {currentExerciseInfo.name}
-            </Typography>
-            <Typography
-              textAlign="center"
-              sx={{
-                fontWeight: "normal",
-                fontSize: isLandscapeMode ? '1rem' : '1.5rem',
-              }}
-            >
-              {currentExerciseInfo.goal}
-            </Typography>
-
             <Box
               sx={{
                 display: 'flex',
@@ -236,6 +217,26 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
                 <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
               </IconButton>
             </Box>
+
+            <Typography
+              textAlign="center"
+              sx={{
+                fontWeight: "bold", 
+                fontSize: isLandscapeMode ? '1.0rem' : '2rem',
+              }}
+            >
+              {currentExerciseInfo.name}
+            </Typography>
+            <Typography
+              textAlign="center"
+              sx={{
+                fontWeight: "normal",
+                fontSize: isLandscapeMode ? '1rem' : '1.5rem',
+              }}
+            >
+              {currentExerciseInfo.goal}
+            </Typography>
+            
           </Box>
         </Box>
       </Box>

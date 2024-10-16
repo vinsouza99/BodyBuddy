@@ -13,8 +13,8 @@ export const GadgetSchedule = () => {
           gap: 2,
         }}
       >
-        <MetricCard title="Week Streaks" value="5" />
-        <MetricCard title="Best Streaks" value="5" />
+        <MetricCard title="Week Streaks" value="5" color="black"/>
+        <MetricCard title="Best Streaks" value="5" color="black" />
       </Box>
       <Typography>
         Exercise at least 3 times a week to keep your streak not reset
