@@ -16,10 +16,10 @@ export const Profile = (props) => {
   return (
     <>
     <Grid container spacing={1}>
-      <Grid size={{xs:12, md:8}} display={"flex"}>
+      <Grid size={{xs:12, md:6}} display={"flex"}>
         <UserInfo />
       </Grid>
-      <Grid size={{xs:12, md:4}} display={"flex"}>
+      <Grid size={{xs:12, md:6}} display={"flex"}>
         <History />
       </Grid>
     </Grid>
