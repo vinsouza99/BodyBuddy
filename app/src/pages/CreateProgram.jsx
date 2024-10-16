@@ -104,22 +104,22 @@ const CreateProgram = () => {
             value={gender}
           >
             <FormControlLabel
-              value="female"
+              value="F"
               control={<Radio />}
               label="Female"
-              onChange={() => setGender("female")}
+              onChange={() => setGender("F")}
             />
             <FormControlLabel
-              value="male"
+              value="M"
               control={<Radio />}
               label="Male"
-              onChange={() => setGender("male")}
+              onChange={() => setGender("M")}
             />
             <FormControlLabel
               value="other"
               control={<Radio />}
               label="I’m not comfortable to share"
-              onChange={() => setGender("other")}
+              onChange={() => setGender(null)}
             />
           </RadioGroup>
         </FormControl>
@@ -182,7 +182,7 @@ const CreateProgram = () => {
             <FormControlLabel
               className="inlineRadioButton"
               key={index}
-              value={frequency}
+              value={index + 1}
               control={<Radio />}
               label={frequency}
               labelPlacement="bottom"
@@ -259,9 +259,9 @@ const CreateProgram = () => {
      */
     const formResponse = {
       gender: gender,
-      primaryGoals: primaryGoals,
-      pastExerciseFrequency: pastExerciseFrequency,
-      intensity: intensity,
+      primary_goals: primaryGoals,
+      past_exercise_frequency: pastExerciseFrequency,
+      desired_intensity: intensity,
       availability: availability,
     };
     if (user) {

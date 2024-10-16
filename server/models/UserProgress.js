@@ -1,30 +1,32 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import User from "./User.js";
 
-const UserSettings = sequelize.define(
-  "UserSettings",
+const UserProgress = sequelize.define(
+  "UserProgress",
   {
     user_id: {
       type: DataTypes.UUID,
+      allowNull: false,
       primaryKey: true,
+      autoIncrement: false,
     },
-    past_exercise_frequency: {
+    level_id: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    desired_intensity: {
+    level_progress: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
-    available_days: {
-      type: DataTypes.STRING,
+    streak: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },
   {
-    tableName: "user_settings",
+    tableName: "user_progress",
     timestamps: false,
   }
 );
-export default UserSettings;
+
+export default UserProgress;

@@ -13,6 +13,8 @@ import relatedAchievementRoutes from "./relatedAchievementRoutes.js";
 import muscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import relatedMuscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import openaiapiRoutes from "./openaiapiRoutes.js";
+import userSettingsRoutes from "./userSettingsRoutes.js";
+import userProgressRoutes from "./userProgressRoutes.js";
 
 const router = express.Router();
 
@@ -29,6 +31,8 @@ router.use("/relatedAchievements", relatedAchievementRoutes);
 router.use("/muscleGroups", muscleGroupRoutes);
 router.use("/relatedMuscleGroups", relatedMuscleGroupRoutes);
 router.use("/openai", openaiapiRoutes);
+router.use("/user_settings", userSettingsRoutes);
+router.use("/user_progress", userProgressRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
 router.post("/set-cookie", (req, res) => {

@@ -3,13 +3,7 @@ import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import {
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Container,
-} from "@mui/material";
+import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
@@ -30,6 +24,7 @@ export const SignUp = (props) => {
   // Initialization
   useEffect(() => {
     setPageTitle(props.title);
+    console.log(userProgramPreferences);
   }, []);
 
   // Transition to Dashboard when user authentication is successful
