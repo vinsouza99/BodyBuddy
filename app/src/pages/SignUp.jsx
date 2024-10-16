@@ -2,16 +2,13 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
-import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import {
-  Avatar,
   Button,
   TextField,
   Box,
   Typography,
   Container,
-  Card,
-  CardContent,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
@@ -19,17 +16,8 @@ import { Onboarding } from "../components/Onboarding";
 import { createUser } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
 
-// function Copyright() {
-//   return (
-//     <Typography variant="body2" color="textSecondary" align="center">
-//       {"Copyright © BodyBuddy "}
-//       {new Date().getFullYear()}
-//       {"."}
-//     </Typography>
-//   );
-// }
-
 export const SignUp = (props) => {
+  const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
@@ -39,9 +27,17 @@ export const SignUp = (props) => {
   // For session management
   const userProgramPreferences = location.state ? location.state : null;
 
+  // Initialization
   useEffect(() => {
     setPageTitle(props.title);
   }, []);
+
+  // Transition to Dashboard when user authentication is successful
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -77,7 +73,6 @@ export const SignUp = (props) => {
       createUser(newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);
-          navigate("/dashboard");
         })
         .catch((error) => {
           throw error;
