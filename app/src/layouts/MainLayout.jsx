@@ -1,11 +1,11 @@
 import { useState, useMemo } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
+import { Box } from '@mui/material';
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { useAuth } from "../utils/AuthProvider.jsx";
-
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import RunCircleIcon from "@mui/icons-material/RunCircle";
@@ -114,7 +114,9 @@ export const MainLayout = () => {
           disableCollapsibleSidebar
           slots={{ toolbarActions: Notification }}
         >
-          <Outlet />
+          <Box sx={{ margin: 2 }}>
+            <Outlet />
+          </Box>
           <Footer />
         </DashboardLayout>
       </AppProvider>
