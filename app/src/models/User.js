@@ -1,4 +1,4 @@
-export class User {
+export default class User {
   /**
    *
    * @param {string} id
@@ -9,6 +9,7 @@ export class User {
    * @param {boolean} is_active;
    * @param {string} profile_picture_url
    * @param {string} gender
+   * @param {UserSettings} settings
    */
   constructor(
     id,
@@ -18,7 +19,8 @@ export class User {
     last_login,
     is_active,
     profile_picture_url,
-    gender
+    gender,
+    settings
   ) {
     this.id = id;
     this.firstName = firstName;
@@ -28,5 +30,6 @@ export class User {
     this.is_active = is_active;
     this.profile_picture_url = profile_picture_url;
     this.gender = gender;
+    this.settings = settings;
   }
 }

@@ -1,10 +1,11 @@
 import PropTypes from "prop-types";
 import axios from "axios";
-import axiosClient from '../utils/axiosClient';
+import axiosClient from "../utils/axiosClient";
 import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabaseClient";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
 
 // For sharing the user state across the app
 const AuthContext = createContext();
@@ -20,7 +21,6 @@ export function AuthProvider({ children }) {
         if (error) {
           throw error;
         }
-        console.log(data?.session);
         setUser(data?.session?.user ?? null);
       } catch (error) {
         console.error(error);
@@ -84,15 +84,15 @@ export function AuthProvider({ children }) {
 
     // Clear the HTTP-Only cookie
     try {
-      const response = await axiosClient.post('/clear-cookie');
-      
+      const response = await axiosClient.post("/clear-cookie");
+
       if (response.status === 200) {
-        console.log('HTTP-Only cookie cleared successfully');
+        console.log("HTTP-Only cookie cleared successfully");
       } else {
-        throw new Error('Failed to clear HTTP-Only cookie');
+        throw new Error("Failed to clear HTTP-Only cookie");
       }
     } catch (error) {
-      console.error('Error clearing HTTP-Only cookie:', error);
+      console.error("Error clearing HTTP-Only cookie:", error);
     }
   };
 
@@ -100,18 +100,19 @@ export function AuthProvider({ children }) {
   const sendTokenToServer = async (access_token) => {
     if (access_token) {
       try {
-        await axios.post(`${API_BASE_URL}set-cookie`, 
-          { access_token: access_token},
+        await axios.post(
+          `${API_BASE_URL}set-cookie`,
+          { access_token: access_token },
           {
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             withCredentials: true,
           }
         );
-        console.log('Access token sent to server and cookie set.');
+        console.log("Access token sent to server and cookie set.");
       } catch (error) {
-        console.error('Error setting cookie:', error);
+        console.error("Error setting cookie:", error);
       }
     }
   };
