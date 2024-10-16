@@ -22,14 +22,12 @@ import {
 import "./CreateProgram.css";
 import { getAllGoals } from "../controllers/GoalsController.js";
 import { useAuth } from "../utils/AuthProvider.jsx";
-import { getResponse } from "../utils/openaiService.js";
-import { PromptInfo } from "../models/PromptInfo.js";
 
 const CreateProgram = () => {
-  const { user, handleSignOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [gender, setGender] = useState("female");
+  const [gender, setGender] = useState("F");
   const [primaryGoals, setPrimaryGoals] = useState([]);
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
@@ -51,7 +49,6 @@ const CreateProgram = () => {
     } else {
       array.splice(array, 1);
     }
-    console.log(array);
   };
 
   const pastExerciseFrequencyOptions = [
@@ -99,7 +96,7 @@ const CreateProgram = () => {
           </FormLabel>
           <RadioGroup
             aria-labelledby="genderLabel"
-            defaultValue="female"
+            defaultValue="F"
             name="radio-buttons-group"
             value={gender}
           >
@@ -249,14 +246,6 @@ const CreateProgram = () => {
     );
   }
   async function submitForm() {
-    /**
-     *  const [gender, setGender] = useState("female");
-  const [primaryGoals, setPrimaryGoals] = useState([]);
-  const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
-  const [intensity, setIntensity] = useState("");
-  const [availability, setAvailability] = useState([]);
-  const [primaryGoalsOptions, setPrimaryGoalsOptions] = useState([]);
-     */
     const formResponse = {
       gender: gender,
       primary_goals: primaryGoals,
@@ -266,10 +255,10 @@ const CreateProgram = () => {
     };
     if (user) {
       navigate("/dashboard", {
-        state: { userProgramPreferences: formResponse },
+        state: { userResponses: formResponse },
       });
     } else {
-      navigate("/signup", { state: { userProgramPreferences: formResponse } });
+      navigate("/signup", { state: { userResponses: formResponse } });
     }
   }
   return (
