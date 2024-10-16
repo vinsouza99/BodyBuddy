@@ -10,6 +10,7 @@ export default class User {
    * @param {string} profile_picture_url
    * @param {string} gender
    * @param {UserSettings} settings
+   * @param {UserProgress} progress
    */
   constructor(
     id,
@@ -20,7 +21,8 @@ export default class User {
     is_active,
     profile_picture_url,
     gender,
-    settings
+    settings,
+    progress
   ) {
     this.id = id;
     this.firstName = firstName;
@@ -31,5 +33,6 @@ export default class User {
     this.profile_picture_url = profile_picture_url;
     this.gender = gender;
     this.settings = settings;
+    this.progress = progress;
   }
 }
