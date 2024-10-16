@@ -50,7 +50,8 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
         sx={{ 
           fontWeight: 'bold',
           fontSize: isLandscapeMode ? '1.2rem' : '1.5rem',
-          color: `${theme.palette.secondary.main}`,
+          // color: `${theme.palette.secondary.main}`,
+          color: `white`,
           textAlign: 'left',
           
         }}
@@ -64,7 +65,8 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
           flexDirection: 'row',
           alignItems: 'center', 
           width: '100%',
-          border: `1px solid ${theme.palette.secondary.main}`,
+          // border: `1px solid ${theme.palette.secondary.main}`,
+          border: `1px solid white`,
           borderRadius: '15px',
         }}
       >
@@ -83,7 +85,8 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
             sx={{
               width: `${widthPercentage}%`,
               height: '100%',
-              backgroundColor: `${theme.palette.secondary.main}`,
+              // backgroundColor: `${theme.palette.secondary.main}`,
+              backgroundColor: `white`,
               transition: 'width 0.1s ease',
               borderRadius: '15px',
             }}

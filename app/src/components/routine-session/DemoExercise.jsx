@@ -5,13 +5,12 @@ import { Modal, Box, Typography, IconButton, Button } from '@mui/material';
 // Custom Components for Routine Session
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useLandscapeMode } from './useLandscapeMode';
-// Common Components
-import { useTheme } from '@mui/material/styles';
 // Icons & Images
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import background_image from '../../assets/bg_exercise_demo.png';
 
 const modalStyle = {
   // Layout and positioning
@@ -23,7 +22,6 @@ const modalStyle = {
   width: '100vw',
   height: '100vh',
   padding: 4,
-  backgroundColor: 'rgba(0, 0, 0, 0.9)',
   // Flexbox alignment
   display: 'flex',
   flexDirection: 'column',
@@ -32,10 +30,11 @@ const modalStyle = {
   gap: 2,
   // Visual effects
   color: '#fff',
+  backgroundImage: `url(${background_image})`,
+  backgroundSize: 'cover',
 };
 
 export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=null, nextExerciseInfo=null, onComplete, skipExercise }) => {
-  const theme = useTheme();
   const isLandscapeMode = useLandscapeMode();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -146,13 +145,17 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               <Button
                 onClick={handleSkipExercise}
                 disabled={!nextExerciseInfo} 
-                variant="contained"
+                variant="text"
                 type="button"
                 sx={{
                   marginLeft: 'auto',
+                  color: 'white',
+                  "&.Mui-disabled": {
+                    color: 'darkgrey', // overwrite disabled color
+                  }
                 }}
               >
-                Skip to next movement
+                Skip to next movement &gt;
               </Button>
             </Box>
           </Box>
@@ -174,7 +177,8 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               duration={duration}
               size={isLandscapeMode ? 100 : 180}
               strokeWidth={isLandscapeMode ? 6 : 8}
-              colors={theme.palette.secondary.main}
+              colors='white'
+              trailColor='transparent'
               onComplete={handleTimerComplete}
             >
               {({ remainingTime }) => (
@@ -188,25 +192,6 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
                 </Typography>
               )}
             </CountdownCircleTimer>
-
-            <Typography
-              textAlign="center"
-              sx={{
-                fontWeight: "bold", 
-                fontSize: isLandscapeMode ? '1.0rem' : '2rem',
-              }}
-            >
-              {currentExerciseInfo.name}
-            </Typography>
-            <Typography
-              textAlign="center"
-              sx={{
-                fontWeight: "normal",
-                fontSize: isLandscapeMode ? '1rem' : '1.5rem',
-              }}
-            >
-              {currentExerciseInfo.goal}
-            </Typography>
 
             <Box
               sx={{
@@ -236,6 +221,26 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
                 <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
               </IconButton>
             </Box>
+
+            <Typography
+              textAlign="center"
+              sx={{
+                fontWeight: "bold", 
+                fontSize: isLandscapeMode ? '1.0rem' : '2rem',
+              }}
+            >
+              {currentExerciseInfo.name}
+            </Typography>
+            <Typography
+              textAlign="center"
+              sx={{
+                fontWeight: "normal",
+                fontSize: isLandscapeMode ? '1rem' : '1.5rem',
+              }}
+            >
+              {currentExerciseInfo.goal}
+            </Typography>
+            
           </Box>
         </Box>
       </Box>

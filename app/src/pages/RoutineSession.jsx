@@ -37,7 +37,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 // Style Object (for sx prop)
@@ -55,6 +54,17 @@ const canvasStyles = {
   objectFit: "cover",
   top: 0,
   left: 0,
+};
+const gradientStyles = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  top: 0,
+  left: 0,
+  pointerEvents: 'none',
+  backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 15%, transparent 85%, rgba(0, 0, 0, 0.9))',
+  zIndex: 1,
 };
 
 export const RoutineSession = ({title = "Routine Session"}) => {
@@ -730,7 +740,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
           {/* Webcam */}
           <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
-
+          {/* Black Gradient Overlay */}
+          <div style={gradientStyles}></div>
           {/* Pose Landmarks */}
           <canvas ref={canvasRef} style={canvasStyles}></canvas>
 
@@ -782,6 +793,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               justifyContent: 'center',
               gap: '2rem',
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              zIndex: 1000,
             }}
           >
             <AngleMeter2 title={"Angle"} angle={angle} />
@@ -801,6 +813,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               alignItems: 'center',
               padding: '0 20px',
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              zIndex: 1000,
             }}
           >
             {/* Demo Image */}
@@ -825,7 +838,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <IconButton 
               onClick={toggleIsResting}
               onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50 }}>
+              style={{ fontSize: 50, color: 'white' }}>
               {isResting ? (
                 <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
               ) : (
@@ -840,14 +853,18 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               duration={routine[selectedExerciseIndex]?.duration || 0}
               size={isLandscapeMode ? 80 : 120}
               strokeWidth={isLandscapeMode ? 6 : 8}
-              colors={theme.palette.secondary.main}
+              colors='white'
+              trailColor='transparent'
               onComplete={incrementSetsCount}
             >
               {({ remainingTime }) => (
                 <Typography
                   variant="h1"
                   component="div"
-                  sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
+                  sx={{ 
+                    fontWeight: "bold", 
+                    color: 'white'
+                  }}
                 >
                   {remainingTime >= 0 ? remainingTime : 0} 
                 </Typography>
@@ -858,7 +875,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <IconButton 
               onClick={moveToNextExercise}
               onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50 }}>
+              style={{ fontSize: 50, color: 'white' }}>
               <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
             </IconButton>
 
@@ -880,13 +897,14 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 gutterBottom
                 onClick={handleToggleExerciseMenu} 
                 sx={{
-                  fontSize: isLandscapeMode ? "1.2rem" : "1.5rem",
+                  fontSize: isLandscapeMode ? "1rem" : "1.2rem",
                   fontWeight: "bold",
                   textAlign: "right",
                   display: 'flex',
                   alignItems: 'center', 
                   justifyContent: 'flex-end',
-                  color: `${theme.palette.secondary.main}`,
+                  // color: `${theme.palette.secondary.main}`,
+                  color: `white`,
                   cursor: 'pointer',
                 }}
               >
@@ -898,7 +916,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                   maxHeight: isExerciseMenuOpen ? '200px' : '0',
                   overflowY: "scroll",
                   transition: 'max-Height 0.5s ease',
-                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
                 }}
               >
                 <List
@@ -914,14 +931,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                         key={index + selectedExerciseIndex}
                         sx={{
                           cursor: "default",
-                          color: index === 0 ? "white" : "black",
-                          backgroundColor:
-                            index === 0
-                              ? `${theme.palette.secondary.main}`
-                              : "inherit",
-                          opacity: index === 0 ? 0.6 : 1,
-                          padding: "0.25rem 0.5rem",
+                          padding: "0.1rem 0.5rem",
                           margin: "0rem",
+                          marginBottom: "0.5rem", 
+                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
                         }}
                       >
                         <ListItemText
@@ -931,12 +944,13 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                             sx: {
                               fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               fontWeight: "bold",
+                              color: "black",
                             },
                           }}
                           secondaryTypographyProps={{
                             sx: { 
                               fontSize: isLandscapeMode ? "0.8rem" : "1rem",
-                              color: index === 0 ? "white" : "black",
+                              color: "black",
                             }
                           }}
                         />
