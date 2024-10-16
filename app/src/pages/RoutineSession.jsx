@@ -28,7 +28,7 @@ import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useLandscapeMode } from "../components/routine-session/useLandscapeMode";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
-import { useTheme } from '@mui/material/styles';
+import theme from '../theme';
 import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
@@ -58,7 +58,6 @@ const canvasStyles = {
 };
 
 export const RoutineSession = ({title = "Routine Session"}) => {
-  const theme = useTheme();
   const { user } = useAuth(); // For session management
   const navigate = useNavigate();
   const location = useLocation();
