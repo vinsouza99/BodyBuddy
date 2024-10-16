@@ -32,6 +32,7 @@ const modalStyle = {
   color: '#fff',
   backgroundImage: `url(${background_image})`,
   backgroundSize: 'cover',
+  backgroundPosition: 'center',
 };
 
 export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=null, nextExerciseInfo=null, onComplete, skipExercise }) => {
