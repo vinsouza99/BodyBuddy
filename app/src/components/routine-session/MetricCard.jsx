@@ -1,6 +1,9 @@
+// Reat and Material-UI
 import PropTypes from "prop-types";
 import { Card, CardContent, Typography } from "@mui/material";
+// Custom Components for Routine Session
 import { useLandscapeMode } from './useLandscapeMode';
+// Common Components
 import { useTheme } from '@mui/material/styles';
 
 export const MetricCard = ({ value="N/A", title="N/A" }) => {
