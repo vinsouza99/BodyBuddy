@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import UserSettings from "./UserSettings.js";
 
 const User = sequelize.define(
   "User",
@@ -46,8 +45,4 @@ const User = sequelize.define(
     timestamps: false,
   }
 );
-User.hasOne(UserSettings, {
-  foreignKey: "user_id",
-});
-
 export default User;

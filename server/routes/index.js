@@ -13,6 +13,8 @@ import relatedAchievementRoutes from "./relatedAchievementRoutes.js";
 import muscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import relatedMuscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import openaiapiRoutes from "./openaiapiRoutes.js";
+import userSettingsRoutes from "./userSettingsRoutes.js";
+import userProgressRoutes from "./userProgressRoutes.js";
 
 const router = express.Router();
 

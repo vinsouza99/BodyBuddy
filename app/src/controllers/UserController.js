@@ -4,7 +4,7 @@ import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
 
 const USER_ROUTE = "users";
-const USER_PREFERENCES_ROUTE = "user_settings";
+const USER_SETTINGS_ROUTE = "user_settings";
 const USER_PROGRESS_ROUTE = "user_progress";
 
 const getUser = async (id) => {
@@ -32,7 +32,7 @@ const getUser = async (id) => {
 };
 const getUserSettings = async (id) => {
   try {
-    const response = await axiosClient.get(`${USER_PREFERENCES_ROUTE}/${id}`);
+    const response = await axiosClient.get(`${USER_SETTINGS_ROUTE}/${id}`);
     const data = await response.data.data;
     const settings = new UserSettings(
       data.user_id,
@@ -68,10 +68,14 @@ const createUser = async (userObj) => {
       userObj.profile_picture_url,
       userObj.gender
     );
-    let response = await axiosClient.post(`${USER_ROUTE}`, user);
-    if (response.status() >= 200 && response.status() < 300)
-      response = await createUserSettings(userObj.settings);
-    return response;
+    let response = await axiosClient.put(`${USER_ROUTE}/${user.id}`, user);
+    userObj.settings.user_id = user.id;
+    console.log(userObj);
+    response = await createUserSettings(userObj.settings);
+    user.settings = response.data.data;
+    response = await createUserProgress(user.id);
+    user.progress = response.data.data;
+    return user;
   } catch (e) {
     console.log(e);
   }
@@ -81,14 +85,11 @@ const createUserSettings = async (userSettingsObj) => {
     if (!userSettingsObj) throw new Error("User settings is null");
     const settings = new UserSettings(
       userSettingsObj.user_id,
-      userSettingsObj.pastExerciseFrequency,
-      userSettingsObj.desiredIntensity,
-      userSettingsObj.availableDays
+      userSettingsObj.past_exercise_frequency,
+      userSettingsObj.desired_intensity,
+      userSettingsObj.availability
     );
-    const response = await axiosClient.post(
-      `${USER_PREFERENCES_ROUTE}`,
-      settings
-    );
+    const response = await axiosClient.post(`${USER_SETTINGS_ROUTE}`, settings);
     return response;
   } catch (e) {
     console.log(e);
@@ -134,7 +135,7 @@ const updateUser = async (user_id, updatedUserObj) => {
 const updateUserSettings = async (user_id, updatedSettingsObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_PREFERENCES_ROUTE}/${user_id}`,
+      `${USER_SETTINGS_ROUTE}/${user_id}`,
       updatedSettingsObj
     );
     return response;

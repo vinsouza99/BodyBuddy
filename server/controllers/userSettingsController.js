@@ -12,7 +12,7 @@ export const getUserSettings = async (req, res) => {
     res.status(200).json({
       status: "200",
       message: "Success",
-      data: user,
+      data: userSettings,
     });
   } catch (error) {
     console.error(error);
@@ -25,9 +25,17 @@ export const getUserSettings = async (req, res) => {
 
 export const createUserSettings = async (req, res) => {
   try {
-    const { user_id } = req.body;
+    const {
+      user_id,
+      past_exercise_frequency,
+      desired_intensity,
+      available_days,
+    } = req.body;
     const newUserSettings = await UserSettings.create({
       user_id,
+      past_exercise_frequency,
+      desired_intensity,
+      available_days,
     });
     res.status(201).json({
       status: "201",
@@ -56,11 +64,11 @@ export const updateUserSettings = async (req, res) => {
       });
     }
 
-    await user.update(updatedData);
+    await userSettings.update(updatedData);
     res.status(200).json({
       status: "200",
       message: "UserSettings updated successfully",
-      data: user,
+      data: userSettings,
     });
   } catch (error) {
     console.error(error);
@@ -83,7 +91,7 @@ export const deleteUserSettings = async (req, res) => {
       });
     }
 
-    await user.destroy();
+    await userSettings.destroy();
     res.status(200).json({
       status: "200",
       message: "UserSettings deleted successfully",
