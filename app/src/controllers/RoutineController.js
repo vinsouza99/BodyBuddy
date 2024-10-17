@@ -1,4 +1,4 @@
-import axiosClient from '../utils/axiosClient';
+import axiosClient from "../utils/axiosClient";
 import Routine from "../models/Routine";
 import { getExercisesFromRoutine } from "./RoutineExerciseController";
 
@@ -10,7 +10,9 @@ const API_ROUTE = "routines";
 
 const getRoutinesFromProgram = async (program_id) => {
   try {
-    const response = await axiosClient.get(`${API_ROUTE}/program/${program_id}`);
+    const response = await axiosClient.get(
+      `${API_ROUTE}/program/${program_id}`
+    );
     const data = await response.data;
     const routines = await data.data.rows.map((routine) => {
       new Routine(
@@ -65,4 +67,30 @@ const getAllPresetRoutines = async () => {
   }
 };
 
-export { getRoutinesFromProgram, getAllPresetRoutines };
+const createRoutine = async (routineObj) => {
+  try {
+    const routine = new Routine(
+      routineObj.id,
+      routineObj.created_at,
+      routineObj.completed_at,
+      routineObj.duration,
+      routineObj.program_id,
+      routineObj.name,
+      routineObj.description
+    );
+    let response = await axiosClient.post(`${API_ROUTE}`, routine);
+    if (response.status() == 201) {
+      routineObj.exercises.forEach(async (exercise) => {
+        response = await createRoutineExercise(exercise);
+        if (response.status() == 201) {
+          routine.exercises.push(response.data);
+        }
+      });
+    }
+    return routine;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export { getRoutinesFromProgram, getAllPresetRoutines, createRoutine };

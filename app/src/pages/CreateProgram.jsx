@@ -255,7 +255,7 @@ const CreateProgram = () => {
       availability: availability,
     };
     if (user) {
-      navigate("/dashboard", {
+      navigate("/training", {
         state: { userResponses: formResponse },
       });
     } else {

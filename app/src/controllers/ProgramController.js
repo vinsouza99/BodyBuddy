@@ -1,6 +1,6 @@
 import axiosClient from "../utils/axiosClient";
 import { Program } from "../models/Program";
-import { getRoutinesFromProgram } from "./RoutineController";
+import { getRoutinesFromProgram, createRoutine } from "./RoutineController";
 
 // Note: API BASE URL is set in axisoClient.js with other required common settings.
 // const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
@@ -68,9 +68,20 @@ const getAllUserPrograms = async (user_id) => {
 const createProgram = async (user_id, generatedProgramObj) => {
   try {
     if (!user_id) throw new Error("User ID is null");
-    const program = new Program(); //TODO
+    const program = new Program(
+      null,
+      null,
+      null,
+      generatedProgramObj.duration,
+      user_id,
+      generatedProgramObj.name,
+      generatedProgramObj.description
+    );
     //TODO call routine controller
     axiosClient.post(`${API_ROUTE}`, program);
+    generatedProgramObj.routines.forEach(async (routine) => {
+      await createRoutine(routine);
+    });
   } catch (e) {
     console.log(e);
   }
