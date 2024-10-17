@@ -6,7 +6,7 @@ export const getUserSettings = async (req, res) => {
     if (!userSettings) {
       return res.status(404).json({
         status: "404",
-        message: "UserSettings not found",
+        message: "User Settings not found",
       });
     }
     res.status(200).json({
@@ -39,7 +39,7 @@ export const createUserSettings = async (req, res) => {
     });
     res.status(201).json({
       status: "201",
-      message: "UserSettings created successfully",
+      message: "User Settings created successfully",
       data: newUserSettings,
     });
   } catch (error) {

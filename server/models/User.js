@@ -22,19 +22,6 @@ const User = sequelize.define(
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
-    last_login: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-    },
-    profile_picture_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     gender: {
       type: DataTypes.STRING,
       allowNull: true,

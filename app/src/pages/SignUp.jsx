@@ -18,13 +18,12 @@ export const SignUp = (props) => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  // For session management
-  const userProgramPreferences = location.state ? location.state : null;
+  const [userProgramPreferences, setUserProgramPreferences] = useState(null);
 
   // Initialization
   useEffect(() => {
     setPageTitle(props.title);
-    console.log(userProgramPreferences);
+    setUserProgramPreferences(location.state.userResponses);
   }, []);
 
   // Transition to Dashboard when user authentication is successful
@@ -51,20 +50,16 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
-      console.log(data);
       const newUser = {
         id: data.user.id,
         first_name: name.split(" ")[0],
         last_name: "",
         birthday: null,
-        last_login: Date.now(),
-        is_active: true,
-        profile_picture_url: "",
-        gender: userProgramPreferences.gender
-          ? userProgramPreferences.gender
-          : null,
+        goals: userProgramPreferences.primary_goals,
+        gender: userProgramPreferences.gender,
         settings: userProgramPreferences,
       };
+      console.log(newUser);
       createUser(newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);

@@ -18,7 +18,7 @@ const UserSettings = sequelize.define(
       allowNull: true,
     },
     available_days: {
-      type: DataTypes.STRING,
+      type: DataTypes.ARRAY(DataTypes.STRING),
       allowNull: true,
     },
   },
