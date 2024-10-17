@@ -11,6 +11,17 @@ import {
 } from '@mui/material';
 
 import CloseIcon from '@mui/icons-material/Close'; // Close Icon
+import PlayCircleIcon from '@mui/icons-material/PlayCircle'; // Play Icon
+
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+// import Typography from '@mui/material/Typography';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+
 import Timeline from '@mui/lab/Timeline';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
@@ -22,13 +33,13 @@ import TimelineOppositeContent, {
 } from '@mui/lab/TimelineOppositeContent';
 
 const historyData = [
-  { date: 'Oct 04', content: 'Routine 3: Upper Body Muscle Mass', condition: 'Finished', calories: 600 },
-  { date: 'Oct 02', content: 'Routine 2: Core Stability and Hip Mobility', condition: 'Finished', calories: 600 },
-  { date: 'Sep 29', content: 'Routine 1: Lower Body Strength', condition: 'Finished', calories: 600 },
-  { date: 'Sep 28', content: 'Routine 1: Lower Body Strength', condition: 'Finished', calories: 600 },
-  { date: 'Sep 26', content: 'Routine 1: Lower Body Strength', condition: 'Finished', calories: 600 },
-  { date: 'Sep 23', content: 'Routine 1: Lower Body Strength', condition: 'Finished', calories: 600 },
-  { date: 'Sep 22', content: 'Routine 1: Lower Body Strength', condition: 'Finished', calories: 600 },
+  { date: 'Oct 04', content: 'Routine 3: Upper Body Muscle Mass', duration: '30', calories: 600 },
+  { date: 'Oct 02', content: 'Routine 2: Core Stability and Hip Mobility', duration: '30', calories: 600 },
+  { date: 'Sep 29', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
+  { date: 'Sep 28', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
+  { date: 'Sep 26', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
+  { date: 'Sep 23', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
+  { date: 'Sep 22', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
 ];
 
 function History() {
@@ -45,7 +56,7 @@ function History() {
   };
 
   return (
-    <>
+    <div>
       <Card sx={{ padding: 2, borderRadius: 2 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h3" component="p" sx={{ margin: 1, fontWeight: 'bold' }}>
@@ -56,7 +67,37 @@ function History() {
           </Typography>
         </Box>
 
-        <Timeline
+
+        <div>
+      {historyData.map((item, index) => (
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ArrowDropDownIcon />}
+          aria-controls="panel2-content"
+          id="panel2-header"
+          key={index}
+        >
+          <Typography>{item.date}</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Typography>
+              <IconButton>
+                <PlayCircleIcon />
+              </IconButton>
+              {item.content}
+            </Typography>
+            <Stack direction="row" spacing={1}>
+            <Chip label={item.duration} variant="outlined" />
+            <Chip label={item.calories} cal variant="outlined" />
+            </Stack>
+          </AccordionDetails>
+      </Accordion>
+  ))}
+    </div>
+
+
+        {/* <Timeline
           sx={{
             [`& .${timelineOppositeContentClasses.root}`]: {
               flex: 0.2,
@@ -73,11 +114,11 @@ function History() {
                 {index < historyData.length - 1 && <TimelineConnector />}
               </TimelineSeparator>
               <TimelineContent>
-                {item.content} - {item.condition}, {item.calories} cal
+                {item.content} - {item.duration}, {item.calories} cal
               </TimelineContent>
             </TimelineItem>
           ))}
-        </Timeline>
+        </Timeline> */}
       </Card>
 
       {/* Modal part */}
@@ -109,14 +150,15 @@ function History() {
                   {index < historyData.length - 1 && <TimelineConnector />}
                 </TimelineSeparator>
                 <TimelineContent>
-                  {item.content} - {item.condition}, {item.calories} cal
+                  {item.content} - {item.duration}, {item.calories} cal
                 </TimelineContent>
               </TimelineItem>
             ))}
           </Timeline>
         </DialogContent>
       </Dialog>
-    </>
+
+    </div>
   );
 }
 
