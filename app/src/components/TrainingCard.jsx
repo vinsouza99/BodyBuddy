@@ -44,7 +44,7 @@ const TrainingCard = ({ routine }) => {
           </Box>
         </Box>
       </Paper>
-      <StartRoutineSessionModal open = {open} routineId = {routine.id} onClose = {handleClose} />
+      <StartRoutineSessionModal open={open} id={routine.id} idType="exercise" onClose={handleClose} />
     </Grid2>
   );
 };
