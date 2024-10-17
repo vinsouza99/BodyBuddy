@@ -1,5 +1,5 @@
 // import axios from "axios";
-import axiosClient from '../utils/axiosClient';
+import axiosClient from "../utils/axiosClient";
 import { RoutineExercise } from "../models/RoutineExercise";
 import { getExercise } from "./ExerciseController";
 
@@ -11,7 +11,9 @@ const API_ROUTE = "routineExercises";
 
 const getExercisesFromRoutine = async (routine_id) => {
   try {
-    const response = await axiosClient.get(`${API_ROUTE}/routine/${routine_id}`);
+    const response = await axiosClient.get(
+      `${API_ROUTE}/routine/${routine_id}`
+    );
     const data = await response.data;
     const routineExercises = await data.data.map(
       (exercise) =>
@@ -38,4 +40,21 @@ const getExercisesFromRoutine = async (routine_id) => {
   }
 };
 
-export { getExercisesFromRoutine };
+const createRoutineExercise = async (exerciseObj) => {
+  try {
+    const routineExercise = new RoutineExercise(
+      exerciseObj.exercise_id,
+      exerciseObj.routine_id,
+      exerciseObj.order,
+      exerciseObj.sets,
+      exerciseObj.reps,
+      exerciseObj.duration,
+      exerciseObj.restPeriod
+    );
+    return await axiosClient.post(`${API_ROUTE}`, routineExercise);
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export { getExercisesFromRoutine, createRoutineExercise };

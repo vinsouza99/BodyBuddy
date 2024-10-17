@@ -63,6 +63,7 @@ export const SignUp = (props) => {
       createUser(newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);
+          navigate("/training", userProgramPreferences);
         })
         .catch((error) => {
           throw error;

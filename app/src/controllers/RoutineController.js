@@ -1,6 +1,9 @@
 import axiosClient from "../utils/axiosClient";
 import Routine from "../models/Routine";
-import { getExercisesFromRoutine } from "./RoutineExerciseController";
+import {
+  getExercisesFromRoutine,
+  createRoutineExercise,
+} from "./RoutineExerciseController";
 
 // Note: API BASE URL is set in axisoClient.js with other required common settings.
 // const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
