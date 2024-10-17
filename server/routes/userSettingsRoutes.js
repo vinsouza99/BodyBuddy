@@ -24,7 +24,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /UserSettingss/{id}:
+ * /UserSettings/{id}:
  *   get:
  *     summary: Get a specific UserSettings by ID
  *     tags: [UserSettingss]
@@ -50,7 +50,7 @@ router.get("/:id", getUserSettings);
 
 /**
  * @swagger
- * /UserSettingss:
+ * /UserSettings:
  *   post:
  *     summary: Create a new UserSettings
  *     tags: [UserSettingss]
@@ -74,7 +74,7 @@ router.post("/", createUserSettings);
 
 /**
  * @swagger
- * /UserSettingss/{id}:
+ * /UserSettings/{id}:
  *   put:
  *     summary: Update an existing UserSettings by ID
  *     tags: [UserSettingss]
@@ -107,7 +107,7 @@ router.put("/:id", updateUserSettings);
 
 /**
  * @swagger
- * /UserSettingss/{id}:
+ * /UserSettings/{id}:
  *   delete:
  *     summary: Delete an UserSettings by ID
  *     tags: [UserSettingss]

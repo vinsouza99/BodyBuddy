@@ -55,10 +55,8 @@ export const SignUp = (props) => {
         first_name: name.split(" ")[0],
         last_name: "",
         birthday: null,
-        last_login: Date.now(),
-        is_active: true,
-        profile_picture_url: "",
-        gender: userProgramPreferences?.gender,
+        goals: userProgramPreferences.primary_goals,
+        gender: userProgramPreferences.gender,
         settings: userProgramPreferences,
       };
       console.log(newUser);

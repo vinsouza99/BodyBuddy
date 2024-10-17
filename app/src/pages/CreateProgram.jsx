@@ -36,7 +36,7 @@ const CreateProgram = () => {
 
   useEffect(() => {
     async function getGoals() {
-      let data = await getAllGoals().then((goals) => goals);
+      const data = await getAllGoals();
       setPrimaryGoalsOptions(data);
     }
     getGoals();
@@ -49,6 +49,7 @@ const CreateProgram = () => {
     } else {
       array.splice(array, 1);
     }
+    console.log(array);
   };
 
   const pastExerciseFrequencyOptions = [
@@ -141,7 +142,7 @@ const CreateProgram = () => {
               >
                 <FormControlLabel
                   key={index}
-                  value={goal.name}
+                  value={goal.id}
                   control={<Checkbox />}
                   label={goal.name}
                   onChange={(e) => toggleOptions(primaryGoals, e.target.value)}

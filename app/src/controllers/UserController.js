@@ -2,6 +2,7 @@ import axiosClient from "../utils/axiosClient";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
+import { getUserGoals, createUserGoals } from "./GoalsController";
 
 const USER_ROUTE = "users";
 const USER_SETTINGS_ROUTE = "user_settings";
@@ -16,11 +17,10 @@ const getUser = async (id) => {
       data.firstName,
       data.lastName,
       data.birthday,
-      data.last_login,
-      data.is_active,
-      data.profile_picture_url,
       data.gender
     );
+    const goals = await getUserGoals(id);
+    user.goals = goals;
     const settings = await getUserSettings(id);
     user.settings = settings;
     const progress = await getUserProgress(id);
@@ -30,6 +30,7 @@ const getUser = async (id) => {
     console.log(e);
   }
 };
+
 const getUserSettings = async (id) => {
   try {
     const response = await axiosClient.get(`${USER_SETTINGS_ROUTE}/${id}`);
@@ -63,14 +64,14 @@ const createUser = async (userObj) => {
       userObj.first_name,
       userObj.last_name,
       userObj.birthday,
-      userObj.last_login,
-      userObj.is_active,
-      userObj.profile_picture_url,
       userObj.gender
     );
     let response = await axiosClient.put(`${USER_ROUTE}/${user.id}`, user);
+    response = await createUserGoals(user.id, userObj.goals);
+    //user.goals = response.data.data;
+    console.log("User goals:");
+    console.log(response);
     userObj.settings.user_id = user.id;
-    console.log(userObj);
     response = await createUserSettings(userObj.settings);
     user.settings = response.data.data;
     response = await createUserProgress(user.id);
@@ -80,6 +81,7 @@ const createUser = async (userObj) => {
     console.log(e);
   }
 };
+
 const createUserSettings = async (userSettingsObj) => {
   try {
     if (!userSettingsObj) throw new Error("User settings is null");
@@ -112,9 +114,6 @@ const updateUser = async (user_id, updatedUserObj) => {
       updatedUserObj.firstName,
       updatedUserObj.lastName,
       updatedUserObj.birthday,
-      updatedUserObj.last_login,
-      updatedUserObj.is_active,
-      updatedUserObj.profile_picture_url,
       updatedUserObj.gender
     );
     const response = await axiosClient.put(
