@@ -32,7 +32,6 @@ const LearningCard = ({ exercise }) => {
 
   // Navigate to the exercise page with the specific ID
   const handleStartExercise = (id) => {
-    console.log(`LOADING EXERCISE WITH ID: ${id}`, selectedExercise);
     navigate(`/exercise/${id}`);
   };
 
@@ -89,8 +88,8 @@ const LearningCard = ({ exercise }) => {
           {/* Log exercise object */}
           {console.log("Exercise object:", exercise)}
 
-          {exercise && exercise.type ? (
-            exercise.type.map((type, index) => (
+          {exercise && exercise.types ? (
+            exercise.types.map((type, index) => (
               <Chip key={index} label={type} variant="outlined" />
             ))
           ) : (

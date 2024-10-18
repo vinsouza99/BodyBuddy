@@ -1,7 +1,7 @@
 // React and Material-UI
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useCallback } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -37,7 +37,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-// import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 // Style Object (for sx prop)
@@ -56,14 +55,24 @@ const canvasStyles = {
   top: 0,
   left: 0,
 };
+const gradientStyles = {
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  objectFit: "cover",
+  top: 0,
+  left: 0,
+  pointerEvents: 'none',
+  backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 15%, transparent 85%, rgba(0, 0, 0, 0.9))',
+  zIndex: 1,
+};
 
 export const RoutineSession = ({title = "Routine Session"}) => {
   const { user } = useAuth(); // For session management
   const navigate = useNavigate();
-  const location = useLocation();
-  const { routineId } = useParams();
   const isLandscapeMode = useLandscapeMode();
-  const { record = false } = location.state || {}; // Receive from the StartRoutineModal as a prop
+  const location = useLocation();
+  const { record = false, id = false, idType = null, reps = 0 } = location.state || {}; // Receive from the StartRoutineModal as a prop
   const angleChangeThreshold = 3;
   let previousAngle = null;
 
@@ -142,11 +151,11 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     };
     createPoseLandmarker();
 
-    // Retrieve routine/program information from the database
+    // Retrieve routine information from the database (if idType is "routine")
     const fetchRoutineInfo = async () => {
       try {
         const response = await axiosClient.get(
-          `RoutineExercises/routine/${routineId}`
+          `RoutineExercises/routine/${id}`
         );
         if (Number(response.status) !== 200) {
           throw new Error("Failed to fetch routine info");
@@ -157,21 +166,85 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.error("Error fetching routine:", error);
       }
     };
-    fetchRoutineInfo();
+
+    // Note: To be implemented
+    // Rerieve exercise information from the database (if idType is "exercise")
+    const fetchExerciseInfo = async () => {
+      // CREATE A ROUTINE INCLUDE ONLY ONE EXERCISE
+      try {
+        const response = await axiosClient.get(
+          `Exercises/${id}`
+        );
+        if (Number(response.status) !== 200) {
+          throw new Error("Failed to fetch exercise info");
+        }
+        console.log(response.data);
+        const routineData = [
+          {
+            name: response.data.data.name,
+            goal: `1 set of ${reps} reps`,
+            sets: 1,
+            reps: Number(reps),
+            duration: 0,
+            rest_time: 0,
+            image: response.data.data.demo_url,
+          }
+        ];
+        setRoutine(routineData);
+      } catch (error) {
+        console.error("Error fetching exercise:", error);
+      }
+    };
+
+    // Fetch routine or exercise information based on idType
+    if (idType === "routine") {
+      console.log("Routine is selected.");
+      fetchRoutineInfo();
+    } else if (idType === "exercise") {
+      console.log("Exercise is selected.");
+      fetchExerciseInfo();
+    } else {
+      console.error("Invalid idType:", idType);
+    }
   }, []);
 
   // Enable webcam when videoRef is available
-  useEffect( () => {
-    if (videoRef.current) {
-      toggleWebCam();
-    }
+  //
+  // Note: I can't detect the video element ready using useEffect.
+  // So, I use MutationObserver to detect the video element ready.
+  // Not sure, this is a right approach as a React 
+  // but use this for a workaround for the issue.
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      if (videoRef.current) {
+        console.log("VideoRef is now available:", videoRef.current);
+        toggleWebCam();
+        // Disconnect the observer after the video element is available
+        observer.disconnect(); 
+      }
+    });
+
+    // Check if the video element is available
+    observer.observe(document, { childList: true, subtree: true });
 
     // Cleanup
     return () => {
-      // Disable Webcam
       if (webcamRunning) toggleWebCam();
+      observer.disconnect();
     };
-  }, [videoRef.current]);
+  }, []);
+  // useEffect( () => {
+  //   console.log("VideoRef:", videoRef.current);
+  //   if (videoRef.current) {
+  //     toggleWebCam();
+  //   }
+
+  //   // Cleanup
+  //   return () => {
+  //     // Disable Webcam
+  //     if (webcamRunning) toggleWebCam();
+  //   };
+  // }, [videoRef.current]);
 
   // Enable recoding when webcam is running (ONLY WHEN RECORDING IS APPROVED)
   useEffect(() => {
@@ -188,6 +261,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
   // Reset selected exercise index when routine changes
   useEffect(() => {
+    console.log("Routine:", routine);
     if (routine && routine.length > 0) {
       setSelectedExerciseIndex(0);
     }
@@ -273,7 +347,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.error("Error uploading file:", error);
       } else {
         console.log("File uploaded successfully:", data);
-        console.log("Public URL:", );
+        console.log("Public URL:", `${supabaseStorageUrl}${fileName}`);
         setExerciseVideo(`${supabaseStorageUrl}${fileName}`);
         setRecordedChunks([]);
 
@@ -621,8 +695,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       const newHistoryObj = {
         user_id: user.id,
         created_at: completedAt,
-        routine_id: routineId,
-        program_id: null,
+        routine_id: idType === 'routine' ? id : null,
+        exercise_id: idType === 'exercise' ? id : null, 
         recording_URL: exerciseVideo,
         description: null,
       };
@@ -730,7 +804,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
           {/* Webcam */}
           <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
-
+          {/* Black Gradient Overlay */}
+          <div style={gradientStyles}></div>
           {/* Pose Landmarks */}
           <canvas ref={canvasRef} style={canvasStyles}></canvas>
 
@@ -782,11 +857,12 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               justifyContent: 'center',
               gap: '2rem',
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              zIndex: 1000,
             }}
           >
             <AngleMeter2 title={"Angle"} angle={angle} />
-            <Counter2 title={"Reps"} count={successRepCount} target = {routine[selectedExerciseIndex]?.reps || 0} /> {/* Regarding increment Rep count, refer to "predictPosture" */}
-            <Counter2 title={"Sets"} count={successSetCount} target = {routine[selectedExerciseIndex]?.sets || 0} onComplete={moveToNextExercise} />
+            <Counter2 title={"Reps"} count={successRepCount} target={routine[selectedExerciseIndex]?.reps || 0} /> {/* Regarding increment Rep count, refer to "predictPosture" */}
+            <Counter2 title={"Sets"} count={successSetCount} target={routine[selectedExerciseIndex]?.sets || 0} onComplete={moveToNextExercise} />
           </Box>
           
           {/* Bottom Menu */}
@@ -801,6 +877,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               alignItems: 'center',
               padding: '0 20px',
               textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              zIndex: 1000,
             }}
           >
             {/* Demo Image */}
@@ -825,7 +902,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <IconButton 
               onClick={toggleIsResting}
               onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50 }}>
+              style={{ fontSize: 50, color: 'white' }}>
               {isResting ? (
                 <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
               ) : (
@@ -840,14 +917,18 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               duration={routine[selectedExerciseIndex]?.duration || 0}
               size={isLandscapeMode ? 80 : 120}
               strokeWidth={isLandscapeMode ? 6 : 8}
-              colors={theme.palette.secondary.main}
+              colors='white'
+              trailColor='transparent'
               onComplete={incrementSetsCount}
             >
               {({ remainingTime }) => (
                 <Typography
                   variant="h1"
                   component="div"
-                  sx={{ fontWeight: "bold", color: theme.palette.secondary.main }}
+                  sx={{ 
+                    fontWeight: "bold", 
+                    color: 'white'
+                  }}
                 >
                   {remainingTime >= 0 ? remainingTime : 0} 
                 </Typography>
@@ -858,7 +939,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <IconButton 
               onClick={moveToNextExercise}
               onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50 }}>
+              style={{ fontSize: 50, color: 'white' }}>
               <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
             </IconButton>
 
@@ -880,13 +961,14 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                 gutterBottom
                 onClick={handleToggleExerciseMenu} 
                 sx={{
-                  fontSize: isLandscapeMode ? "1.2rem" : "1.5rem",
+                  fontSize: isLandscapeMode ? "1rem" : "1.2rem",
                   fontWeight: "bold",
                   textAlign: "right",
                   display: 'flex',
                   alignItems: 'center', 
                   justifyContent: 'flex-end',
-                  color: `${theme.palette.secondary.main}`,
+                  // color: `${theme.palette.secondary.main}`,
+                  color: `white`,
                   cursor: 'pointer',
                 }}
               >
@@ -898,7 +980,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                   maxHeight: isExerciseMenuOpen ? '200px' : '0',
                   overflowY: "scroll",
                   transition: 'max-Height 0.5s ease',
-                  backgroundColor: 'rgba(255, 255, 255, 0.6)',
                 }}
               >
                 <List
@@ -914,14 +995,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                         key={index + selectedExerciseIndex}
                         sx={{
                           cursor: "default",
-                          color: index === 0 ? "white" : "black",
-                          backgroundColor:
-                            index === 0
-                              ? `${theme.palette.secondary.main}`
-                              : "inherit",
-                          opacity: index === 0 ? 0.6 : 1,
-                          padding: "0.25rem 0.5rem",
+                          padding: "0.1rem 0.5rem",
                           margin: "0rem",
+                          marginBottom: "0.5rem", 
+                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
                         }}
                       >
                         <ListItemText
@@ -931,12 +1008,13 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                             sx: {
                               fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               fontWeight: "bold",
+                              color: "black",
                             },
                           }}
                           secondaryTypographyProps={{
                             sx: { 
                               fontSize: isLandscapeMode ? "0.8rem" : "1rem",
-                              color: index === 0 ? "white" : "black",
+                              color: "black",
                             }
                           }}
                         />
@@ -979,5 +1057,4 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 // Defining prop types
 RoutineSession.propTypes = {
   title: PropTypes.string,
-  record: PropTypes.bool,
 };

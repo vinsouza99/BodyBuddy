@@ -1,10 +1,9 @@
-//import axios from "axios";
 import { OpenAI } from "openai";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
+// How to use output templates: https://openai.com/index/introducing-structured-outputs-in-the-api/
 export const getResponse = async (req, res) => {
   try {
     const prompt = req.body.prompt;

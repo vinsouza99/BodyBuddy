@@ -6,17 +6,32 @@ import onboarding3 from "../assets/onboarding3.png";
 
 export function Onboarding() {
   const images = [onboarding1, onboarding2, onboarding3];
-  const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Get the current displayed onboarding slide or start from the first
+  // This is to load current displayed slide when user clicks Sign In
+  const savedSlide = parseInt(localStorage.getItem("currentSlide")) || 0;
+
+  // State to track the current slide
+  const [currentSlide, setCurrentSlide] = useState(savedSlide);
+
+  // Function to move to the next slide
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
+  // Fade-in-out slides every 3 seconds
   useEffect(() => {
     const slideInterval = setInterval(nextSlide, 3000);
     return () => clearInterval(slideInterval);
   }, []);
 
+  // Save the current slide index to localStorage when it changes
+  // This is to load current displayed slide when user clicks Sign In
+  useEffect(() => {
+    localStorage.setItem("currentSlide", currentSlide);
+  }, [currentSlide]);
+
+  // Pagination dots for onboarding slides
   const handleDotClick = (index) => {
     setCurrentSlide(index);
   };
@@ -30,6 +45,7 @@ export function Onboarding() {
         overflow: "hidden",
       }}
     >
+      {/* Display onboarding slides */}
       {images.map((image, index) => (
         <Box
           key={index}
@@ -48,7 +64,7 @@ export function Onboarding() {
         />
       ))}
 
-      {/* Dots */}
+      {/* Pagination dots styling */}
       <Box
         sx={{
           position: "absolute",
@@ -60,6 +76,7 @@ export function Onboarding() {
         }}
       >
         {images.map((_, index) => (
+          // This shows a border around the current pagination dot
           <Box
             key={index}
             onClick={() => handleDotClick(index)}
@@ -68,23 +85,24 @@ export function Onboarding() {
               width: 22,
               height: 22,
               borderRadius: "50%",
-              border: currentSlide === index ? "2px solid white" : "none",
+              border: currentSlide === index ? "2px solid white" : "none", // Highlight the active dot
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
+            {/* This shows a solid dot for the current pagination dot */}
             <Box
               sx={{
                 width: 12,
                 height: 12,
                 borderRadius: "50%",
-                backgroundColor: currentSlide === index ? "white" : "none",
+                backgroundColor: currentSlide === index ? "white" : "none", // Highlight active dot
                 border: currentSlide === index ? "none" : "1px solid white",
                 transition: "background-color 0.3s",
                 cursor: "pointer",
                 "&:hover": {
-                  backgroundColor: "white",
+                  backgroundColor: "white", // Hover effect for dot
                 },
               }}
             />

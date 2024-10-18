@@ -58,7 +58,7 @@ export const Learn = (props) => {
       console.log("Loaded exercises:", response);
 
       // Access exercises from the response.data property
-      const exercisesData = response.data;
+      const exercisesData = response;
 
       // Log the exercises data
       console.log("Exercises Data:", exercisesData);

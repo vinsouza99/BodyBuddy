@@ -101,7 +101,7 @@ export const MainLayout = () => {
         // Display branding
         branding={{
           logo: <img src="./src/assets/bodybuddy.svg" alt="BodyBuddy" />,
-          title: "BodyBuddy",
+          title: "",
         }}
         // Session and Authentication
         session={session}

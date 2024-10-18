@@ -25,7 +25,12 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
   }, [count, target, onComplete, completed]);
 
   return (
-    <Box sx={{ fontWeight: "bold", color: `${theme.palette.secondary.main}` }}>
+    <Box 
+      sx={{ 
+        fontWeight: "bold", 
+        // color: `${theme.palette.secondary.main}` 
+        color: `white` 
+      }}>
       <Typography
         sx={{
           fontWeight: 'normal',

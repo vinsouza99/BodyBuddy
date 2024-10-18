@@ -3,13 +3,7 @@ import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import {
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Container,
-} from "@mui/material";
+import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
@@ -24,12 +18,12 @@ export const SignUp = (props) => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  // For session management
-  const userProgramPreferences = location.state ? location.state : null;
+  const [userProgramPreferences, setUserProgramPreferences] = useState(null);
 
   // Initialization
   useEffect(() => {
     setPageTitle(props.title);
+    setUserProgramPreferences(location.state.userResponses);
   }, []);
 
   // Transition to Dashboard when user authentication is successful
@@ -56,23 +50,20 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
-      console.log(data);
       const newUser = {
         id: data.user.id,
         first_name: name.split(" ")[0],
         last_name: "",
         birthday: null,
-        last_login: Date.now(),
-        is_active: true,
-        profile_picture_url: "",
-        gender: userProgramPreferences.gender
-          ? userProgramPreferences.gender
-          : null,
+        goals: userProgramPreferences.primary_goals,
+        gender: userProgramPreferences.gender,
         settings: userProgramPreferences,
       };
+      console.log(newUser);
       createUser(newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);
+          navigate("/training", userProgramPreferences);
         })
         .catch((error) => {
           throw error;

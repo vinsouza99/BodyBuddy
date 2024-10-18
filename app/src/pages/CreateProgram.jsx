@@ -22,14 +22,13 @@ import {
 import "./CreateProgram.css";
 import { getAllGoals } from "../controllers/GoalsController.js";
 import { useAuth } from "../utils/AuthProvider.jsx";
-import { getResponse } from "../utils/openaiService.js";
-import { PromptInfo } from "../models/PromptInfo.js";
+import CheckIcon from "@mui/icons-material/Check"; // TODO: change to svg icon from design file
 
 const CreateProgram = () => {
-  const { user, handleSignOut } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [gender, setGender] = useState("female");
+  const [gender, setGender] = useState("F");
   const [primaryGoals, setPrimaryGoals] = useState([]);
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
@@ -38,8 +37,42 @@ const CreateProgram = () => {
 
   useEffect(() => {
     async function getGoals() {
-      let data = await getAllGoals().then((goals) => goals);
-      setPrimaryGoalsOptions(data);
+      //const data = await getAllGoals(); //uncomment this line when database configuration is done
+      //setPrimaryGoalsOptions(data); //uncomment this line when database configuration is done
+
+      setPrimaryGoalsOptions([
+        //delete this block of code when database configuration is done
+        {
+          name: "Build Muscles & Size",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Lose Weight & Burn Fat",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Increase Strength",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Tone Up",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Get Fitter & Feel Healthy",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Increase Mobility",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+      ]);
     }
     getGoals();
   }, []);
@@ -95,30 +128,32 @@ const CreateProgram = () => {
       <>
         <FormControl>
           <FormLabel id="genderLabel">
-            <Typography variant="h3">What is your gender?</Typography>
+            <Typography variant="h3" sx={{ marginBottom: "20px" }}>
+              What is your gender?
+            </Typography>
           </FormLabel>
           <RadioGroup
             aria-labelledby="genderLabel"
-            defaultValue="female"
+            defaultValue="F"
             name="radio-buttons-group"
             value={gender}
           >
             <FormControlLabel
-              value="female"
+              value="F"
               control={<Radio />}
               label="Female"
-              onChange={() => setGender("female")}
+              onChange={() => setGender("F")}
             />
             <FormControlLabel
-              value="male"
+              value="M"
               control={<Radio />}
               label="Male"
-              onChange={() => setGender("male")}
+              onChange={() => setGender("M")}
             />
             <FormControlLabel
               value="other"
               control={<Radio />}
-              label="I’m not comfortable to share"
+              label="Prefer not to say"
               onChange={() => setGender("other")}
             />
           </RadioGroup>
@@ -131,7 +166,9 @@ const CreateProgram = () => {
     return (
       <FormControl>
         <FormLabel id="primaryGoalLabel">
-          <Typography variant="h3">What is your primary goal?</Typography>
+          <Typography variant="h3" sx={{ marginBottom: "20px" }}>
+            What is your primary goal?
+          </Typography>
         </FormLabel>
         <FormGroup aria-labelledby="primaryGoalLabel" name="checkbox-group">
           {primaryGoalsOptions?.map((goal, index) => (
@@ -144,7 +181,7 @@ const CreateProgram = () => {
               >
                 <FormControlLabel
                   key={index}
-                  value={goal.name}
+                  value={goal.id}
                   control={<Checkbox />}
                   label={goal.name}
                   onChange={(e) => toggleOptions(primaryGoals, e.target.value)}
@@ -172,18 +209,83 @@ const CreateProgram = () => {
             How often do you exercise in the past?
           </Typography>
         </FormLabel>
+        <Box
+          sx={{
+            // Create line behind radio buttons
+            position: "absolute",
+            width: "80%",
+            borderTop: "1px solid",
+            borderColor: "background.light",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: "80px", // Adjust to align vertically with radio buttons
+          }}
+        ></Box>
         <RadioGroup
           row
           aria-labelledby="pastExerciseFrequencyLabel"
           name="radio-buttons-group2"
           value={pastExerciseFrequency}
+          sx={{ display: "flex", justifyContent: "center" }} // Center horizontally
         >
           {pastExerciseFrequencyOptions.map((frequency, index) => (
             <FormControlLabel
               className="inlineRadioButton"
+              sx={{
+                // Custom styling for FormControlLabel if not using className="inlineRadioButton"
+                // minWidth: "30px",
+                // maxWidth: "60px",
+                "& .MuiFormControlLabel-label": {
+                  lineHeight: 1.2, // Apply line height to the label
+                },
+              }}
               key={index}
-              value={frequency}
-              control={<Radio />}
+              value={index + 1}
+              control={
+                // Cocoy: Custom styling for radio buttons
+                // TODO: MOVE TO THEME.JS?
+                <Radio
+                  sx={{
+                    // Hide native input radio button
+                    "& .MuiSvgIcon-root": {
+                      display: "none",
+                    },
+                    // Create custom radio button
+                    marginTop: "30px",
+                    marginBottom: "20px",
+                    width: "36px",
+                    height: "36px",
+                    padding: "10px",
+                    borderRadius: "50%",
+                    backgroundColor: "background.light",
+                    position: "relative",
+                    transition: "background-color 0.3s ease",
+
+                    // Style for selected radio button
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Style for hover
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Custom radio button numbers using ::before
+                    "&::before": {
+                      content: "attr(data-value)", // Use the data-value attribute to insert the number
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      color: "background.paper",
+                      fontWeight: "bold",
+                    },
+                  }}
+                  data-value={index + 1} // Increment data-value attribute
+                />
+              }
               label={frequency}
               labelPlacement="bottom"
               onChange={(e) => setPastExerciseFrequency(e.target.value)}
@@ -193,6 +295,7 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
+
   function IntensityStep() {
     return (
       <FormControl>
@@ -201,6 +304,18 @@ const CreateProgram = () => {
             How intense you want to exercise?
           </Typography>
         </FormLabel>
+        <Box
+          sx={{
+            // Create line behind radio buttons
+            position: "absolute",
+            width: "80%",
+            borderTop: "1px solid",
+            borderColor: "background.light",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: "80px", // Adjust to align vertically with radio buttons
+          }}
+        ></Box>
         <RadioGroup
           row
           aria-labelledby="intensityLabel"
@@ -210,9 +325,61 @@ const CreateProgram = () => {
           {intensityOptions.map((intensity, index) => (
             <FormControlLabel
               className="inlineRadioButton"
+              sx={{
+                // Custom styling for FormControlLabel if not using className="inlineRadioButton"
+                // minWidth: "30px",
+                // maxWidth: "60px",
+                "& .MuiFormControlLabel-label": {
+                  lineHeight: 1.2, // Apply line height to the label
+                },
+              }}
               key={index}
               value={index + 1}
-              control={<Radio />}
+              control={
+                // Cocoy: Custom styling for radio buttons
+                // TODO: MOVE TO THEME.JS?
+                <Radio
+                  sx={{
+                    // Hide native input radio button
+                    "& .MuiSvgIcon-root": {
+                      display: "none",
+                    },
+                    // Create custom radio button
+                    marginTop: "30px",
+                    marginBottom: "20px",
+                    width: "36px",
+                    height: "36px",
+                    padding: "10px",
+                    borderRadius: "50%",
+                    backgroundColor: "background.light",
+                    position: "relative",
+                    transition: "background-color 0.3s ease",
+
+                    // Style for selected radio button
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Style for hover
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Add number inside custom radio button using ::before
+                    "&::before": {
+                      content: "attr(data-value)", // Use the data-value attribute to insert the number
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      color: "background.paper",
+                      fontWeight: "bold",
+                    },
+                  }}
+                  data-value={index + 1} // Increment data-value attribute
+                />
+              }
               label={intensity}
               labelPlacement="bottom"
               onChange={(e) => setIntensity(e.target.value)}
@@ -222,6 +389,7 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
+
   function AvailabilityStep() {
     return (
       <FormControl>
@@ -238,7 +406,53 @@ const CreateProgram = () => {
             <FormControlLabel
               key={index}
               value={day}
-              control={<Checkbox />}
+              control={
+                // Cocoy: Custom styling for checkbox
+                // TODO: MOVE TO THEME.JS
+                <Checkbox
+                  sx={{
+                    // Hide native checkbox
+                    "& .MuiSvgIcon-root": {
+                      display: "none",
+                    },
+                    // Create custom checkbox
+                    marginTop: "30px",
+                    marginBottom: "20px",
+                    width: "36px",
+                    height: "36px",
+                    padding: "10px",
+                    borderRadius: "50%",
+                    border: "2px solid",
+                    backgroundColor: "background.paper",
+                    position: "relative",
+                    transition: "background-color 0.3s ease",
+
+                    // Style for selected Checkbox
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                      backgroundColor: "primary.main",
+                    },
+                    // Style for hover
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                      borderColor: "primary.main",
+                    },
+
+                    // Display custom check icon
+                    "&.Mui-checked .MuiSvgIcon-root": {
+                      display: "block",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      color: "background.paper",
+                    },
+                  }}
+                  // Custom checkbox icon
+                  // TODO: change to svg icon from design file
+                  checkedIcon={<CheckIcon />}
+                />
+              }
               label={day.substring(0, 3)}
               labelPlacement="bottom"
               onChange={(e) => toggleOptions(availability, e.target.value)}
@@ -248,28 +462,21 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
+
   async function submitForm() {
-    /**
-     *  const [gender, setGender] = useState("female");
-  const [primaryGoals, setPrimaryGoals] = useState([]);
-  const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
-  const [intensity, setIntensity] = useState("");
-  const [availability, setAvailability] = useState([]);
-  const [primaryGoalsOptions, setPrimaryGoalsOptions] = useState([]);
-     */
     const formResponse = {
       gender: gender,
-      primaryGoals: primaryGoals,
-      pastExerciseFrequency: pastExerciseFrequency,
-      intensity: intensity,
+      primary_goals: primaryGoals,
+      past_exercise_frequency: pastExerciseFrequency,
+      desired_intensity: intensity,
       availability: availability,
     };
     if (user) {
-      navigate("/dashboard", {
-        state: { userProgramPreferences: formResponse },
+      navigate("/training", {
+        state: { userResponses: formResponse },
       });
     } else {
-      navigate("/signup", { state: { userProgramPreferences: formResponse } });
+      navigate("/signup", { state: { userResponses: formResponse } });
     }
   }
   return (
@@ -333,6 +540,9 @@ const CreateProgram = () => {
                 justifyContent={"center"}
                 direction="row"
                 spacing={2}
+                sx={{
+                  marginTop: "20px",
+                }}
               >
                 <Button
                   variant="outlined"
@@ -358,4 +568,5 @@ const CreateProgram = () => {
     </>
   );
 };
+
 export default CreateProgram;

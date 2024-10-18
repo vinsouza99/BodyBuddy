@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import UserSettings from "./UserSettings.js";
 
 const User = sequelize.define(
   "User",
@@ -23,19 +22,6 @@ const User = sequelize.define(
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
-    last_login: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    is_active: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: true,
-    },
-    profile_picture_url: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     gender: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -46,8 +32,4 @@ const User = sequelize.define(
     timestamps: false,
   }
 );
-User.hasOne(UserSettings, {
-  foreignKey: "user_id",
-});
-
 export default User;

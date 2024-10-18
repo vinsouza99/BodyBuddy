@@ -3,11 +3,8 @@ import PropTypes from "prop-types";
 import { Card, CardContent, Typography } from "@mui/material";
 // Custom Components for Routine Session
 import { useLandscapeMode } from './useLandscapeMode';
-// Common Components
-import { useTheme } from '@mui/material/styles';
 
-export const MetricCard = ({ value="N/A", title="N/A" }) => {
-  const theme = useTheme();
+export const MetricCard = ({ value="N/A", title="N/A", color="white" }) => {
   const isLandscapeMode = useLandscapeMode();
 
   return (
@@ -15,15 +12,17 @@ export const MetricCard = ({ value="N/A", title="N/A" }) => {
       <CardContent sx={{ textAlign: 'center' }}>
         <Typography
           component="div" 
-          color={theme.palette.text.primary}
-          fontWeight="bold"
-          fontSize={isLandscapeMode ? "1.2rem" : "2rem"}
+          color={color}
+          sx={{
+            fontWeight: "bold",
+            fontSize: isLandscapeMode ? "1.2rem" : "2rem",
+          }}
         >
           {value}
         </Typography>
         <Typography 
           variant="subtitle1" 
-          color={theme.palette.text.primary}
+          color={color}
         >
           {title}
         </Typography>
@@ -36,4 +35,5 @@ export const MetricCard = ({ value="N/A", title="N/A" }) => {
 MetricCard.propTypes = {
   value: PropTypes.string,
   title: PropTypes.string,
+  color: PropTypes.string,
 };
