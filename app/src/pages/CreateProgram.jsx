@@ -22,6 +22,7 @@ import {
 import "./CreateProgram.css";
 import { getAllGoals } from "../controllers/GoalsController.js";
 import { useAuth } from "../utils/AuthProvider.jsx";
+import CheckIcon from "@mui/icons-material/Check"; // TODO: change to svg icon from design file
 
 const CreateProgram = () => {
   const { user } = useAuth();
@@ -127,7 +128,9 @@ const CreateProgram = () => {
       <>
         <FormControl>
           <FormLabel id="genderLabel">
-            <Typography variant="h3">What is your gender?</Typography>
+            <Typography variant="h3" sx={{ marginBottom: "20px" }}>
+              What is your gender?
+            </Typography>
           </FormLabel>
           <RadioGroup
             aria-labelledby="genderLabel"
@@ -163,7 +166,9 @@ const CreateProgram = () => {
     return (
       <FormControl>
         <FormLabel id="primaryGoalLabel">
-          <Typography variant="h3">What is your primary goal?</Typography>
+          <Typography variant="h3" sx={{ marginBottom: "20px" }}>
+            What is your primary goal?
+          </Typography>
         </FormLabel>
         <FormGroup aria-labelledby="primaryGoalLabel" name="checkbox-group">
           {primaryGoalsOptions?.map((goal, index) => (
@@ -213,9 +218,60 @@ const CreateProgram = () => {
           {pastExerciseFrequencyOptions.map((frequency, index) => (
             <FormControlLabel
               className="inlineRadioButton"
+              sx={
+                {
+                  // Custom styling for FormControlLabel if not using className="inlineRadioButton"
+                  // minWidth: "30px",
+                  // maxWidth: "60px",
+                }
+              }
               key={index}
               value={index + 1}
-              control={<Radio />}
+              control={
+                // Cocoy: Custom styling for radio buttons
+                // TODO: MOVE TO THEME.JS
+                <Radio
+                  sx={{
+                    // Hide native input radio button
+                    "& .MuiSvgIcon-root": {
+                      display: "none",
+                    },
+                    // Create custom radio button
+                    marginTop: "30px",
+                    marginBottom: "20px",
+                    width: "36px",
+                    height: "36px",
+                    padding: "10px",
+                    borderRadius: "50%",
+                    backgroundColor: "background.light",
+                    position: "relative",
+                    transition: "background-color 0.3s ease",
+
+                    // Style for selected radio button
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Style for hover
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Custom radio button numbers using ::before
+                    "&::before": {
+                      content: "attr(data-value)", // Use the data-value attribute to insert the number
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      color: "background.paper",
+                      fontWeight: "bold",
+                    },
+                  }}
+                  data-value={index + 1} // Increment data-value attribute
+                />
+              }
               label={frequency}
               labelPlacement="bottom"
               onChange={(e) => setPastExerciseFrequency(e.target.value)}
@@ -225,6 +281,7 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
+
   function IntensityStep() {
     return (
       <FormControl>
@@ -242,9 +299,60 @@ const CreateProgram = () => {
           {intensityOptions.map((intensity, index) => (
             <FormControlLabel
               className="inlineRadioButton"
+              sx={
+                {
+                  // Custom styling for FormControlLabel if not using className="inlineRadioButton"
+                  // minWidth: "30px",
+                  // maxWidth: "60px",
+                }
+              }
               key={index}
               value={index + 1}
-              control={<Radio />}
+              control={
+                // Cocoy: Custom styling for radio buttons
+                // TODO: MOVE TO THEME.JS
+                <Radio
+                  sx={{
+                    // Hide native input radio button
+                    "& .MuiSvgIcon-root": {
+                      display: "none",
+                    },
+                    // Create custom radio button
+                    marginTop: "30px",
+                    marginBottom: "20px",
+                    width: "36px",
+                    height: "36px",
+                    padding: "10px",
+                    borderRadius: "50%",
+                    backgroundColor: "background.light",
+                    position: "relative",
+                    transition: "background-color 0.3s ease",
+
+                    // Style for selected radio button
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Style for hover
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                    },
+
+                    // Add number inside custom radio button using ::before
+                    "&::before": {
+                      content: "attr(data-value)", // Use the data-value attribute to insert the number
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      color: "background.paper",
+                      fontWeight: "bold",
+                    },
+                  }}
+                  data-value={index + 1} // Increment data-value attribute
+                />
+              }
               label={intensity}
               labelPlacement="bottom"
               onChange={(e) => setIntensity(e.target.value)}
@@ -254,6 +362,7 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
+
   function AvailabilityStep() {
     return (
       <FormControl>
@@ -270,7 +379,52 @@ const CreateProgram = () => {
             <FormControlLabel
               key={index}
               value={day}
-              control={<Checkbox />}
+              control={
+                // Cocoy: Custom styling for checkbox
+                // TODO: MOVE TO THEME.JS
+                <Checkbox
+                  sx={{
+                    // Hide native checkbox
+                    "& .MuiSvgIcon-root": {
+                      display: "none",
+                    },
+                    // Create custom checkbox
+                    marginTop: "30px",
+                    marginBottom: "20px",
+                    width: "36px",
+                    height: "36px",
+                    padding: "10px",
+                    borderRadius: "50%",
+                    border: "2px solid",
+                    position: "relative",
+                    transition: "background-color 0.3s ease",
+
+                    // Style for selected Checkbox
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                      backgroundColor: "primary.main",
+                    },
+                    // Style for hover
+                    "&:hover": {
+                      backgroundColor: "primary.main",
+                      borderColor: "primary.main",
+                    },
+
+                    // Display custom check icon
+                    "&.Mui-checked .MuiSvgIcon-root": {
+                      display: "block",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translate(-50%, -50%)",
+                      color: "background.paper",
+                    },
+                  }}
+                  // Custom checkbox icon
+                  // TODO: change to svg icon from design file
+                  checkedIcon={<CheckIcon />}
+                />
+              }
               label={day.substring(0, 3)}
               labelPlacement="bottom"
               onChange={(e) => toggleOptions(availability, e.target.value)}
@@ -280,6 +434,7 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
+
   async function submitForm() {
     const formResponse = {
       gender: gender,
@@ -357,6 +512,9 @@ const CreateProgram = () => {
                 justifyContent={"center"}
                 direction="row"
                 spacing={2}
+                sx={{
+                  marginTop: "20px",
+                }}
               >
                 <Button
                   variant="outlined"
@@ -382,4 +540,5 @@ const CreateProgram = () => {
     </>
   );
 };
+
 export default CreateProgram;
