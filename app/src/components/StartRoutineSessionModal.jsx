@@ -60,7 +60,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
     }
 
     // TEST
-    stateData.id = "0cc22f75-7d4d-4d50-9cdd-4ae3c731c517";
+    // stateData.id = "0cc22f75-7d4d-4d50-9cdd-4ae3c731c517";
     // stateData.id = "ed999b28-ae50-4009-b29c-c7f6a28857c9";
 
     navigate(`/routine`, { state: stateData });
