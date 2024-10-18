@@ -10,6 +10,7 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CardContent from '@mui/material/CardContent';
 import Chip from "@mui/material/Chip";
+import PropTypes from "prop-types";
 
 
 
@@ -29,7 +30,8 @@ const handleClick = () => {
   console.info('You clicked the Chip.');
 };
 
-function UserInfo() {
+function UserInfo(props) {
+  const {user} = props;
 return (
   <>
 
@@ -39,10 +41,10 @@ return (
     </Box>
 
     <Typography variant="h3" component="p" align='center' sx={{ margin: 3 }}>
-      Haley Grimes
+      {user.first_name} {user.last_name}
     </Typography>
             <Typography variant="body2" component="p">
-              Birthday: June 19,1995
+              Birthday: {user.birthday}
             </Typography>
 
 
@@ -83,5 +85,10 @@ return (
 </>
 );
 }
+
+UserInfo.propTypes = {
+  user: PropTypes.object,
+};
+
 
 export default UserInfo;
