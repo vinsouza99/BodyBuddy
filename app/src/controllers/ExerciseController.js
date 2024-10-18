@@ -9,7 +9,17 @@ const API_ROUTE = "exercises";
 
 const getAllExercises = async () => {
   const response = await axiosClient.get(`${API_ROUTE}`);
-  return response.data;
+  const exercises = await response.data.data.map(
+    (exercise) =>
+      new Exercise(
+        exercise.id,
+        exercise.name,
+        exercise.description,
+        exercise.demo_url,
+        exercise.type
+      )
+  );
+  return exercises;
 };
 const getExercise = async (id) => {
   try {

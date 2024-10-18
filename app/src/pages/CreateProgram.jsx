@@ -36,8 +36,42 @@ const CreateProgram = () => {
 
   useEffect(() => {
     async function getGoals() {
-      const data = await getAllGoals();
-      setPrimaryGoalsOptions(data);
+      //const data = await getAllGoals(); //uncomment this line when database configuration is done
+      //setPrimaryGoalsOptions(data); //uncomment this line when database configuration is done
+
+      setPrimaryGoalsOptions([
+        //delete this block of code when database configuration is done
+        {
+          name: "Build Muscles & Size",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Lose Weight & Burn Fat",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Increase Strength",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Tone Up",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Get Fitter & Feel Healthy",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+        {
+          name: "Increase Mobility",
+          description:
+            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
+        },
+      ]);
     }
     getGoals();
   }, []);

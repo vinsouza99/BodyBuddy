@@ -20,8 +20,10 @@ export const TrainingProgram = (props) => {
   const [routines, setRoutines] = useState([]); // Cocoy: Declare a state variable to hold the list of routines and a function to update it
   const location = useLocation();
   const [userProgramPreferences, setUserProgramPreferences] = useState(null);
+
   useEffect(() => {
     setPageTitle(props.title);
+
     const loadData = async () => {
       try {
         setUserProgramPreferences(location.state.userResponses);

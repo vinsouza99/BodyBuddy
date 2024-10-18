@@ -32,7 +32,6 @@ const LearningCard = ({ exercise }) => {
 
   // Navigate to the exercise page with the specific ID
   const handleStartExercise = (id) => {
-    console.log(`LOADING EXERCISE WITH ID: ${id}`, selectedExercise);
     navigate(`/exercise/${id}`);
   };
 
