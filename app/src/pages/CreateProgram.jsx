@@ -153,8 +153,8 @@ const CreateProgram = () => {
             <FormControlLabel
               value="other"
               control={<Radio />}
-              label="I’m not comfortable to share"
-              onChange={() => setGender(null)}
+              label="Prefer not to say"
+              onChange={() => setGender("other")}
             />
           </RadioGroup>
         </FormControl>
@@ -209,27 +209,41 @@ const CreateProgram = () => {
             How often do you exercise in the past?
           </Typography>
         </FormLabel>
+        <Box
+          sx={{
+            // Create line behind radio buttons
+            position: "absolute",
+            width: "80%",
+            borderTop: "1px solid",
+            borderColor: "background.light",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: "80px", // Adjust to align vertically with radio buttons
+          }}
+        ></Box>
         <RadioGroup
           row
           aria-labelledby="pastExerciseFrequencyLabel"
           name="radio-buttons-group2"
           value={pastExerciseFrequency}
+          sx={{ display: "flex", justifyContent: "center" }} // Center horizontally
         >
           {pastExerciseFrequencyOptions.map((frequency, index) => (
             <FormControlLabel
               className="inlineRadioButton"
-              sx={
-                {
-                  // Custom styling for FormControlLabel if not using className="inlineRadioButton"
-                  // minWidth: "30px",
-                  // maxWidth: "60px",
-                }
-              }
+              sx={{
+                // Custom styling for FormControlLabel if not using className="inlineRadioButton"
+                // minWidth: "30px",
+                // maxWidth: "60px",
+                "& .MuiFormControlLabel-label": {
+                  lineHeight: 1.2, // Apply line height to the label
+                },
+              }}
               key={index}
               value={index + 1}
               control={
                 // Cocoy: Custom styling for radio buttons
-                // TODO: MOVE TO THEME.JS
+                // TODO: MOVE TO THEME.JS?
                 <Radio
                   sx={{
                     // Hide native input radio button
@@ -290,6 +304,18 @@ const CreateProgram = () => {
             How intense you want to exercise?
           </Typography>
         </FormLabel>
+        <Box
+          sx={{
+            // Create line behind radio buttons
+            position: "absolute",
+            width: "80%",
+            borderTop: "1px solid",
+            borderColor: "background.light",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: "80px", // Adjust to align vertically with radio buttons
+          }}
+        ></Box>
         <RadioGroup
           row
           aria-labelledby="intensityLabel"
@@ -299,18 +325,19 @@ const CreateProgram = () => {
           {intensityOptions.map((intensity, index) => (
             <FormControlLabel
               className="inlineRadioButton"
-              sx={
-                {
-                  // Custom styling for FormControlLabel if not using className="inlineRadioButton"
-                  // minWidth: "30px",
-                  // maxWidth: "60px",
-                }
-              }
+              sx={{
+                // Custom styling for FormControlLabel if not using className="inlineRadioButton"
+                // minWidth: "30px",
+                // maxWidth: "60px",
+                "& .MuiFormControlLabel-label": {
+                  lineHeight: 1.2, // Apply line height to the label
+                },
+              }}
               key={index}
               value={index + 1}
               control={
                 // Cocoy: Custom styling for radio buttons
-                // TODO: MOVE TO THEME.JS
+                // TODO: MOVE TO THEME.JS?
                 <Radio
                   sx={{
                     // Hide native input radio button
@@ -396,6 +423,7 @@ const CreateProgram = () => {
                     padding: "10px",
                     borderRadius: "50%",
                     border: "2px solid",
+                    backgroundColor: "background.paper",
                     position: "relative",
                     transition: "background-color 0.3s ease",
 
