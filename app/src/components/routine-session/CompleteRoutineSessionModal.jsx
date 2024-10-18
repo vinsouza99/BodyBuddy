@@ -64,9 +64,9 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false }
             gap: 4, 
             width: '450px',
           }}>
-          <MetricCard title="Mins" />
-          <MetricCard title="Calories" />
-          <MetricCard title="Score" />
+          <MetricCard title="Mins" color="black" />
+          <MetricCard title="Calories" color="black" />
+          <MetricCard title="Score" color="black" />
         </Box>
         <Button 
           variant="outlined" 

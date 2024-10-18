@@ -55,7 +55,7 @@ function App() {
         <Route path="*" element={<NotFound title="Not found" />} />
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
-          path="/routine/:routineId"
+          path="/routine"
           element={
             user ? <RoutineSession title="RoutineSession" /> : <Navigate to="/signin" />
           }

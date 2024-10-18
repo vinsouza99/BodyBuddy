@@ -10,7 +10,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import background_image from '../../assets/bg_exercise_demo.png';
+import background_image from '../../assets/bg_exercise_demo_light.png';
 
 const modalStyle = {
   // Layout and positioning
@@ -29,9 +29,10 @@ const modalStyle = {
   alignItems: 'center',
   gap: 2,
   // Visual effects
-  color: '#fff',
+  color: '#353E45',
   backgroundImage: `url(${background_image})`,
   backgroundSize: 'cover',
+  backgroundPosition: 'center',
 };
 
 export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=null, nextExerciseInfo=null, onComplete, skipExercise }) => {
@@ -149,7 +150,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
                 type="button"
                 sx={{
                   marginLeft: 'auto',
-                  color: 'white',
+                  color: 'black',
                   "&.Mui-disabled": {
                     color: 'darkgrey', // overwrite disabled color
                   }
@@ -177,7 +178,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               duration={duration}
               size={isLandscapeMode ? 100 : 180}
               strokeWidth={isLandscapeMode ? 6 : 8}
-              colors='white'
+              colors='#353E45'
               trailColor='transparent'
               onComplete={handleTimerComplete}
             >
@@ -205,7 +206,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               <IconButton 
                 onClick={togglePlayPause}
                 onMouseDown={(e) => e.preventDefault()}
-                style={{ fontSize: 50, color: "#fff" }}>
+                style={{ fontSize: 50, color: "#353E45" }}>
                 {isPlaying ? (
                   <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
                 ) : (
@@ -217,7 +218,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               <IconButton 
                 onClick={handleTimerComplete}
                 onMouseDown={(e) => e.preventDefault()}
-                style={{ fontSize: 50, color: "#fff" }}>
+                style={{ fontSize: 50, color: "#353E45" }}>
                 <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
               </IconButton>
             </Box>

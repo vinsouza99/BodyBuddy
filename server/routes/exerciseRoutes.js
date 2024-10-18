@@ -63,7 +63,8 @@ router.get("/", getExercises);
  *       - in: path
  *         name: id
  *         schema:
- *           type: integer
+ *           type: string
+ *           format: uuid
  *         required: true
  *         description: The ID of the Exercise
  *     responses:
