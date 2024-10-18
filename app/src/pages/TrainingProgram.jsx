@@ -26,7 +26,9 @@ export const TrainingProgram = (props) => {
 
     const loadData = async () => {
       try {
-        setUserProgramPreferences(location.state.userResponses);
+        setUserProgramPreferences(
+          location.state ? location.state.userResponses : null
+        );
         if (userProgramPreferences) {
           const generatedProgramObj = await generateProgram(
             userProgramPreferences
