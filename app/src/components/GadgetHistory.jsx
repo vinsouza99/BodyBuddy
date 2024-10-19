@@ -118,7 +118,12 @@ export const GadgetHistory = () => {
 
   return (
     <GadgetBase>
-      <WeekPicker onSelectDate={handleSelectDate} onClickNextWeek={handleNextWeek} onClickPreviousWeek={handlePreviousWeek} displayMode={null} />
+      <WeekPicker
+        onSelectDate={handleSelectDate}
+        onClickNextWeek={handleNextWeek}
+        onClickPreviousWeek={handlePreviousWeek}
+        displayMode={null}
+      />
       <Typography>
         {`Total: ${totalDuration} min`}
       </Typography>

@@ -25,7 +25,7 @@ export const MetricCard = ({ value="N/A", title="N/A", color="white" }) => {
           component="div" 
           color={color}
           sx={{
-            fontWeight: "bold",
+            fontVariationSettings: "'wght' 800",
             fontSize: isLandscapeMode ? "1.2rem" : "2rem",
           }}
         >
