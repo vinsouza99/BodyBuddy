@@ -11,7 +11,7 @@ export const GadgetFavourite = () => {
   const [exerciseInfo, setExerciseInfo] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
 
-  const itemsPerPage = 3;
+  const itemsPerPage = 2;
   const totalPages = Math.ceil(exerciseInfo.length / itemsPerPage);
 
   const currentItems = exerciseInfo.slice(

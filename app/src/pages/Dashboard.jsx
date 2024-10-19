@@ -48,7 +48,7 @@ export const Dashboard = (props) => {
               flexDirection: 'row',
               gap: 2,
               alignItems: 'center',
-              marginTop: 2, // Adjustment
+              marginTop: 2.2, // Adjustment
               marginBottom: 2.5, // Adjustment
             }}
           >
