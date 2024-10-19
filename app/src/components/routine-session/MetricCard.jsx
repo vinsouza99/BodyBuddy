@@ -8,8 +8,19 @@ export const MetricCard = ({ value="N/A", title="N/A", color="white" }) => {
   const isLandscapeMode = useLandscapeMode();
 
   return (
-    <Card sx={{ backgroundColor: "transparent", boxShadow: "none" }}>
-      <CardContent sx={{ textAlign: 'center' }}>
+    <Card 
+      sx={{
+        backgroundColor: "transparent",
+        boxShadow: "none",
+      }}>
+      <CardContent
+        sx={{ 
+          textAlign: 'center',
+          margin: "0",
+          padding: "0",
+          paddingBottom: '0 !important',
+        }
+      }>
         <Typography
           component="div" 
           color={color}

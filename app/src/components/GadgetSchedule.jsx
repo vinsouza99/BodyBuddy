@@ -1,10 +1,12 @@
 import { Box, Typography, Button } from '@mui/material';
 import { GadgetBase } from './GadgetBase';
 import { MetricCard } from '../components/routine-session/MetricCard';
+import flame1 from '../assets/flame-solid_1.png';
+import flame2 from '../assets/flame-solid_2.png';
 
 export const GadgetSchedule = () => {
   return (
-    <GadgetBase title="Your plan">
+    <GadgetBase>
       <Box
         sx={{
           display: 'flex',
@@ -13,8 +15,14 @@ export const GadgetSchedule = () => {
           gap: 2,
         }}
       >
-        <MetricCard title="Week Streaks" value="5" color="black"/>
-        <MetricCard title="Best Streaks" value="5" color="black" />
+        <Box>
+          <img src={flame1} alt="Flame 1"></img>
+          <MetricCard title="Week Streaks" value="5" color="black"/>
+        </Box>
+        <Box>
+          <img src={flame2} alt="Flame 2"></img>
+          <MetricCard title="Best Streaks" value="5" color="black" />
+        </Box>
       </Box>
       <Typography>
         Exercise at least 3 times a week to keep your streak not reset

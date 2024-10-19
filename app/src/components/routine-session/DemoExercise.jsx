@@ -113,6 +113,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
                 height: '50vh',
                 objectFit: 'contain',
                 backgroundColor: 'rgba(255, 255, 255)',
+                border: '1px solid #E8E8E8',
                 borderRadius: '15px',
                 alignItems: 'left',
               }}
