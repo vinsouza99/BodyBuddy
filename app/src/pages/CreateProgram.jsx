@@ -28,7 +28,8 @@ const CreateProgram = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [gender, setGender] = useState("F");
+  const [gender, setGender] = useState(null); // Gender, no default radio selected
+  const [selectedGoal, setSelectedGoal] = useState(null); // Goal, no default radio selected
   const [primaryGoals, setPrimaryGoals] = useState([]);
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
@@ -162,6 +163,49 @@ const CreateProgram = () => {
     );
   }
 
+  // function PrimaryGoalStep() {
+  //   return (
+  //     <FormControl>
+  //       <FormLabel id="primaryGoalLabel">
+  //         <Typography variant="h3" sx={{ marginBottom: "20px" }}>
+  //           What is your primary goal?
+  //         </Typography>
+  //       </FormLabel>
+  //       <FormGroup aria-labelledby="primaryGoalLabel" name="checkbox-group">
+  //         {primaryGoalsOptions?.map((goal, index) => (
+  //           <Accordion className="formAccordion" key={index}>
+  //             <AccordionSummary
+  //               key={index}
+  //               expandIcon={<ExpandMoreIcon />}
+  //               aria-controls={`panel${index}-content`}
+  //               id={`panel${index}-header`}
+  //             >
+  //               <FormControlLabel
+  //                 key={index}
+  //                 value={goal.id}
+  //                 control={<Checkbox />}
+  //                 label={goal.name}
+  //                 onChange={(e) => {
+  //                   toggleOptions(primaryGoals, e.target.value);
+  //                   console.log("primaryGoals:", primaryGoals);
+  //                   console.log("Selected Radio Button Value:", e.target.value);
+  //                 }}
+  //               />
+  //             </AccordionSummary>
+  //             <AccordionDetails className="details" key={index}>
+  //               {goal.description}
+  //             </AccordionDetails>
+  //           </Accordion>
+  //         ))}
+  //       </FormGroup>
+  //       <Typography variant="body1">
+  //         Click <ExpandMoreIcon /> to learn how this goal determine your
+  //         exercise plan.
+  //       </Typography>
+  //     </FormControl>
+  //   );
+  // }
+
   function PrimaryGoalStep() {
     return (
       <FormControl>
@@ -170,7 +214,17 @@ const CreateProgram = () => {
             What is your primary goal?
           </Typography>
         </FormLabel>
-        <FormGroup aria-labelledby="primaryGoalLabel" name="checkbox-group">
+
+        <RadioGroup
+          aria-labelledby="primaryGoalLabel"
+          name="radio-buttons-group4"
+          value={selectedGoal}
+          onChange={(e) => {
+            // onChange was moved up to RadioGroup
+            setSelectedGoal(e.target.value);
+            console.log("Selected Radio Button Value:", e.target.value);
+          }}
+        >
           {primaryGoalsOptions?.map((goal, index) => (
             <Accordion className="formAccordion" key={index}>
               <AccordionSummary
@@ -179,12 +233,12 @@ const CreateProgram = () => {
                 aria-controls={`panel${index}-content`}
                 id={`panel${index}-header`}
               >
+                {/* FormControlLabel for the radio button */}
                 <FormControlLabel
                   key={index}
-                  value={goal.id}
-                  control={<Checkbox />}
+                  value={goal.name} // COCOY TODO: CHECK IF THIS IS CORRECT, IT USED TO BE GOAL.ID BUT IT WASN'T WORKING
+                  control={<Radio />}
                   label={goal.name}
-                  onChange={(e) => toggleOptions(primaryGoals, e.target.value)}
                 />
               </AccordionSummary>
               <AccordionDetails className="details" key={index}>
@@ -192,9 +246,10 @@ const CreateProgram = () => {
               </AccordionDetails>
             </Accordion>
           ))}
-        </FormGroup>
+        </RadioGroup>
+
         <Typography variant="body1">
-          Click <ExpandMoreIcon /> to learn how this goal determine your
+          Click <ExpandMoreIcon /> to learn how this goal determines your
           exercise plan.
         </Typography>
       </FormControl>
@@ -492,7 +547,11 @@ const CreateProgram = () => {
           padding: "2rem 1rem",
         }}
       >
-        <img src="./src/assets/bodybuddy.svg" alt="BodyBuddy" width={50} />
+        <img
+          src="./src/assets/bodybuddy_logo_color.svg"
+          alt="BodyBuddy"
+          width={70}
+        />
         <Container
           sx={{
             backgroundColor: "white",

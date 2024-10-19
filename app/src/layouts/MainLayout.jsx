@@ -35,11 +35,6 @@ const NavBar = [
     title: "Profile",
     icon: <AccountCircleIcon />,
   },
-  {
-    segment: "notifications",
-    title: "Notifications",
-    icon: <NotificationsIcon />,
-  },
 ];
 
 // Notifications Icon in Header
