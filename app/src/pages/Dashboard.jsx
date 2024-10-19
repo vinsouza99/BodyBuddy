@@ -41,7 +41,17 @@ export const Dashboard = (props) => {
           }
         }>
           {/* ADD GADGETS HERE */}
-          <Typography variant="h2" textAlign="left" >Hi, {user.user_metadata.full_name}!</Typography>
+          <Box
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'row',
+              gap: 2,
+              alignItems: 'center',}}
+          >
+            <img src={user.user_metadata.avatar_url} alt="avatar" style={{width: '100px', height: '100px', borderRadius: '50%'}} />
+            <Typography variant="h2" textAlign="left" >Hi, {user.user_metadata.full_name}!</Typography>
+          </Box>
+          
           <GadgetSchedule />
           <GadgetFavourite />
         </Box>
