@@ -29,7 +29,7 @@ const CreateProgram = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState("F");
-  const [primaryGoals, setPrimaryGoals] = useState([]);
+  const [primaryGoal, setPrimaryGoal] = useState([]);
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
   const [availability, setAvailability] = useState([]);
@@ -43,31 +43,37 @@ const CreateProgram = () => {
       setPrimaryGoalsOptions([
         //delete this block of code when database configuration is done
         {
+          goal: 1,
           name: "Build Muscles & Size",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
+          goal: 2,
           name: "Lose Weight & Burn Fat",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
+          goal: 3,
           name: "Increase Strength",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
+          goal: 4,
           name: "Tone Up",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
+          goal: 5,
           name: "Get Fitter & Feel Healthy",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
+          goal: 6,
           name: "Increase Mobility",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
@@ -184,7 +190,7 @@ const CreateProgram = () => {
                   value={goal.id}
                   control={<Checkbox />}
                   label={goal.name}
-                  onChange={(e) => toggleOptions(primaryGoals, e.target.value)}
+                  onChange={() => setPrimaryGoal(goal.id)}
                 />
               </AccordionSummary>
               <AccordionDetails className="details" key={index}>
@@ -466,10 +472,13 @@ const CreateProgram = () => {
   async function submitForm() {
     const formResponse = {
       gender: gender,
-      primary_goals: primaryGoals,
+      goal_id: primaryGoal,
       past_exercise_frequency: pastExerciseFrequency,
-      desired_intensity: intensity,
+      intensity_id: intensity,
       availability: availability,
+      birthday: new Date().toLocaleDateString(),
+      weight: 180,
+      weight_units: "lbs",
     };
     if (user) {
       navigate("/training", {

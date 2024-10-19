@@ -10,19 +10,19 @@ const User = sequelize.define(
       primaryKey: true,
       autoIncrement: false,
     },
-    first_name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
-    last_name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     birthday: {
       type: DataTypes.DATEONLY,
       allowNull: true,
     },
     gender: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    weight: {
+      type: DataTypes.NUMBER,
+      allowNull: true,
+    },
+    weight_unit: {
       type: DataTypes.STRING,
       allowNull: true,
     },

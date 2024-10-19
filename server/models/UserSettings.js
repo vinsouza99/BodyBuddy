@@ -9,17 +9,13 @@ const UserSettings = sequelize.define(
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    past_exercise_frequency: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
+    intensity_ID: {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
-    desired_intensity: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    available_days: {
-      type: DataTypes.ARRAY(DataTypes.STRING),
-      allowNull: true,
+    goal_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
     },
   },
   {
