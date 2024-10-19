@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { Paper, Typography } from '@mui/material';
 
-export const GadgetBase = ({ title, children }) => {
+export const GadgetBase = ({ title = null, children }) => {
   return (
     <Paper 
       elevation={3} 
@@ -14,18 +14,20 @@ export const GadgetBase = ({ title, children }) => {
         gap: 2,
         padding: 2, 
         borderRadius: '15px',
-        backgroundColor: '#f5f5f5'
+        backgroundColor: 'white'
       }}
     >
-      <Typography variant="h6" gutterBottom>
-        {title}
-      </Typography>
+      {title && (
+        <Typography variant="h6" gutterBottom>
+          {title}
+        </Typography>
+      )}
       {children}
     </Paper>
   );
 };
 
 GadgetBase.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.string,
   children: PropTypes.node.isRequired,
 }

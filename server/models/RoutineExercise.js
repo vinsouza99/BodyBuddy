@@ -44,7 +44,7 @@ const RoutineExercise = sequelize.define(
     },
   },
   {
-    tableName: "routine exercise",
+    tableName: "routine_exercise",
     timestamps: false,
   }
 );

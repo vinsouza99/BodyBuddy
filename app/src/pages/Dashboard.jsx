@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Box, Typography } from '@mui/material';
+import { Grid2, Box, Typography, LinearProgress } from '@mui/material';
 // Gadgets Components
 import { GadgetSchedule } from '../components/GadgetSchedule';
 import { GadgetFavourite } from '../components/GadgetFavourite';
@@ -11,6 +11,7 @@ import { GadgetHistory } from '../components/GadgetHistory';
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
+import theme from '../theme';
 
 export const Dashboard = (props) => {
   const { user } = useAuth(); // For session management
@@ -41,7 +42,47 @@ export const Dashboard = (props) => {
           }
         }>
           {/* ADD GADGETS HERE */}
-          <Typography variant="h2" textAlign="left" >Hi, {user.user_metadata.full_name}!</Typography>
+          <Box
+            sx={{ 
+              display: 'flex', 
+              flexDirection: 'row',
+              gap: 2,
+              alignItems: 'center',
+              marginTop: 2.2, // Adjustment
+              marginBottom: 2.5, // Adjustment
+            }}
+          >
+            <img src={user.user_metadata.avatar_url} alt="avatar" style={{width: '100px', height: '100px', borderRadius: '50%'}} />
+            <Box sx={{ flex: 1}}>
+              <Typography
+                variant="h2"
+                textAlign="left"
+                sx={{ fontVariationSettings: "'wght' 800" }}
+              >
+                Hi, {user.user_metadata.full_name}!
+              </Typography>
+              <Typography textAlign="left" >Level 0</Typography>
+              <Box sx={{ width: '100%' }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={10}
+                  sx={{
+                    '--LinearProgress-radius': '8px',
+                    '--LinearProgress-progressThickness': '30px',
+                    height: '30px',
+                    boxShadow: 'sm',
+                    borderRadius: '15px',
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                    backgroundColor: 'grey.300',
+                  }}
+                >
+                </LinearProgress>
+              </Box>
+            </Box>
+          </Box>
+          
           <GadgetSchedule />
           <GadgetFavourite />
         </Box>

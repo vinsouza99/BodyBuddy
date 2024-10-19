@@ -1,18 +1,15 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import { useNavigate } from "react-router-dom";
 import { GadgetBase } from './GadgetBase';
+import { WallOfFame } from './WallOfFame';
+
 
 export const GadgetAchievement = () => {
   const navigate = useNavigate();
   
   return (
-    <GadgetBase title="Wall of Fame">
-      <Box>
-
-      </Box>
-      <Typography>
-        Keep up with your exercise plan to earn new surprised
-      </Typography>
+    <GadgetBase>
+      <WallOfFame />
       <Button
         variant="contained" 
         sx={{ 

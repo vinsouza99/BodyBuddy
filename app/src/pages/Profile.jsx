@@ -16,6 +16,8 @@ export const Profile = (props) => {
       const data = await getUser(user.id);
       console.log(data);
       setCurrentUser(data);
+
+
     }
     getCurrentUser();
   }, []);
@@ -24,7 +26,7 @@ export const Profile = (props) => {
     <>
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
-          <UserInfo />
+          <UserInfo user={currentUser}/>
         </Grid>
         <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
           <History />
