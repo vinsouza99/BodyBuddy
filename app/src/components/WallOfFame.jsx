@@ -8,6 +8,7 @@ import badge3 from '../assets/badge_3.png';
 export const WallOfFame = () => {
   const badgeSets = [
     [...Array(5)].map((_, index) => ({ src: badge1, alt: `Badge ${index + 1}` })),
+
     [...Array(5)].map((_, index) => ({ src: badge3, alt: `Badge ${index + 6}` })),
   ];
   const [currentSet, setCurrentSet] = useState(0);

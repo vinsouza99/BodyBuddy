@@ -17,11 +17,11 @@ export const GadgetSchedule = () => {
       >
         <Box>
           <img src={flame1} alt="Flame 1"></img>
-          <MetricCard title="Week Streaks" value="5" color="black"/>
+          <MetricCard title="Week Streaks" value="0" color="black"/>
         </Box>
         <Box>
           <img src={flame2} alt="Flame 2"></img>
-          <MetricCard title="Best Streaks" value="5" color="black" />
+          <MetricCard title="Best Streaks" value="0" color="black" />
         </Box>
       </Box>
       <Typography>
