@@ -83,33 +83,32 @@ const theme = createTheme({
     h1: {
       fontFamily: "'Urbanist', 'Arial', sans-serif",
       fontSize: "3rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
     h2: {
       fontFamily: "'Urbanist', 'Arial', sans-serif",
       fontSize: "2rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
     h3: {
       fontFamily: "'Urbanist', 'Arial', sans-serif",
       fontSize: "1.75rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
     h4: {
       fontFamily: "'Urbanist', 'Arial', sans-serif",
       fontSize: "1.5rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
     h5: {
       fontFamily: "'Urbanist', 'Arial', sans-serif",
       fontSize: "1.25rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
     h6: {
-      // H6 is used by BodyBuddy logo in header
       fontFamily: "'Urbanist', 'Arial', sans-serif",
       fontSize: "1.5rem",
-      fontWeight: 700,
+      fontWeight: 400,
     },
 
     // Body text uses Montserrat
