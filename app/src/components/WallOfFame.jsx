@@ -3,14 +3,12 @@ import { Box, Typography, IconButton } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import badge1 from '../assets/badge_1.png';
-import badge2 from '../assets/badge_2.png';
 import badge3 from '../assets/badge_3.png';
 
 export const WallOfFame = () => {
   const badgeSets = [
     [...Array(5)].map((_, index) => ({ src: badge1, alt: `Badge ${index + 1}` })),
-    [...Array(5)].map((_, index) => ({ src: badge2, alt: `Badge ${index + 6}` })),
-    [...Array(5)].map((_, index) => ({ src: badge3, alt: `Badge ${index + 11}` })),
+    [...Array(5)].map((_, index) => ({ src: badge3, alt: `Badge ${index + 6}` })),
   ];
   const [currentSet, setCurrentSet] = useState(0);
 
