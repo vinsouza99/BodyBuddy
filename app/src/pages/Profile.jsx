@@ -12,18 +12,26 @@ export const Profile = (props) => {
 
   useEffect(() => {
     setPageTitle(props.title);
-  }, [props.title]);
+    async function getCurrentUser() {
+      const data = await getUser(user.id);
+      console.log(data);
+      setCurrentUser(data);
+
+
+    }
+    getCurrentUser();
+  }, []);
 
   return (
     <>
-    <Grid container spacing={1}>
-      <Grid size={{xs:12, md:6}} display={"flex"}>
-        <UserInfo />
+      <Grid container spacing={1}>
+        <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
+          <UserInfo user={currentUser}/>
+        </Grid>
+        <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
+          <History />
+        </Grid>
       </Grid>
-      <Grid size={{xs:12, md:6}} display={"flex"}>
-        <History />
-      </Grid>
-    </Grid>
     </>
   );
 };

@@ -14,8 +14,8 @@ const getUser = async (id) => {
     const data = await response.data.data;
     const user = new User(
       data.id,
-      data.firstName,
-      data.lastName,
+      data.name,
+      data.last_name,
       data.birthday,
       data.gender
     );
