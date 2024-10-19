@@ -4,7 +4,7 @@ import { MetricCard } from '../components/routine-session/MetricCard';
 
 export const GadgetSchedule = () => {
   return (
-    <GadgetBase title="Your plan">
+    <GadgetBase>
       <Box
         sx={{
           display: 'flex',
