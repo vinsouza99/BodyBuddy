@@ -17,7 +17,7 @@ import openaiapiRoutes from "./openaiapiRoutes.js";
 const router = express.Router();
 
 router.use("/users", authenticateToken, userRoutes);
-router.use("/local", authenticateToken, localTableRoutes);
+router.use("/local", localTableRoutes);
 router.use("/programs", authenticateToken, programRoutes);
 router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);

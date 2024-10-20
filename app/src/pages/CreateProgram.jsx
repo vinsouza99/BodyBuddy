@@ -20,7 +20,10 @@ import {
   Checkbox,
 } from "@mui/material";
 import "./CreateProgram.css";
-import { getAllGoals } from "../controllers/GoalsController.js";
+import {
+  getAllGoals,
+  getAllIntensities,
+} from "../controllers/LocalTablesController.js";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import CheckIcon from "@mui/icons-material/Check"; // TODO: change to svg icon from design file
 
@@ -29,58 +32,21 @@ const CreateProgram = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState(null); // Gender, no default radio selected
+  const [weight, setWeight] = useState(0);
+  const [weightUnit, setWeightUnit] = useState("lbs");
   const [selectedGoal, setSelectedGoal] = useState(1); // Goal, no default radio selected
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
   const [availability, setAvailability] = useState([]);
   const [primaryGoalsOptions, setPrimaryGoalsOptions] = useState([]);
+  const [intensityOptions, setIntensityOptions] = useState([]);
 
   useEffect(() => {
-    async function getGoals() {
-      //const data = await getAllGoals(); //uncomment this line when database configuration is done
-      //setPrimaryGoalsOptions(data); //uncomment this line when database configuration is done
-
-      setPrimaryGoalsOptions([
-        //delete this block of code when database configuration is done
-        {
-          id: 1,
-          name: "Build Muscles & Size",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
-        },
-        {
-          id: 2,
-          name: "Lose Weight & Burn Fat",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
-        },
-        {
-          id: 3,
-          name: "Increase Strength",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
-        },
-        {
-          id: 4,
-          name: "Tone Up",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
-        },
-        {
-          id: 5,
-          name: "Get Fitter & Feel Healthy",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
-        },
-        {
-          id: 6,
-          name: "Increase Mobility",
-          description:
-            "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
-        },
-      ]);
+    async function getData() {
+      setPrimaryGoalsOptions(await getAllGoals()); //uncomment this line when database configuration is done
+      setIntensityOptions(await getAllIntensities());
     }
-    getGoals();
+    getData();
   }, []);
 
   const toggleOptions = (array, value) => {
@@ -90,7 +56,6 @@ const CreateProgram = () => {
     } else {
       array.splice(array, 1);
     }
-    console.log(array);
   };
 
   const pastExerciseFrequencyOptions = [
@@ -99,13 +64,6 @@ const CreateProgram = () => {
     "At least once a week",
     "At least 3 times a week",
     "Almost every day",
-  ];
-  const intensityOptions = [
-    "Not intense",
-    "Little intense",
-    "Quite intense",
-    "Intense",
-    "Very intense",
   ];
   const weekdays = [
     "Monday",
@@ -227,7 +185,6 @@ const CreateProgram = () => {
           onChange={(e) => {
             // onChange was moved up to RadioGroup
             setSelectedGoal(e.target.value);
-            console.log("Selected Radio Button Value:", e.target);
           }}
         >
           {primaryGoalsOptions?.map((goal, index) => (
@@ -394,7 +351,7 @@ const CreateProgram = () => {
                 },
               }}
               key={index}
-              value={index + 1}
+              value={intensity.id}
               control={
                 // Cocoy: Custom styling for radio buttons
                 // TODO: MOVE TO THEME.JS?
@@ -440,7 +397,7 @@ const CreateProgram = () => {
                   data-value={index + 1} // Increment data-value attribute
                 />
               }
-              label={intensity}
+              label={intensity.name}
               labelPlacement="bottom"
               onChange={(e) => setIntensity(e.target.value)}
             />
@@ -531,8 +488,8 @@ const CreateProgram = () => {
       intensity_id: intensity,
       availability: availability,
       birthday: null,
-      weight: 180,
-      weight_units: "lbs",
+      weight: weight,
+      weight_units: weight_units,
     };
     if (user) {
       navigate("/training", {
