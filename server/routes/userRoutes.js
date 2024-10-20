@@ -5,6 +5,12 @@ import {
   createUser,
   updateUser,
   deleteUser,
+  getUserSettings,
+  createUserSettings,
+  updateUserSettings,
+  getUserProgress,
+  createUserProgress,
+  updateUserProgress,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -183,4 +189,157 @@ router.put("/:id", updateUser);
  */
 router.delete("/:id", deleteUser);
 
+/**
+ * @swagger
+ * /Users/{id}/Progress:
+ *   get:
+ *     summary: Get a specific user goal by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user goal details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ */
+router.get("/:id/progress", getUserProgress);
+
+/**
+ * @swagger
+ * /Users/{id}/Progress:
+ *   post:
+ *     summary: Create the progress by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user progress
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ */
+router.post("/:id/progress", createUserProgress);
+
+/**
+ * @swagger
+ * /Users/{id}/Progress:
+ *   put:
+ *     summary: Update the progress by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user progress
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ */
+router.put("/:id/progress", updateUserProgress);
+/**
+ * @swagger
+ * /Users/{id}/Settings:
+ *   get:
+ *     summary: Get the settings by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user settings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ */
+router.get("/:id/settings", getUserSettings);
+
+/**
+ * @swagger
+ * /Users/{id}/Settings:
+ *   post:
+ *     summary: Create the settings by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user settings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ */
+router.post("/:id/settings", createUserSettings);
+/**
+ * @swagger
+ * /Users/{id}/Settings:
+ *   put:
+ *     summary: Update the settings by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user settings
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ */
+router.put("/:id/settings", updateUserSettings);
 export default router;

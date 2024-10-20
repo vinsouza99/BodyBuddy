@@ -7,7 +7,7 @@ import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
-import { createUser } from "../controllers/UserController";
+import { createUser, updateUser } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
 
 export const SignUp = (props) => {
@@ -18,12 +18,13 @@ export const SignUp = (props) => {
   const [name, setName] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const [userProgramPreferences, setUserProgramPreferences] = useState(null);
+  const [userResponses, setUserResponses] = useState({});
 
   // Initialization
   useEffect(() => {
     setPageTitle(props.title);
-    setUserProgramPreferences(location.state.userResponses);
+    setUserResponses(location.state.userResponses);
+    console.log(userResponses);
   }, []);
 
   // Transition to Dashboard when user authentication is successful
@@ -50,20 +51,21 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
+      console.log(userResponses);
       const newUser = {
         id: data.user.id,
-        first_name: name.split(" ")[0],
-        last_name: "",
-        birthday: null,
-        goals: userProgramPreferences.primary_goals,
-        gender: userProgramPreferences.gender,
-        settings: userProgramPreferences,
+        name: name,
+        profile_picture_URL: data.profile_picture_url,
+        birthday: userResponses.birthday,
+        gender: userResponses.gender,
+        weight: userResponses.weight,
+        weight_unit: userResponses.weight_unit,
+        settings: userResponses,
       };
-      console.log(newUser);
-      createUser(newUser)
+      updateUser(newUser.id, newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);
-          navigate("/training", userProgramPreferences);
+          navigate("/training", userResponses);
         })
         .catch((error) => {
           throw error;

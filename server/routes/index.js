@@ -1,5 +1,6 @@
 import express from "express";
 import userRoutes from "./userRoutes.js";
+import localTableRoutes from "./localTableRoutes.js";
 import programRoutes from "./programRoutes.js";
 import exerciseRoutes from "./exerciseRoutes.js";
 import routineExerciseRoutes from "./routineExerciseRoutes.js";
@@ -7,32 +8,27 @@ import routineRoutes from "./routineRoutes.js";
 import historyRoutes from "./historyRoutes.js";
 import authenticateToken from "../authenticateToken.js";
 import goalRoutes from "./goalRoutes.js";
-import userGoalRoutes from "./userGoalRoutes.js";
 import achievementRoutes from "./achievementRoutes.js";
 import relatedAchievementRoutes from "./relatedAchievementRoutes.js";
 import muscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import relatedMuscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import openaiapiRoutes from "./openaiapiRoutes.js";
-import userSettingsRoutes from "./userSettingsRoutes.js";
-import userProgressRoutes from "./userProgressRoutes.js";
 
 const router = express.Router();
 
 router.use("/users", authenticateToken, userRoutes);
+router.use("/local", authenticateToken, localTableRoutes);
 router.use("/programs", authenticateToken, programRoutes);
 router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);
 router.use("/routineExercises", authenticateToken, routineExerciseRoutes);
 router.use("/log", authenticateToken, historyRoutes);
 router.use("/goals", goalRoutes);
-router.use("/user_goals", userGoalRoutes);
 router.use("/achievements", achievementRoutes);
 router.use("/related_achievements", relatedAchievementRoutes);
 router.use("/muscleGroups", muscleGroupRoutes);
 router.use("/relatedMuscleGroups", relatedMuscleGroupRoutes);
 router.use("/openai", openaiapiRoutes);
-router.use("/user_settings", userSettingsRoutes);
-router.use("/user_progress", userProgressRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
 router.post("/set-cookie", (req, res) => {
