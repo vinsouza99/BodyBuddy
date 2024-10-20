@@ -8,13 +8,13 @@ const Routine = sequelize.define(
       type: DataTypes.UUID,
       allowNull: false,
       primaryKey: true,
-      autoIncrement: true,
+      defaultValue: DataTypes.UUIDV4,
     },
-    created_at: {
-      type: DataTypes.DATE,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
+    // created_at: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    //   defaultValue: DataTypes.NOW,
+    // },
     completed_at: {
       type: DataTypes.DATE,
       allowNull: true,
@@ -42,7 +42,9 @@ const Routine = sequelize.define(
   },
   {
     tableName: "routine",
-    timestamps: false,
+    timestamps: true,
+    createdAt: 'created_at',
+    updatedAt: false
   }
 );
 

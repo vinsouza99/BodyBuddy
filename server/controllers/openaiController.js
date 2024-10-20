@@ -9,7 +9,10 @@ export const getResponse = async (req, res) => {
     const prompt = req.body.prompt;
     const response = await openai.chat.completions.create({
       model: "gpt-4o-mini",
-      messages: [{ role: "system", content: prompt }],
+      messages: [
+        { role: "system", content: "You are a JSON generator. Always return only JSON objects without any explanations or additional text." },
+        { role: "user", content: prompt }
+      ],
     });
     res.status(200).json({
       status: "200",
