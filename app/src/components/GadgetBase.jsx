@@ -11,7 +11,7 @@ export const GadgetBase = ({ title = null, children }) => {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 2,
+        gap: 4,
         padding: 2, 
         borderRadius: '15px',
         backgroundColor: 'white'
