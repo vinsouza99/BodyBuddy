@@ -29,8 +29,7 @@ const CreateProgram = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [gender, setGender] = useState(null); // Gender, no default radio selected
-  const [selectedGoal, setSelectedGoal] = useState(null); // Goal, no default radio selected
-  const [primaryGoals, setPrimaryGoals] = useState([]);
+  const [selectedGoal, setSelectedGoal] = useState(1); // Goal, no default radio selected
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
   const [availability, setAvailability] = useState([]);
@@ -44,37 +43,37 @@ const CreateProgram = () => {
       setPrimaryGoalsOptions([
         //delete this block of code when database configuration is done
         {
-          goal: 1,
+          id: 1,
           name: "Build Muscles & Size",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
-          goal: 2,
+          id: 2,
           name: "Lose Weight & Burn Fat",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
-          goal: 3,
+          id: 3,
           name: "Increase Strength",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
-          goal: 4,
+          id: 4,
           name: "Tone Up",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
-          goal: 5,
+          id: 5,
           name: "Get Fitter & Feel Healthy",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
         },
         {
-          goal: 6,
+          id: 6,
           name: "Increase Mobility",
           description:
             "Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi dolore vitae voluptates tempore placeat, consequatur aut dolorem rem id ex.",
@@ -228,7 +227,7 @@ const CreateProgram = () => {
           onChange={(e) => {
             // onChange was moved up to RadioGroup
             setSelectedGoal(e.target.value);
-            console.log("Selected Radio Button Value:", e.target.value);
+            console.log("Selected Radio Button Value:", e.target);
           }}
         >
           {primaryGoalsOptions?.map((goal, index) => (
@@ -242,10 +241,9 @@ const CreateProgram = () => {
                 {/* FormControlLabel for the radio button */}
                 <FormControlLabel
                   key={index}
-                  value={goal.name} // COCOY TODO: CHECK IF THIS IS CORRECT, IT USED TO BE GOAL.ID BUT IT WASN'T WORKING
+                  value={goal.id} // COCOY TODO: CHECK IF THIS IS CORRECT, IT USED TO BE GOAL.ID BUT IT WASN'T WORKING
                   control={<Radio />}
                   label={goal.name}
-                  onChange={() => setPrimaryGoal(goal.id)}
                 />
               </AccordionSummary>
               <AccordionDetails className="details" key={index}>
@@ -528,11 +526,11 @@ const CreateProgram = () => {
   async function submitForm() {
     const formResponse = {
       gender: gender,
-      goal_id: primaryGoal,
+      goal_id: selectedGoal,
       past_exercise_frequency: pastExerciseFrequency,
       intensity_id: intensity,
       availability: availability,
-      birthday: new Date().toLocaleDateString(),
+      birthday: null,
       weight: 180,
       weight_units: "lbs",
     };

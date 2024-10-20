@@ -324,21 +324,20 @@ export const createUserSettings = async (req, res) => {
 
 export const updateUserSettings = async (req, res) => {
   try {
-    const { user_id } = req.params;
+    const user_id = req.params.id;
     const updatedData = req.body;
 
     const userSettings = await UserSettings.findByPk(user_id);
     if (!userSettings) {
       return res.status(404).json({
         status: "404",
-        message: "UserSettings not found",
+        message: "User Settings not found",
       });
     }
-
     await userSettings.update(updatedData);
     res.status(200).json({
       status: "200",
-      message: "UserSettings updated successfully",
+      message: "User Settings updated successfully",
       data: userSettings,
     });
   } catch (error) {

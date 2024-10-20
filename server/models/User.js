@@ -11,7 +11,7 @@ const User = sequelize.define(
       autoIncrement: false,
     },
     birthday: {
-      type: DataTypes.DATEONLY,
+      type: DataTypes.STRING,
       allowNull: true,
     },
     gender: {

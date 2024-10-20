@@ -51,7 +51,7 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
-      console.log(data);
+      console.log(userResponses);
       const newUser = {
         id: data.user.id,
         name: name,

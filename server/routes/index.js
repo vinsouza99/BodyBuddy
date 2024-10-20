@@ -1,5 +1,6 @@
 import express from "express";
 import userRoutes from "./userRoutes.js";
+import localTableRoutes from "./localTableRoutes.js";
 import programRoutes from "./programRoutes.js";
 import exerciseRoutes from "./exerciseRoutes.js";
 import routineExerciseRoutes from "./routineExerciseRoutes.js";
@@ -16,6 +17,7 @@ import openaiapiRoutes from "./openaiapiRoutes.js";
 const router = express.Router();
 
 router.use("/users", authenticateToken, userRoutes);
+router.use("/local", authenticateToken, localTableRoutes);
 router.use("/programs", authenticateToken, programRoutes);
 router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);

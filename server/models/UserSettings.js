@@ -9,7 +9,7 @@ const UserSettings = sequelize.define(
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    intensity_ID: {
+    intensity_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },

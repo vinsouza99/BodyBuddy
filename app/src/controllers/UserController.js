@@ -2,19 +2,20 @@ import axiosClient from "../utils/axiosClient";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
+import { getGoal, getIntensity } from "./LocalTablesController";
 
 const USER_ROUTE = "users";
 const USER_SETTINGS_ROUTE = "settings";
 const USER_PROGRESS_ROUTE = "progress";
 
-const getUser = async (id) => {
+const getUser = async (id, authUser) => {
   try {
     const response = await axiosClient.get(`${USER_ROUTE}/${id}`);
     const data = await response.data.data;
     const user = new User(
       data.id,
-      data.name,
-      data.profile_picture_URL,
+      authUser?.user_metadata.full_name,
+      authUser?.user_metadata.picture,
       data.birthday,
       data.gender,
       data.weight,
@@ -22,8 +23,10 @@ const getUser = async (id) => {
     );
     const settings = await getUserSettings(id);
     user.settings = settings;
+
     const progress = await getUserProgress(id);
     user.progress = progress;
+
     return user;
   } catch (e) {
     console.log(e);
@@ -37,6 +40,8 @@ const getUserSettings = async (id) => {
     );
     const data = await response.data.data;
     const settings = new UserSettings(data.intensity_id, data.goal_id);
+    settings.goal_name = await getGoal(settings.goal_id);
+    settings.intensity_name = await getIntensity(settings.intensity_id);
     return settings;
   } catch (e) {
     console.log(e);
@@ -48,7 +53,12 @@ const getUserProgress = async (id) => {
       `${USER_ROUTE}/${id}/${USER_PROGRESS_ROUTE}`
     );
     const data = await response.data.data;
-    const progress = new UserProgress(data.user_id);
+    const progress = new UserProgress(
+      data.level,
+      data.level_progress,
+      data.streak,
+      data.highest_streak
+    );
     return progress;
   } catch (e) {
     console.log(e);
@@ -75,53 +85,29 @@ const createUser = async (userObj) => {
     console.log(e);
   }
 };
-const createUserSettings = async (userSettingsObj) => {
-  try {
-    if (!userSettingsObj) return;
-    const settings = {
-      intensity_id: userSettingsObj.intensity_id,
-      goal_id: userSettingsObj.goal_id,
-    };
-    const response = await axiosClient.post(
-      `${USER_ROUTE}/${settings.user_id}/${USER_SETTINGS_ROUTE}`,
-      settings
-    );
-    return response;
-  } catch (e) {
-    console.log(e);
-  }
-};
-const createUserProgress = async (user_id) => {
-  try {
-    const progress = new UserProgress(user_id);
-    const response = await axiosClient.post(
-      `${USER_ROUTE}/${user_id}/${USER_PROGRESS_ROUTE}`,
-      progress
-    );
-    return response;
-  } catch (e) {
-    console.log(e);
-  }
-};
 
 const updateUser = async (user_id, updatedUserObj) => {
   try {
     const updatedUser = new User(
       user_id,
+      updatedUserObj.name,
+      updatedUserObj.picture,
       updatedUserObj.birthday,
       updatedUserObj.gender,
       updatedUserObj.weight,
-      updatedUserObj.weight_unit
+      updatedUserObj.weight_unit,
+      updatedUserObj.settings,
+      updatedUserObj.progress
     );
     const response = await axiosClient.put(
       `${USER_ROUTE}/${user_id}`,
       updatedUser
     );
-    if (updatedUserObj.settings) {
-      await updateUserSettings(updatedUserObj.settings);
+    if (updatedUser.settings) {
+      await updateUserSettings(user_id, updatedUser.settings);
     }
-    if (updatedUserObj.progress) {
-      await updateUserProgress(updatedUserObj.progress);
+    if (updatedUser.progress) {
+      await updateUserProgress(user_id, updatedUser.progress);
     }
     return response;
   } catch (e) {

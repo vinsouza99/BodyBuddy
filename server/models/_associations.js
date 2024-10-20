@@ -17,16 +17,3 @@ User.hasOne(UserProgress, {
 UserProgress.belongsTo(User, {
   foreignKey: "user_id",
 });
-User.hasMany(Log, {
-  foreignKey: "user_id",
-});
-User.hasMany(RelatedGoal, {
-  foreignKey: "user_id",
-});
-Log.belongsTo(User, {
-  foreignKey: "user_id",
-});
-
-RelatedGoal.belongsTo(User, {
-  foreignKey: "user_id",
-});
