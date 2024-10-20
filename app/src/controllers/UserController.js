@@ -2,7 +2,11 @@ import axiosClient from "../utils/axiosClient";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
-import { getGoal, getIntensity } from "./LocalTablesController";
+import {
+  getGoal,
+  getIntensity,
+  getUserAchivements,
+} from "./LocalTablesController";
 
 const USER_ROUTE = "users";
 const USER_SETTINGS_ROUTE = "settings";
@@ -36,7 +40,7 @@ const getUser = async (id, authUser) => {
 const getUserSettings = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${id}/${USER_SETTINGS_ROUTE}`
+      `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${id}`
     );
     const data = await response.data.data;
     const settings = new UserSettings(data.intensity_id, data.goal_id);
@@ -50,7 +54,7 @@ const getUserSettings = async (id) => {
 const getUserProgress = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${id}/${USER_PROGRESS_ROUTE}`
+      `${USER_ROUTE}/${USER_PROGRESS_ROUTE}/${id}`
     );
     const data = await response.data.data;
     const progress = new UserProgress(
@@ -117,7 +121,7 @@ const updateUser = async (user_id, updatedUserObj) => {
 const updateUserSettings = async (user_id, updatedSettingsObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${user_id}/${USER_SETTINGS_ROUTE}`,
+      `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${user_id}`,
       {
         user_id: user_id,
         goal_id: updatedSettingsObj.goal_id,
@@ -132,7 +136,7 @@ const updateUserSettings = async (user_id, updatedSettingsObj) => {
 const updateUserProgress = async (user_id, updatedProgressObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${user_id}/${USER_PROGRESS_ROUTE}`,
+      `${USER_ROUTE}/${USER_PROGRESS_ROUTE}/${user_id}`,
       updatedProgressObj
     );
     return response;
@@ -141,4 +145,21 @@ const updateUserProgress = async (user_id, updatedProgressObj) => {
   }
 };
 
-export { getUser, createUser, updateUser };
+const getUserHistory = async (user_id) => {
+  try {
+    const programsResponse = await getUserCompletedPrograms(user_id);
+    const routinesReponse = await getUserCompletedRoutines(user_id);
+    const achievementsResponse = await getUserAchivements(user_id);
+    const history = [
+      ...programsResponse,
+      ...routinesReponse,
+      ...achievementsResponse,
+    ];
+    history.sort((a, b) => a.date < b.date);
+    return history;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export { getUser, createUser, updateUser, getUserHistory };

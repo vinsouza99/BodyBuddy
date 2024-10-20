@@ -213,7 +213,7 @@ router.delete("/:id", deleteUser);
  *       404:
  *         description: User not found
  */
-router.get("/:id/progress", getUserProgress);
+router.get("/progress/:id", getUserProgress);
 
 /**
  * @swagger
@@ -239,7 +239,7 @@ router.get("/:id/progress", getUserProgress);
  *       404:
  *         description: User not found
  */
-router.post("/:id/progress", createUserProgress);
+router.post("/progress/:id", createUserProgress);
 
 /**
  * @swagger
@@ -265,7 +265,7 @@ router.post("/:id/progress", createUserProgress);
  *       404:
  *         description: User not found
  */
-router.put("/:id/progress", updateUserProgress);
+router.put("/progress/:id", updateUserProgress);
 /**
  * @swagger
  * /Users/{id}/Settings:
@@ -290,7 +290,7 @@ router.put("/:id/progress", updateUserProgress);
  *       404:
  *         description: User not found
  */
-router.get("/:id/settings", getUserSettings);
+router.get("/settings/:id", getUserSettings);
 
 /**
  * @swagger
@@ -316,7 +316,7 @@ router.get("/:id/settings", getUserSettings);
  *       404:
  *         description: User not found
  */
-router.post("/:id/settings", createUserSettings);
+router.post("/settings/:id", createUserSettings);
 /**
  * @swagger
  * /Users/{id}/Settings:
@@ -341,5 +341,5 @@ router.post("/:id/settings", createUserSettings);
  *       404:
  *         description: User not found
  */
-router.put("/:id/settings", updateUserSettings);
+router.put("/settings/:id", updateUserSettings);
 export default router;
