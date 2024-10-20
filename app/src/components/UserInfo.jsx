@@ -31,7 +31,7 @@ function UserInfo(props) {
   const { user } = props;
   return (
     <>
-      <Card sx={{ padding: 3, borderRadius: 2 }}>
+      <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
         <Box sx={{ display: "flex", justifyContent: "center" }}>
           <Avatar
             alt="Haley Grimes"
