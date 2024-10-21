@@ -67,9 +67,12 @@ export const getProgramsByUser = async (req, res) => {
 
 export const createProgram = async (req, res) => {
   try {
-    const { user_id, duration } = req.body;
+    const { id, user_id, name, description, duration } = req.body;
     const newProgram = await Program.create({
+      id,
       user_id,
+      name,
+      description,
       duration,
     });
     res.status(201).json({
