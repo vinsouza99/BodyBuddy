@@ -41,6 +41,16 @@ export const TrainingProgram = memo((props) => {
 
     const loadData = async () => {
       try {
+        // setUserProgramPreferences(
+        //   location.state ? location.state.userResponses : null
+        // );
+        // if (userProgramPreferences) {
+        //   const generatedProgramObj = await generateProgram(
+        //     userProgramPreferences
+        //   );
+        //   await createProgram(user.id, generatedProgramObj);
+        // }
+
         const presetRoutines = await getAllPresetRoutines();
         setRoutines(presetRoutines);
       } catch (e) {

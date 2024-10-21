@@ -51,9 +51,7 @@ export const GadgetRoutineOfToday = memo(() => {
           programRoutines: routines,
           routineExercises: exercises,
         };
-        console.log(dataCacheRef);
 
-        console.log(exercises);
       } catch (e) {
         console.log(e);
       } finally {
@@ -75,7 +73,6 @@ export const GadgetRoutineOfToday = memo(() => {
           borderRadius: '50px',
           width: '100%',
           height: '80px',
-          gap: 3,
           boxShadow: 3,
         }}
       >
@@ -134,16 +131,21 @@ export const GadgetRoutineOfToday = memo(() => {
           <Button
             onClick={handleOpen}
             sx={{
-              backgroundColor: theme.palette.primary.main,
-              color: 'white',
+              // backgroundColor: theme.palette.primary.main,
+              backgroundColor: '#94DC8A',
+              color: theme.palette.text.secondary,
               borderRadius: '50%',
-              width: '100px',
-              height: '100px',
+              width: '150px',
+              height: '150px',
               padding: 0,
               minWidth: 'unset',
+              fontSize: '1.2rem',
+              fontVariationSettings: "'wght' 800",
+              marginTop: '0.8rem',
+              marginBottom: '0.8rem',
             }}
           >
-            Get Started
+            Get<br />Started
           </Button>
           <StartRoutineSessionModal
             open={open}

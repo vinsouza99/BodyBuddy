@@ -1,22 +1,17 @@
 import { useEffect, useState, useRef, memo } from "react";
-// import { useNavigate } from "react-router-dom";
 import { GadgetBase } from './GadgetBase';
 import { WeekPicker } from "./WeekPicker";
 import { Box, Typography } from "@mui/material";
 import { RoutineCard } from "../components/RoutineCard";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { getRoutinesFromProgram } from "../controllers/RoutineController";
-import {
-  getAllUserPrograms,
-  // createProgram,
-} from "../controllers/ProgramController";
+import { getAllUserPrograms } from "../controllers/ProgramController";
 
 export const GadgetSchedule = memo(() => {
   const { user } = useAuth();
   const [programs, setPrograms] = useState([]);
   const [programRoutines, setProgramRoutines] = useState([]);
   const [loading, setLoading] = useState(true);
-  // const navigate = useNavigate();
 
   // For data cashing
   const dataCacheRef = useRef({
@@ -39,15 +34,6 @@ export const GadgetSchedule = memo(() => {
 
     const loadData = async () => {
       try {
-        // setUserProgramPreferences(
-        //   location.state ? location.state.userResponses : null
-        // );
-        // if (userProgramPreferences) {
-        //   const generatedProgramObj = await generateProgram(
-        //     userProgramPreferences
-        //   );
-        //   await createProgram(user.id, generatedProgramObj);
-        // }
         const programs = await getAllUserPrograms(user.id);
         setPrograms(programs);
 

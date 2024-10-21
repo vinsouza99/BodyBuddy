@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import theme from '../theme';
 
 export const RoutineCard = ({ routine }) => {
   return (
@@ -8,8 +9,10 @@ export const RoutineCard = ({ routine }) => {
       <Accordion
         elevation={2}
         disableGutters={true}
+        square={true}
         sx={{
           textAlign: "left",
+          borderLeft: `5px solid ${theme.palette.primary.main}`,
         }}
       >
         <AccordionSummary
