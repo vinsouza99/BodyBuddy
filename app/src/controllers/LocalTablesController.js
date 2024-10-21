@@ -49,5 +49,17 @@ const getIntensity = async (intensity_id) => {
     console.log(e);
   }
 };
-
-export { getAllGoals, getGoal, getAllIntensities, getIntensity };
+const getAllAchievements = async () => {
+  //TODO
+};
+const getUserAchivements = async (user_id) => {
+  //TODO
+};
+export {
+  getAllGoals,
+  getGoal,
+  getAllIntensities,
+  getIntensity,
+  getAllAchievements,
+  getUserAchivements,
+};

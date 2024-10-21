@@ -61,6 +61,7 @@ export const SignUp = (props) => {
         weight: userResponses.weight,
         weight_unit: userResponses.weight_unit,
         settings: userResponses,
+        schedule: userResponses.schedule,
       };
       updateUser(newUser.id, newUser)
         .then((response) => {

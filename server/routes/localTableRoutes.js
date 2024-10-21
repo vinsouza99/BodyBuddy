@@ -61,7 +61,7 @@ router.get("/goals", getGoals);
  *               items:
  *                 $ref: '#/components/schemas/Goal'
  */
-router.get("/goals/:goal_id", getGoals);
+router.get("/goals/:goal_id", getGoal);
 
 /**
  * @swagger
