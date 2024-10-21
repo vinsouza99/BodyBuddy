@@ -3,15 +3,17 @@ import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
 import {
+  getAllAchievements,
   getGoal,
   getIntensity,
-  getUserAchivements,
 } from "./LocalTablesController";
+import Achievement from "../models/Achievement";
 
 const USER_ROUTE = "users";
 const USER_SETTINGS_ROUTE = "settings";
 const USER_PROGRESS_ROUTE = "progress";
 const USER_SCHEDULE_ROUTE = "schedule";
+const USER_ACHIEVEMENT_ROUTE = "achievement";
 
 const getUser = async (authUser) => {
   try {
@@ -34,6 +36,9 @@ const getUser = async (authUser) => {
 
     const schedule = await getUserSchedule(user.id);
     user.schedule = schedule;
+
+    const achievements = await getUserAchievements(user.id);
+    user.achievements = achievements;
 
     return user;
   } catch (e) {
@@ -171,7 +176,6 @@ const getUserHistory = async (user_id) => {
     console.log(e);
   }
 };
-
 const getUserSchedule = async (user_id) => {
   try {
     const response = await axiosClient.get(
@@ -218,7 +222,43 @@ const updateUserSchedule = async (
     console.log(e);
   }
 };
+const getUserAchievements = async (user_id) => {
+  try {
+    const userAchievements = [];
+    const userAchievementsResponse = await axiosClient.get(
+      `${USER_ROUTE}/${USER_ACHIEVEMENT_ROUTE}/${user_id}`
+    );
+    if (userAchievementsResponse.status >= 400) return userAchievements;
 
+    const achievements = (await getAllAchievements()).data;
+    userAchievementsResponse.data.data.forEach((achievement) => {
+      let localAchievement = achievements.find(
+        (element) => element.id == achievement.id
+      );
+      userAchievements.push(
+        new Achievement(
+          localAchievement.id,
+          localAchievement.name,
+          achievement.earned_at
+        )
+      );
+    });
+    return userAchievements;
+  } catch (e) {
+    console.log(e);
+  }
+};
+const addUserAchievement = async (user_id, achievement_id, earned_at) => {
+  try {
+    let response = await axiosClient.post(
+      `${USER_ROUTE}/${USER_ACHIEVEMENT_ROUTE}`,
+      { user_id: user_id, achievement_id: achievement_id, earned_at: earned_at }
+    );
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
 export {
   getUser,
   createUser,
@@ -226,4 +266,6 @@ export {
   getUserHistory,
   createUserSchedule,
   updateUserSchedule,
+  getUserAchievements,
+  addUserAchievement,
 };

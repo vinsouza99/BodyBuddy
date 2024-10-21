@@ -12,6 +12,8 @@ import {
   getUserSchedule,
   createUserSchedule,
   updateUserSchedule,
+  getUserAchievements,
+  createUserAchievement,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -192,9 +194,9 @@ router.delete("/:id", deleteUser);
 
 /**
  * @swagger
- * /Users/{id}/Progress:
+ * /Users/Progress/{id}:
  *   get:
- *     summary: Get a specific user goal by User ID
+ *     summary: Get the user progress by User ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -206,11 +208,11 @@ router.delete("/:id", deleteUser);
  *         description: The ID of the User
  *     responses:
  *       200:
- *         description: The user goal details
+ *         description: The user progress details
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/UserProgress'
  *       404:
  *         description: User not found
  */
@@ -218,7 +220,7 @@ router.get("/progress/:id", getUserProgress);
 
 /**
  * @swagger
- * /Users/{id}/Progress:
+ * /Users/Progress/{id}:
  *   put:
  *     summary: Update the progress by User ID
  *     tags: [Users]
@@ -243,7 +245,7 @@ router.get("/progress/:id", getUserProgress);
 router.put("/progress/:id", updateUserProgress);
 /**
  * @swagger
- * /Users/{id}/Settings:
+ * /Users/Settings/{id}:
  *   get:
  *     summary: Get the settings by User ID
  *     tags: [Users]
@@ -269,7 +271,7 @@ router.get("/settings/:id", getUserSettings);
 
 /**
  * @swagger
- * /Users/{id}/Settings:
+ * /Users/Settings/{id}:
  *   put:
  *     summary: Update the settings by User ID
  *     tags: [Users]
@@ -287,7 +289,7 @@ router.get("/settings/:id", getUserSettings);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/User'
+ *               $ref: '#/components/schemas/UserSettings'
  *       404:
  *         description: User not found
  */
@@ -295,9 +297,9 @@ router.put("/settings/:id", updateUserSettings);
 
 /**
  * @swagger
- * /Users/{id}/Settings:
+ * /Users/Schedule/{id}:
  *   get:
- *     summary: Get the settings by User ID
+ *     summary: Get the schedule by User ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -309,7 +311,7 @@ router.put("/settings/:id", updateUserSettings);
  *         description: The ID of the User
  *     responses:
  *       200:
- *         description: The user settings
+ *         description: The user schedule
  *         content:
  *           application/json:
  *             schema:
@@ -321,9 +323,9 @@ router.get("/schedule/:id", getUserSchedule);
 
 /**
  * @swagger
- * /Users/{id}/Settings:
+ * /Users/Schedule/{id}:
  *   put:
- *     summary: Update the settings by User ID
+ *     summary: Update the schedule by User ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -347,9 +349,9 @@ router.put("/schedule/:id", updateUserSchedule);
 
 /**
  * @swagger
- * /Users/{id}/Settings:
- *   put:
- *     summary: Update the settings by User ID
+ * /Users/Schedule/{id}:
+ *   post:
+ *     summary: Posts a user schedule by User ID
  *     tags: [Users]
  *     parameters:
  *       - in: path
@@ -361,7 +363,59 @@ router.put("/schedule/:id", updateUserSchedule);
  *         description: The ID of the User
  *     responses:
  *       200:
- *         description: The user settings
+ *         description: The user schedule
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserSchedule'
+ *       404:
+ *         description: User not found
+ */
+router.post("/schedule/:id", createUserSchedule);
+
+/**
+ * @swagger
+ * /Users/Achievement/{id}/:
+ *   put:
+ *     summary: Get all the achievements from the user by User ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user achievements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserAchievement'
+ *       404:
+ *         description: User not found
+ */
+router.get("/achievement/:id", getUserAchievements);
+
+/**
+ * @swagger
+ * /Users/Achievement/{id}:
+ *   post:
+ *     summary: Records an achievement earned by the User
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the User
+ *     responses:
+ *       200:
+ *         description: The user achievement
  *         content:
  *           application/json:
  *             schema:
@@ -369,5 +423,5 @@ router.put("/schedule/:id", updateUserSchedule);
  *       404:
  *         description: User not found
  */
-router.post("/schedule/:id", createUserSchedule);
+router.post("/achievement/:id", createUserAchievement);
 export default router;

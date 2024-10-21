@@ -2,6 +2,8 @@ import User from "../models/User.js";
 import UserSchedule from "../models/UserSchedule.js";
 import UserProgress from "../models/UserProgress.js";
 import UserSettings from "../models/UserSettings.js";
+import UserAchievement from "../models/UserAchievement.js";
+import { getAchievement } from "./localTablesController.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -275,7 +277,6 @@ export const createUserSchedule = async (req, res) => {
   try {
     const user_id = req.params.id;
     const { day } = req.body;
-    console.log("day: " + day);
     const newAvailableDay = await UserSchedule.create({
       user_id: user_id,
       day: day,
@@ -313,6 +314,54 @@ export const updateUserSchedule = async (req, res) => {
       status: "200",
       message: "User Schedule updated successfully",
       data: userSchedule,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getUserAchievements = async (req, res) => {
+  try {
+    const user_id = req.params.id;
+    const userAchievements = await UserAchievement.findAll({
+      where: { user_id: user_id },
+    });
+    if (!userAchievements) {
+      return res.status(404).json({
+        status: "404",
+        message: "User achievements not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: userAchievements,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const createUserAchievement = async (req, res) => {
+  try {
+    const { user_id, achievement_id, earned_at } = req.body;
+    const userAchievement = await UserAchievement.create({
+      user_id: user_id,
+      achievement_id: achievement_id,
+      earned_at: earned_at,
+    });
+    res.status(200).json({
+      status: "201",
+      message: "Success",
+      data: userAchievement,
     });
   } catch (error) {
     console.error(error);

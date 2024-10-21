@@ -1,10 +1,12 @@
 import axiosClient from "../utils/axiosClient";
 import Goal from "../models/Goal";
 import Intensity from "../models/Intensity";
+import Achievement from "../models/Achievement";
 
 const API_ROUTE = "local";
 const API_GOALS_ROUTE = "goals";
 const API_INTENSITY_ROUTE = "intensity";
+const API_ACHIEVEMENT_ROUTE = "achievements";
 
 const getAllGoals = async () => {
   try {
@@ -50,10 +52,22 @@ const getIntensity = async (intensity_id) => {
   }
 };
 const getAllAchievements = async () => {
-  //TODO
-};
-const getUserAchivements = async (user_id) => {
-  //TODO
+  try {
+    const response = await axiosClient.get(
+      `${API_ROUTE}/${API_ACHIEVEMENT_ROUTE}`
+    );
+    const data = await response.data.data;
+    return data.map(
+      (achievement) =>
+        new Achievement(
+          achievement.id,
+          achievement.name,
+          achievement.description
+        )
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };
 export {
   getAllGoals,
@@ -61,5 +75,4 @@ export {
   getAllIntensities,
   getIntensity,
   getAllAchievements,
-  getUserAchivements,
 };
