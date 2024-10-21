@@ -6,7 +6,6 @@ import { getRoutinesFromProgram } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
 import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
-import theme from '../theme';
 
 export const GadgetRoutineOfToday = memo(() => {
   const { user } = useAuth();
@@ -81,16 +80,18 @@ export const GadgetRoutineOfToday = memo(() => {
           src={exercise.demo_url}
           alt={exercise.name}
           sx={{
-            border: `1px solid ${theme.palette.secondary.main}`,
+            border: '2px solid',
+            borderColor: 'secondary.main',
             borderRadius: '50px',
             width: '80px',
             objectFit: 'cover',
+            marginRight: '1rem',
           }}
         />
-        <Typography sx={{ width: '100%', textAlign: 'center' }}>
+        <Typography sx={{ width: '100%', textAlign: 'left' }}>
           {exercise.name}
         </Typography>
-        <Typography sx={{ width: '100%', textAlign: 'center' }}>
+        <Typography sx={{ width: '100%', textAlign: 'right' }}>
           {exercise.reps} Reps
         </Typography>
         <Typography sx={{ width: '100%', textAlign: 'center' }}>
@@ -133,7 +134,7 @@ export const GadgetRoutineOfToday = memo(() => {
             sx={{
               // backgroundColor: theme.palette.primary.main,
               backgroundColor: '#94DC8A',
-              color: theme.palette.text.secondary,
+              color: 'text.secondary',
               borderRadius: '50%',
               width: '150px',
               height: '150px',

@@ -65,11 +65,11 @@ export const TrainingProgram = memo((props) => {
     return (
       <Grid2 container spacing={2} >
         {/* LEFT COLUMN */}
-        <Grid2 size={{xs:12, md:8}} >
+        <Grid2 size={{xs:12, md:7}} >
           <GadgetRoutineOfToday />
         </Grid2>
         {/* RIGHT COLUMN */}
-        <Grid2 size={{xs:12, md:4}} >
+        <Grid2 size={{xs:12, md:5}} >
           <GadgetSchedule />          
         </Grid2>
       </Grid2>
@@ -105,11 +105,7 @@ export const TrainingProgram = memo((props) => {
         <Tab label="Premade Routines" sx={ tabStyles } />
       </Tabs>
 
-      <Box
-        sx={{
-          marginTop: 2,
-        }}
-      >
+      <Box sx={{ marginTop: 2 }} >
         {/* MY PROGRAM TAB */}
         {activeTab === 0 && myProgramTabContent}
         {/* PREMADE ROUTINES TAB */}

@@ -14,7 +14,7 @@ export const GadgetBase = ({ title = null, children }) => {
         gap: 4,
         padding: 2, 
         borderRadius: '15px',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
       }}
     >
       {title && (

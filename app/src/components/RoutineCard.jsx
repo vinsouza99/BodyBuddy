@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
-import { Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import { format } from 'date-fns';
+import { Box, Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import theme from '../theme';
 
 export const RoutineCard = ({ routine }) => {
+  const today = new Date();
   return (
     <>
       <Accordion
@@ -11,16 +12,19 @@ export const RoutineCard = ({ routine }) => {
         disableGutters={true}
         square={true}
         sx={{
-          textAlign: "left",
-          borderLeft: `5px solid ${theme.palette.primary.main}`,
+          textAlign: 'left',
+          borderLeft: '3px solid', 
+          borderColor: 'primary.main'
         }}
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
+          sx={{ height: '80px'}}
         >
           <Typography>
+          <Box component="span" sx={{ marginRight: '1rem' }}>
+            {format(today, 'MMM d')}:
+          </Box>
             {routine.name ? routine.name : "Name is undefined"}
           </Typography>
         </AccordionSummary>
