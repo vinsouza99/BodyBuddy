@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Grid2, Box, Typography, LinearProgress, Backdrop, CircularProgress } from '@mui/material';
 // Gadgets Components
-import { GadgetSchedule } from '../components/GadgetSchedule';
+import { GadgetStreaks } from '../components/GadgetStreaks.jsx';
 import { GadgetFavourite } from '../components/GadgetFavourite';
 import { GadgetAchievement } from '../components/GadgetAchievement';
 import { GadgetHistory } from '../components/GadgetHistory';
@@ -183,12 +183,12 @@ export const Dashboard = (props) => {
               </Box>
             </Box>
             
-            <GadgetSchedule />
+            <GadgetStreaks />
             <GadgetFavourite />
           </Box>
         </Grid2>
 
-        {/* EIGHT COLUMN */}
+        {/* RIGHT COLUMN */}
         <Grid2 size={{xs:12, md:6}} >
           <Box
             sx={{ 

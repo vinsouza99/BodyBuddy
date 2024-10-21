@@ -18,13 +18,17 @@ export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onCli
   const handlerNextWeek = () => {
     setStartDate(addDays(startDate, 7));
     setEndDate(addDays(endDate, 7));
-    onClickNextWeek(addDays(startDate, 7));
+    if (typeof onClickNextWeek === 'function') {
+      onClickNextWeek(addDays(startDate, 7));
+    }
   };
 
   const handlerPreviousWeek = () => {
     setStartDate(subDays(startDate, 7));
     setEndDate(subDays(endDate, 7));
-    onClickPreviousWeek(subDays(startDate, 7));
+    if (typeof onClickPreviousWeek === 'function') {
+      onClickPreviousWeek(addDays(startDate, 7));
+    }
   };
 
   const handleDayClick = (day) => {

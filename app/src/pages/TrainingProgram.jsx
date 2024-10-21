@@ -1,19 +1,17 @@
+// Reat and Material-UI
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, memo } from "react";
+import { Typography, Box, Tabs, Tab, Grid2 } from "@mui/material";
+// Common Components
 import { setPageTitle } from "../utils/utils";
-// import { useLocation } from "react-router-dom";
-import { getAllPresetRoutines } from "../controllers/RoutineController";
-import {
-  getAllUserPrograms,
-  // createProgram,
-} from "../controllers/ProgramController";
-import { getRoutinesFromProgram } from "../controllers/RoutineController";
-// import { generateProgram } from "../utils/openaiService.js";
-import { useAuth } from "../utils/AuthProvider.jsx";
+import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
+import { GadgetSchedule } from "../components/GadgetSchedule.jsx";
 import TrainingCard from "../components/TrainingCard";
-import { Typography, Tabs, Tab } from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import Box from "@mui/material/Box";
+import { getAllPresetRoutines } from "../controllers/RoutineController";
+
+// !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
+// import { useLocation } from "react-router-dom";
+// import { generateProgram } from "../utils/openaiService.js";
 
 const tabStyles = {
   "&.Mui-selected": {
@@ -25,12 +23,11 @@ const tabStyles = {
   },
 };
 
-export const TrainingProgram = (props) => {
-  const { user } = useAuth();
-  const [programs, setPrograms] = useState([]);
-  const [programRoutines, setprogramRoutines] = useState([]);
-  const [routines, setRoutines] = useState([]);
+export const TrainingProgram = memo((props) => {
   const [activeTab, setActiveTab] = useState(0);
+  const [routines, setRoutines] = useState([]);
+
+  // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
   // const location = useLocation();
   // const [userProgramPreferences, setUserProgramPreferences] = useState(null);
 
@@ -44,21 +41,6 @@ export const TrainingProgram = (props) => {
 
     const loadData = async () => {
       try {
-        // setUserProgramPreferences(
-        //   location.state ? location.state.userResponses : null
-        // );
-        // if (userProgramPreferences) {
-        //   const generatedProgramObj = await generateProgram(
-        //     userProgramPreferences
-        //   );
-        //   await createProgram(user.id, generatedProgramObj);
-        // }
-        const allPrograms = await getAllUserPrograms(user.id);
-        setPrograms(allPrograms);
-
-        const allProgramRoutines = await getRoutinesFromProgram(allPrograms[0].id);
-        setprogramRoutines(allProgramRoutines);
-
         const presetRoutines = await getAllPresetRoutines();
         setRoutines(presetRoutines);
       } catch (e) {
@@ -66,7 +48,40 @@ export const TrainingProgram = (props) => {
       }
     };
     loadData();
-  }, []);
+  }, [props.title]);
+
+  // Memoize the "My Program" tab content
+  const myProgramTabContent = useMemo(() => {
+    return (
+      <Grid2 container spacing={2} >
+        {/* LEFT COLUMN */}
+        <Grid2 size={{xs:12, md:8}} >
+          <GadgetRoutineOfToday />
+        </Grid2>
+        {/* RIGHT COLUMN */}
+        <Grid2 size={{xs:12, md:4}} >
+          <GadgetSchedule />          
+        </Grid2>
+      </Grid2>
+    );
+  }, []); 
+
+  // Memoize the "Premade Routines" tab content
+  const premadeRoutinesTabContent = useMemo(() => {
+    return (
+      <Grid2 container spacing={2}>
+        {routines.length > 0
+          ? routines.map((routine) => (
+              <Grid2 key={routine.id} size={{ xs: 12, md: 6 }}>
+                <TrainingCard routine={routine} />
+              </Grid2>
+            ))
+          : (
+            <Typography>No routines available</Typography>
+          )}
+      </Grid2>
+    );
+  }, [routines]);
 
   return (
     <>
@@ -80,111 +95,22 @@ export const TrainingProgram = (props) => {
         <Tab label="Premade Routines" sx={ tabStyles } />
       </Tabs>
 
-      {/* MY PROGRAM TAB */}
-      {activeTab === 0 && (
-        <Box
-          sx={{
-            marginTop: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {programs
-            ? programs.map((program) => (
-                <Typography
-                  key={program.id}
-                  variant="h2"
-                  sx={{
-                    fontVariationSettings: "'wght' 800",
-                    marginBottom: 2,
-                  }}
-                >
-                  {program.name}
-                </Typography>
-              ))
-            : <Typography>No programs available</Typography>
-          }
-
-          <Grid container spacing={2}>
-            {programRoutines
-              ? programRoutines.map((routine) => (
-                  <Grid key={routine.id} size={{xs:12, md:6}} >
-                    <TrainingCard routine={routine} />
-                  </Grid>
-                ))
-              : <Typography>No routines available</Typography>
-            }
-          </Grid>
-        </Box>
-      )}
-
-      {/* PREMADE ROUTINES TAB */}
-      {activeTab === 1 && (
-        <Box
-          sx={{
-            marginTop: 2,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Grid container spacing={2}>
-            {routines
-              ? routines.map((routine) => (
-                  <Grid key={routine.id} size={{xs:12, md:6}} >
-                    <TrainingCard routine={routine} />
-                  </Grid>
-                ))
-              : <Typography>No routines available</Typography>}
-          </Grid>
-        </Box>
-      )}
+      <Box
+        sx={{
+          marginTop: 2,
+        }}
+      >
+        {/* MY PROGRAM TAB */}
+        {activeTab === 0 && myProgramTabContent}
+        {/* PREMADE ROUTINES TAB */}
+        {activeTab === 1 && premadeRoutinesTabContent}
+      </Box>
     </>
   );
-  // return (
-  //   <div>
-  //     <h1>Training</h1>
-
-  //     {/* MY PROPGRAM Section */}
-  //     <div>
-  //       <Typography variant="h4" align="left">
-  //         My Program
-  //       </Typography>
-  //     </div>
-
-  //     {/* TrainingCard is alined horizontaly to use "Grid" */}
-  //     {/* Create TrainingCard for program */}
-  //     <Grid container spacing={2}>
-  //       {programs
-  //         ? programs.map((routine) => (
-  //             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={routine.id}>
-  //               <TrainingCard key={routine.id} routine={routine} />
-  //             </Grid>
-  //           ))
-  //         : ""}
-  //     </Grid>
-
-  //     {/* ROUTINE Section */}
-  //     <Box>
-  //       <Typography variant="h4" align="left">
-  //         Routines
-  //       </Typography>
-  //     </Box>
-
-  //     <Grid container spacing={2}>
-  //       {routines
-  //         ? routines.map((routine) => (
-  //             <Grid size={{ xs: 12, sm: 6, md: 4 }} key={routine.id}>
-  //               <TrainingCard key={routine.id} routine={routine} />
-  //             </Grid>
-  //           ))
-  //         : ""}
-  //     </Grid>
-  //   </div>
-  // );
-};
+});
 
 TrainingProgram.propTypes = {
   title: PropTypes.string,
 };
+
+TrainingProgram.displayName = 'TrainingProgram';

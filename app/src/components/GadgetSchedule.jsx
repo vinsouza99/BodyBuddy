@@ -1,40 +1,115 @@
-import { Box, Typography, Button } from '@mui/material';
+import { useEffect, useState, useRef, memo } from "react";
+// import { useNavigate } from "react-router-dom";
 import { GadgetBase } from './GadgetBase';
-import { MetricCard } from '../components/routine-session/MetricCard';
-import flame1 from '../assets/flame-solid_1.png';
-import flame2 from '../assets/flame-solid_2.png';
+import { WeekPicker } from "./WeekPicker";
+import { Box, Typography } from "@mui/material";
+import { RoutineCard } from "../components/RoutineCard";
+import { useAuth } from "../utils/AuthProvider.jsx";
+import { getRoutinesFromProgram } from "../controllers/RoutineController";
+import {
+  getAllUserPrograms,
+  // createProgram,
+} from "../controllers/ProgramController";
 
-export const GadgetSchedule = () => {
+export const GadgetSchedule = memo(() => {
+  const { user } = useAuth();
+  const [programs, setPrograms] = useState([]);
+  const [programRoutines, setProgramRoutines] = useState([]);
+  const [loading, setLoading] = useState(true);
+  // const navigate = useNavigate();
+
+  // For data cashing
+  const dataCacheRef = useRef({
+    userId: null,
+    programRoutines: null,
+  });
+
+  // Initialization
+  useEffect(() => {
+    // Check if the data is already loaded
+    if (
+      dataCacheRef.current.userId === user.id &&
+      dataCacheRef.current.programRoutines
+    ) {
+      setProgramRoutines(dataCacheRef.current.programRoutines);
+      setLoading(false);
+      console.log("Data loaded from cache");
+      return;
+    }
+
+    const loadData = async () => {
+      try {
+        // setUserProgramPreferences(
+        //   location.state ? location.state.userResponses : null
+        // );
+        // if (userProgramPreferences) {
+        //   const generatedProgramObj = await generateProgram(
+        //     userProgramPreferences
+        //   );
+        //   await createProgram(user.id, generatedProgramObj);
+        // }
+        const programs = await getAllUserPrograms(user.id);
+        setPrograms(programs);
+
+        const routines = await getRoutinesFromProgram(programs[0].id);
+        setProgramRoutines(routines);
+
+        // Cache the data
+        dataCacheRef.current = {
+          userId: user.id,
+          programRoutines: routines,
+        };
+
+      } catch (e) {
+        console.log(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadData();
+  }, []);
+
   return (
     <GadgetBase>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          gap: 2,
-        }}
-      >
-        <Box>
-          <img src={flame1} alt="Flame 1"></img>
-          <MetricCard title="Week Streaks" value="0" color="black"/>
+      <WeekPicker />
+      {/* Program Schedule */}
+      {!loading && (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            textAlign: "left",
+            gap: 2,
+          }}
+        >
+          {programs[0] 
+            ? 
+              <>
+                <Typography
+                  sx={{ fontVariationSettings: "'wght' 800"}}
+                >
+                  {programs[0].name}
+                </Typography>
+                <Typography 
+                  sx={{ textAlign: "left" }}
+                >
+                  {programs[0].description ? programs[0].description : "Description is undefined"}
+                </Typography>
+              </>
+            : <Typography>No programs available</Typography>
+          }
+
+          {programRoutines
+            ? programRoutines.map((routine) => (
+                <RoutineCard key={routine.id} routine={routine} />
+              ))
+            : <Typography>No routines available</Typography>
+          }
+
         </Box>
-        <Box>
-          <img src={flame2} alt="Flame 2"></img>
-          <MetricCard title="Best Streaks" value="0" color="black" />
-        </Box>
-      </Box>
-      <Typography>
-        Exercise at least 3 times a week to keep your streak not reset
-      </Typography>
-      <Button
-        variant="contained" 
-        sx={{ 
-          width: '50%',
-        }} 
-      >
-        Start Today&apos;sexercise
-      </Button>
+      )}
     </GadgetBase>
   );
-};
+});
+
+GadgetSchedule.displayName = 'GadgetSchedule';
