@@ -56,8 +56,8 @@ function History() {
   };
 
   return (
-    <div>
-      <Card sx={{ padding: 2, borderRadius: 2 }}>
+    <>
+  <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h3" component="p" sx={{ margin: 1, fontWeight: 'bold' }}>
             History
@@ -158,7 +158,7 @@ function History() {
         </DialogContent>
       </Dialog>
 
-    </div>
+    </>
   );
 }
 

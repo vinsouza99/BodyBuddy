@@ -1,9 +1,15 @@
 export default class UserProgress {
   /**
    *
-   * @param {string} user_id
+   * @param {*} level
+   * @param {*} level_progress
+   * @param {*} streak
+   * @param {*} highest_streak
    */
-  constructor(user_id) {
-    this.user_id = user_id;
+  constructor(level, level_progress, streak, highest_streak) {
+    this.level = level;
+    this.level_progress = level_progress;
+    this.streak = streak;
+    this.highest_streak = highest_streak;
   }
 }

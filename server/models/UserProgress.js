@@ -10,7 +10,7 @@ const UserProgress = sequelize.define(
       primaryKey: true,
       autoIncrement: false,
     },
-    level_id: {
+    level: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
