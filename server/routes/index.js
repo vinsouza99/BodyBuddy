@@ -28,7 +28,7 @@ router.use("/achievements", achievementRoutes);
 router.use("/related_achievements", relatedAchievementRoutes);
 router.use("/muscleGroups", muscleGroupRoutes);
 router.use("/relatedMuscleGroups", relatedMuscleGroupRoutes);
-router.use("/openai", openaiapiRoutes);
+router.use("/openai", authenticateToken, openaiapiRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
 router.post("/set-cookie", (req, res) => {

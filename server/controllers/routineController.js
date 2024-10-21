@@ -88,12 +88,14 @@ export const getRoutine = async (req, res) => {
 
 export const createRoutine = async (req, res) => {
   try {
-    const { program_id, duration, name } = req.params;
+    const { id, program_id, name, description, duration, preset } = req.body;
     const newRoutine = await Routine.create({
+      id,
       program_id,
-      duration,
       name,
       description,
+      duration,
+      preset,
     });
     res.status(201).json({
       status: "201",

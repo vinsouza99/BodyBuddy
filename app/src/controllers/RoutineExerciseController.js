@@ -27,13 +27,23 @@ const getExercisesFromRoutine = async (routine_id) => {
           exercise.restPeriod
         )
     );
-    await routineExercises.forEach(async (exercise) => {
+    // await routineExercises.forEach(async (exercise) => {
+    //   const ex = await getExercise(exercise.exercise_id);
+    //   exercise.name = ex.name;
+    //   exercise.demo_url = ex.demo_url;
+    //   exercise.description = ex.description;
+    //   exercise.types = ex.types;
+    // });
+    //
+    // "forEach does not properly wait for asynchronous operations."
+    
+    for (const exercise of routineExercises) {
       const ex = await getExercise(exercise.exercise_id);
       exercise.name = ex.name;
       exercise.demo_url = ex.demo_url;
       exercise.description = ex.description;
       exercise.types = ex.types;
-    });
+    }
     return routineExercises;
   } catch (e) {
     console.log(e);

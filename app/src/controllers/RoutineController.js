@@ -18,7 +18,8 @@ const getRoutinesFromProgram = async (program_id) => {
     );
     const data = await response.data;
     const routines = await data.data.rows.map((routine) => {
-      new Routine(
+      console.log(routine);
+      return new Routine(
         routine.id,
         routine.created_at,
         routine.completed_at,
