@@ -11,13 +11,14 @@ import {
 const USER_ROUTE = "users";
 const USER_SETTINGS_ROUTE = "settings";
 const USER_PROGRESS_ROUTE = "progress";
+const USER_SCHEDULE_ROUTE = "schedule";
 
-const getUser = async (id, authUser) => {
+const getUser = async (authUser) => {
   try {
-    const response = await axiosClient.get(`${USER_ROUTE}/${id}`);
+    const response = await axiosClient.get(`${USER_ROUTE}/${authUser.id}`);
     const data = await response.data.data;
     const user = new User(
-      data.id,
+      authUser.id,
       authUser?.user_metadata.full_name,
       authUser?.user_metadata.picture,
       data.birthday,
@@ -25,11 +26,14 @@ const getUser = async (id, authUser) => {
       data.weight,
       data.weight_unit
     );
-    const settings = await getUserSettings(id);
+    const settings = await getUserSettings(user.id);
     user.settings = settings;
 
-    const progress = await getUserProgress(id);
+    const progress = await getUserProgress(user.id);
     user.progress = progress;
+
+    const schedule = await getUserSchedule(user.id);
+    user.schedule = schedule;
 
     return user;
   } catch (e) {
@@ -43,10 +47,9 @@ const getUserSettings = async (id) => {
       `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${id}`
     );
     const data = await response.data.data;
-    const settings = new UserSettings(data.intensity_id, data.goal_id);
-    settings.goal_name = await getGoal(settings.goal_id);
-    settings.intensity_name = await getIntensity(settings.intensity_id);
-    return settings;
+    const goal = await getGoal(data.goal_id);
+    const intensity = await getIntensity(data.intensity_id);
+    return new UserSettings(goal, intensity);
   } catch (e) {
     console.log(e);
   }
@@ -84,6 +87,8 @@ const createUser = async (userObj) => {
     user.settings = response;
     response = await getUserProgress(user.id);
     user.progress = response;
+    response = await createUserSchedule(user.id, userObj.schedule);
+    user.schedule = response;
     return user;
   } catch (e) {
     console.log(e);
@@ -101,7 +106,8 @@ const updateUser = async (user_id, updatedUserObj) => {
       updatedUserObj.weight,
       updatedUserObj.weight_unit,
       updatedUserObj.settings,
-      updatedUserObj.progress
+      updatedUserObj.progress,
+      updatedUserObj.schedule
     );
     const response = await axiosClient.put(
       `${USER_ROUTE}/${user_id}`,
@@ -112,6 +118,10 @@ const updateUser = async (user_id, updatedUserObj) => {
     }
     if (updatedUser.progress) {
       await updateUserProgress(user_id, updatedUser.progress);
+    }
+    if (updatedUser.schedule) {
+      //await updateUserSchedule(user_id, updatedUser.schedule);
+      await createUserSchedule(user_id, updatedUser.schedule);
     }
     return response;
   } catch (e) {
@@ -162,4 +172,58 @@ const getUserHistory = async (user_id) => {
   }
 };
 
-export { getUser, createUser, updateUser, getUserHistory };
+const getUserSchedule = async (user_id) => {
+  try {
+    const response = await axiosClient.get(
+      `${USER_ROUTE}/${USER_SCHEDULE_ROUTE}/${user_id}`
+    );
+    return response.data.data.map((info) => info.day);
+  } catch (e) {
+    console.log(e);
+  }
+};
+const createUserSchedule = async (user_id, scheduleArray) => {
+  try {
+    const promises = [];
+    scheduleArray.forEach(async (day) => {
+      promises.push(
+        axiosClient.post(`${USER_ROUTE}/${USER_SCHEDULE_ROUTE}/${user_id}`, {
+          day: day,
+        })
+      );
+    });
+    Promise.all(promises).then((response) => {
+      return response;
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const updateUserSchedule = async (
+  user_id,
+  currentScheduleArray,
+  newScheduleArray
+) => {
+  try {
+    const promises = [];
+    newScheduleArray.forEach(async (day) => {
+      //TODO
+    });
+    Promise.all(promises).then((response) => {
+      console.log(response);
+      return response;
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export {
+  getUser,
+  createUser,
+  updateUser,
+  getUserHistory,
+  createUserSchedule,
+  updateUserSchedule,
+};

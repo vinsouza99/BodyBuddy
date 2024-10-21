@@ -13,7 +13,7 @@ export const Profile = (props) => {
   useEffect(() => {
     setPageTitle(props.title);
     async function getCurrentUser() {
-      const data = await getUser(user.id, user);
+      const data = await getUser(user);
       console.log(data);
       setCurrentUser(data);
     }

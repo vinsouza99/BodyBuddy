@@ -37,7 +37,7 @@ const CreateProgram = () => {
   const [selectedGoal, setSelectedGoal] = useState(1); // Goal, no default radio selected
   const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
   const [intensity, setIntensity] = useState("");
-  const [availability, setAvailability] = useState([]);
+  const [schedule, setSchedule] = useState([]);
   const [primaryGoalsOptions, setPrimaryGoalsOptions] = useState([]);
   const [intensityOptions, setIntensityOptions] = useState([]);
 
@@ -407,17 +407,16 @@ const CreateProgram = () => {
     );
   }
 
-  function AvailabilityStep() {
+  function ScheduleStep() {
     return (
       <FormControl>
-        <FormLabel id="availabilityLabel">
+        <FormLabel id="scheduleLabel">
           <Typography variant="h3">When can you exercise?</Typography>
         </FormLabel>
         <FormGroup
           row
           aria-labelledby="intensityLabel"
           name="radio-buttons-group4"
-          value={availability}
         >
           {weekdays.map((day, index) => (
             <FormControlLabel
@@ -472,7 +471,7 @@ const CreateProgram = () => {
               }
               label={day.substring(0, 3)}
               labelPlacement="bottom"
-              onChange={(e) => toggleOptions(availability, e.target.value)}
+              onChange={(e) => toggleOptions(schedule, e.target.value)}
             />
           ))}
         </FormGroup>
@@ -486,10 +485,10 @@ const CreateProgram = () => {
       goal_id: selectedGoal,
       past_exercise_frequency: pastExerciseFrequency,
       intensity_id: intensity,
-      availability: availability,
+      schedule: schedule,
       birthday: null,
       weight: weight,
-      weight_units: weight_units,
+      weight_unit: weightUnit,
     };
     if (user) {
       navigate("/training", {
@@ -556,7 +555,7 @@ const CreateProgram = () => {
                 <IntensityStep />
               </Box>
               <Box component={"div"} display={step == 5 ? "block" : "none"}>
-                <AvailabilityStep />
+                <ScheduleStep />
               </Box>
               <Grid
                 container
