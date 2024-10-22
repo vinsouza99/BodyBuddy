@@ -69,10 +69,26 @@ const getAllAchievements = async () => {
     console.log(e);
   }
 };
+const getAchievement = async (achievement_id) => {
+  try {
+    const response = await axiosClient.get(
+      `${API_ROUTE}/${API_ACHIEVEMENT_ROUTE}/${achievement_id}`
+    );
+    const achievement = await response.data;
+    return new Achievement(
+      achievement.id,
+      achievement.name,
+      achievement.description
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
 export {
   getAllGoals,
   getGoal,
   getAllIntensities,
   getIntensity,
   getAllAchievements,
+  getAchievement,
 };
