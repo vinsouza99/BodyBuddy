@@ -13,12 +13,12 @@ export const GadgetPremadeRoutineList = ({presetRoutines = null }) => {
           gap: 2,
         }}
       >
-        {presetRoutines.length > 0
+        {presetRoutines && presetRoutines.length > 0
           ? presetRoutines.map((routine) => (
                 <TrainingCard key={routine.id} routine={routine} />
             ))
           : (
-            <Typography>No routines available</Typography>
+            <Typography>No available routines</Typography>
         )}
       </Box>
     </GadgetBase>
