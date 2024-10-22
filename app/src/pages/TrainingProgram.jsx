@@ -35,7 +35,6 @@ export const TrainingProgram = memo((props) => {
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true); 
 
-
   // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
   // const location = useLocation();
   // const [userProgramPreferences, setUserProgramPreferences] = useState(null);
