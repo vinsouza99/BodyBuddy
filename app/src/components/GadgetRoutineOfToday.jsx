@@ -40,18 +40,18 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
           <Button
             onClick={handleOpen}
             sx={{
-              // backgroundColor: theme.palette.primary.main,
-              backgroundColor: '#94DC8A',
-              color: 'text.secondary',
-              borderRadius: '50%',
               width: '150px',
               height: '150px',
+              color: 'text.primary',
+              backgroundColor: '#4DC53C',
+              borderRadius: '50%',
               padding: 0,
               minWidth: 'unset',
               fontSize: '1.2rem',
               fontVariationSettings: "'wght' 800",
               marginTop: '0.8rem',
               marginBottom: '0.8rem',
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
             }}
           >
             Get<br />Started
