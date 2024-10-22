@@ -7,32 +7,35 @@ export default class Routine {
   /**
    *
    * @param {string} id
-   * @param {Date} created_at
-   * @param {Date} completed_at
    * @param {number} duration
    * @param {string} program_id
    * @param {string} name
    * @param {string} description
+   * @param {number} estimated_calories
+   * @param {Date} scheduled_date,
+   * @param {Boolean} completed
    * @param {Array} exercises - an array of objects of the class Exercise that refers to all the
    * exercises that are part of this routine
    */
   constructor(
     id,
-    created_at,
-    completed_at,
     duration,
     program_id,
     name,
     description,
+    estimated_calories,
+    scheduled_date,
+    completed,
     exercises
   ) {
     this.id = id;
-    this.created_at = created_at;
-    this.completed_at = completed_at;
     this.duration = duration;
     this.program_id = program_id;
     this.name = name;
     this.description = description;
+    this.estimated_calories = estimated_calories;
+    this.scheduled_date = scheduled_date;
+    this.completed = completed;
     this.exercises = exercises || [];
   }
   /**

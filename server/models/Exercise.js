@@ -22,11 +22,6 @@ const Exercise = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
-    // type: {
-    //   type: DataTypes.TEXT,
-    //   allowNull: false,
-    //   defaultValue: "workout",
-    // },
   },
   {
     tableName: "exercise",

@@ -5,6 +5,10 @@ import {
   getIntensities,
   getIntensity,
   getAchievements,
+  getMuscleGroup,
+  getMuscleGroups,
+  getTypes,
+  getType,
 } from "../controllers/localTablesController.js";
 
 const router = express.Router();
@@ -117,4 +121,73 @@ router.get("/intensity/:intensity_id", getIntensity);
  */
 router.get("/achievements", getAchievements);
 
+/**
+ * @swagger
+ * /Goals:
+ *   get:
+ *     summary: Returns a list of all Goals
+ *     tags: [Goals]
+ *     responses:
+ *       200:
+ *         description: A list of Goals
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Goal'
+ */
+router.get("/muscleGroups", getMuscleGroups);
+/**
+ * @swagger
+ * /Goals:
+ *   get:
+ *     summary: Returns a list of all Goals
+ *     tags: [Goals]
+ *     responses:
+ *       200:
+ *         description: A list of Goals
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Goal'
+ */
+router.get("/muscleGroups/:muscle_group_id", getMuscleGroup);
+
+/**
+ * @swagger
+ * /Types:
+ *   get:
+ *     summary: Returns a list of types
+ *     tags: [Types]
+ *     responses:
+ *       200:
+ *         description: A list of types
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Type'
+ */
+router.get("/types", getTypes);
+/**
+ * @swagger
+ * /Types/{id}:
+ *   get:
+ *     summary: Returns the type by ID
+ *     tags: [Types]
+ *     responses:
+ *       200:
+ *         description: A exercise type
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Type'
+ */
+router.get("/types/:type_id", getType);
 export default router;
