@@ -6,6 +6,9 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import {
   Button,
   FormGroup,
@@ -18,6 +21,10 @@ import {
   Typography,
   Container,
   Checkbox,
+  TextField,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import "./CreateProgram.css";
 import {
@@ -26,18 +33,20 @@ import {
 } from "../controllers/LocalTablesController.js";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import CheckIcon from "@mui/icons-material/Check"; // TODO: change to svg icon from design file
+import dayjs from "dayjs";
 
 const CreateProgram = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
-  const [gender, setGender] = useState(null); // Gender, no default radio selected
-  const [weight, setWeight] = useState(0);
+  const [gender, setGender] = useState("other");
+  const [birthday, setBirthday] = useState(null);
+  const [weight, setWeight] = useState(null);
   const [weightUnit, setWeightUnit] = useState("lbs");
-  const [selectedGoal, setSelectedGoal] = useState(1); // Goal, no default radio selected
-  const [pastExerciseFrequency, setPastExerciseFrequency] = useState("");
-  const [intensity, setIntensity] = useState("");
-  const [schedule, setSchedule] = useState([]);
+  const [selectedGoal, setSelectedGoal] = useState(1);
+  const [pastExerciseFrequency, setPastExerciseFrequency] = useState(1);
+  const [intensity, setIntensity] = useState(1);
+  const [schedule, setSchedule] = useState(["Monday"]);
   const [primaryGoalsOptions, setPrimaryGoalsOptions] = useState([]);
   const [intensityOptions, setIntensityOptions] = useState([]);
 
@@ -54,7 +63,8 @@ const CreateProgram = () => {
     if (index == -1) {
       array.push(value);
     } else {
-      array.splice(array, 1);
+      // array.splice(array, 1);
+      array.splice(index, 1);
     }
   };
 
@@ -82,7 +92,7 @@ const CreateProgram = () => {
   }
   function nextStep() {
     //TODO: validate user input on the current step (check if they have entered a valid input before proceeding)
-    if (step < 5) {
+    if (step < 6) {
       setStep(step + 1);
     }
   }
@@ -125,49 +135,6 @@ const CreateProgram = () => {
       </>
     );
   }
-
-  // function PrimaryGoalStep() {
-  //   return (
-  //     <FormControl>
-  //       <FormLabel id="primaryGoalLabel">
-  //         <Typography variant="h3" sx={{ marginBottom: "20px" }}>
-  //           What is your primary goal?
-  //         </Typography>
-  //       </FormLabel>
-  //       <FormGroup aria-labelledby="primaryGoalLabel" name="checkbox-group">
-  //         {primaryGoalsOptions?.map((goal, index) => (
-  //           <Accordion className="formAccordion" key={index}>
-  //             <AccordionSummary
-  //               key={index}
-  //               expandIcon={<ExpandMoreIcon />}
-  //               aria-controls={`panel${index}-content`}
-  //               id={`panel${index}-header`}
-  //             >
-  //               <FormControlLabel
-  //                 key={index}
-  //                 value={goal.id}
-  //                 control={<Checkbox />}
-  //                 label={goal.name}
-  //                 onChange={(e) => {
-  //                   toggleOptions(primaryGoals, e.target.value);
-  //                   console.log("primaryGoals:", primaryGoals);
-  //                   console.log("Selected Radio Button Value:", e.target.value);
-  //                 }}
-  //               />
-  //             </AccordionSummary>
-  //             <AccordionDetails className="details" key={index}>
-  //               {goal.description}
-  //             </AccordionDetails>
-  //           </Accordion>
-  //         ))}
-  //       </FormGroup>
-  //       <Typography variant="body1">
-  //         Click <ExpandMoreIcon /> to learn how this goal determine your
-  //         exercise plan.
-  //       </Typography>
-  //     </FormControl>
-  //   );
-  // }
 
   function PrimaryGoalStep() {
     return (
@@ -417,6 +384,7 @@ const CreateProgram = () => {
           row
           aria-labelledby="intensityLabel"
           name="radio-buttons-group4"
+          value={schedule}
         >
           {weekdays.map((day, index) => (
             <FormControlLabel
@@ -471,10 +439,80 @@ const CreateProgram = () => {
               }
               label={day.substring(0, 3)}
               labelPlacement="bottom"
-              onChange={(e) => toggleOptions(schedule, e.target.value)}
+              // onChange={(e) => toggleOptions(schedule, e.target.value)}
+              // Display a default selection
+              checked={schedule.includes(day)}
+              onChange={(e) => {
+                toggleOptions(schedule, day);
+                setSchedule([...schedule]);
+              }}
             />
           ))}
         </FormGroup>
+      </FormControl>
+    );
+  }
+
+  function PersonalInfoStep() {
+    return (
+      <FormControl>
+        <FormLabel id="personalInfoLabel">
+          <Typography variant="h3">Last but not least!</Typography>
+        </FormLabel>
+
+        <Grid sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: ".5rem", marginLeft: "90px" }}>
+
+          <Grid>
+            {/* Birthday Input with DatePicker */}
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                sx={{ marginTop: "30px" }}
+                label="Birthday"
+                value={birthday ? dayjs(birthday) : null} // Pass a dayjs object or null
+                fullWidth
+                onChange={(newValue) => {
+                  setBirthday(dayjs(newValue).format("YYYY-MM-DD")); // Format the date only when saving to state
+                }}
+                // autoFocus (enable if preferred)
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+          </Grid>
+          <Grid></Grid>
+
+        </Grid>
+
+        {/* Weight input */}
+        <Grid sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: ".5rem", marginTop: "10px", marginLeft: "90px" }}>
+          
+          <Grid>
+            <TextField
+              type="number"
+              value={weight}
+              onChange={(e) => setWeight(e.target.value)}
+              label="Weight"
+              variant="outlined"
+              fullWidth
+            />
+          </Grid>
+
+          {/* Weight Unit Selector */}
+          <Grid>
+            <FormControl variant="outlined" fullWidth>
+              <InputLabel id="weight-unit-label">Unit</InputLabel>
+              <Select
+                labelId="weight-unit-label"
+                value={weightUnit}
+                onChange={(e) => setWeightUnit(e.target.value)}
+                label="Unit"
+              >
+                <MenuItem value="lbs">Lbs</MenuItem>
+                <MenuItem value="kg">Kg</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+        </Grid>
       </FormControl>
     );
   }
@@ -486,7 +524,7 @@ const CreateProgram = () => {
       past_exercise_frequency: pastExerciseFrequency,
       intensity_id: intensity,
       schedule: schedule,
-      birthday: null,
+      birthday: birthday,
       weight: weight,
       weight_unit: weightUnit,
     };
@@ -539,7 +577,7 @@ const CreateProgram = () => {
               className="createProgramForm"
               onSubmit={(e) => {
                 e.preventDefault();
-                submitForm(e);
+                submitForm();
               }}
             >
               <Box component={"div"} display={step == 1 ? "block" : "none"}>
@@ -556,6 +594,9 @@ const CreateProgram = () => {
               </Box>
               <Box component={"div"} display={step == 5 ? "block" : "none"}>
                 <ScheduleStep />
+              </Box>
+              <Box component={"div"} display={step == 6 ? "block" : "none"}>
+                <PersonalInfoStep />
               </Box>
               <Grid
                 container
@@ -574,7 +615,7 @@ const CreateProgram = () => {
                 >
                   Back
                 </Button>
-                {step == 5 ? (
+                {step == 6 ? (
                   <Button variant="contained" onClick={() => submitForm()}>
                     Submit
                   </Button>
