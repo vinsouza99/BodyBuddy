@@ -1,13 +1,16 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, memo } from "react";
-import { Typography, Box, Tabs, Tab, Grid2 } from "@mui/material";
+import { Box, Tabs, Tab, Grid2, Backdrop, CircularProgress,Typography } from "@mui/material";
 // Common Components
+import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
 import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
 import { GadgetSchedule } from "../components/GadgetSchedule.jsx";
-import TrainingCard from "../components/TrainingCard";
-import { getAllPresetRoutines } from "../controllers/RoutineController";
+import { GadgetPremadeRoutineList } from "../components/GadgetPremadeRoutineList.jsx";
+import { getAllPresetRoutines, getRoutinesFromProgram } from "../controllers/RoutineController";
+import { getAllUserPrograms } from "../controllers/ProgramController";
+import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
 
 // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
 // import { useLocation } from "react-router-dom";
@@ -24,8 +27,14 @@ const tabStyles = {
 };
 
 export const TrainingProgram = memo((props) => {
+  const { user } = useAuth();
+  const [presetRoutines, setPresetRoutines] = useState([]);
+  const [programs, setPrograms] = useState([]);
+  const [programRoutines, setProgramRoutines] = useState([]);
+  const [routineExercises, setRoutineExercises] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
-  const [routines, setRoutines] = useState([]);
+  const [loading, setLoading] = useState(true); 
+
 
   // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
   // const location = useLocation();
@@ -51,50 +60,75 @@ export const TrainingProgram = memo((props) => {
         //   await createProgram(user.id, generatedProgramObj);
         // }
 
-        const presetRoutines = await getAllPresetRoutines();
-        setRoutines(presetRoutines);
+        // Retrieve Preset Routines
+        const presetRoutines =  await getAllPresetRoutines();
+        setPresetRoutines(presetRoutines);
+        console.log(presetRoutines);
+
+        // Retrieve Program Routines
+        const programs = await getAllUserPrograms(user.id);
+        setPrograms(programs);
+        console.log(programs);
+
+        const routines = await getRoutinesFromProgram(programs[0].id);
+        setProgramRoutines(routines);
+        console.log(routines);
+
+        const exercises = await getExercisesFromRoutine(routines[0].id);
+        setRoutineExercises(exercises);
+        console.log(exercises);
+
       } catch (e) {
         console.log(e);
+      } finally {
+        setLoading(false);
       }
     };
     loadData();
-  }, [props.title]);
+  }, []);
 
   // Memoize the "My Program" tab content
-  const myProgramTabContent = useMemo(() => {
+  const myProgramTabContent = useMemo(() => {    
+    if (loading) {
+      return
+    }
     return (
       <Grid2 container spacing={2} >
         {/* LEFT COLUMN */}
         <Grid2 size={{xs:12, md:7}} >
-          <GadgetRoutineOfToday />
+          <GadgetRoutineOfToday programRoutines = {programRoutines} routineExercises = {routineExercises} />
         </Grid2>
         {/* RIGHT COLUMN */}
         <Grid2 size={{xs:12, md:5}} >
-          <GadgetSchedule />          
+          <GadgetSchedule programs = {programs} programRoutines = {programRoutines}/>          
         </Grid2>
       </Grid2>
     );
-  }, []); 
+  }, [programs, programRoutines, routineExercises, loading]); 
 
   // Memoize the "Premade Routines" tab content
   const premadeRoutinesTabContent = useMemo(() => {
+    if (loading) {
+      return
+    }
     return (
-      <Grid2 container spacing={2}>
-        {routines.length > 0
-          ? routines.map((routine) => (
-              <Grid2 key={routine.id} size={{ xs: 12, md: 6 }}>
-                <TrainingCard routine={routine} />
-              </Grid2>
-            ))
-          : (
-            <Typography>No routines available</Typography>
-          )}
-      </Grid2>
+      <GadgetPremadeRoutineList presetRoutines={presetRoutines} />
     );
-  }, [routines]);
+  }, [presetRoutines, loading]);
 
   return (
     <>
+      {/* Backdrop for loading */}
+      <Backdrop
+        open={loading}  // Control when to show the overlay
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ mt: 2 }}>Loading...</Typography>
+        </Box>
+      </Backdrop>
+
       {/* Tab Navigation */}
       <Tabs
         value={activeTab}

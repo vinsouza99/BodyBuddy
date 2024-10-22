@@ -10,6 +10,7 @@ export const UserProfile = () => {
       sx={{ 
         display: 'flex', 
         flexDirection: 'row',
+        width: '100%',
         gap: 2,
         alignItems: 'center',
         marginTop: 2.5, // Adjustment

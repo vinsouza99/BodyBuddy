@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Grid2, Box, Typography, Backdrop, CircularProgress } from '@mui/material';
 // Gadgets Components
-import { UserProfile } from "../components/UserProfile.jsx";
+import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from '../components/GadgetStreaks.jsx';
 import { GadgetFavourite } from '../components/GadgetFavourite';
 import { GadgetAchievement } from '../components/GadgetAchievement';
@@ -142,7 +142,7 @@ export const Dashboard = (props) => {
             }
           }>
             {/* ADD GADGETS HERE */}
-            <UserProfile />
+            <GadgetUserProfile />
             <GadgetStreaks />
             <GadgetFavourite />
           </Box>
