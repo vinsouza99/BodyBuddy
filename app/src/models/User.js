@@ -5,8 +5,11 @@ export default class User {
    * @param {string} name
    * @param {string} birthday
    * @param {string} gender
+   * @param {number} weight,
+   * @param {string} weight_unit,
    * @param {UserSettings} settings
    * @param {UserProgress} progress
+   * @param {Array} schedule
    */
   constructor(
     id,
@@ -17,7 +20,8 @@ export default class User {
     weight,
     weight_unit,
     settings,
-    progress
+    progress,
+    schedule
   ) {
     this.id = id;
     this.name = name;
@@ -28,5 +32,6 @@ export default class User {
     this.weight_unit = weight_unit;
     this.settings = settings;
     this.progress = progress;
+    this.schedule = schedule;
   }
 }

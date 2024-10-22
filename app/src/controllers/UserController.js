@@ -2,18 +2,25 @@ import axiosClient from "../utils/axiosClient";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
-import { getGoal, getIntensity } from "./LocalTablesController";
+import {
+  getAllAchievements,
+  getGoal,
+  getIntensity,
+} from "./LocalTablesController";
+import Achievement from "../models/Achievement";
 
 const USER_ROUTE = "users";
 const USER_SETTINGS_ROUTE = "settings";
 const USER_PROGRESS_ROUTE = "progress";
+const USER_SCHEDULE_ROUTE = "schedule";
+const USER_ACHIEVEMENT_ROUTE = "achievement";
 
-const getUser = async (id, authUser) => {
+const getUser = async (authUser) => {
   try {
-    const response = await axiosClient.get(`${USER_ROUTE}/${id}`);
+    const response = await axiosClient.get(`${USER_ROUTE}/${authUser.id}`);
     const data = await response.data.data;
     const user = new User(
-      data.id,
+      authUser.id,
       authUser?.user_metadata.full_name,
       authUser?.user_metadata.picture,
       data.birthday,
@@ -21,11 +28,17 @@ const getUser = async (id, authUser) => {
       data.weight,
       data.weight_unit
     );
-    const settings = await getUserSettings(id);
+    const settings = await getUserSettings(user.id);
     user.settings = settings;
 
-    const progress = await getUserProgress(id);
+    const progress = await getUserProgress(user.id);
     user.progress = progress;
+
+    const schedule = await getUserSchedule(user.id);
+    user.schedule = schedule;
+
+    const achievements = await getUserAchievements(user.id);
+    user.achievements = achievements;
 
     return user;
   } catch (e) {
@@ -36,13 +49,12 @@ const getUser = async (id, authUser) => {
 const getUserSettings = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${id}/${USER_SETTINGS_ROUTE}`
+      `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${id}`
     );
     const data = await response.data.data;
-    const settings = new UserSettings(data.intensity_id, data.goal_id);
-    settings.goal_name = await getGoal(settings.goal_id);
-    settings.intensity_name = await getIntensity(settings.intensity_id);
-    return settings;
+    const goal = await getGoal(data.goal_id);
+    const intensity = await getIntensity(data.intensity_id);
+    return new UserSettings(goal, intensity);
   } catch (e) {
     console.log(e);
   }
@@ -50,7 +62,7 @@ const getUserSettings = async (id) => {
 const getUserProgress = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${id}/${USER_PROGRESS_ROUTE}`
+      `${USER_ROUTE}/${USER_PROGRESS_ROUTE}/${id}`
     );
     const data = await response.data.data;
     const progress = new UserProgress(
@@ -80,6 +92,8 @@ const createUser = async (userObj) => {
     user.settings = response;
     response = await getUserProgress(user.id);
     user.progress = response;
+    response = await createUserSchedule(user.id, userObj.schedule);
+    user.schedule = response;
     return user;
   } catch (e) {
     console.log(e);
@@ -97,7 +111,8 @@ const updateUser = async (user_id, updatedUserObj) => {
       updatedUserObj.weight,
       updatedUserObj.weight_unit,
       updatedUserObj.settings,
-      updatedUserObj.progress
+      updatedUserObj.progress,
+      updatedUserObj.schedule
     );
     const response = await axiosClient.put(
       `${USER_ROUTE}/${user_id}`,
@@ -109,6 +124,10 @@ const updateUser = async (user_id, updatedUserObj) => {
     if (updatedUser.progress) {
       await updateUserProgress(user_id, updatedUser.progress);
     }
+    if (updatedUser.schedule) {
+      //await updateUserSchedule(user_id, updatedUser.schedule);
+      await createUserSchedule(user_id, updatedUser.schedule);
+    }
     return response;
   } catch (e) {
     console.log(e);
@@ -117,7 +136,7 @@ const updateUser = async (user_id, updatedUserObj) => {
 const updateUserSettings = async (user_id, updatedSettingsObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${user_id}/${USER_SETTINGS_ROUTE}`,
+      `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${user_id}`,
       {
         user_id: user_id,
         goal_id: updatedSettingsObj.goal_id,
@@ -132,7 +151,7 @@ const updateUserSettings = async (user_id, updatedSettingsObj) => {
 const updateUserProgress = async (user_id, updatedProgressObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${user_id}/${USER_PROGRESS_ROUTE}`,
+      `${USER_ROUTE}/${USER_PROGRESS_ROUTE}/${user_id}`,
       updatedProgressObj
     );
     return response;
@@ -141,4 +160,114 @@ const updateUserProgress = async (user_id, updatedProgressObj) => {
   }
 };
 
-export { getUser, createUser, updateUser, getUserProgress, getUserSettings };
+const getUserHistory = async (user_id) => {
+  try {
+    const programsResponse = await getUserCompletedPrograms(user_id);
+    const routinesReponse = await getUserCompletedRoutines(user_id);
+    const achievementsResponse = await getUserAchivements(user_id);
+    const history = [
+      ...programsResponse,
+      ...routinesReponse,
+      ...achievementsResponse,
+    ];
+    history.sort((a, b) => a.date < b.date);
+    return history;
+  } catch (e) {
+    console.log(e);
+  }
+};
+const getUserSchedule = async (user_id) => {
+  try {
+    const response = await axiosClient.get(
+      `${USER_ROUTE}/${USER_SCHEDULE_ROUTE}/${user_id}`
+    );
+    return response.data.data.map((info) => info.day);
+  } catch (e) {
+    console.log(e);
+  }
+};
+const createUserSchedule = async (user_id, scheduleArray) => {
+  try {
+    const promises = [];
+    scheduleArray.forEach(async (day) => {
+      promises.push(
+        axiosClient.post(`${USER_ROUTE}/${USER_SCHEDULE_ROUTE}/${user_id}`, {
+          day: day,
+        })
+      );
+    });
+    Promise.all(promises).then((response) => {
+      return response;
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const updateUserSchedule = async (
+  user_id,
+  currentScheduleArray,
+  newScheduleArray
+) => {
+  try {
+    const promises = [];
+    newScheduleArray.forEach(async (day) => {
+      //TODO
+    });
+    Promise.all(promises).then((response) => {
+      console.log(response);
+      return response;
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+const getUserAchievements = async (user_id) => {
+  try {
+    const userAchievements = [];
+    const userAchievementsResponse = await axiosClient.get(
+      `${USER_ROUTE}/${USER_ACHIEVEMENT_ROUTE}/${user_id}`
+    );
+    if (userAchievementsResponse.status >= 400) return userAchievements;
+
+    const achievements = (await getAllAchievements()).data;
+    userAchievementsResponse.data.data.forEach((achievement) => {
+      let localAchievement = achievements.find(
+        (element) => element.id == achievement.id
+      );
+      userAchievements.push(
+        new Achievement(
+          localAchievement.id,
+          localAchievement.name,
+          achievement.earned_at
+        )
+      );
+    });
+    return userAchievements;
+  } catch (e) {
+    console.log(e);
+  }
+};
+const addUserAchievement = async (user_id, achievement_id, earned_at) => {
+  try {
+    let response = await axiosClient.post(
+      `${USER_ROUTE}/${USER_ACHIEVEMENT_ROUTE}`,
+      { user_id: user_id, achievement_id: achievement_id, earned_at: earned_at }
+    );
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
+export {
+  getUser,
+  getUserSettings,
+  createUser,
+  updateUser,
+  getUserHistory,
+  createUserSchedule,
+  updateUserSchedule,
+  getUserAchievements,
+  addUserAchievement,
+};
+

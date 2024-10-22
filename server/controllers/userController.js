@@ -1,7 +1,9 @@
 import User from "../models/User.js";
-import UserGoal from "../models/UserGoal.js";
+import UserSchedule from "../models/UserSchedule.js";
 import UserProgress from "../models/UserProgress.js";
 import UserSettings from "../models/UserSettings.js";
+import UserAchievement from "../models/UserAchievement.js";
+import { getAchievement } from "./localTablesController.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -120,86 +122,6 @@ export const deleteUser = async (req, res) => {
     });
   }
 };
-
-export const getUserGoal = async (req, res) => {
-  try {
-    const { user_id, goal_id } = req.body;
-    const userGoal = await UserGoal.findOne({
-      where: {
-        user_id: user_id,
-        goal_id: goal_id,
-      },
-    });
-    if (!userGoal) {
-      return res.status(404).json({
-        status: "404",
-        message: "User Goal not found",
-      });
-    }
-    res.status(200).json({
-      status: "200",
-      message: "Success",
-      data: userGoal,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "500",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const createUserGoal = async (req, res) => {
-  try {
-    const user_id = req.params.user_id;
-    const goal_id = req.params.goal_id;
-
-    const newUserGoal = await UserGoal.create({
-      user_id,
-      goal_id,
-    });
-    res.status(201).json({
-      status: "201",
-      message: "User Goal created successfully",
-      data: newUserGoal,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "500",
-      message: "Internal Server Error",
-    });
-  }
-};
-
-export const updateUserGoal = async (req, res) => {
-  try {
-    const user_id = req.params.user_id;
-    const goal_id = req.params.goal_id;
-    const { new_goal_id } = req.body;
-
-    await UserGoal.update(
-      { goal_id: new_goal_id },
-      {
-        where: {
-          user_id: user_id,
-          goal_id: goal_id,
-        },
-      }
-    );
-    res.status(200).json({
-      status: "200",
-      message: "User Goal updated successfully",
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "500",
-      message: "Internal Server Error",
-    });
-  }
-};
 export const getUserProgress = async (req, res) => {
   try {
     const userProgress = await UserProgress.findByPk(req.params.id);
@@ -299,29 +221,6 @@ export const getUserSettings = async (req, res) => {
   }
 };
 
-export const createUserSettings = async (req, res) => {
-  try {
-    const user_id = req.params.id;
-    const { intensity_id, goal_id } = req.body;
-    const newUserSettings = await UserSettings.create({
-      user_id,
-      intensity_id,
-      goal_id,
-    });
-    res.status(201).json({
-      status: "201",
-      message: "User Settings created successfully",
-      data: newUserSettings,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      status: "500",
-      message: "Internal Server Error",
-    });
-  }
-};
-
 export const updateUserSettings = async (req, res) => {
   try {
     const user_id = req.params.id;
@@ -339,6 +238,130 @@ export const updateUserSettings = async (req, res) => {
       status: "200",
       message: "User Settings updated successfully",
       data: userSettings,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getUserSchedule = async (req, res) => {
+  try {
+    const user_id = req.params.id;
+    const userSchedule = await UserSchedule.findAll({
+      where: { user_id: user_id },
+    });
+    if (!userSchedule) {
+      return res.status(404).json({
+        status: "404",
+        message: "User Schedule not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: userSchedule,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const createUserSchedule = async (req, res) => {
+  try {
+    const user_id = req.params.id;
+    const { day } = req.body;
+    const newAvailableDay = await UserSchedule.create({
+      user_id: user_id,
+      day: day,
+      active: true,
+    });
+    res.status(201).json({
+      status: "201",
+      message: "User schedule created successfully",
+      data: newAvailableDay,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const updateUserSchedule = async (req, res) => {
+  try {
+    const user_id = req.params.id;
+    const { newActiveValue, day } = req.body;
+    const updatedData = { user_id: user_id, day: day, active: newActiveValue };
+    const userSchedule = await UserSchedule.findOne({
+      where: { user_id: user_id, day: day },
+    });
+    if (!userSchedule) {
+      return res.status(404).json({
+        status: "404",
+        message: "User Schedule not found",
+      });
+    }
+    await userSchedule.update(updatedData);
+    res.status(200).json({
+      status: "200",
+      message: "User Schedule updated successfully",
+      data: userSchedule,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getUserAchievements = async (req, res) => {
+  try {
+    const user_id = req.params.id;
+    const userAchievements = await UserAchievement.findAll({
+      where: { user_id: user_id },
+    });
+    if (!userAchievements) {
+      return res.status(404).json({
+        status: "404",
+        message: "User achievements not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: userAchievements,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const createUserAchievement = async (req, res) => {
+  try {
+    const { user_id, achievement_id, earned_at } = req.body;
+    const userAchievement = await UserAchievement.create({
+      user_id: user_id,
+      achievement_id: achievement_id,
+      earned_at: earned_at,
+    });
+    res.status(200).json({
+      status: "201",
+      message: "Success",
+      data: userAchievement,
     });
   } catch (error) {
     console.error(error);
