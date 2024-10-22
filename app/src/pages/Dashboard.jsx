@@ -11,14 +11,15 @@ import { GadgetAchievement } from '../components/GadgetAchievement';
 import { GadgetHistory } from '../components/GadgetHistory';
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
-import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
+import { getUserProgress } from '../controllers/UserController';
+import axiosClient from '../utils/axiosClient';
 // Prompts
 import { createProgram } from '../utils/prompt/createProgram';
 
-
 export const Dashboard = (props) => {
   const { user } = useAuth();
+  const [userProgress, setUserProgress] = useState(null);
   const [generating, setGenerating] = useState(false);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
@@ -27,6 +28,21 @@ export const Dashboard = (props) => {
   useEffect(() => {
     setPageTitle(props.title);
   }, [props.title]);
+
+  // Load user progress data
+  useEffect(() => {
+    console.log("GadgetStreaks mounted");
+    const loadUserdata = async () => {
+      const userProgress = await getUserProgress(user.id);
+      console.log(userProgress);
+      setUserProgress(userProgress);
+    }
+    loadUserdata();
+
+    return () => {
+      console.log("GadgetStreaks unmounted");
+    };
+  }, []);
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -142,8 +158,8 @@ export const Dashboard = (props) => {
             }
           }>
             {/* ADD GADGETS HERE */}
-            <GadgetUserProfile />
-            <GadgetStreaks />
+            <GadgetUserProfile userProgress={userProgress} />
+            <GadgetStreaks userProgress={userProgress} />
             <GadgetFavourite />
           </Box>
         </Grid2>

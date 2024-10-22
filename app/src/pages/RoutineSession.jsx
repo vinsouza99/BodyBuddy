@@ -2,15 +2,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Snackbar,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-} from "@mui/material";
+import { Box, Typography, Snackbar, List, ListItem, ListItemText, IconButton, CircularProgress } from "@mui/material";
 // Custom Components for Routine Session
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { 
@@ -772,7 +764,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     <>
       {routine.length === 0 ? (
         <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
-          <Typography variant="h4">Loading...</Typography>
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ mt: 2 }}>Loading...</Typography>
         </Box>
       ) : (  
         <Box
