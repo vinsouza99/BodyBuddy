@@ -30,7 +30,7 @@ export const UserProfile = ({ level = 0, levelProgress = 0 }) => {
             {user.user_metadata.full_name.charAt(0)}
           </Avatar>
       }
-      <Box sx={{ flex: 1}}>
+      <Box sx={{ flex: 1 }}>
         <Typography
           variant="h2"
           textAlign="left"
@@ -38,11 +38,17 @@ export const UserProfile = ({ level = 0, levelProgress = 0 }) => {
         >
           Hi, {user.user_metadata.full_name}!
         </Typography>
-        <Typography textAlign="left" >Level {level}</Typography>
-        <Box sx={{ width: '100%' }}>
+        <Box
+          sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'space-between' }}
+        >
+          <Typography textAlign="left" >Level {level}</Typography>
+          <Typography textAlign="left" >Earn {100-levelProgress} points to level up</Typography>
+        </Box>
+        <Box sx={{ width: '100%', position: 'relative'}}>
           <LinearProgress
             variant="determinate"
             value={levelProgress}
+            valueBuffer={100}
             sx={{
               '--LinearProgress-radius': '8px',
               '--LinearProgress-progressThickness': '30px',
@@ -56,6 +62,20 @@ export const UserProfile = ({ level = 0, levelProgress = 0 }) => {
             }}
           >
           </LinearProgress>
+          <Typography
+            color="text.primary"
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '100%',
+              textAlign: 'center',
+              lineHeight: '20px',
+            }}
+          >
+            {`${levelProgress} / 100`}
+          </Typography>
         </Box>
       </Box>
     </Box>
