@@ -261,6 +261,7 @@ const addUserAchievement = async (user_id, achievement_id, earned_at) => {
 };
 export {
   getUser,
+  getUserSettings,
   createUser,
   updateUser,
   getUserHistory,
@@ -269,3 +270,4 @@ export {
   getUserAchievements,
   addUserAchievement,
 };
+
