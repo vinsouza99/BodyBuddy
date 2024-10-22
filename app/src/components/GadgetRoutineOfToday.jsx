@@ -28,7 +28,12 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
         Today&apos;s Routine
       </Typography>
         <>
-          <Typography sx={{ width: '100%', textAlign: 'left' }}>{programRoutines[0].name}</Typography>
+          <Typography sx={{ width: '100%', textAlign: 'left' }}>
+            {programRoutines && programRoutines.length > 0 
+              ? programRoutines[0].name 
+              : "No routine available"
+            }
+          </Typography>
           {routineExercises.length > 0 ? (
             <RoutineExercisesList routineExercises = { routineExercises }/>
           ) : (
