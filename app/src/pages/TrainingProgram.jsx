@@ -2,12 +2,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, memo } from "react";
 import { Box, Tabs, Tab, Grid2, Backdrop, CircularProgress,Typography } from "@mui/material";
-// Common Components
-import { useAuth } from "../utils/AuthProvider.jsx";
-import { setPageTitle } from "../utils/utils";
+// Gadgets Components
 import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
 import { GadgetSchedule } from "../components/GadgetSchedule.jsx";
 import { GadgetPremadeRoutineList } from "../components/GadgetPremadeRoutineList.jsx";
+// Common Components
+import { useAuth } from "../utils/AuthProvider.jsx";
+import { setPageTitle } from "../utils/utils";
 import { getAllPresetRoutines, getRoutinesFromProgram } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
 import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";

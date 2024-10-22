@@ -141,4 +141,4 @@ const updateUserProgress = async (user_id, updatedProgressObj) => {
   }
 };
 
-export { getUser, createUser, updateUser };
+export { getUser, createUser, updateUser, getUserProgress, getUserSettings };

@@ -1,8 +1,8 @@
+import PropTypes from "prop-types";
 import { Box, Typography, Avatar, LinearProgress } from '@mui/material';
 import { useAuth } from "../utils/AuthProvider.jsx";
-import theme from '../theme';
 
-export const UserProfile = () => {
+export const UserProfile = ({ level = 0, levelProgress = 0 }) => {
   const { user } = useAuth();
 
   return (
@@ -38,11 +38,11 @@ export const UserProfile = () => {
         >
           Hi, {user.user_metadata.full_name}!
         </Typography>
-        <Typography textAlign="left" >Level 0</Typography>
+        <Typography textAlign="left" >Level {level}</Typography>
         <Box sx={{ width: '100%' }}>
           <LinearProgress
             variant="determinate"
-            value={10}
+            value={levelProgress}
             sx={{
               '--LinearProgress-radius': '8px',
               '--LinearProgress-progressThickness': '30px',
@@ -50,7 +50,7 @@ export const UserProfile = () => {
               boxShadow: 'sm',
               borderRadius: '15px',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: theme.palette.primary.main,
+                backgroundColor: 'primary.main',
               },
               backgroundColor: 'grey.300',
             }}
@@ -60,4 +60,9 @@ export const UserProfile = () => {
       </Box>
     </Box>
   );
+};
+
+UserProfile.propTypes = {
+  level: PropTypes.number,
+  levelProgress: PropTypes.number,
 };
