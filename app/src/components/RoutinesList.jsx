@@ -3,7 +3,7 @@ import { format } from 'date-fns';
 import { Box, Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export const RoutineCard = ({ routine }) => {
+export const RoutinesList = ({ routine }) => {
   const today = new Date();
   return (
     <>
@@ -38,7 +38,7 @@ export const RoutineCard = ({ routine }) => {
   );
 };
 
-RoutineCard.propTypes = {
+RoutinesList.propTypes = {
   routine: PropTypes.object.isRequired,
 };
 

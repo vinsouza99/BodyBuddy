@@ -1,57 +1,12 @@
 import PropTypes from "prop-types";
-import { useState, useMemo, memo } from "react";
-import { Box, Button, Typography } from "@mui/material";
+import { useState, memo } from "react";
+import { Button, Typography } from "@mui/material";
 import { GadgetBase } from './GadgetBase';
+import { RoutineExercisesList } from './RoutineExercisesList';
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExercises = null }) => {
   const [open, setOpen] = useState(false);
-
-  // Memoized Exercise List
-  const memoizedExerciseList = useMemo(() => {
-    return (
-      <Box sx={{width: '100%', display: 'flex', flexDirection: 'column', gap: 2}}>
-        {routineExercises.map((exercise, index) => (
-          <Box
-            key={index}
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              borderRadius: '50px',
-              width: '100%',
-              height: '80px',
-              boxShadow: 3,
-            }}
-          >
-            <Box
-              component="img"
-              src={exercise.demo_url}
-              alt={exercise.name}
-              sx={{
-                border: '2px solid',
-                borderColor: 'secondary.main',
-                borderRadius: '50px',
-                width: '80px',
-                objectFit: 'cover',
-                marginRight: '1rem',
-              }}
-            />
-            <Typography sx={{ width: '100%', textAlign: 'left' }}>
-              {exercise.name}
-            </Typography>
-            <Typography sx={{ width: '100%', textAlign: 'right' }}>
-              {exercise.reps} Reps
-            </Typography>
-            <Typography sx={{ width: '100%', textAlign: 'center' }}>
-              {exercise.sets} Sets
-            </Typography>
-          </Box>
-        ))}
-      </Box>
-    );
-  }, [routineExercises]);
-
 
   // Open StartRoutineSessionModal
   const handleOpen = () => {
@@ -72,11 +27,10 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
       >
         Today&apos;s Routine
       </Typography>
-      {/* {!loading && ( */}
         <>
           <Typography sx={{ width: '100%', textAlign: 'left' }}>{programRoutines[0].name}</Typography>
           {routineExercises.length > 0 ? (
-            memoizedExerciseList
+            <RoutineExercisesList routineExercises = { routineExercises }/>
           ) : (
             <Typography>No routines found.</Typography>
           )}
@@ -106,7 +60,6 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
             onClose={handleClose}
           />
         </>
-      {/* )} */}
     </GadgetBase>
   );
 });

@@ -3,7 +3,7 @@ import { memo } from "react";
 import { GadgetBase } from './GadgetBase';
 import { WeekPicker } from "./WeekPicker";
 import { Box, Typography } from "@mui/material";
-import { RoutineCard } from "../components/RoutineCard";
+import { RoutinesList } from "../components/RoutinesList";
 
 export const GadgetSchedule = memo(({ programs = null, programRoutines = null }) => {
   return (
@@ -37,7 +37,7 @@ export const GadgetSchedule = memo(({ programs = null, programRoutines = null })
 
         {programRoutines
           ? programRoutines.map((routine) => (
-              <RoutineCard key={routine.id} routine={routine} />
+              <RoutinesList key={routine.id} routine={routine} />
             ))
           : <Typography>No routines available</Typography>
         }
