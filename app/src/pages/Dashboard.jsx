@@ -2,8 +2,9 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Box, Typography, LinearProgress, Backdrop, CircularProgress } from '@mui/material';
+import { Grid2, Box, Typography, Backdrop, CircularProgress } from '@mui/material';
 // Gadgets Components
+import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from '../components/GadgetStreaks.jsx';
 import { GadgetFavourite } from '../components/GadgetFavourite';
 import { GadgetAchievement } from '../components/GadgetAchievement';
@@ -12,21 +13,20 @@ import { GadgetHistory } from '../components/GadgetHistory';
 import { useAuth } from "../utils/AuthProvider.jsx";
 import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
-import theme from '../theme';
-// Pronpts
+// Prompts
 import { createProgram } from '../utils/prompt/createProgram';
 
 
 export const Dashboard = (props) => {
-  const { user } = useAuth(); // For session management
+  const { user } = useAuth();
+  const [generating, setGenerating] = useState(false);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
-  const [generating, setGenerating] = useState(false);
 
   // Initialization
   useEffect(() => {
     setPageTitle(props.title);
-  }, []);
+  }, [props.title]);
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -131,9 +131,9 @@ export const Dashboard = (props) => {
         </Box>
       </Backdrop>
 
-      <Grid2 container spacing={2} >
+      <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
-        <Grid2 size={{xs:12, md:6}} >
+        <Grid2 size={{xs:12, md:6}}>
           <Box
             sx={{ 
               display: 'flex', 
@@ -142,52 +142,11 @@ export const Dashboard = (props) => {
             }
           }>
             {/* ADD GADGETS HERE */}
-            <Box
-              sx={{ 
-                display: 'flex', 
-                flexDirection: 'row',
-                gap: 2,
-                alignItems: 'center',
-                marginTop: 2.2, // Adjustment
-                marginBottom: 2.5, // Adjustment
-              }}
-            >
-              <img src={user.user_metadata.avatar_url} alt="avatar" style={{width: '100px', height: '100px', borderRadius: '50%'}} />
-              <Box sx={{ flex: 1}}>
-                <Typography
-                  variant="h2"
-                  textAlign="left"
-                  sx={{ fontVariationSettings: "'wght' 800" }}
-                >
-                  Hi, {user.user_metadata.full_name}!
-                </Typography>
-                <Typography textAlign="left" >Level 0</Typography>
-                <Box sx={{ width: '100%' }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={10}
-                    sx={{
-                      '--LinearProgress-radius': '8px',
-                      '--LinearProgress-progressThickness': '30px',
-                      height: '30px',
-                      boxShadow: 'sm',
-                      borderRadius: '15px',
-                      '& .MuiLinearProgress-bar': {
-                        backgroundColor: theme.palette.primary.main,
-                      },
-                      backgroundColor: 'grey.300',
-                    }}
-                  >
-                  </LinearProgress>
-                </Box>
-              </Box>
-            </Box>
-            
+            <GadgetUserProfile />
             <GadgetStreaks />
             <GadgetFavourite />
           </Box>
         </Grid2>
-
         {/* RIGHT COLUMN */}
         <Grid2 size={{xs:12, md:6}} >
           <Box

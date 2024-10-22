@@ -1,13 +1,14 @@
 import PropTypes from "prop-types";
 import { useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
-import { addDays, subDays, format } from 'date-fns';
+import { addDays, subDays, format, isSameDay } from 'date-fns';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onClickPreviousWeek = false, displayMode = "full" }) => {
+export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClickPreviousWeek = null, displayMode = "full" }) => {
   const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
   const [endDate, setEndDate] = useState(getStartOfWeek(addDays(new Date(), 7)));
+  const today = new Date();
 
   function getStartOfWeek(date) {
     const dayOfWeek = date.getDay();
@@ -32,7 +33,7 @@ export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onCli
   };
 
   const handleDayClick = (day) => {
-    if (onSelectDate) {
+    if (typeof onSelectDate === 'function') {
       onSelectDate(day);
     }
   };
@@ -90,6 +91,12 @@ export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onCli
               <Typography
                 sx={{
                   fontSize: '0.8rem',
+                  width: '30px',
+                  height: '30px',
+                  lineHeight: '30px',
+                  border: '1px solid',
+                  borderRadius: '50%',
+                  borderColor: isSameDay(day, today) ? 'secondary.main' : 'transparent',
                 }}
               >
                 {format(day, 'dd')}

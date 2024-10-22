@@ -2,19 +2,19 @@
 import PropTypes from "prop-types";
 import { Paper, Typography } from '@mui/material';
 
-export const GadgetBase = ({ title = null, children }) => {
+export const GadgetBase = ({ title = null, frame = true, children }) => {
   return (
     <Paper 
-      elevation={3} 
+      elevation={ frame ? 3 : 0}
       sx={{
         display: 'flex', 
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 4,
-        padding: 2, 
+        padding: frame ? 2 : 0, 
         borderRadius: '15px',
-        backgroundColor: 'white'
+        backgroundColor: frame ? 'white' : 'transparent',
       }}
     >
       {title && (
@@ -29,5 +29,6 @@ export const GadgetBase = ({ title = null, children }) => {
 
 GadgetBase.propTypes = {
   title: PropTypes.string,
+  frame: PropTypes.bool,
   children: PropTypes.node.isRequired,
 }
