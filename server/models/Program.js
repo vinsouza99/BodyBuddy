@@ -5,7 +5,7 @@ const Program = sequelize.define(
   "Program",
   {
     id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
       allowNull: true,
       primaryKey: true,
       autoIncrement: true,
@@ -24,7 +24,11 @@ const Program = sequelize.define(
       allowNull: true,
     },
     user_id: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
+    goal_id: {
+      type: DataTypes.UUID,
       allowNull: false,
     },
     name: {

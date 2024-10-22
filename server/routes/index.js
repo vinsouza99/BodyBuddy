@@ -3,28 +3,19 @@ import userRoutes from "./userRoutes.js";
 import localTableRoutes from "./localTableRoutes.js";
 import programRoutes from "./programRoutes.js";
 import exerciseRoutes from "./exerciseRoutes.js";
-import routineExerciseRoutes from "./routineExerciseRoutes.js";
 import routineRoutes from "./routineRoutes.js";
 import historyRoutes from "./historyRoutes.js";
 import authenticateToken from "../authenticateToken.js";
-import relatedAchievementRoutes from "./relatedAchievementRoutes.js";
-import muscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
-import relatedMuscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import openaiapiRoutes from "./openaiapiRoutes.js";
 
 const router = express.Router();
 
 router.use("/users", authenticateToken, userRoutes);
 router.use("/local", localTableRoutes);
-
 router.use("/programs", authenticateToken, programRoutes);
 router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);
-router.use("/routineExercises", authenticateToken, routineExerciseRoutes);
 router.use("/log", authenticateToken, historyRoutes);
-router.use("/related_achievements", relatedAchievementRoutes);
-router.use("/muscleGroups", muscleGroupRoutes);
-router.use("/relatedMuscleGroups", relatedMuscleGroupRoutes);
 router.use("/openai", authenticateToken, openaiapiRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
