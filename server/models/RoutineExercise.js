@@ -1,6 +1,5 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
-import Exercise from "./Exercise.js";
 
 const RoutineExercise = sequelize.define(
   "RoutineExercise",
@@ -48,9 +47,5 @@ const RoutineExercise = sequelize.define(
     timestamps: false,
   }
 );
-
-RoutineExercise.belongsTo(Exercise, {
-  foreignKey: "exercise_id",
-});
 
 export default RoutineExercise;

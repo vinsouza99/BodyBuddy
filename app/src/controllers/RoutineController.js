@@ -1,32 +1,29 @@
 import axiosClient from "../utils/axiosClient";
 import Routine from "../models/Routine";
-import {
-  getExercisesFromRoutine,
-  createRoutineExercise,
-} from "./RoutineExerciseController";
+import Exercise from "../models/Exercise";
+import getExercise from "./ExerciseController";
 
-// Note: API BASE URL is set in axisoClient.js with other required common settings.
-// const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
-// const TABLE = "routines";
-// const API_ROUTE = URL + TABLE;
-const API_ROUTE = "routines";
+const ROUTINE_ROUTE = "routines";
+const PROGRAM_ROUTINE_ROUTE = "program";
+const ROUTINE_EXERCISE_ROUTE = "exercises";
 
 const getRoutinesFromProgram = async (program_id) => {
   try {
     const response = await axiosClient.get(
-      `${API_ROUTE}/program/${program_id}`
+      `${ROUTINE_ROUTE}/${PROGRAM_ROUTINE_ROUTE}/${program_id}`
     );
     const data = await response.data;
-    const routines = await data.data.rows.map((routine) => {
-      console.log(routine);
+    const routines = await data.map((routine) => {
       return new Routine(
         routine.id,
-        routine.created_at,
-        routine.completed_at,
-        routine.duration,
         routine.program_id,
         routine.name,
-        routine.description
+        routine.description,
+        routine.duration,
+        routine.preset,
+        routine.estimated_calories,
+        routine.scheduled_date,
+        routine.completed
       );
     });
     if (routines && routines.length > 0) {
@@ -45,7 +42,7 @@ const getRoutinesFromProgram = async (program_id) => {
 
 const getAllPresetRoutines = async () => {
   try {
-    const response = await axiosClient.get(`${API_ROUTE}/presets`);
+    const response = await axiosClient.get(`${ROUTINE_ROUTE}/presets`);
     const data = await response.data;
     console.log(data);
     const routines = data.data.rows.map(
@@ -71,18 +68,33 @@ const getAllPresetRoutines = async () => {
   }
 };
 
+/**
+ * 
+ * @param {Obj} routineObj - Expected properties of this object:
+ *    id,
+      program_id,
+      name,
+      description,
+      duration,
+      preset,
+      estimated_calories,
+      scheduled_date,
+      completed,
+ * @returns 
+ */
 const createRoutine = async (routineObj) => {
   try {
     const routine = new Routine(
       routineObj.id,
-      routineObj.created_at,
-      routineObj.completed_at,
       routineObj.duration,
       routineObj.program_id,
       routineObj.name,
-      routineObj.description
+      routineObj.description,
+      routineObj.estimated_calories,
+      routineObj.scheduled_date,
+      routineObj.completed
     );
-    let response = await axiosClient.post(`${API_ROUTE}`, routine);
+    let response = await axiosClient.post(`${ROUTINE_ROUTE}`, routine);
     if (response.status() == 201) {
       routineObj.exercises.forEach(async (exercise) => {
         response = await createRoutineExercise(exercise);
@@ -97,4 +109,67 @@ const createRoutine = async (routineObj) => {
   }
 };
 
-export { getRoutinesFromProgram, getAllPresetRoutines, createRoutine };
+/**
+ * Returns the an array of Exercise objects that has the info from RoutineExercise and Exercise tables combined
+ * @param {UUID} routine_id
+ */
+const getExercisesFromRoutine = async (routine_id) => {
+  try {
+    const response = await axiosClient.get(
+      `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}/${routine_id}`
+    );
+    const data = await response.data;
+    const routineExercises = await data.map(
+      (exercise) =>
+        new Exercise(
+          exercise.exercise_id,
+          routine_id,
+          undefined, //name unknown yet
+          undefined, //description unknown yet
+          exercise.order,
+          exercise.sets,
+          exercise.reps,
+          exercise.duration,
+          exercise.restPeriod
+        )
+    );
+    const promises = [];
+    await routineExercises.forEach(async (exercise) => {
+      promises.push(getExercise(exercise.exercise_id));
+    });
+    //
+    // "forEach does not properly wait for asynchronous operations."
+    Promise.all(promises).then(async (response) => {
+      //TODO get the remainig info from the response (name, descirption, demo_url) and add it to the exercise objects in routineExercises based on their ids
+      return routineExercises;
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const createRoutineExercise = async (exerciseObj) => {
+  try {
+    const routineExercise = {
+      exercise_id: exerciseObj.exercise_id,
+      routine_id: exerciseObj.routine_id,
+      order: exerciseObj.order,
+      sets: exerciseObj.sets,
+      reps: exerciseObj.reps,
+      duration: exerciseObj.duration,
+      restPeriod: exerciseObj.restPeriod,
+    };
+    return await axiosClient.post(
+      `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}`,
+      routineExercise
+    );
+  } catch (e) {
+    console.log(e);
+  }
+};
+export {
+  getRoutinesFromProgram,
+  getAllPresetRoutines,
+  createRoutine,
+  getExercisesFromRoutine,
+};

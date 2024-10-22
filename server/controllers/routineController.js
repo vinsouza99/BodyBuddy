@@ -1,4 +1,6 @@
 import Routine from "../models/Routine.js";
+import ProgramRoutine from "../models/ProgramRoutine.js";
+import RoutineExercise from "../models/RoutineExercise.js";
 
 export const getRoutines = async (req, res) => {
   try {
@@ -19,18 +21,31 @@ export const getRoutines = async (req, res) => {
 
 export const getRoutinesByProgram = async (req, res) => {
   try {
-    console.log(req.params);
     const { program_id } = req.params;
-    console.log(program_id);
-    const routines = await Routine.findAndCountAll({
+    const program_routines = await ProgramRoutine.findAll({
       where: {
         program_id: program_id,
       },
     });
+    const programRoutines = [];
+    program_routines.data.forEach(async (program_routine) => {
+      const routine = await Routine.findByPk(program_routine.routine_id);
+      programRoutines.push({
+        id: routine.id,
+        program_id: program_routine.program_id,
+        name: routine.name,
+        description: routine.description,
+        duration: routine.duration,
+        preset: routine.preset,
+        estimated_calories: routine.estimated_calories,
+        scheduled_date: program_routine.scheduled_date,
+        completed: program_routine.completed,
+      });
+    });
     res.status(200).json({
       status: "200",
       message: "Success",
-      data: routines,
+      data: programRoutines,
     });
   } catch (error) {
     console.error(error);
@@ -43,7 +58,6 @@ export const getRoutinesByProgram = async (req, res) => {
 
 export const getPresetRoutines = async (req, res) => {
   try {
-    console.log("TEST")
     const routines = await Routine.findAndCountAll({
       where: {
         preset: true,
@@ -88,19 +102,45 @@ export const getRoutine = async (req, res) => {
 
 export const createRoutine = async (req, res) => {
   try {
-    const { id, program_id, name, description, duration, preset } = req.body;
-    const newRoutine = await Routine.create({
+    const {
       id,
       program_id,
       name,
       description,
       duration,
       preset,
+      estimated_calories,
+      scheduled_date,
+      completed,
+    } = req.body;
+    const newRoutine = await Routine.create({
+      id,
+      name,
+      description,
+      duration,
+      preset,
+      estimated_calories,
+    });
+    const newProgramRoutine = await ProgramRoutine.create({
+      program_id: program_id,
+      routine_id: newRoutine.id,
+      scheduled_date: scheduled_date,
+      completed: completed,
     });
     res.status(201).json({
       status: "201",
       message: "Routine created successfully",
-      data: newRoutine,
+      data: {
+        id: newRoutine.id,
+        program_id: program_id,
+        name: name,
+        description: description,
+        duration: duration,
+        preset: preset,
+        estimated_calories,
+        scheduled_date: scheduled_date,
+        completed: completed,
+      },
     });
   } catch (error) {
     console.error(error);
@@ -110,7 +150,6 @@ export const createRoutine = async (req, res) => {
     });
   }
 };
-
 export const updateRoutine = async (req, res) => {
   try {
     const { id } = req.params;
@@ -155,6 +194,108 @@ export const deleteRoutine = async (req, res) => {
     res.status(200).json({
       status: "200",
       message: "Routine deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getRoutineExercises = async (req, res) => {
+  try {
+    const routine_id = req.params.routine_id;
+    const routineExercises = await RoutineExercise.findAll({
+      where: {
+        routine_id: routine_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routineExercises,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const createRoutineExercise = async (req, res) => {
+  try {
+    const { exercise_id, routine_id, reps, sets, order, duration, rest_time } =
+      req.body;
+    const newRoutineExercise = await RoutineExercise.create({
+      exercise_id,
+      routine_id,
+      reps,
+      sets,
+      order,
+      duration,
+      rest_time,
+    });
+    res.status(201).json({
+      status: "201",
+      message: "Routine Exercise created successfully",
+      data: newRoutineExercise,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const updateRoutineExercise = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedData = req.body;
+
+    const routineExercise = await RoutineExercise.findByPk(id);
+    if (!routineExercise) {
+      return res.status(404).json({
+        status: "404",
+        message: "Routine Exercise not found",
+      });
+    }
+
+    await routineExercise.update(updatedData);
+    res.status(200).json({
+      status: "200",
+      message: "Routine Exercise updated successfully",
+      data: routineExercise,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const deleteRoutineExercise = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const routineExercise = await RoutineExercise.findByPk(id);
+    if (!routineExercise) {
+      return res.status(404).json({
+        status: "404",
+        message: "Routine Exercise not found",
+      });
+    }
+
+    await routineExercise.destroy();
+    res.status(200).json({
+      status: "200",
+      message: "Routine Exercise deleted successfully",
     });
   } catch (error) {
     console.error(error);

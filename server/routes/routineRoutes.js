@@ -7,6 +7,9 @@ import {
   createRoutine,
   updateRoutine,
   deleteRoutine,
+  createRoutineExercise,
+  getRoutineExercises,
+  updateRoutineExercise,
 } from "../controllers/routineController.js";
 
 const router = express.Router();
@@ -123,7 +126,30 @@ router.get("/program/:program_id", getRoutinesByProgram);
  *         description: Routine not found
  */
 router.get("/:id", getRoutine);
-
+/**
+ * @swagger
+ * /Routines/{id}:
+ *   get:
+ *     summary: Get a specific Routine by ID
+ *     tags: [Routines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the Routine
+ *     responses:
+ *       200:
+ *         description: The Routine details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Routine'
+ *       404:
+ *         description: Routine not found
+ */
+router.get("/exercises/:routine_id", getRoutineExercises);
 /**
  * @swagger
  * /Routines:
@@ -147,6 +173,29 @@ router.get("/:id", getRoutine);
  *         description: Server error
  */
 router.post("/", createRoutine);
+/**
+ * @swagger
+ * /Routines/Exercise:
+ *   post:
+ *     summary: Create a new Routine
+ *     tags: [Routines]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Routine'
+ *     responses:
+ *       201:
+ *         description: The Routine was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Routine'
+ *       500:
+ *         description: Server error
+ */
+router.post("/exercises", createRoutineExercise);
 
 /**
  * @swagger
@@ -180,7 +229,29 @@ router.post("/", createRoutine);
  *         description: Server error
  */
 router.put("/:id", updateRoutine);
-
+/**
+ * @swagger
+ * /Routines/Exercise/{id}:
+ *   post:
+ *     summary: Create a new Routine Exercise
+ *     tags: [RoutineExercises]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RoutineExercise'
+ *     responses:
+ *       201:
+ *         description: The Routine Exercise was successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RoutineExercise'
+ *       500:
+ *         description: Server error
+ */
+router.put("/exercise/:id", updateRoutineExercise);
 /**
  * @swagger
  * /Routines/{id}:
