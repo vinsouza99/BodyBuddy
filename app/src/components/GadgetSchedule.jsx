@@ -32,14 +32,14 @@ export const GadgetSchedule = memo(({ programs = null, programRoutines = null })
                 {programs[0].description ? programs[0].description : "Description is undefined"}
               </Typography>
             </>
-          : <Typography>No programs available</Typography>
+          : <Typography>No available program</Typography>
         }
 
         {programRoutines
           ? programRoutines.map((routine) => (
               <RoutinesList key={routine.id} routine={routine} />
             ))
-          : <Typography>No routines available</Typography>
+          : <Typography>No available routines </Typography>
         }
 
       </Box>

@@ -27,14 +27,12 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
       >
         Today&apos;s Routine
       </Typography>
+      {programRoutines && programRoutines.length > 0 ? (
         <>
           <Typography sx={{ width: '100%', textAlign: 'left' }}>
-            {programRoutines && programRoutines.length > 0 
-              ? programRoutines[0].name 
-              : "No routine available"
-            }
+            programRoutines[0].name 
           </Typography>
-          {routineExercises.length > 0 ? (
+          {routineExercises && routineExercises.length > 0 ? (
             <RoutineExercisesList routineExercises = { routineExercises }/>
           ) : (
             <Typography>No routines found.</Typography>
@@ -60,11 +58,16 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
           </Button>
           <StartRoutineSessionModal
             open={open}
-            id={programRoutines.length > 0 ? programRoutines[0].id : null}
+            id={programRoutines && programRoutines.length > 0 ? programRoutines[0].id : null}
             idType="routine"
             onClose={handleClose}
           />
         </>
+      ) : (
+        <Typography sx={{ width: '100%', textAlign: 'left' }}>
+          No available routine for today.
+        </Typography>
+      )}
     </GadgetBase>
   );
 });
