@@ -18,6 +18,9 @@ export const Profile = (props) => {
       setCurrentUser(data);
     }
     getCurrentUser();
+
+
+
   }, []);
 
   return (
@@ -27,7 +30,7 @@ export const Profile = (props) => {
           <UserInfo user={currentUser} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
-          <History />
+          <History/>
         </Grid>
       </Grid>
     </>

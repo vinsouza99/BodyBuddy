@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import React, { useState } from 'react';
 import {
     Card,
@@ -31,6 +33,8 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineOppositeContent, {
   timelineOppositeContentClasses,
 } from '@mui/lab/TimelineOppositeContent';
+import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
+
 
 const historyData = [
   { date: 'Oct 04', content: 'Routine 3: Upper Body Muscle Mass', duration: '30', calories: 600 },
@@ -42,22 +46,32 @@ const historyData = [
   { date: 'Sep 22', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
 ];
 
-function History() {
-  const [open, setOpen] = useState(false);
+function History({ routine }) {
+  const [isOpen, setSwitch] = useState(false);
 
-  // Teru: Open Modal
-  const handleClickOpen = () => {
+  // Open StartRoutineSessionModal
+  const handleOpen = () => {
     setOpen(true);
   };
 
+  // Close StartRoutineSessionModal
+  // const handleClose = () => {
+  //   setOpen(false);
+  // };
+
+  // Teru: Open Modal
+  const handleClickOpen = () => {
+    setSwitch(true);
+  };
+
   // Teru: Close Modal
-  const handleClose = () => {
-    setOpen(false);
+  const handleClickClose = () => {
+    setSwitch(false);
   };
 
   return (
     <>
-  <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
+    <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h3" component="p" sx={{ margin: 1, fontWeight: 'bold' }}>
             History
@@ -68,7 +82,7 @@ function History() {
         </Box>
 
 
-        <div>
+      <div>
       {historyData.map((item, index) => (
 
       <Accordion>
@@ -83,7 +97,7 @@ function History() {
           <AccordionDetails>
             <Typography>
               <IconButton>
-                <PlayCircleIcon />
+                <PlayCircleIcon onClick={handleOpen}/>
               </IconButton>
               {item.content}
             </Typography>
@@ -94,39 +108,26 @@ function History() {
           </AccordionDetails>
       </Accordion>
   ))}
-    </div>
+
+      {/* Session Modal */}
+      {/* <Dialog open={isOpen} onClose={handleClickClose} fullWidth maxWidth="md">
+        <DialogTitle>
+
+        </DialogTitle>
+      <Dialog> */}
 
 
-        {/* <Timeline
-          sx={{
-            [`& .${timelineOppositeContentClasses.root}`]: {
-              flex: 0.2,
-            },
-          }}
-        >
-          {historyData.map((item, index) => (
-            <TimelineItem key={index}>
-              <TimelineOppositeContent color="textSecondary">
-                {item.date}
-              </TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineDot />
-                {index < historyData.length - 1 && <TimelineConnector />}
-              </TimelineSeparator>
-              <TimelineContent>
-                {item.content} - {item.duration}, {item.calories} cal
-              </TimelineContent>
-            </TimelineItem>
-          ))}
-        </Timeline> */}
-      </Card>
+      </div>
+
+
+    </Card>
 
       {/* Modal part */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      <Dialog open={isOpen} onClose={handleClickClose} fullWidth maxWidth="md">
         <DialogTitle>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Typography variant="h6">History</Typography>
-            <IconButton onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+            <IconButton onClick={handleClickClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
               <CloseIcon />
             </IconButton>
           </Box>
@@ -158,8 +159,15 @@ function History() {
         </DialogContent>
       </Dialog>
 
+
     </>
   );
 }
 
 export default History;
+
+History.propTypes = {
+  routine: PropTypes.object.isRequired,
+};
+
+
