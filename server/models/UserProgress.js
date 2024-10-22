@@ -22,6 +22,10 @@ const UserProgress = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: true,
     },
+    highest_streak: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     tableName: "user_progress",

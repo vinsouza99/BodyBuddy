@@ -1,22 +1,25 @@
 import { DataTypes } from "sequelize";
 import sequelize from "../database.js";
 
-const UserGoal = sequelize.define(
-  "UserGoal",
+const UserAchievement = sequelize.define(
+  "UserAchievement",
   {
     user_id: {
       type: DataTypes.UUID,
       primaryKey: true,
     },
-    goal_id: {
+    achievement_id: {
       type: DataTypes.UUID,
       primaryKey: true,
     },
+    earned_at: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
   {
-    tableName: "user_goal",
+    tableName: "user_achievement",
     timestamps: false,
   }
 );
-
-export default UserGoal;
+export default UserAchievement;

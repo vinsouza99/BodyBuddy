@@ -20,7 +20,7 @@ const Achievement = sequelize.define(
     },
   },
   {
-    tableName: "achievement",
+    tableName: "local_achievement",
     timestamps: false,
   }
 );

@@ -4,6 +4,7 @@ import {
   getGoal,
   getIntensities,
   getIntensity,
+  getAchievements,
 } from "../controllers/localTablesController.js";
 
 const router = express.Router();
@@ -61,7 +62,7 @@ router.get("/goals", getGoals);
  *               items:
  *                 $ref: '#/components/schemas/Goal'
  */
-router.get("/goals/:goal_id", getGoals);
+router.get("/goals/:goal_id", getGoal);
 
 /**
  * @swagger
@@ -97,5 +98,23 @@ router.get("/intensity", getIntensities);
  *                 $ref: '#/components/schemas/Goal'
  */
 router.get("/intensity/:intensity_id", getIntensity);
+
+/**
+ * @swagger
+ * /Local/Achievements:
+ *   get:
+ *     summary: Returns a list of all achievements
+ *     tags: [Achievements]
+ *     responses:
+ *       200:
+ *         description: A list of Achievements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Achievement'
+ */
+router.get("/achievements", getAchievements);
 
 export default router;

@@ -7,8 +7,6 @@ import routineExerciseRoutes from "./routineExerciseRoutes.js";
 import routineRoutes from "./routineRoutes.js";
 import historyRoutes from "./historyRoutes.js";
 import authenticateToken from "../authenticateToken.js";
-import goalRoutes from "./goalRoutes.js";
-import achievementRoutes from "./achievementRoutes.js";
 import relatedAchievementRoutes from "./relatedAchievementRoutes.js";
 import muscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
 import relatedMuscleGroupRoutes from "./relatedMuscleGroupRoutes.js";
@@ -18,13 +16,12 @@ const router = express.Router();
 
 router.use("/users", authenticateToken, userRoutes);
 router.use("/local", localTableRoutes);
+
 router.use("/programs", authenticateToken, programRoutes);
 router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);
 router.use("/routineExercises", authenticateToken, routineExerciseRoutes);
 router.use("/log", authenticateToken, historyRoutes);
-router.use("/goals", goalRoutes);
-router.use("/achievements", achievementRoutes);
 router.use("/related_achievements", relatedAchievementRoutes);
 router.use("/muscleGroups", muscleGroupRoutes);
 router.use("/relatedMuscleGroups", relatedMuscleGroupRoutes);
