@@ -314,17 +314,11 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   }, [postureAlert]);
 
-  // Upload user activity log
-  // useEffect(() => {
-  //   if ( isFinished && exerciseVideo ) {
-  //     registerUserActivity();
-  //   }
-  // }, [isFinished, exerciseVideo]);
+  // Upload user routine history
   useEffect(() => {
     if (isFinished) {
       if (record) {
         if (exerciseVideo) {
-          console.log(exerciseVideo);
           registerUserActivity();
         }
       } else {

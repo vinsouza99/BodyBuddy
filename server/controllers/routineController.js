@@ -310,7 +310,6 @@ export const deleteRoutineExercise = async (req, res) => {
 };
 
 export const createRoutineHistory = async (req, res) => {
-  console.log("createRoutineHistory is called111");
   try {
     const { user_id, completed_at, routine_id, recording_url, score, calories } = req.body;
     const newRoutineHistory = await RoutineHistory.create({
