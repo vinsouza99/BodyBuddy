@@ -1,20 +1,11 @@
 import axiosClient from "../utils/axiosClient";
 import { Program } from "../models/Program";
-import { getRoutinesFromProgram, createRoutine } from "./RoutineController";
+import { getRoutinesFromProgram } from "./RoutineController";
 
-// Note: API BASE URL is set in axisoClient.js with other required common settings.
-// const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
-// const TABLE = "programs";
-// const API_ROUTE = URL + TABLE;
 const API_ROUTE = "programs";
+const PROGRAM_ROUTINE_ROUTE = "routines";
 
-const getAllPrograms = async () => {
-  console.log(`Getting everything from ${API_ROUTE}...`);
-  const response = await axiosClient.get(`${API_ROUTE}`);
-  return response.data;
-};
 const getProgram = async (id) => {
-  console.log(`Getting from ${API_ROUTE}/${id}...`);
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${id}`);
     const data = await response.data;
@@ -37,10 +28,9 @@ const getProgram = async (id) => {
 const getAllUserPrograms = async (user_id) => {
   try {
     if (!user_id) throw new Error("user id is null");
-    console.log(`${API_ROUTE}/user/${user_id}`);
     const response = await axiosClient.get(`${API_ROUTE}/user/${user_id}`);
     const data = await response.data;
-    console.log(data.data.rows);
+
     const programs = data.data.rows.map(
       (program) =>
         new Program(
@@ -53,12 +43,13 @@ const getAllUserPrograms = async (user_id) => {
           program.description
         )
     );
-    programs.forEach(async (program) => {
+    for (const program of programs) {
       const programRoutines = await getRoutinesFromProgram(program.id);
-      if (programRoutines)
+      if (programRoutines) {
         programRoutines.forEach((routine) => program.addRoutine(routine));
-    });
-    console.log(programs);
+      }
+    }
+    
     return programs;
   } catch (e) {
     console.log(e);
@@ -68,23 +59,37 @@ const getAllUserPrograms = async (user_id) => {
 const createProgram = async (user_id, generatedProgramObj) => {
   try {
     if (!user_id) throw new Error("User ID is null");
-    const program = new Program(
-      null,
-      null,
-      null,
-      generatedProgramObj.duration,
-      user_id,
-      generatedProgramObj.name,
-      generatedProgramObj.description
-    );
-    //TODO call routine controller
-    axiosClient.post(`${API_ROUTE}`, program);
-    generatedProgramObj.routines.forEach(async (routine) => {
-      await createRoutine(routine);
-    });
+    const program = {
+      id: null, //hopefully supabase generates the ID and doesn't throw an error
+      user_id: user_id,
+      duration: generatedProgramObj.duration,
+      name: generatedProgramObj.name,
+      description: generatedProgramObj.description,
+    };
+    await axiosClient.post(`${API_ROUTE}`, program);
+    // generatedProgramObj.routines.forEach(async (routine) => {
+    //   await createRoutine(routine);
+    // });
   } catch (e) {
     console.log(e);
   }
 };
 
-export { getAllPrograms, getProgram, getAllUserPrograms, createProgram };
+const createProgramRoutine = async (program_id, routine_id, scheduled_date, completed) => {
+  try {
+    const programRoutine = {
+      program_id: program_id,
+      routine_id: routine_id,
+      scheduled_date: scheduled_date,
+      completed: completed,
+    };
+    return await axiosClient.post(
+      `${API_ROUTE}/${PROGRAM_ROUTINE_ROUTE}`,
+      programRoutine
+    );
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export { getProgram, getAllUserPrograms, createProgram, createProgramRoutine };

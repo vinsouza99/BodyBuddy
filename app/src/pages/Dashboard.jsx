@@ -2,30 +2,48 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
-import { Grid2, Box, Typography, LinearProgress, Backdrop, CircularProgress } from '@mui/material';
+import { Grid2, Box, Typography, Backdrop, CircularProgress } from '@mui/material';
 // Gadgets Components
+import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from '../components/GadgetStreaks.jsx';
 import { GadgetFavourite } from '../components/GadgetFavourite';
 import { GadgetAchievement } from '../components/GadgetAchievement';
 import { GadgetHistory } from '../components/GadgetHistory';
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
-import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
-import theme from '../theme';
-// Pronpts
+import { getUserProgress } from '../controllers/UserController';
+import { createProgramRoutine } from '../controllers/ProgramController';
+import { createRoutineExercise } from '../controllers/RoutineController';
+import axiosClient from '../utils/axiosClient';
+// Prompts
 import { createProgram } from '../utils/prompt/createProgram';
 
-
 export const Dashboard = (props) => {
-  const { user } = useAuth(); // For session management
+  const { user } = useAuth();
+  const [userProgress, setUserProgress] = useState(null);
+  const [generating, setGenerating] = useState(false);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
-  const [generating, setGenerating] = useState(false);
 
   // Initialization
   useEffect(() => {
     setPageTitle(props.title);
+  }, [props.title]);
+
+  // Load user progress data
+  useEffect(() => {
+    console.log("GadgetStreaks mounted");
+    const loadUserdata = async () => {
+      const userProgress = await getUserProgress(user.id);
+      console.log(userProgress);
+      setUserProgress(userProgress);
+    }
+    loadUserdata();
+
+    return () => {
+      console.log("GadgetStreaks unmounted");
+    };
   }, []);
 
   // Remove hash from URL after Google OAuth redirect
@@ -69,7 +87,7 @@ export const Dashboard = (props) => {
           throw new Error("Failed to get OpenAI response");
         }
         const parsedContent = JSON.parse(response_openai.data.data.choices[0].message.content);
-        console.log(parsedContent);
+        console.log("AI generated data:" + parsedContent);
 
         // Insert program data into the database
         const response_program = await axiosClient.post(
@@ -80,35 +98,54 @@ export const Dashboard = (props) => {
           }
         );
         if (Number(response_program.status) !== 201) {
-          throw new Error("Failed to fetch program info");
+          throw new Error("Failed to insert program info");
         }
-        console.log(response_program);
 
         // Insert routine data into the database
-        parsedContent.routine.forEach(async (routine_item) => {
-          console.log(routine_item);
-          const response_routine = await axiosClient.post(
-            'routines/',
-            routine_item
-          );
-          if (Number(response_program.status) !== 201) {
-            throw new Error("Failed to fetch routine info");
+        for (const routine_item of parsedContent.routine) {
+          // console.log(routine_item);
+          const response_routine = await axiosClient.post('routines/', routine_item);
+          if (Number(response_routine.status) !== 201) {
+            throw new Error("Failed to insert routine info");
           }
-          console.log(response_routine);
-        });
+        }
+
+        // Insert program_routine data into the database
+        await Promise.all(parsedContent.program_routine.map(async (program_routine_item) => {
+          const response_program_routine = await createProgramRoutine(
+            program_routine_item.program_id,
+            program_routine_item.routine_id,
+            program_routine_item.scheduled_date,
+            program_routine_item.completed
+          );
+          if (response_program_routine.status === 201) {
+            console.log("Program_Routine created successfully (inserted)", response_program_routine.status);
+          } else if (response_program_routine.status === 200) {
+            console.log("Program_Routine created successfully (updated)", response_program_routine.status);
+          } else {
+            throw new Error("Failed to insert program_routine info");
+          }
+        }));
 
         // Insert routine_exercise data into the database
-        parsedContent.routine_exercise.forEach(async (routine_exercise_item) => {
-          console.log(routine_exercise_item);
-          const response_routine_exercise = await axiosClient.post(
-            'routineExercises/',
-            routine_exercise_item
-          );
-          if (Number(response_program.status) !== 201) {
-            throw new Error("Failed to fetch routine_exercise info");
+        await Promise.all(parsedContent.routine_exercise.map(async (routine_exercise_item) => {
+          const response_routine_exercise = await createRoutineExercise({
+            exercise_id: routine_exercise_item.exercise_id,
+            routine_id: routine_exercise_item.routine_id,
+            order: routine_exercise_item.order,
+            sets: routine_exercise_item.sets,
+            reps: routine_exercise_item.reps,
+            duration: 0,
+            rest_time: routine_exercise_item.rest_time
+          })
+          if (response_routine_exercise.status === 201) {
+            console.log("Routine_Exercise created successfully (inserted)", response_routine_exercise.status);
+          } else if (response_routine_exercise.status === 200) {
+            console.log("Routine_Exercise created successfully (updated)", response_routine_exercise.status);
+          } else {
+            throw new Error("Failed to insert routine_exercise info");
           }
-          console.log(response_routine_exercise);
-        });
+        }));
 
       } catch (error) {
         console.error("Error generating personalized program:", error);
@@ -131,9 +168,9 @@ export const Dashboard = (props) => {
         </Box>
       </Backdrop>
 
-      <Grid2 container spacing={2} >
+      <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
-        <Grid2 size={{xs:12, md:6}} >
+        <Grid2 size={{xs:12, md:6}}>
           <Box
             sx={{ 
               display: 'flex', 
@@ -142,52 +179,11 @@ export const Dashboard = (props) => {
             }
           }>
             {/* ADD GADGETS HERE */}
-            <Box
-              sx={{ 
-                display: 'flex', 
-                flexDirection: 'row',
-                gap: 2,
-                alignItems: 'center',
-                marginTop: 2.2, // Adjustment
-                marginBottom: 2.5, // Adjustment
-              }}
-            >
-              <img src={user.user_metadata.avatar_url} alt="avatar" style={{width: '100px', height: '100px', borderRadius: '50%'}} />
-              <Box sx={{ flex: 1}}>
-                <Typography
-                  variant="h2"
-                  textAlign="left"
-                  sx={{ fontVariationSettings: "'wght' 800" }}
-                >
-                  Hi, {user.user_metadata.full_name}!
-                </Typography>
-                <Typography textAlign="left" >Level 0</Typography>
-                <Box sx={{ width: '100%' }}>
-                  <LinearProgress
-                    variant="determinate"
-                    value={10}
-                    sx={{
-                      '--LinearProgress-radius': '8px',
-                      '--LinearProgress-progressThickness': '30px',
-                      height: '30px',
-                      boxShadow: 'sm',
-                      borderRadius: '15px',
-                      '& .MuiLinearProgress-bar': {
-                        backgroundColor: theme.palette.primary.main,
-                      },
-                      backgroundColor: 'grey.300',
-                    }}
-                  >
-                  </LinearProgress>
-                </Box>
-              </Box>
-            </Box>
-            
-            <GadgetStreaks />
+            <GadgetUserProfile userProgress={userProgress} />
+            <GadgetStreaks userProgress={userProgress} />
             <GadgetFavourite />
           </Box>
         </Grid2>
-
         {/* RIGHT COLUMN */}
         <Grid2 size={{xs:12, md:6}} >
           <Box

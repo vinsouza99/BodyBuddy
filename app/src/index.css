@@ -1,31 +1,8 @@
-/* Load BodyBuddy fonts using @fontface declarations */
-@font-face {
-  font-family: 'Montserrat';
-  src: url('./src/assets/fonts/Montserrat-VariableFont_wght.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+/* Load Urbanist font using @import declarations */
+@import url("https://fonts.googleapis.com/css2?family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap");
 
-@font-face {
-  font-family: 'Montserrat Italic';
-  src: url('./src/assets/fonts/Montserrat-Italic-VariableFont_wght.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: 'Urbanist';
-  src: url('./src/assets/fonts/Urbanist-VariableFont_wght.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: 'Urbanist Italic';
-  src: url('./src/assets/fonts/Urbanist-Italic-VariableFont_wght.ttf') format('truetype');
-  font-weight: normal;
-  font-style: italic;
-}
+/* Load Montserrat font using @import declarations */
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 /* Use loaded fonts */
 :root {

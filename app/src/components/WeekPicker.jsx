@@ -1,13 +1,16 @@
 import PropTypes from "prop-types";
 import { useState } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
-import { addDays, subDays, format } from 'date-fns';
+import { addDays, subDays, format, isSameDay, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onClickPreviousWeek = false, displayMode = "full" }) => {
+export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClickPreviousWeek = null, displayMode = "full", scheduledDates = [] }) => {
   const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
   const [endDate, setEndDate] = useState(getStartOfWeek(addDays(new Date(), 7)));
+  const today = new Date();
+  const timeZone = 'America/Vancouver';
 
   function getStartOfWeek(date) {
     const dayOfWeek = date.getDay();
@@ -32,7 +35,7 @@ export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onCli
   };
 
   const handleDayClick = (day) => {
-    if (onSelectDate) {
+    if (typeof onSelectDate === 'function') {
       onSelectDate(day);
     }
   };
@@ -42,6 +45,31 @@ export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onCli
   };
 
   const weekdays = getWeekdays(startDate);
+
+  // Check if the day is in the scheduledDates array
+  // const isScheduled = (day) => {
+  //   console.log("Checking if scheduled:", format(day, 'yyyy-MM-dd')); 
+  //   scheduledDates.forEach(scheduledDate => {
+  //     const parsedDate = parseISO(scheduledDate);
+  //     console.log("Scheduled date:", format(parsedDate, 'yyyy-MM-dd'));
+  //     console.log("Comparison result:", isSameDay(parsedDate, day));
+  //   });
+  //   return scheduledDates.some((scheduledDate) => isSameDay(parseISO(scheduledDate), day));
+  // };
+
+  const isScheduled = (day) => {
+    return scheduledDates.some((scheduledDate) => {
+      const utcDate = parseISO(scheduledDate);
+      const zonedDay = toZonedTime(day, timeZone);
+      return isSameDay(utcDate, zonedDay);
+    });
+  };
+  
+  // const formattedDay = (day) => {
+  //   const zonedDay = toZonedTime(day, timeZone); 
+  //   return format(zonedDay, 'yyyy-MM-dd');
+  // };
+
 
   return (
     <Box
@@ -90,6 +118,12 @@ export const WeekPicker = ({onSelectDate = false, onClickNextWeek = false, onCli
               <Typography
                 sx={{
                   fontSize: '0.8rem',
+                  width: '30px',
+                  height: '30px',
+                  lineHeight: '30px',
+                  border: '1px solid',
+                  borderRadius: '50%',
+                  borderColor: isSameDay(day, today) ? 'secondary.main' : isScheduled(day) ? 'primary.main' : 'transparent',
                 }}
               >
                 {format(day, 'dd')}
@@ -121,4 +155,5 @@ WeekPicker.propTypes = {
   onClickNextWeek: PropTypes.func,
   onClickPreviousWeek: PropTypes.func,
   displayMode: PropTypes.string,
+  scheduledDates: PropTypes.array,
 };

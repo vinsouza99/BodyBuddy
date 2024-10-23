@@ -12,7 +12,8 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 export const GadgetHistory = () => {
   const navigate = useNavigate();
   const chartRef = useRef(null);
-  const [ totalDuration, setTotalDuration ] = useState(0); 
+  const [ totalDuration, setTotalDuration ] = useState(0);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
   // !!!THIS IS DUMMY DATA!!!
   const [chartData, setChartData] = useState({
@@ -58,6 +59,7 @@ export const GadgetHistory = () => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    aspectRatio: 2,
     plugins: {
       legend: {
         display: false,
@@ -97,6 +99,18 @@ export const GadgetHistory = () => {
     };
   }, []);
 
+  // Chart resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   // Update total duration
   useEffect(() => {
     setTotalDuration(chartData.datasets[0].data.reduce((acc, curr) => acc + curr, 0));
@@ -128,7 +142,7 @@ export const GadgetHistory = () => {
         {`Total: ${totalDuration} min`}
       </Typography>
       <Box sx={{ height: '300px', width: '100%' }}>
-        <Bar data={chartData} options={options} />
+        <Bar data={chartData} options={options} key={windowWidth} ref={chartRef}  />
       </Box>
       <Typography>
         We help you track your progress as data and video as you becoming a better version of yourself.

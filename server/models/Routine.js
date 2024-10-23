@@ -6,26 +6,8 @@ const Routine = sequelize.define(
   {
     id: {
       type: DataTypes.UUID,
-      allowNull: false,
       primaryKey: true,
       defaultValue: DataTypes.UUIDV4,
-    },
-    // created_at: {
-    //   type: DataTypes.DATE,
-    //   allowNull: false,
-    //   defaultValue: DataTypes.NOW,
-    // },
-    completed_at: {
-      type: DataTypes.DATE,
-      allowNull: true,
-    },
-    duration: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-    program_id: {
-      type: DataTypes.UUID,
-      allowNull: true,
     },
     name: {
       type: DataTypes.TEXT,
@@ -35,16 +17,23 @@ const Routine = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+
+    duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
     preset: {
       type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    estimated_calories: {
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
   },
   {
     tableName: "routine",
-    timestamps: true,
-    createdAt: 'created_at',
-    updatedAt: false
+    timestamps: false,
   }
 );
 

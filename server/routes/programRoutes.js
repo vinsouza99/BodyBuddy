@@ -6,6 +6,7 @@ import {
   createProgram,
   updateProgram,
   deleteProgram,
+  createProgramRoutine,
 } from "../controllers/programController.js";
 
 const router = express.Router();
@@ -127,6 +128,39 @@ router.get("/:id", getProgram);
  *         description: Server error
  */
 router.post("/", createProgram);
+
+/**
+ * @swagger
+ * /programs:
+ *   post:
+ *     summary: Create a new program and its associated routines
+ *     tags: [Programs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Program'
+ *     responses:
+ *       201:
+ *         description: The program and its routines were successfully created
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 program:
+ *                   $ref: '#/components/schemas/Program'
+ *                 routines:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Routine'
+ *       400:
+ *         description: Bad request, invalid input
+ *       500:
+ *         description: Internal server error
+ */
+router.post("/routines", createProgramRoutine);
 
 /**
  * @swagger

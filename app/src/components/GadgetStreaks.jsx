@@ -1,10 +1,11 @@
+import PropTypes from "prop-types";
 import { Box, Typography, Button } from '@mui/material';
 import { GadgetBase } from './GadgetBase';
 import { MetricCard } from './routine-session/MetricCard';
 import flame1 from '../assets/flame-solid_1.png';
 import flame2 from '../assets/flame-solid_2.png';
 
-export const GadgetStreaks = () => {
+export const GadgetStreaks = ({ userProgress = null }) => {
   return (
     <GadgetBase>
       <Box
@@ -17,11 +18,17 @@ export const GadgetStreaks = () => {
       >
         <Box>
           <img src={flame1} alt="Flame 1"></img>
-          <MetricCard title="Week Streaks" value="0" color="black"/>
+          <MetricCard
+            title="Week Streaks"
+            value={userProgress ? String(userProgress.streak) : "0"}
+            color="black"/>
         </Box>
         <Box>
           <img src={flame2} alt="Flame 2"></img>
-          <MetricCard title="Best Streaks" value="0" color="black" />
+          <MetricCard
+            title="Best Streaks"
+            value={userProgress ? String(userProgress.highest_streak) : "0"}
+            color="black" />
         </Box>
       </Box>
       <Typography>
@@ -37,4 +44,8 @@ export const GadgetStreaks = () => {
       </Button>
     </GadgetBase>
   );
+};
+
+GadgetStreaks.propTypes = {
+  userProgress: PropTypes.object,
 };

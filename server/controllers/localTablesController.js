@@ -1,6 +1,8 @@
 import Intensity from "../models/Intensity.js";
 import Goal from "../models/Goal.js";
 import Achievement from "../models/Achievement.js";
+import MuscleGroup from "../models/MuscleGroup.js";
+import Type from "../models/Type.js";
 
 export const getIntensities = async (req, res) => {
   try {
@@ -123,6 +125,97 @@ export const getAchievement = async (req, res) => {
       status: "200",
       message: "Success",
       data: achievement,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getMuscleGroups = async (req, res) => {
+  try {
+    const muscleGroups = await MuscleGroup.findAll();
+    if (!muscleGroups) {
+      return res.status(404).json({
+        status: "404",
+        message: "MuscleGroups not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: muscleGroups,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getMuscleGroup = async (req, res) => {
+  try {
+    const muscle_group_id = req.params.muscle_group_id;
+    const muscleGroup = await MuscleGroup.findByPk(muscle_group_id);
+    if (!muscleGroup) {
+      return res.status(404).json({
+        status: "404",
+        message: "MuscleGroup not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: muscleGroup,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const getTypes = async (req, res) => {
+  try {
+    const types = await Type.findAll();
+    if (!types) {
+      return res.status(404).json({
+        status: "404",
+        message: "Types not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: types,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getType = async (req, res) => {
+  try {
+    const type_id = req.params.type_id;
+    const type = await Type.findByPk(type_id);
+    if (!type) {
+      return res.status(404).json({
+        status: "404",
+        message: "Type not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: type,
     });
   } catch (error) {
     console.error(error);
