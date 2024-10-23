@@ -23,51 +23,61 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
     <GadgetBase>
       <Typography
         variant="h6"
-        sx={{ width: '100%', textAlign: 'left', fontVariationSettings: "'wght' 800" }}
+        sx={{ width: '100%', textAlign: 'left', fontWeight: "800" }}
       >
         Today&apos;s Routine
       </Typography>
-      {programRoutines && programRoutines.length > 0 ? (
-        <>
+
+      {programRoutines && programRoutines.length > 0
+        ? 
+          (() => {
+            const sortedProgramRoutines = [...programRoutines].sort(
+              (a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date)
+            );
+
+            return (
+              <>
+                <Typography sx={{ width: '100%', textAlign: 'left' }}>
+                  {sortedProgramRoutines[0].name}
+                </Typography>
+                {sortedProgramRoutines[0].exercises && sortedProgramRoutines[0].exercises.length > 0 ? (
+                  <RoutineExercisesList routineExercises = { sortedProgramRoutines[0].exercises }/>
+                ) : (
+                  <Typography>No routines found.</Typography>
+                )}
+                <Button
+                  onClick={handleOpen}
+                  sx={{
+                    width: '150px',
+                    height: '150px',
+                    color: 'text.primary',
+                    backgroundColor: '#4DC53C',
+                    borderRadius: '50%',
+                    padding: 0,
+                    minWidth: 'unset',
+                    fontSize: '1.2rem',
+                    fontVariationSettings: "'wght' 800",
+                    marginTop: '0.8rem',
+                    marginBottom: '0.8rem',
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
+                  }}
+                >
+                  Get<br />Started
+                </Button>
+                <StartRoutineSessionModal
+                  open={open}
+                  id={sortedProgramRoutines[0].id}
+                  idType="routine"
+                  onClose={handleClose}
+                />
+              </>
+            );
+          })()
+        :
           <Typography sx={{ width: '100%', textAlign: 'left' }}>
-            {programRoutines[0].name}
+            No available routine for today.
           </Typography>
-          {programRoutines[0].exercises && programRoutines[0].exercises.length > 0 ? (
-            <RoutineExercisesList routineExercises = { programRoutines[0].exercises }/>
-          ) : (
-            <Typography>No routines found.</Typography>
-          )}
-          <Button
-            onClick={handleOpen}
-            sx={{
-              width: '150px',
-              height: '150px',
-              color: 'text.primary',
-              backgroundColor: '#4DC53C',
-              borderRadius: '50%',
-              padding: 0,
-              minWidth: 'unset',
-              fontSize: '1.2rem',
-              fontVariationSettings: "'wght' 800",
-              marginTop: '0.8rem',
-              marginBottom: '0.8rem',
-              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
-            }}
-          >
-            Get<br />Started
-          </Button>
-          <StartRoutineSessionModal
-            open={open}
-            id={programRoutines && programRoutines.length > 0 ? programRoutines[0].id : null}
-            idType="routine"
-            onClose={handleClose}
-          />
-        </>
-      ) : (
-        <Typography sx={{ width: '100%', textAlign: 'left' }}>
-          No available routine for today.
-        </Typography>
-      )}
+      }
     </GadgetBase>
   );
 });

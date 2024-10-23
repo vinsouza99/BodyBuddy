@@ -27,6 +27,7 @@ export const RoutineExercisesList = ({ routineExercises = null }) => {
                 borderColor: 'secondary.main',
                 borderRadius: '50px',
                 width: '80px',
+                height: '80px',
                 objectFit: 'cover',
                 marginRight: '1rem',
               }}
