@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button, IconButton, TextField } from "@mui/material"
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
-import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
-import NoPhotographyIcon from '@mui/icons-material/NoPhotography';
+import Camera_On from '../assets/camera_on.png';
+import Camera_Off from '../assets/camera_off.png';
 
 const modalStyle = {
   // Layout and positioning
@@ -58,10 +58,6 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
       stateData.reps = reps;
       stateData.idType = 'exercise';
     }
-
-    // TEST
-    // stateData.id = "0cc22f75-7d4d-4d50-9cdd-4ae3c731c517";
-    // stateData.id = "ed999b28-ae50-4009-b29c-c7f6a28857c9";
 
     navigate(`/routine`, { state: stateData });
   }
@@ -120,7 +116,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
         {(idType === 'routine' || step === 2) && (
           <>
             <Box textAlign="center">
-              {record ? <PhotoCameraIcon fontSize="large" /> : <NoPhotographyIcon fontSize="large" />}
+              { record ? <img src={Camera_On} alt="Camera On" /> : <img src={Camera_Off} alt="Camera Off" /> }
             </Box>
             <Typography textAlign="center">
               Would you like to record your {idType === 'exercise' ? 'exercise' : 'routine'} session?

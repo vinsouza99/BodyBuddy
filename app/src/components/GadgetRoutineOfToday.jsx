@@ -17,7 +17,7 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
   const handleClose = () => {
     setOpen(false);
   };
-  
+
   // Note: Now just showing the first routine, not considering the schedule. To be updated.
   return (
     <GadgetBase>
@@ -56,14 +56,18 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
                     padding: 0,
                     minWidth: 'unset',
                     fontSize: '1.2rem',
-                    fontVariationSettings: "'wght' 800",
                     marginTop: '0.8rem',
                     marginBottom: '0.8rem',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)',
+                    "&:focus": {
+                      outline: "none", // Removes focus outline on keyboard focus
+                    },
                   }}
                 >
-                  Get<br />Started
+                  GET<br />STARTED
                 </Button>
+
+                {/* Transition to session screen */}
                 <StartRoutineSessionModal
                   open={open}
                   id={sortedProgramRoutines[0].id}

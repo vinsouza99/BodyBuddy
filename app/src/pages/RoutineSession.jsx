@@ -314,13 +314,18 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   }, [postureAlert]);
 
-  // Upload user activity log
+  // Upload user routine history
   useEffect(() => {
-    if ( isFinished && exerciseVideo ) {
-      registerUserActivity();
+    if (isFinished) {
+      if (record) {
+        if (exerciseVideo) {
+          registerUserActivity();
+        }
+      } else {
+        registerUserActivity();
+      }
     }
-  }, [isFinished, exerciseVideo]);
-
+  }, [isFinished, record, exerciseVideo]);
   
   // ---------------------------------------------------------
   //                      Event Handlers
@@ -690,17 +695,18 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       const completedAt = new Date().toISOString();
       const newHistoryObj = {
         user_id: user.id,
-        created_at: completedAt,
+        completed_at: completedAt,
         routine_id: idType === 'routine' ? id : null,
-        exercise_id: idType === 'exercise' ? id : null, 
-        recording_URL: exerciseVideo,
-        description: null,
+        recording_url: exerciseVideo,
+        score: 30, // TODO: To be implemented
+        calories: 50, // TODO: To be implemented
       };
       
-      const response = await axiosClient.post("Log", newHistoryObj);
+      const response = await axiosClient.post("/routines/history", newHistoryObj);
       if (Number(response.status) !== 201) {
         throw new Error("Failed to insert log info");
       }
+      console.log("Routine history inserted successfully:", response.data);
       return response.data;
     } catch (error) {
       console.error("Error inserting log info:", error);
@@ -767,7 +773,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   return (
     <>
       {routine.length === 0 ? (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
           <CircularProgress color="inherit" />
           <Typography variant="h6" sx={{ mt: 2 }}>Loading...</Typography>
         </Box>
@@ -964,7 +970,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                   display: 'flex',
                   alignItems: 'center', 
                   justifyContent: 'flex-end',
-                  // color: `${theme.palette.secondary.main}`,
                   color: `white`,
                   cursor: 'pointer',
                 }}

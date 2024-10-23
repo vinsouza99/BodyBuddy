@@ -144,7 +144,7 @@ const theme = createTheme({
           textTransform: "none", // Prevent uppercase text
         },
         contained: {
-          backgroundColor: "primary.main", // Primary background color
+          backgroundColor: "#000000", // Primary background color
           color: "primary.contrastText", // Text color for readability
           "&:hover": {
             backgroundColor: "primary.dark", // Dark background on hover

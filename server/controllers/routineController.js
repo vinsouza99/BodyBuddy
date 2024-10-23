@@ -1,6 +1,7 @@
 import Routine from "../models/Routine.js";
 import ProgramRoutine from "../models/ProgramRoutine.js";
 import RoutineExercise from "../models/RoutineExercise.js";
+import RoutineHistory from "../models/RoutineHistory.js";
 
 export const getRoutines = async (req, res) => {
   try {
@@ -307,3 +308,28 @@ export const deleteRoutineExercise = async (req, res) => {
     });
   }
 };
+
+export const createRoutineHistory = async (req, res) => {
+  try {
+    const { user_id, completed_at, routine_id, recording_url, score, calories } = req.body;
+    const newRoutineHistory = await RoutineHistory.create({
+      user_id,
+      completed_at,
+      routine_id,
+      recording_url,
+      score,
+      calories,
+    });
+    res.status(201).json({
+      status: "201",
+      message: "Routine History created successfully",
+      data: newRoutineHistory,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+}
