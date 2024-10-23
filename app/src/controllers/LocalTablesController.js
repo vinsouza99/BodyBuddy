@@ -113,7 +113,7 @@ const getAllMuscleGroups = async () => {
       `${API_ROUTE}/${API_MUSCLE_GROUPS_ROUTE}`
     );
     const data = await response.data;
-    return data.map(
+    return data.data.map(
       (muscleGroup) => new MuscleGroup(muscleGroup.id, muscleGroup.name)
     );
   } catch (e) {

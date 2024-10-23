@@ -4,6 +4,10 @@ import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { getAllExercises } from "../controllers/ExerciseController.js";
+import {
+  getAllGoals,
+  getAllMuscleGroups,
+} from "../controllers/LocalTablesController.js";
 import Grid from "@mui/material/Grid2";
 import {
   Box,
@@ -43,6 +47,8 @@ CustomTabPanel.propTypes = {
 export const Learn = (props) => {
   const { user, handleSignOut } = useAuth();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
+  const [muscleGroups, setMuscleGroups] = useState([]);
+  const [goals, setGoals] = useState([]);
 
   useEffect(() => {
     setPageTitle(props.title); // Set the page title
@@ -55,16 +61,22 @@ export const Learn = (props) => {
       const response = await getAllExercises();
 
       // Log the full response
-      console.log("Loaded exercises:", response);
+      //console.log("Loaded exercises:", response);
 
       // Access exercises from the response.data property
       const exercisesData = response;
 
       // Log the exercises data
-      console.log("Exercises Data:", exercisesData);
+      //console.log("Exercises Data:", exercisesData);
 
       // Update the state with the loaded routines
       setExercises(exercisesData);
+
+      const muscleGroupsData = await getAllMuscleGroups();
+      setMuscleGroups(muscleGroupsData);
+
+      const fitnessGoalsData = await getAllGoals();
+      setGoals(fitnessGoalsData);
     };
 
     loadData();
@@ -77,7 +89,12 @@ export const Learn = (props) => {
     setValue(newValue); // Update selected tab
     setDifficulty(event.target.value); // Update selected difficulty level
   };
-
+  const filterExercisesByMuscleGroup = (muscleGroupID) => {
+    //TODO
+  };
+  const filterExercisesByGoal = (goalID) => {
+    //TODO
+  };
   return (
     <>
       <Box display="flex" alignItems="flex-start">
@@ -113,13 +130,14 @@ export const Learn = (props) => {
           </FormControl>
 
           {/* Buttons for filtering exercises by muscle groups */}
-          <Button variant="contained">Shoulders</Button>
-          <Button variant="contained">Chest</Button>
-          <Button variant="contained">Back</Button>
-          <Button variant="contained">Arms</Button>
-          <Button variant="contained">Core</Button>
-          <Button variant="contained">Hips</Button>
-          <Button variant="contained">Legs</Button>
+          {muscleGroups.map((muscleGroup) => (
+            <Button
+              variant="contained"
+              onClick={() => filterExercisesByMuscleGroup(muscleGroup.id)}
+            >
+              {muscleGroup.name}
+            </Button>
+          ))}
         </Box>
 
         {/* Grid to display LearningCard components */}
@@ -154,11 +172,14 @@ export const Learn = (props) => {
             </Select>
           </FormControl>
           {/* Buttons for filtering exercises by fitness goals */}
-          <Button variant="contained">Gain Muscle</Button>
-          <Button variant="contained">Lose Body Fat</Button>
-          <Button variant="contained">Get Stronger</Button>
-          <Button variant="contained">Stretch</Button>
-          <Button variant="contained">Warm Up</Button>
+          {goals.map((goal) => (
+            <Button
+              variant="contained"
+              onClick={filterExercisesByGoal(goal.id)}
+            >
+              {goal.name}
+            </Button>
+          ))}
         </Box>
 
         {/* Grid to display LearningCard components */}
