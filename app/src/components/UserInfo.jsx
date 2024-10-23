@@ -1,4 +1,4 @@
-import { Card, Typography, Avatar } from "@mui/material";
+import { Card, Typography, Avatar, LinearProgress } from "@mui/material";
 
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid2";
@@ -8,6 +8,8 @@ import CardContent from "@mui/material/CardContent";
 import Chip from "@mui/material/Chip";
 import PropTypes from "prop-types";
 import { WallOfFame } from './WallOfFame';
+import theme from '../theme';
+
 
 
 
@@ -27,49 +29,80 @@ const handleClick = () => {
   console.info("You clicked the Chip.");
 };
 
-function UserInfo(props) {
-  const { user } = props;
+function UserInfo({user}) {
+  // const { user } = props;
+  // console.log(props);
+  console.log(user)
+  console.log(user.name)
   return (
     <>
       <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Avatar
-            alt="Haley Grimes"
-            src="/static/images/avatar/1.jpg"
-            sx={{ width: 100, height: 100 }}
-          />
-        </Box>
+        <Grid
+          sx={{display: 'flex', alignItems: 'flex-start' }}
+        >
+          <Box>
+            <Avatar
+              alt="Avatar"
+              // src={user.picture}
+              src="/static/images/avatar/1.jpg"
+              sx={{ width: 130, height: 130 }}
+            />
+          </Box>
 
-        <Typography 
-          variant="h3" 
-          component="p" 
-          align='center' 
-          sx={{ margin: 3 }}
-        >
-        Haley Grimes
-        {/* {user.name} */}
-        </Typography>
-        <Typography 
-          variant="body2" 
-          component="p"
-        >
-        {/* Birthday: {user.birthday} */}
-        Birthday: 1988-10-25
-        </Typography>
-        <Typography 
-          variant="body2" 
-          component="p">
-        {/* BWeight: {user.weight} */}
-        Weight: 144 Lbs
-        </Typography>
+          <Box>
+            <Typography 
+              variant="h3" 
+              component="p" 
+              align='center' 
+              sx={{ margin: 3 }}
+            >
+            {user.name}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              component="p"
+            >
+            Birthday: {user.birthday}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              component="p">
+            Weight: {user.weight}
+            </Typography>
+          </Box>
+        </Grid>
+
+          <Typography textAlign="left" >Level 0</Typography>
+              <Box sx={{ width: '100%' }}>
+                <LinearProgress
+                  variant="determinate"
+                  value={10}
+                  sx={{
+                    '--LinearProgress-radius': '8px',
+                    '--LinearProgress-progressThickness': '30px',
+                    height: '30px',
+                    boxShadow: 'sm',
+                    borderRadius: '15px',
+                    '& .MuiLinearProgress-bar': {
+                      backgroundColor: theme.palette.primary.main,
+                    },
+                    backgroundColor: 'grey.300',
+                  }}
+                >
+                </LinearProgress>
+              </Box>
         <Box 
           sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
         >
-          {/* <Typography>`Primary Goal: {user.goal}`</Typography> */}
-          <Typography>Primary Goal</Typography>
-          <Typography>Exercise frequency</Typography>
-          <Typography>Exercise intensity</Typography>
-          <Typography>When can you exercise</Typography>
+          <Typography>Primary Goal: {user.settings.goal.name || "No goal set"}</Typography>
+
+          {/* <Typography>Exercise frequency: {user.settings.frequency.name || "No frequency set"}</Typography> */}
+          <Typography>Exercise frequency: {}</Typography>
+
+          <Typography>Exercise intensity: {user.settings.intensity.name || "No intensity set"}</Typography>
+
+          <Typography>When can you exercise: {user.schedule || "No availability set"}</Typography>
+
         </Box>
 
         <Grid sx={{ marginTop: 3, borderTop: 1 }}>

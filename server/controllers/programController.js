@@ -1,4 +1,5 @@
 import Program from "../models/Program.js";
+import ProgramRoutine from "../models/ProgramRoutine.js";
 
 export const getPrograms = async (req, res) => {
   try {
@@ -67,13 +68,14 @@ export const getProgramsByUser = async (req, res) => {
 
 export const createProgram = async (req, res) => {
   try {
-    const { id, user_id, name, description, duration } = req.body;
+    const { id, user_id, name, description, duration, goal_id } = req.body;
     const newProgram = await Program.create({
       id,
       user_id,
       name,
       description,
       duration,
+      goal_id
     });
     res.status(201).json({
       status: "201",
@@ -133,6 +135,30 @@ export const deleteProgram = async (req, res) => {
     res.status(200).json({
       status: "200",
       message: "Program deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+export const createProgramRoutine = async (req, res) => {
+  try {
+    const { program_id, routine_id, scheduled_date, completed } =
+      req.body;
+    const newProgramRoutine = await ProgramRoutine.upsert({
+      program_id,
+      routine_id,
+      scheduled_date,
+      completed
+    });
+    res.status(201).json({
+      status: "201",
+      message: "Program Routine created successfully",
+      data: newProgramRoutine,
     });
   } catch (error) {
     console.error(error);

@@ -1,8 +1,9 @@
 import axiosClient from "../utils/axiosClient";
 import { Program } from "../models/Program";
-import { getRoutinesFromProgram, createRoutine } from "./RoutineController";
+import { getRoutinesFromProgram } from "./RoutineController";
 
 const API_ROUTE = "programs";
+const PROGRAM_ROUTINE_ROUTE = "routines";
 
 const getProgram = async (id) => {
   try {
@@ -65,14 +66,30 @@ const createProgram = async (user_id, generatedProgramObj) => {
       name: generatedProgramObj.name,
       description: generatedProgramObj.description,
     };
-    //TODO call routine controller
-    axiosClient.post(`${API_ROUTE}`, program);
-    generatedProgramObj.routines.forEach(async (routine) => {
-      await createRoutine(routine);
-    });
+    await axiosClient.post(`${API_ROUTE}`, program);
+    // generatedProgramObj.routines.forEach(async (routine) => {
+    //   await createRoutine(routine);
+    // });
   } catch (e) {
     console.log(e);
   }
 };
 
-export { getProgram, getAllUserPrograms, createProgram };
+const createProgramRoutine = async (program_id, routine_id, scheduled_date, completed) => {
+  try {
+    const programRoutine = {
+      program_id: program_id,
+      routine_id: routine_id,
+      scheduled_date: scheduled_date,
+      completed: completed,
+    };
+    return await axiosClient.post(
+      `${API_ROUTE}/${PROGRAM_ROUTINE_ROUTE}`,
+      programRoutine
+    );
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+export { getProgram, getAllUserPrograms, createProgram, createProgramRoutine };
