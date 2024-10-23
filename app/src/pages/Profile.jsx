@@ -5,9 +5,12 @@ import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
+import historyData from "../components/HistoryData.json";
+
 
 export const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState({});
+  const [history, setHistory] = useState(historyData);
   const { user } = useAuth(); // For session management
 
   useEffect(() => {
@@ -17,21 +20,28 @@ export const Profile = (props) => {
       console.log(data);
       setCurrentUser(data);
     }
+
     getCurrentUser();
-  }, []);
+
+
+  }, [props.title, user]);
+
 
   return (
     <>
-      <Grid container spacing={1}>
+      {Object.keys(currentUser).length > 0 ? (
+        <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
           <UserInfo user={currentUser} />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
-          <History />
+          <History data={history} />
         </Grid>
       </Grid>
+      ) : null}
     </>
   );
+  
 };
 
 export default Profile;

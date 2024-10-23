@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 import React, { useState } from 'react';
 import {
     Card,
@@ -5,7 +7,6 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions,
     IconButton,
     Box,
 } from '@mui/material';
@@ -22,68 +23,71 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
-import TimelineOppositeContent, {
-  timelineOppositeContentClasses,
-} from '@mui/lab/TimelineOppositeContent';
+import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
-const historyData = [
-  { date: 'Oct 04', content: 'Routine 3: Upper Body Muscle Mass', duration: '30', calories: 600 },
-  { date: 'Oct 02', content: 'Routine 2: Core Stability and Hip Mobility', duration: '30', calories: 600 },
-  { date: 'Sep 29', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
-  { date: 'Sep 28', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
-  { date: 'Sep 26', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
-  { date: 'Sep 23', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
-  { date: 'Sep 22', content: 'Routine 1: Lower Body Strength', duration: '30', calories: 600 },
-];
+import dayjs from 'dayjs';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
-function History() {
-  const [open, setOpen] = useState(false);
+function History({ data }) {
+  const [modalSwitch, setSwitch] = useState(false);
+  const [videoSwitch, videoSet] = useState(false);
 
-  // Teru: Open Modal
+  // Open StartRoutineSessionModal
+  const videoOpen = () => {
+    videoSet(true);
+  };
+
+  // Close StartRoutineSessionModal
+  const videoClose = () => {
+    videoSet(false);
+  };
+
+  // Open Modal
   const handleClickOpen = () => {
-    setOpen(true);
+    setSwitch(true);
   };
 
-  // Teru: Close Modal
-  const handleClose = () => {
-    setOpen(false);
+  // Close Modal
+  const handleClickClose = () => {
+    setSwitch(false);
   };
+
+  const [value, setValue] = useState([
+    dayjs('2022-04-17'),
+    dayjs('2022-04-21'),
+  ]);
 
   return (
     <>
-  <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
+    <Card sx={{ padding: 3, borderRadius: 2, width: 1}}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Typography variant="h3" component="p" sx={{ margin: 1, fontWeight: 'bold' }}>
             History
           </Typography>
           <Typography variant="body2" component="p" sx={{ margin: 1, cursor: 'pointer' }} onClick={handleClickOpen}>
-            SEE MORE
+            Duration
           </Typography>
         </Box>
 
 
-        <div>
-      {historyData.map((item, index) => (
+      <div>
+      {data.map((item, index) => (
 
-      <Accordion>
+      <Accordion key={index}>
         <AccordionSummary
           expandIcon={<ArrowDropDownIcon />}
           aria-controls="panel2-content"
           id="panel2-header"
-          key={index}
         >
           <Typography>{item.date}</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <Typography>
               <IconButton>
-                <PlayCircleIcon />
+                <PlayCircleIcon onClick={videoOpen}/>
               </IconButton>
               {item.content}
             </Typography>
@@ -92,74 +96,58 @@ function History() {
             <Chip label={item.calories} cal variant="outlined" />
             </Stack>
           </AccordionDetails>
+                
+        {/* Session Modal */}
+        <Dialog open={videoSwitch} onClose={videoClose} fullWidth maxWidth="sm">
+          <DialogTitle>
+              {item.content}
+              <IconButton onClick={videoClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                <CloseIcon />
+              </IconButton>
+          </DialogTitle>
+          <DialogContent sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <video width="320" height="240" controls>
+            <source src="movie.mp4" type="video/mp4" />
+            <source src="movie.mp4" type="video/mp4" />
+            <source src="movie.ogg" type="video/ogg" />
+            </video>
+          </DialogContent>
+        </Dialog>
+
       </Accordion>
+
+      
   ))}
-    </div>
 
-
-        {/* <Timeline
-          sx={{
-            [`& .${timelineOppositeContentClasses.root}`]: {
-              flex: 0.2,
-            },
-          }}
-        >
-          {historyData.map((item, index) => (
-            <TimelineItem key={index}>
-              <TimelineOppositeContent color="textSecondary">
-                {item.date}
-              </TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineDot />
-                {index < historyData.length - 1 && <TimelineConnector />}
-              </TimelineSeparator>
-              <TimelineContent>
-                {item.content} - {item.duration}, {item.calories} cal
-              </TimelineContent>
-            </TimelineItem>
-          ))}
-        </Timeline> */}
-      </Card>
+      </div>
+    </Card>
 
       {/* Modal part */}
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="h6">History</Typography>
-            <IconButton onClick={handleClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
-              <CloseIcon />
-            </IconButton>
-          </Box>
-        </DialogTitle>
-
+      <Dialog open={modalSwitch} onClose={handleClickClose} fullWidth maxWidth="md">
         <DialogContent>
-          <Timeline
-            sx={{
-              [`& .${timelineOppositeContentClasses.root}`]: {
-                flex: 0.2,
-              },
-            }}
-          >
-            {historyData.map((item, index) => (
-              <TimelineItem key={index}>
-                <TimelineOppositeContent color="textSecondary">
-                  {item.date}
-                </TimelineOppositeContent>
-                <TimelineSeparator>
-                  <TimelineDot />
-                  {index < historyData.length - 1 && <TimelineConnector />}
-                </TimelineSeparator>
-                <TimelineContent>
-                  {item.content} - {item.duration}, {item.calories} cal
-                </TimelineContent>
-              </TimelineItem>
-            ))}
-          </Timeline>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
+              <DemoItem label="Duration" component="DateRangePicker">
+                <IconButton onClick={handleClickClose} sx={{ position: 'absolute', right: 8, top: 8 }}>
+                  <CloseIcon />
+                </IconButton>
+
+                  <DateRangePicker
+                    defaultValue={[dayjs('2024-09-01'), dayjs('2024-10-30')]}
+                  />
+              </DemoItem>
+            </DemoContainer>
+          </LocalizationProvider>
         </DialogContent>
       </Dialog>
-
     </>
   );
 }
 
 export default History;
+
+History.propTypes = {
+  data: PropTypes.array.isRequired,
+};
+
+
