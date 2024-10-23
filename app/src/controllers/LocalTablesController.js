@@ -3,7 +3,7 @@ import Goal from "../models/Goal";
 import Intensity from "../models/Intensity";
 import Achievement from "../models/Achievement";
 import ExerciseType from "../models/ExerciseType";
-import MuscleGroup from "../../../server/models/MuscleGroup";
+import MuscleGroup from "../models/MuscleGroup";
 
 const API_ROUTE = "local";
 const API_GOALS_ROUTE = "goals";

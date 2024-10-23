@@ -1,7 +1,15 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, memo } from "react";
-import { Box, Tabs, Tab, Grid2, Backdrop, CircularProgress,Typography } from "@mui/material";
+import {
+  Box,
+  Tabs,
+  Tab,
+  Grid2,
+  Backdrop,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 // Gadgets Components
 import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
 import { GadgetSchedule } from "../components/GadgetSchedule.jsx";
@@ -9,9 +17,12 @@ import { GadgetPremadeRoutineList } from "../components/GadgetPremadeRoutineList
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getAllPresetRoutines, getRoutinesFromProgram } from "../controllers/RoutineController";
+import {
+  getAllPresetRoutines,
+  getRoutinesFromProgram,
+  getExercisesFromRoutine,
+} from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
-import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
 
 // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
 // import { useLocation } from "react-router-dom";
@@ -19,11 +30,11 @@ import { getExercisesFromRoutine } from "../controllers/RoutineExerciseControlle
 
 const tabStyles = {
   "&.Mui-selected": {
-    outline: "none",  // Removes the blue border for the selected tab
-    border: "none",   // Removes border
+    outline: "none", // Removes the blue border for the selected tab
+    border: "none", // Removes border
   },
   "&:focus": {
-    outline: "none",  // Removes focus outline on keyboard focus
+    outline: "none", // Removes focus outline on keyboard focus
   },
 };
 
@@ -34,7 +45,7 @@ export const TrainingProgram = memo((props) => {
   const [programRoutines, setProgramRoutines] = useState([]);
   const [routineExercises, setRoutineExercises] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
   // const location = useLocation();
@@ -61,7 +72,7 @@ export const TrainingProgram = memo((props) => {
         // }
 
         // Retrieve Preset Routines
-        const presetRoutines =  await getAllPresetRoutines();
+        const presetRoutines = await getAllPresetRoutines();
         setPresetRoutines(presetRoutines);
         console.log(presetRoutines);
 
@@ -77,7 +88,6 @@ export const TrainingProgram = memo((props) => {
         const exercises = await getExercisesFromRoutine(routines[0].id);
         setRoutineExercises(exercises);
         console.log(exercises);
-
       } catch (e) {
         console.log(e);
       } finally {
@@ -88,44 +98,50 @@ export const TrainingProgram = memo((props) => {
   }, []);
 
   // Memoize the "My Program" tab content
-  const myProgramTabContent = useMemo(() => {    
+  const myProgramTabContent = useMemo(() => {
     if (loading) {
-      return
+      return;
     }
     return (
-      <Grid2 container spacing={2} >
+      <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
-        <Grid2 size={{xs:12, md:7}} >
-          <GadgetRoutineOfToday programRoutines = {programRoutines} routineExercises = {routineExercises} />
+        <Grid2 size={{ xs: 12, md: 7 }}>
+          <GadgetRoutineOfToday
+            programRoutines={programRoutines}
+            routineExercises={routineExercises}
+          />
         </Grid2>
         {/* RIGHT COLUMN */}
-        <Grid2 size={{xs:12, md:5}} >
-          <GadgetSchedule programs = {programs} programRoutines = {programRoutines}/>          
+        <Grid2 size={{ xs: 12, md: 5 }}>
+          <GadgetSchedule
+            programs={programs}
+            programRoutines={programRoutines}
+          />
         </Grid2>
       </Grid2>
     );
-  }, [programs, programRoutines, routineExercises, loading]); 
+  }, [programs, programRoutines, routineExercises, loading]);
 
   // Memoize the "Premade Routines" tab content
   const premadeRoutinesTabContent = useMemo(() => {
     if (loading) {
-      return
+      return;
     }
-    return (
-      <GadgetPremadeRoutineList presetRoutines={presetRoutines} />
-    );
+    return <GadgetPremadeRoutineList presetRoutines={presetRoutines} />;
   }, [presetRoutines, loading]);
 
   return (
     <>
       {/* Backdrop for loading */}
       <Backdrop
-        open={loading}  // Control when to show the overlay
-        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading} // Control when to show the overlay
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Box textAlign="center">
           <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>Loading...</Typography>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
         </Box>
       </Backdrop>
 
@@ -135,11 +151,11 @@ export const TrainingProgram = memo((props) => {
         onChange={handleTabChange}
         aria-label="Program and Preset Routine tabs"
       >
-        <Tab label="My Program" sx={ tabStyles } />
-        <Tab label="Premade Routines" sx={ tabStyles } />
+        <Tab label="My Program" sx={tabStyles} />
+        <Tab label="Premade Routines" sx={tabStyles} />
       </Tabs>
 
-      <Box sx={{ marginTop: 2 }} >
+      <Box sx={{ marginTop: 2 }}>
         {/* MY PROGRAM TAB */}
         {activeTab === 0 && myProgramTabContent}
         {/* PREMADE ROUTINES TAB */}
@@ -153,4 +169,4 @@ TrainingProgram.propTypes = {
   title: PropTypes.string,
 };
 
-TrainingProgram.displayName = 'TrainingProgram';
+TrainingProgram.displayName = "TrainingProgram";

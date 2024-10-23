@@ -1,4 +1,4 @@
-export class Exercise {
+export default class Exercise {
   /**
    *
    * @param {string} id
