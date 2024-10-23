@@ -21,7 +21,7 @@ export default class Exercise {
     types
   ) {
     this.id = id;
-    this.routine_id = this.routine_id;
+    this.routine_id = routine_id;
     this.name = name;
     this.description = description;
     this.order = order;

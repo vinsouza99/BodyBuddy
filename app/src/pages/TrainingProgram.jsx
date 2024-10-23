@@ -43,7 +43,7 @@ export const TrainingProgram = memo((props) => {
   const [presetRoutines, setPresetRoutines] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [programRoutines, setProgramRoutines] = useState([]);
-  const [routineExercises, setRoutineExercises] = useState([]);
+  // const [routineExercises, setRoutineExercises] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -74,16 +74,15 @@ export const TrainingProgram = memo((props) => {
         // Retrieve Preset Routines
         const presetRoutines = await getAllPresetRoutines();
         setPresetRoutines(presetRoutines);
-        console.log(presetRoutines);
 
         // Retrieve Program Routines
         const programs = await getAllUserPrograms(user.id);
         setPrograms(programs);
-        console.log(programs);
+        setProgramRoutines(programs[0].routines);
 
-        const routines = await getRoutinesFromProgram(programs[0].id);
-        setProgramRoutines(routines);
-        console.log(routines);
+        // const routines = await getRoutinesFromProgram(programs[0].id);
+        // setProgramRoutines(routines);
+        // console.log(routines);
 
         const exercises = await getExercisesFromRoutine(routines[0].id);
         setRoutineExercises(exercises);

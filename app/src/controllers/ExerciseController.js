@@ -23,10 +23,16 @@ const getExercise = async (id) => {
     const data = await response.data.data;
     const exercise = new Exercise(
       data.id,
+      undefined,
       data.name,
       data.description,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
       data.demo_url,
-      data.types
+      undefined
     );
     return exercise;
   } catch (e) {

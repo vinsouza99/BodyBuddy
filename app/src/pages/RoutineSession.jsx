@@ -24,6 +24,7 @@ import theme from '../theme';
 import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
+import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
@@ -146,14 +147,17 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     // Retrieve routine information from the database (if idType is "routine")
     const fetchRoutineInfo = async () => {
       try {
-        const response = await axiosClient.get(
-          `RoutineExercises/routine/${id}`
-        );
-        if (Number(response.status) !== 200) {
-          throw new Error("Failed to fetch routine info");
-        }
-        console.log(response.data);
-        setRoutine(createRoutineTimeSchedule(response.data.data));
+        // const response = await axiosClient.get(
+        //   `RoutineExercises/routine/${id}`
+        // );
+        // if (Number(response.status) !== 200) {
+        //   throw new Error("Failed to fetch routine info");
+        // }
+        // console.log(response.data);
+        // setRoutine(createRoutineTimeSchedule(response.data.data));
+
+        const exercises = await getExercisesFromRoutine(id);
+        setRoutine(createRoutineTimeSchedule(exercises));
       } catch (error) {
         console.error("Error fetching routine:", error);
       }
@@ -440,13 +444,13 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   
       // Add current exercise to the transformed array
       transformedRoutine.push({
-        name: item.Exercise.name,
+        name: item.name,
         goal: goalString,
         sets: item.sets ? item.sets : 0,
         reps: item.reps ? item.reps : 0,
         duration: item.duration ? (item.duration / 1000) : 0,
         rest_time: (item.rest_time / 1000) ? (item.rest_time / 1000) : 0,
-        image: item.Exercise.demo_url,
+        image: item.demo_url,
       });
     });
   
