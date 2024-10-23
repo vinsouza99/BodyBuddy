@@ -1,5 +1,5 @@
 import axiosClient from "../utils/axiosClient";
-import { Exercise } from "../models/Exercise";
+import Exercise from "../models/Exercise";
 
 const API_ROUTE = "exercises";
 

@@ -1,6 +1,6 @@
 import axiosClient from "../utils/axiosClient";
 import Routine from "../models/Routine";
-import { Exercise } from "../models/Exercise";
+import Exercise from "../models/Exercise";
 import { getExercise } from "./ExerciseController";
 
 const ROUTINE_ROUTE = "routines";
