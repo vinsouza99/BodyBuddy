@@ -94,17 +94,14 @@ function UserInfo({user}) {
         <Box 
           sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
         >
-          {/* <Typography>Primary Goal: {user.settings.goal.name || "No goal set"}</Typography> */}
-          <Typography>Primary Goal: {}</Typography>
+          <Typography>Primary Goal: {user.settings.goal.name || "No goal set"}</Typography>
 
           {/* <Typography>Exercise frequency: {user.settings.frequency.name || "No frequency set"}</Typography> */}
           <Typography>Exercise frequency: {}</Typography>
 
-          {/* <Typography>Exercise intensity: {user.settings.intensity.name || "No intensity set"}</Typography> */}
-          <Typography>Exercise intensity: {}</Typography>
+          <Typography>Exercise intensity: {user.settings.intensity.name || "No intensity set"}</Typography>
 
-          {/* <Typography>When can you exercise: {user.settings.availability.name || "No availability set"}</Typography> */}
-          <Typography>When can you exercise: {}</Typography>
+          <Typography>When can you exercise: {user.schedule || "No availability set"}</Typography>
 
         </Box>
 

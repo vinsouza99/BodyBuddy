@@ -26,9 +26,11 @@ export const Profile = (props) => {
 
   }, [props.title, user]);
 
+
   return (
     <>
-      <Grid container spacing={1}>
+      {Object.keys(currentUser).length > 0 ? (
+        <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
           <UserInfo user={currentUser} />
         </Grid>
@@ -36,8 +38,10 @@ export const Profile = (props) => {
           <History data={history} />
         </Grid>
       </Grid>
+      ) : null}
     </>
   );
+  
 };
 
 export default Profile;
