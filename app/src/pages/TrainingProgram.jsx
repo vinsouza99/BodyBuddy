@@ -9,9 +9,9 @@ import { GadgetPremadeRoutineList } from "../components/GadgetPremadeRoutineList
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getAllPresetRoutines, getRoutinesFromProgram } from "../controllers/RoutineController";
+import { getAllPresetRoutines } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
-import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
+// import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
 
 // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
 // import { useLocation } from "react-router-dom";
@@ -32,7 +32,7 @@ export const TrainingProgram = memo((props) => {
   const [presetRoutines, setPresetRoutines] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [programRoutines, setProgramRoutines] = useState([]);
-  const [routineExercises, setRoutineExercises] = useState([]);
+  // const [routineExercises, setRoutineExercises] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true); 
 
@@ -63,20 +63,19 @@ export const TrainingProgram = memo((props) => {
         // Retrieve Preset Routines
         const presetRoutines =  await getAllPresetRoutines();
         setPresetRoutines(presetRoutines);
-        console.log(presetRoutines);
 
         // Retrieve Program Routines
         const programs = await getAllUserPrograms(user.id);
         setPrograms(programs);
-        console.log(programs);
+        setProgramRoutines(programs[0].routines);
 
-        const routines = await getRoutinesFromProgram(programs[0].id);
-        setProgramRoutines(routines);
-        console.log(routines);
+        // const routines = await getRoutinesFromProgram(programs[0].id);
+        // setProgramRoutines(routines);
+        // console.log(routines);
 
-        const exercises = await getExercisesFromRoutine(routines[0].id);
-        setRoutineExercises(exercises);
-        console.log(exercises);
+        // const exercises = await getExercisesFromRoutine(routines[0].id);
+        // setRoutineExercises(exercises);
+        // console.log(exercises);
 
       } catch (e) {
         console.log(e);
@@ -96,7 +95,7 @@ export const TrainingProgram = memo((props) => {
       <Grid2 container spacing={2} >
         {/* LEFT COLUMN */}
         <Grid2 size={{xs:12, md:7}} >
-          <GadgetRoutineOfToday programRoutines = {programRoutines} routineExercises = {routineExercises} />
+          <GadgetRoutineOfToday programRoutines = {programRoutines} />
         </Grid2>
         {/* RIGHT COLUMN */}
         <Grid2 size={{xs:12, md:5}} >
@@ -104,7 +103,7 @@ export const TrainingProgram = memo((props) => {
         </Grid2>
       </Grid2>
     );
-  }, [programs, programRoutines, routineExercises, loading]); 
+  }, [programs, programRoutines, loading]); 
 
   // Memoize the "Premade Routines" tab content
   const premadeRoutinesTabContent = useMemo(() => {

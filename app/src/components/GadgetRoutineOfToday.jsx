@@ -5,7 +5,7 @@ import { GadgetBase } from './GadgetBase';
 import { RoutineExercisesList } from './RoutineExercisesList';
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
-export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExercises = null }) => {
+export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
   const [open, setOpen] = useState(false);
 
   // Open StartRoutineSessionModal
@@ -30,28 +30,28 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
       {programRoutines && programRoutines.length > 0 ? (
         <>
           <Typography sx={{ width: '100%', textAlign: 'left' }}>
-            programRoutines[0].name 
+            {programRoutines[0].name}
           </Typography>
-          {routineExercises && routineExercises.length > 0 ? (
-            <RoutineExercisesList routineExercises = { routineExercises }/>
+          {programRoutines[0].exercises && programRoutines[0].exercises.length > 0 ? (
+            <RoutineExercisesList routineExercises = { programRoutines[0].exercises }/>
           ) : (
             <Typography>No routines found.</Typography>
           )}
           <Button
             onClick={handleOpen}
             sx={{
-              // backgroundColor: theme.palette.primary.main,
-              backgroundColor: '#94DC8A',
-              color: 'text.secondary',
-              borderRadius: '50%',
               width: '150px',
               height: '150px',
+              color: 'text.primary',
+              backgroundColor: '#4DC53C',
+              borderRadius: '50%',
               padding: 0,
               minWidth: 'unset',
               fontSize: '1.2rem',
               fontVariationSettings: "'wght' 800",
               marginTop: '0.8rem',
               marginBottom: '0.8rem',
+              boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.25)',
             }}
           >
             Get<br />Started
@@ -74,7 +74,7 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
 
 GadgetRoutineOfToday.propTypes = {
   programRoutines: PropTypes.array,
-  routineExercises: PropTypes.array,
+  // routineExercises: PropTypes.array,
 };
 
 GadgetRoutineOfToday.displayName = 'GadgetRoutineOfToday';

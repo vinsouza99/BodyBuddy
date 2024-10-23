@@ -1,7 +1,7 @@
 import axiosClient from "../utils/axiosClient";
 import Routine from "../models/Routine";
-import Exercise from "../models/Exercise";
-import getExercise from "./ExerciseController";
+import { Exercise } from "../models/Exercise";
+import { getExercise } from "./ExerciseController";
 
 const ROUTINE_ROUTE = "routines";
 const PROGRAM_ROUTINE_ROUTE = "program";
@@ -12,27 +12,27 @@ const getRoutinesFromProgram = async (program_id) => {
     const response = await axiosClient.get(
       `${ROUTINE_ROUTE}/${PROGRAM_ROUTINE_ROUTE}/${program_id}`
     );
-    const data = await response.data;
+    const data = await response.data.data;
+
     const routines = await data.map((routine) => {
       return new Routine(
         routine.id,
+        routine.duration,
         routine.program_id,
         routine.name,
         routine.description,
-        routine.duration,
-        routine.preset,
         routine.estimated_calories,
         routine.scheduled_date,
         routine.completed
       );
     });
     if (routines && routines.length > 0) {
-      routines.forEach(async (routine) => {
+      for (const routine of routines) {
         if (routine) {
           const routineExercises = await getExercisesFromRoutine(routine.id);
           routineExercises.forEach((exercise) => routine.addExercise(exercise));
         }
-      });
+      }
     }
     return routines;
   } catch (e) {
@@ -44,24 +44,27 @@ const getAllPresetRoutines = async () => {
   try {
     const response = await axiosClient.get(`${ROUTINE_ROUTE}/presets`);
     const data = await response.data;
-    console.log(data);
     const routines = data.data.rows.map(
       (routine) =>
         new Routine(
           routine.id,
-          routine.created_at,
-          routine.completed_at,
           routine.duration,
           routine.program_id,
           routine.name,
-          routine.description
+          routine.description,
+          routine.estimated_calories,
+          routine.scheduled_date,
+          routine.completed,
+          []
         )
     );
-    if (routines && routines.length > 0)
-      routines.forEach(async (routine) => {
+
+    if (routines && routines.length > 0) {
+      for (const routine of routines) {
         const routineExercises = await getExercisesFromRoutine(routine.id);
         routineExercises.forEach((exercise) => routine.addExercise(exercise));
-      });
+      }
+    }
     return routines;
   } catch (e) {
     console.log(e);
@@ -118,31 +121,48 @@ const getExercisesFromRoutine = async (routine_id) => {
     const response = await axiosClient.get(
       `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}/${routine_id}`
     );
-    const data = await response.data;
+    // Exercise data relating to the specific routine
+    const data = await response.data.data;
+
     const routineExercises = await data.map(
       (exercise) =>
         new Exercise(
           exercise.exercise_id,
-          routine_id,
-          undefined, //name unknown yet
-          undefined, //description unknown yet
+          exercise.routine_id,
+          exercise.name, //name unknown yet
+          exercise.description, //description unknown yet
           exercise.order,
           exercise.sets,
           exercise.reps,
           exercise.duration,
-          exercise.restPeriod
+          exercise.rest_time,
+          exercise.demo_url, // demo_url unknown yet
+          exercise.types // types unknown yet
         )
     );
-    const promises = [];
-    await routineExercises.forEach(async (exercise) => {
-      promises.push(getExercise(exercise.exercise_id));
-    });
-    //
-    // "forEach does not properly wait for asynchronous operations."
-    Promise.all(promises).then(async (response) => {
-      //TODO get the remainig info from the response (name, descirption, demo_url) and add it to the exercise objects in routineExercises based on their ids
-      return routineExercises;
-    });
+
+    // const promises = [];
+    // await routineExercises.forEach(async (exercise) => {
+    //   promises.push(getExercise(exercise.exercise_id));
+    // });
+    // //
+    // // "forEach does not properly wait for asynchronous operations."
+    // Promise.all(promises).then(async (response) => {
+    //   //TODO get the remainig info from the response (name, descirption, demo_url) and add it to the exercise objects in routineExercises based on their ids
+    //   return routineExercises;
+    // });
+    const exerciseDetails = await Promise.all(
+      routineExercises.map(async (exercise) => {
+        const detailedExercise = await getExercise(exercise.id);
+        return {
+          ...exercise,
+          name: detailedExercise.name,
+          description: detailedExercise.description,
+          demo_url: detailedExercise.demo_url,
+        };
+      })
+    );
+    return exerciseDetails;
   } catch (e) {
     console.log(e);
   }

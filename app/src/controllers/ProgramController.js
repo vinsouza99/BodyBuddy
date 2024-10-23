@@ -27,10 +27,9 @@ const getProgram = async (id) => {
 const getAllUserPrograms = async (user_id) => {
   try {
     if (!user_id) throw new Error("user id is null");
-    console.log(`${API_ROUTE}/user/${user_id}`);
     const response = await axiosClient.get(`${API_ROUTE}/user/${user_id}`);
     const data = await response.data;
-    console.log(data.data.rows);
+
     const programs = data.data.rows.map(
       (program) =>
         new Program(
@@ -43,12 +42,13 @@ const getAllUserPrograms = async (user_id) => {
           program.description
         )
     );
-    programs.forEach(async (program) => {
+    for (const program of programs) {
       const programRoutines = await getRoutinesFromProgram(program.id);
-      if (programRoutines)
+      if (programRoutines) {
         programRoutines.forEach((routine) => program.addRoutine(routine));
-    });
-    console.log(programs);
+      }
+    }
+    
     return programs;
   } catch (e) {
     console.log(e);
