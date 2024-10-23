@@ -964,7 +964,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                   display: 'flex',
                   alignItems: 'center', 
                   justifyContent: 'flex-end',
-                  // color: `${theme.palette.secondary.main}`,
                   color: `white`,
                   cursor: 'pointer',
                 }}

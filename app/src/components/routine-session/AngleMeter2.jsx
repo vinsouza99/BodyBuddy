@@ -4,11 +4,8 @@ import { Box, Typography } from '@mui/material';
 import { useEffect, useState, useRef } from 'react';
 // Custom Components for Routine Session
 import { useLandscapeMode } from './useLandscapeMode';
-// Common Components
-import { useTheme } from '@mui/material/styles';
 
 export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
-  const theme = useTheme();
   const isLandscapeMode = useLandscapeMode();
   const [displayedAngle, setDisplayedAngle] = useState(maxAngle);
   const [widthPercentage, setWidthPercentage] = useState(0);
@@ -85,7 +82,6 @@ export const AngleMeter2 = ({ angle = 180, minAngle = 90, maxAngle = 170 }) => {
             sx={{
               width: `${widthPercentage}%`,
               height: '100%',
-              // backgroundColor: `${theme.palette.secondary.main}`,
               backgroundColor: `white`,
               transition: 'width 0.1s ease',
               borderRadius: '15px',
