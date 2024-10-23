@@ -33,7 +33,7 @@ const Routine = sequelize.define(
   },
   {
     tableName: "routine",
-    timestamps: true,
+    timestamps: false,
   }
 );
 

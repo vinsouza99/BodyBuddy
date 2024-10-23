@@ -5,7 +5,7 @@ import { GadgetBase } from './GadgetBase';
 import { RoutineExercisesList } from './RoutineExercisesList';
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
-export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExercises = null }) => {
+export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
   const [open, setOpen] = useState(false);
 
   // Open StartRoutineSessionModal
@@ -30,10 +30,10 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
       {programRoutines && programRoutines.length > 0 ? (
         <>
           <Typography sx={{ width: '100%', textAlign: 'left' }}>
-            programRoutines[0].name 
+            {programRoutines[0].name}
           </Typography>
-          {routineExercises && routineExercises.length > 0 ? (
-            <RoutineExercisesList routineExercises = { routineExercises }/>
+          {programRoutines[0].exercises && programRoutines[0].exercises.length > 0 ? (
+            <RoutineExercisesList routineExercises = { programRoutines[0].exercises }/>
           ) : (
             <Typography>No routines found.</Typography>
           )}
@@ -74,7 +74,7 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null, routineExerc
 
 GadgetRoutineOfToday.propTypes = {
   programRoutines: PropTypes.array,
-  routineExercises: PropTypes.array,
+  // routineExercises: PropTypes.array,
 };
 
 GadgetRoutineOfToday.displayName = 'GadgetRoutineOfToday';
