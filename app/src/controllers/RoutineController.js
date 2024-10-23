@@ -142,16 +142,6 @@ const getExercisesFromRoutine = async (routine_id) => {
         )
     );
 
-    // const promises = [];
-    // await routineExercises.forEach(async (exercise) => {
-    //   promises.push(getExercise(exercise.exercise_id));
-    // });
-    // //
-    // // "forEach does not properly wait for asynchronous operations."
-    // Promise.all(promises).then(async (response) => {
-    //   //TODO get the remainig info from the response (name, descirption, demo_url) and add it to the exercise objects in routineExercises based on their ids
-    //   return routineExercises;
-    // });
     const exerciseDetails = await Promise.all(
       routineExercises.map(async (exercise) => {
         const detailedExercise = await getExercise(exercise.id);
