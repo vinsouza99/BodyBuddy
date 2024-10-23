@@ -46,17 +46,6 @@ export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClick
 
   const weekdays = getWeekdays(startDate);
 
-  // Check if the day is in the scheduledDates array
-  // const isScheduled = (day) => {
-  //   console.log("Checking if scheduled:", format(day, 'yyyy-MM-dd')); 
-  //   scheduledDates.forEach(scheduledDate => {
-  //     const parsedDate = parseISO(scheduledDate);
-  //     console.log("Scheduled date:", format(parsedDate, 'yyyy-MM-dd'));
-  //     console.log("Comparison result:", isSameDay(parsedDate, day));
-  //   });
-  //   return scheduledDates.some((scheduledDate) => isSameDay(parseISO(scheduledDate), day));
-  // };
-
   const isScheduled = (day) => {
     return scheduledDates.some((scheduledDate) => {
       const utcDate = parseISO(scheduledDate);
@@ -65,12 +54,6 @@ export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClick
     });
   };
   
-  // const formattedDay = (day) => {
-  //   const zonedDay = toZonedTime(day, timeZone); 
-  //   return format(zonedDay, 'yyyy-MM-dd');
-  // };
-
-
   return (
     <Box
       sx={{

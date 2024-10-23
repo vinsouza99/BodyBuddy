@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
-import { format } from 'date-fns';
 import { Box, Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
+import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export const RoutinesList = ({ routines }) => {
   const timeZone = 'America/Vancouver';
+  const today = new Date();
 
   return (
     <>
@@ -21,14 +22,14 @@ export const RoutinesList = ({ routines }) => {
               sx={{
                 textAlign: 'left',
                 borderLeft: '3px solid', 
-                borderColor: 'primary.main'
+                borderColor: isSameDay(parseISO(routine.scheduled_date), today) ? 'secondary.main' : 'primary.main',
               }}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
-                sx={{ height: '80px'}}
+                sx={{ height: '80px' }}
               >
-                <Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>
                 <Box component="span" sx={{ marginRight: '1rem' }}>
                   {format(toZonedTime(routine.scheduled_date, timeZone), 'MMM d')}:
                 </Box>
