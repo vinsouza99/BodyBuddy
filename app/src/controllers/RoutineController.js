@@ -3,14 +3,14 @@ import Routine from "../models/Routine";
 import Exercise from "../models/Exercise";
 import { getExercise } from "./ExerciseController";
 
-const ROUTINE_ROUTE = "routines";
-const PROGRAM_ROUTINE_ROUTE = "program";
-const ROUTINE_EXERCISE_ROUTE = "exercises";
+const API_ROUTE = "routines";
+const API_PROGRAM_ROUTINE_ROUTE = "program";
+const API_ROUTINE_EXERCISE_ROUTE = "exercises";
 
 const getRoutinesFromProgram = async (program_id) => {
   try {
     const response = await axiosClient.get(
-      `${ROUTINE_ROUTE}/${PROGRAM_ROUTINE_ROUTE}/${program_id}`
+      `${API_ROUTE}/${API_PROGRAM_ROUTINE_ROUTE}/${program_id}`
     );
     const data = await response.data.data;
 
@@ -42,7 +42,7 @@ const getRoutinesFromProgram = async (program_id) => {
 
 const getAllPresetRoutines = async () => {
   try {
-    const response = await axiosClient.get(`${ROUTINE_ROUTE}/presets`);
+    const response = await axiosClient.get(`${API_ROUTE}/presets`);
     const data = await response.data;
     const routines = data.data.rows.map(
       (routine) =>
@@ -97,11 +97,11 @@ const createRoutine = async (routineObj) => {
       routineObj.scheduled_date,
       routineObj.completed
     );
-    await axiosClient.post(`${ROUTINE_ROUTE}`, routine);
+    await axiosClient.post(`${API_ROUTE}`, routine);
     // if (response.status == 201) {
     //   for (const exercise of routineObj.exercises) {
     //     const response = await createRoutineExercise(exercise);
-        
+
     //     if (response.status === 201) {
     //       routine.exercises.push(response.data);
     //     }
@@ -120,7 +120,7 @@ const createRoutine = async (routineObj) => {
 const getExercisesFromRoutine = async (routine_id) => {
   try {
     const response = await axiosClient.get(
-      `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}/${routine_id}`
+      `${API_ROUTE}/${API_ROUTINE_EXERCISE_ROUTE}/${routine_id}`
     );
     // Exercise data relating to the specific routine
     const data = await response.data.data;
@@ -181,7 +181,7 @@ const createRoutineExercise = async (exerciseObj) => {
       rest_time: exerciseObj.restPeriod,
     };
     return await axiosClient.post(
-      `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}`,
+      `${API_ROUTE}/${API_ROUTINE_EXERCISE_ROUTE}`,
       routineExercise
     );
   } catch (e) {

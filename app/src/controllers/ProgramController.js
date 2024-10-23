@@ -3,7 +3,7 @@ import { Program } from "../models/Program";
 import { getRoutinesFromProgram } from "./RoutineController";
 
 const API_ROUTE = "programs";
-const PROGRAM_ROUTINE_ROUTE = "routines";
+const API_PROGRAM_ROUTINE_ROUTE = "routines";
 
 const getProgram = async (id) => {
   try {
@@ -49,7 +49,7 @@ const getAllUserPrograms = async (user_id) => {
         programRoutines.forEach((routine) => program.addRoutine(routine));
       }
     }
-    
+
     return programs;
   } catch (e) {
     console.log(e);
@@ -75,7 +75,12 @@ const createProgram = async (user_id, generatedProgramObj) => {
   }
 };
 
-const createProgramRoutine = async (program_id, routine_id, scheduled_date, completed) => {
+const createProgramRoutine = async (
+  program_id,
+  routine_id,
+  scheduled_date,
+  completed
+) => {
   try {
     const programRoutine = {
       program_id: program_id,
@@ -84,12 +89,12 @@ const createProgramRoutine = async (program_id, routine_id, scheduled_date, comp
       completed: completed,
     };
     return await axiosClient.post(
-      `${API_ROUTE}/${PROGRAM_ROUTINE_ROUTE}`,
+      `${API_ROUTE}/${API_PROGRAM_ROUTINE_ROUTE}`,
       programRoutine
     );
   } catch (e) {
     console.log(e);
   }
-}
+};
 
 export { getProgram, getAllUserPrograms, createProgram, createProgramRoutine };

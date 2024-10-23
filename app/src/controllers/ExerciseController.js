@@ -7,9 +7,9 @@ import {
 } from "./LocalTablesController";
 
 const API_ROUTE = "exercises";
-const EXERCISE_TYPE_ROUTE = "types";
-const EXERCISE_GOALS_ROUTE = "goals";
-const EXERCISE_MUSCLE_GROUPS_ROUTE = "muscleGroups";
+const API_EXERCISE_TYPE_ROUTE = "types";
+const API_EXERCISE_GOALS_ROUTE = "goals";
+const API_EXERCISE_MUSCLE_GROUPS_ROUTE = "muscleGroups";
 
 const getAllExercises = async () => {
   const response = await axiosClient.get(`${API_ROUTE}`);
@@ -64,7 +64,7 @@ const getExercise = async (id) => {
 const getExerciseTypes = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${API_ROUTE}/${EXERCISE_TYPE_ROUTE}/${id}`
+      `${API_ROUTE}/${API_EXERCISE_TYPE_ROUTE}/${id}`
     );
     const data = await response.data;
     const promises = [];
@@ -85,7 +85,7 @@ const getExerciseTypes = async (id) => {
 const getExerciseGoals = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${API_ROUTE}/${EXERCISE_GOALS_ROUTE}/${id}`
+      `${API_ROUTE}/${API_EXERCISE_GOALS_ROUTE}/${id}`
     );
     const data = await response.data;
     const promises = [];
@@ -106,7 +106,7 @@ const getExerciseGoals = async (id) => {
 const getExerciseMuscleGroups = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${API_ROUTE}/${EXERCISE_MUSCLE_GROUPS_ROUTE}/${id}`
+      `${API_ROUTE}/${API_EXERCISE_MUSCLE_GROUPS_ROUTE}/${id}`
     );
     const data = await response.data;
     const promises = [];
