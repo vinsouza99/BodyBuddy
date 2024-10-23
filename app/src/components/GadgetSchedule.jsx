@@ -35,7 +35,7 @@ export const GadgetSchedule = memo(({ programs = null, programRoutines = null })
           : <Typography>No available program</Typography>
         }
 
-        {programRoutines
+        {programRoutines && programRoutines.length > 0
           ? programRoutines.map((routine) => (
               <RoutinesList key={routine.id} routine={routine} />
             ))

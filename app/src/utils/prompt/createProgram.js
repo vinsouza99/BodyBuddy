@@ -25,8 +25,10 @@ export const createProgram = {
   {
     "program": {
       "id": "<uuid>",
+      "duration": <number>, -- In milliseconds
       "name": "<string>",
       "description": "<string>"
+      "goal_id": "<number>", -- Fixed value 1
     },
     "program_routine": [{
       "program_id": "<uuid>",
@@ -41,6 +43,9 @@ export const createProgram = {
       "description": "<string>"
       "duration": <number>, -- In milliseconds
       "preset": "FALSE" -- This is fixed value
+      ”estimated_calories”: <number>, -- You can calculate this based on the exercises
+      "scheduled_date": "<date>", -- The first routine should be scheduled on the first available date
+      "completed": "FALSE" -- This is fixed value
     },{},{}...], -- You can have multiple routines if required
     "routine_exercise": [{
       "routine_id": "<uuid>",

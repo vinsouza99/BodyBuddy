@@ -97,15 +97,16 @@ const createRoutine = async (routineObj) => {
       routineObj.scheduled_date,
       routineObj.completed
     );
-    let response = await axiosClient.post(`${ROUTINE_ROUTE}`, routine);
-    if (response.status() == 201) {
-      routineObj.exercises.forEach(async (exercise) => {
-        response = await createRoutineExercise(exercise);
-        if (response.status() == 201) {
-          routine.exercises.push(response.data);
-        }
-      });
-    }
+    await axiosClient.post(`${ROUTINE_ROUTE}`, routine);
+    // if (response.status == 201) {
+    //   for (const exercise of routineObj.exercises) {
+    //     const response = await createRoutineExercise(exercise);
+        
+    //     if (response.status === 201) {
+    //       routine.exercises.push(response.data);
+    //     }
+    //   }
+    // }
     return routine;
   } catch (e) {
     console.log(e);
@@ -177,7 +178,7 @@ const createRoutineExercise = async (exerciseObj) => {
       sets: exerciseObj.sets,
       reps: exerciseObj.reps,
       duration: exerciseObj.duration,
-      restPeriod: exerciseObj.restPeriod,
+      rest_time: exerciseObj.restPeriod,
     };
     return await axiosClient.post(
       `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}`,
@@ -191,5 +192,6 @@ export {
   getRoutinesFromProgram,
   getAllPresetRoutines,
   createRoutine,
+  createRoutineExercise,
   getExercisesFromRoutine,
 };

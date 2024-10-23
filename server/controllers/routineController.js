@@ -27,24 +27,8 @@ export const getRoutinesByProgram = async (req, res) => {
         program_id: program_id,
       },
     });
-    console.log("LINE31:");
-    console.log(program_routines);
 
     const programRoutines = [];
-    // program_routines.forEach(async (program_routine) => {
-    //   const routine = await Routine.findByPk(program_routine.routine_id);
-    //   programRoutines.push({
-    //     id: routine.id,
-    //     program_id: program_routine.program_id,
-    //     name: routine.name,
-    //     description: routine.description,
-    //     duration: routine.duration,
-    //     preset: routine.preset,
-    //     estimated_calories: routine.estimated_calories,
-    //     scheduled_date: program_routine.scheduled_date,
-    //     completed: program_routine.completed,
-    //   });
-    // });
     for (const program_routine of program_routines) {
       const routine = await Routine.findByPk(program_routine.routine_id);
       programRoutines.push({
@@ -59,8 +43,6 @@ export const getRoutinesByProgram = async (req, res) => {
         completed: program_routine.completed,
       });
     }
-    console.log("LINE49:");
-    console.log(programRoutines);
 
     res.status(200).json({
       status: "200",
@@ -249,7 +231,7 @@ export const createRoutineExercise = async (req, res) => {
   try {
     const { exercise_id, routine_id, reps, sets, order, duration, rest_time } =
       req.body;
-    const newRoutineExercise = await RoutineExercise.create({
+    const newRoutineExercise = await RoutineExercise.upsert({
       exercise_id,
       routine_id,
       reps,
