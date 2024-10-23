@@ -87,7 +87,7 @@ export const Dashboard = (props) => {
           throw new Error("Failed to get OpenAI response");
         }
         const parsedContent = JSON.parse(response_openai.data.data.choices[0].message.content);
-        console.log(parsedContent);
+        console.log("AI generated data:" + parsedContent);
 
         // Insert program data into the database
         const response_program = await axiosClient.post(
