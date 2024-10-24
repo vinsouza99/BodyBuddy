@@ -3,7 +3,7 @@ import UserSchedule from "../models/UserSchedule.js";
 import UserProgress from "../models/UserProgress.js";
 import UserSettings from "../models/UserSettings.js";
 import UserAchievement from "../models/UserAchievement.js";
-import { getAchievement } from "./localTablesController.js";
+import UserAccumulatedTime from "../models/UserAccumulatedTime.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -363,6 +363,62 @@ export const createUserAchievement = async (req, res) => {
       message: "Success",
       data: userAchievement,
     });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getUserAccumulatedTime = async (req, res) => {
+  try {
+    const user_id = req.params.user_id;
+    const userAccumulatedTimes = await UserAccumulatedTime.findAll({
+      where: { user_id: user_id },
+    });
+    if (!userAccumulatedTimes) {
+      return res.status(404).json({
+        status: "404",
+        message: "User accumulated times not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: userAccumulatedTimes,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const updateUserAccumulatedTime = async (req, res) => {
+  try {
+    const user_id = req.params.user_id;
+    const { date, minutes } = req.body;
+    const userAccumulatedTime = await UserAccumulatedTime.findOrCreate({
+      where: {
+        user_id: user_id,
+        date: date,
+      },
+    });
+    if (userAccumulatedTime) {
+      userAccumulatedTime.minutes = userAccumulatedTime.minutes += minutes;
+      const updatedUserAccumulatedTime = await UserAccumulatedTime.update(
+        userAccumulatedTime
+      );
+      res.status(200).json({
+        status: "201",
+        message: "Success",
+        data: updatedUserAccumulatedTime,
+      });
+    } else {
+      throw new Error("Error while finding or creating user accumulating time");
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({

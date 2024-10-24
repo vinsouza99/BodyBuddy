@@ -14,6 +14,8 @@ import {
   updateUserSchedule,
   getUserAchievements,
   createUserAchievement,
+  getUserAccumulatedTime,
+  updateUserAccumulatedTime,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -424,4 +426,69 @@ router.get("/achievement/:id", getUserAchievements);
  *         description: User not found
  */
 router.post("/achievement/:id", createUserAchievement);
+
+/**
+ * @swagger
+ * /Users/Progress/AccumulatedTime/{id}:
+ *   get:
+ *     summary: Get the amount of time spent working out from a User by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: UUID
+ *         required: true
+ *         description: The ID of the User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: The User accumulated times were successfully retrieved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.get("/progress/accumulatedTime/:user_id", getUserAccumulatedTime);
+/**
+ * @swagger
+ * /Users/Progress/AccumulatedTime/{id}:
+ *   put:
+ *     summary: Update the amount of time spent working out from a User by ID
+ *     tags: [Users]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: UUID
+ *         required: true
+ *         description: The ID of the User
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: The User accumulated time was successfully updated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       404:
+ *         description: User not found
+ *       500:
+ *         description: Server error
+ */
+router.put("/progress/accumulatedTime/:user_id", updateUserAccumulatedTime);
 export default router;
