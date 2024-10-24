@@ -131,18 +131,6 @@ export function Landing() {
             </Button>
           </Typography>
 
-          {/* Sign Up link */}
-          <Typography variant="body2">
-            Don't have an account? (for testing only){" "}
-            <Button
-              variant="text"
-              color="primary"
-              component={NavLink}
-              to="/signup"
-            >
-              Sign Up
-            </Button>
-          </Typography>
         </Container>
       </Grid>
     </Grid>
