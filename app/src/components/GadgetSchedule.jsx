@@ -8,7 +8,6 @@ import { RoutinesList } from "../components/RoutinesList";
 export const GadgetSchedule = memo(({ programs = null, programRoutines = null }) => {
   // Create array of shceduled dates
   const scheduledDates = programRoutines.map((routine) => routine.scheduled_date);
-  console.log(scheduledDates);
 
   return (
     <GadgetBase>

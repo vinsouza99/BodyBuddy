@@ -15,6 +15,7 @@ import { setPageTitle } from "../utils/utils";
 import { getUserProgress } from '../controllers/UserController';
 import { createProgramRoutine } from '../controllers/ProgramController';
 import { createRoutineExercise } from '../controllers/RoutineController';
+import { getRoutineHistory } from '../controllers/RoutineController';
 import axiosClient from '../utils/axiosClient';
 // Prompts
 import { createProgram } from '../utils/prompt/createProgram';
@@ -22,29 +23,11 @@ import { createProgram } from '../utils/prompt/createProgram';
 export const Dashboard = (props) => {
   const { user } = useAuth();
   const [userProgress, setUserProgress] = useState(null);
+  const [userHistory, setUserHistory] = useState(null);
   const [generating, setGenerating] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
-
-  // Initialization
-  useEffect(() => {
-    setPageTitle(props.title);
-  }, [props.title]);
-
-  // Load user progress data
-  useEffect(() => {
-    console.log("GadgetStreaks mounted");
-    const loadUserdata = async () => {
-      const userProgress = await getUserProgress(user.id);
-      console.log(userProgress);
-      setUserProgress(userProgress);
-    }
-    loadUserdata();
-
-    return () => {
-      console.log("GadgetStreaks unmounted");
-    };
-  }, []);
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -52,6 +35,38 @@ export const Dashboard = (props) => {
       navigate(window.location.pathname, { replace: true });
     }
   }, [navigate]);
+
+  // Initialization
+  useEffect(() => {
+    setPageTitle(props.title);
+
+    const loadUserdata = async () => {
+      try {
+        const userProgress = await getUserProgress(user.id);
+        setUserProgress(userProgress);
+      } catch (error) {
+        console.error("Error loading user progress data:", error);
+      }
+    }
+    loadUserdata();
+
+    const loadHistory = async () => {
+      try {
+        const routineHistories = await getRoutineHistory(user.id);
+        // Create Array of history (completed_at)
+        setUserHistory(routineHistories.map((history) => history.completed_at));
+      } catch (error) {
+        console.error("Error loading routine history data:", error);
+      }
+    }
+    loadHistory();
+  }, []);
+
+  useEffect(() => {
+    if (userHistory || userProgress) {
+      setLoading(false);
+    }
+  }, [userHistory, userProgress]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
@@ -78,6 +93,7 @@ export const Dashboard = (props) => {
     const generatePersonalizedProgram = async () => {
       setGenerating(true);
       try {
+        // TODO: Create and Use the font-end controller.
         // OpenAI will generate the program data
         const response_openai = await axiosClient.post(
           `openai/`,
@@ -89,6 +105,7 @@ export const Dashboard = (props) => {
         const parsedContent = JSON.parse(response_openai.data.data.choices[0].message.content);
         console.log("AI generated data:" + parsedContent);
 
+        // TODO: Create and Use the font-end controller.
         // Insert program data into the database
         const response_program = await axiosClient.post(
           'programs/',
@@ -103,7 +120,6 @@ export const Dashboard = (props) => {
 
         // Insert routine data into the database
         for (const routine_item of parsedContent.routine) {
-          // console.log(routine_item);
           const response_routine = await axiosClient.post('routines/', routine_item);
           if (Number(response_routine.status) !== 201) {
             throw new Error("Failed to insert routine info");
@@ -157,7 +173,7 @@ export const Dashboard = (props) => {
 
   return (
     <>
-      {/* Backdrop for loading */}
+      {/* Backdrop for generating, loading */}
       <Backdrop
         open={generating}  // Control when to show the overlay
         sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -168,31 +184,29 @@ export const Dashboard = (props) => {
         </Box>
       </Backdrop>
 
+      <Backdrop
+        open={loading}  // Control when to show the overlay
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ mt: 2 }}>Loading...</Typography>
+        </Box>
+      </Backdrop>
+
       <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
         <Grid2 size={{xs:12, md:6}}>
-          <Box
-            sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              gap: 2,
-            }
-          }>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2,}}>
             {/* ADD GADGETS HERE */}
             <GadgetUserProfile userProgress={userProgress} />
-            <GadgetStreaks userProgress={userProgress} />
+            <GadgetStreaks userProgress={userProgress} userHidtory={userHistory} />
             <GadgetFavourite />
           </Box>
         </Grid2>
         {/* RIGHT COLUMN */}
         <Grid2 size={{xs:12, md:6}} >
-          <Box
-            sx={{ 
-              display: 'flex', 
-              flexDirection: 'column',
-              gap: 2,
-            }
-          }>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2,}}>
             {/* ADD GADGETS HERE*/}
             <GadgetAchievement />
             <GadgetHistory />
