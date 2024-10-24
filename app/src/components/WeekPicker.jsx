@@ -39,7 +39,7 @@ export const WeekPicker = ({
     setStartDate(subDays(startDate, 7));
     setEndDate(subDays(endDate, 7));
     if (typeof onClickPreviousWeek === 'function') {
-      onClickPreviousWeek(addDays(startDate, 7));
+      onClickPreviousWeek(addDays(startDate, -7));
     }
   };
 
