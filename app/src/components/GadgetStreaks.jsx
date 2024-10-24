@@ -7,7 +7,7 @@ import { WeekPicker } from "./WeekPicker";
 import flame1 from '../assets/flame-solid_1.png';
 import flame2 from '../assets/flame-solid_2.png';
 
-export const GadgetStreaks = ({ userProgress = null }) => {
+export const GadgetStreaks = ({ userProgress = null, userHidtory = null }) => {
   const navigate = useNavigate();
   
   return (
@@ -35,7 +35,7 @@ export const GadgetStreaks = ({ userProgress = null }) => {
             color="black" />
         </Box>
       </Box>
-      <WeekPicker />
+      <WeekPicker scheduledDates={userHidtory} scheduledDatesBorderColor={"transparent"} scheduledDatesBgColor={"#B8E8B1"}/>
       <Typography>
         Exercise at least 3 times a week to keep your streak not reset
       </Typography>
@@ -54,4 +54,5 @@ export const GadgetStreaks = ({ userProgress = null }) => {
 
 GadgetStreaks.propTypes = {
   userProgress: PropTypes.object,
+  userHidtory: PropTypes.array,
 };
