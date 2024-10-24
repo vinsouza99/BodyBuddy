@@ -9,10 +9,16 @@ const getAllExercises = async () => {
     (exercise) =>
       new Exercise(
         exercise.id,
+        undefined,
         exercise.name,
         exercise.description,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
         exercise.demo_url,
-        exercise.type
+        undefined
       )
   );
   return exercises;
