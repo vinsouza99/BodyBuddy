@@ -112,9 +112,9 @@ export const Learn = (props) => {
       {/* Tab for Exercises by Muscle */}
       <CustomTabPanel value={value} index={0}>
         <Box display="flex" gap={1} sx={{ marginTop: 2, marginBottom: 4 }}>
-          <FormControl sx={{ width: 200 }}>
+          {/* <FormControl sx={{ width: 200 }}> */}
             {/* Dropdown for selecting difficulty */}
-            <InputLabel id="demo-simple-select-label">Difficulty</InputLabel>
+            {/* <InputLabel id="demo-simple-select-label">Difficulty</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -127,7 +127,7 @@ export const Learn = (props) => {
               <MenuItem value={30}>Intermediate</MenuItem>
               <MenuItem value={30}>Advanced</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
 
           {/* Buttons for filtering exercises by muscle groups */}
           {muscleGroups.map((muscleGroup) => (
@@ -155,9 +155,9 @@ export const Learn = (props) => {
       {/* Tab for Exercises by Goal */}
       <CustomTabPanel value={value} index={1}>
         <Box display="flex" gap={1} sx={{ marginTop: 2, marginBottom: 4 }}>
-          <FormControl sx={{ width: 200 }}>
+          {/* <FormControl sx={{ width: 200 }}> */}
             {/* Dropdown for selecting difficulty */}
-            <InputLabel id="demo-simple-select-label">Difficulty</InputLabel>
+            {/* <InputLabel id="demo-simple-select-label">Difficulty</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -170,7 +170,7 @@ export const Learn = (props) => {
               <MenuItem value={30}>Intermediate</MenuItem>
               <MenuItem value={30}>Advanced</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
           {/* Buttons for filtering exercises by fitness goals */}
           {goals.map((goal) => (
             <Button

@@ -40,6 +40,7 @@ export const SignIn = (props) => {
   
   const handleSignIn = async (e) => {
     e.preventDefault();
+    localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
 
     try {
       const { error } = await supabase.auth.signInWithPassword({
@@ -58,6 +59,7 @@ export const SignIn = (props) => {
 
   const handleGoogleSignIn = async (e) => {
     e.preventDefault();
+    localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
 
     try {
       const { data, error } = await supabase.auth.signInWithOAuth({
@@ -192,6 +194,7 @@ export const SignIn = (props) => {
                   color="primary"
                   component={NavLink}
                   to="/create-program"
+                  onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
                 >
                   Start here
                 </Button>

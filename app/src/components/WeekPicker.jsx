@@ -6,7 +6,16 @@ import { toZonedTime } from 'date-fns-tz';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClickPreviousWeek = null, displayMode = "full", scheduledDates = [] }) => {
+export const WeekPicker = ({
+  onSelectDate = null,
+  onClickNextWeek = null,
+  onClickPreviousWeek = null,
+  displayMode = "full",
+  scheduledDates = [],
+  scheduledDatesBorderColor = "primary.main",
+  scheduledDatesBgColor = "transparent",
+
+}) => {
   const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
   const [endDate, setEndDate] = useState(getStartOfWeek(addDays(new Date(), 7)));
   const today = new Date();
@@ -30,7 +39,7 @@ export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClick
     setStartDate(subDays(startDate, 7));
     setEndDate(subDays(endDate, 7));
     if (typeof onClickPreviousWeek === 'function') {
-      onClickPreviousWeek(addDays(startDate, 7));
+      onClickPreviousWeek(addDays(startDate, -7));
     }
   };
 
@@ -47,6 +56,7 @@ export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClick
   const weekdays = getWeekdays(startDate);
 
   const isScheduled = (day) => {
+    if (!scheduledDates || scheduledDates.length === 0) return false;
     return scheduledDates.some((scheduledDate) => {
       const utcDate = parseISO(scheduledDate);
       const zonedDay = toZonedTime(day, timeZone);
@@ -84,7 +94,6 @@ export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClick
           <ArrowBackIosNewIcon />
         </IconButton>
 
-
         {displayMode === 'full' ? (
           weekdays.map((day, index) => (
             <Box
@@ -106,7 +115,8 @@ export const WeekPicker = ({onSelectDate = null, onClickNextWeek = null, onClick
                   lineHeight: '30px',
                   border: '1px solid',
                   borderRadius: '50%',
-                  borderColor: isSameDay(day, today) ? 'secondary.main' : isScheduled(day) ? 'primary.main' : 'transparent',
+                  borderColor: isSameDay(day, today) ? 'secondary.main' : isScheduled(day) ? scheduledDatesBorderColor : 'transparent',
+                  backgroundColor: isSameDay(day, today) ? 'transparent' : isScheduled(day) ? scheduledDatesBgColor : 'transparent',
                 }}
               >
                 {format(day, 'dd')}
@@ -139,4 +149,6 @@ WeekPicker.propTypes = {
   onClickPreviousWeek: PropTypes.func,
   displayMode: PropTypes.string,
   scheduledDates: PropTypes.array,
+  scheduledDatesBorderColor: PropTypes.string,
+  scheduledDatesBgColor: PropTypes.string,
 };

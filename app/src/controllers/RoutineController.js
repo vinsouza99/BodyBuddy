@@ -1,6 +1,7 @@
 import axiosClient from "../utils/axiosClient";
 import Routine from "../models/Routine";
 import Exercise from "../models/Exercise";
+import RoutineHistory from "../models/RoutineHistory";
 import { getExercise } from "./ExerciseController";
 
 const API_ROUTE = "routines";
@@ -182,6 +183,31 @@ const createRoutineExercise = async (exerciseObj) => {
     console.log(e);
   }
 };
+
+const getRoutineHistory = async (user_id) => {
+  try {
+    const response = await axiosClient.get(`${ROUTINE_ROUTE}/history/${user_id}`);
+
+    const data = await response.data.data;
+
+    const routineHistories = await data.map(
+      (routineHistory) =>
+        new RoutineHistory(
+          routineHistory.user_id,
+          routineHistory.routine_id,
+          routineHistory.completed_at,
+          routineHistory.recording_URL,
+          routineHistory.score,
+          routineHistory.calories
+        )
+    );
+
+    return routineHistories;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 export {
   getRoutinesFromProgram,
   getUserCompletedRoutines,
@@ -189,4 +215,7 @@ export {
   createRoutine,
   createRoutineExercise,
   getExercisesFromRoutine,
+  getRoutineHistory,
 };
+
+

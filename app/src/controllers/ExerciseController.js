@@ -17,21 +17,18 @@ const getAllExercises = async () => {
     (exercise) =>
       new Exercise(
         exercise.id,
+        undefined,
         exercise.name,
         exercise.description,
-        exercise.demo_url
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        exercise.demo_url,
+        undefined
       )
   );
-  exercises.forEach(async (exercise) => {
-    const exerciseTypesResponse = await getExerciseTypes(exercise.id);
-    const exerciseGoalsResponse = await getExerciseGoals(exercise.id);
-    const exerciseMuscleGroupsResponse = await getExerciseMuscleGroups(
-      exercise.id
-    );
-    exercise.types = exerciseTypesResponse;
-    exercise.goals = exerciseGoalsResponse;
-    exercise.muscleGroups = exerciseMuscleGroupsResponse;
-  });
   return exercises;
 };
 const getExercise = async (id) => {

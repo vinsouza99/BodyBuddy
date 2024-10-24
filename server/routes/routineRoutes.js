@@ -12,6 +12,7 @@ import {
   updateRoutineExercise,
   getUserRoutineHistory,
   createRoutineHistory,
+  getRoutineHistory,
 } from "../controllers/routineController.js";
 
 const router = express.Router();
@@ -202,6 +203,7 @@ router.get("/history/:user_id", getUserRoutineHistory);
  *         description: Server error
  */
 router.post("/", createRoutine);
+
 /**
  * @swagger
  * /Routines/Exercise:
@@ -306,11 +308,11 @@ router.delete("/:id", deleteRoutine);
 
 /**
  * @swagger
- * /routine-history:
+ * /Routines/History:
  *   post:
  *     summary: Create a new routine history
  *     tags:
- *       - Routine History
+ *       - Routines
  *     requestBody:
  *       required: true
  *       content:
@@ -344,5 +346,55 @@ router.delete("/:id", deleteRoutine);
  *         description: Internal Server Error
  */
 router.post("/history", createRoutineHistory);
+
+/**
+ * @swagger
+ * /Routines/History/{user_id}:
+ *   get:
+ *     summary: Get routine history for a specific user
+ *     tags:
+ *       - Routines
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         description: The ID of the user to retrieve routine history for
+ *         example: "12345"
+ *     responses:
+ *       200:
+ *         description: A list of routine histories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   user_id:
+ *                     type: string
+ *                     example: "12345"
+ *                   routine_id:
+ *                     type: string
+ *                     example: "67890"
+ *                   completed_at:
+ *                     type: string
+ *                     format: date-time
+ *                     example: "2024-10-22T14:30:00Z"
+ *                   recording_URL:
+ *                     type: string
+ *                     example: "https://example.com/recording.mp4"
+ *                   score:
+ *                     type: number
+ *                     example: 85
+ *                   calories:
+ *                     type: number
+ *                     example: 250
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get("/history/:user_id", getRoutineHistory);
 
 export default router;

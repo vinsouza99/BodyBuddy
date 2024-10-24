@@ -362,3 +362,25 @@ export const createRoutineHistory = async (req, res) => {
     });
   }
 };
+
+export const getRoutineHistory = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    const routineHistories = await RoutineHistory.findAll({
+      where: {
+        user_id: user_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routineHistories,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};

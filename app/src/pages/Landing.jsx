@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
@@ -7,6 +7,17 @@ import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import thumbnail from "../assets/thumbnail.png";
 
 export function Landing() {
+
+  useEffect(() => {
+    // Log the current URL pathname for debugging
+    console.log("Current pathname:", window.location.pathname);
+
+    // Check if the current URL is the root URL
+    if (window.location.pathname === '/') {
+      localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
+    }
+  }, []);
+
   return (
     <Grid container>
       {/* Left section with image slider */}
@@ -114,6 +125,7 @@ export function Landing() {
             sx={{ marginBottom: 2 }}
             component={NavLink}
             to="/create-program"
+            onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
           >
             Create my exercise plan
           </Button>
@@ -131,18 +143,6 @@ export function Landing() {
             </Button>
           </Typography>
 
-          {/* Sign Up link */}
-          <Typography variant="body2">
-            Don't have an account? (for testing only){" "}
-            <Button
-              variant="text"
-              color="primary"
-              component={NavLink}
-              to="/signup"
-            >
-              Sign Up
-            </Button>
-          </Typography>
         </Container>
       </Grid>
     </Grid>
