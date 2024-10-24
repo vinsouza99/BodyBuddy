@@ -5,7 +5,7 @@ import { Card, CardContent, Typography, Chip, Box } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../components/ImageLists";
 
-const LearningCard = ({ exercise }) => {
+const LearningCard = ({ exercise, exercise_type }) => {
   // Initialize useNavigate
   const navigate = useNavigate();
 
@@ -49,6 +49,8 @@ const LearningCard = ({ exercise }) => {
           justifyContent: "center",
           alignItems: "center",
           padding: "10px",
+          backgroundSize: "cover",
+          height: "240px",
         }}
       >
         {/* Uncomment this when YoutTube Videos are available */}
@@ -72,9 +74,11 @@ const LearningCard = ({ exercise }) => {
           src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
           alt={exercise.name ? exercise.name : "Exercise Name"}
           style={{
-            maxWidth: "100%",
-            height: "auto", // Ensure GIF scales correctly
-            borderRadius: "8px", // Optional styling for appearance
+            maxWidth: "100%", // Responsive image
+            maxHeight: "100%", // Responsive image
+            height: "auto",
+            display: "block",
+            borderRadius: "8px",
           }}
         />
       </Box>
