@@ -10,6 +10,7 @@ import {
   createRoutineExercise,
   getRoutineExercises,
   updateRoutineExercise,
+  createRoutineHistory,
 } from "../controllers/routineController.js";
 
 const router = express.Router();
@@ -126,6 +127,7 @@ router.get("/program/:program_id", getRoutinesByProgram);
  *         description: Routine not found
  */
 router.get("/:id", getRoutine);
+
 /**
  * @swagger
  * /Routines/{id}:
@@ -150,6 +152,7 @@ router.get("/:id", getRoutine);
  *         description: Routine not found
  */
 router.get("/exercises/:routine_id", getRoutineExercises);
+
 /**
  * @swagger
  * /Routines:
@@ -229,6 +232,7 @@ router.post("/exercises", createRoutineExercise);
  *         description: Server error
  */
 router.put("/:id", updateRoutine);
+
 /**
  * @swagger
  * /Routines/Exercise/{id}:
@@ -252,6 +256,7 @@ router.put("/:id", updateRoutine);
  *         description: Server error
  */
 router.put("/exercise/:id", updateRoutineExercise);
+
 /**
  * @swagger
  * /Routines/{id}:
@@ -272,5 +277,46 @@ router.put("/exercise/:id", updateRoutineExercise);
  *         description: Routine not found
  */
 router.delete("/:id", deleteRoutine);
+
+/**
+ * @swagger
+ * /routine-history:
+ *   post:
+ *     summary: Create a new routine history
+ *     tags:
+ *       - Routine History
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: string
+ *                 example: "12345"
+ *               completed_at:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2024-10-22T14:30:00Z"
+ *               routine_id:
+ *                 type: string
+ *                 example: "67890"
+ *               recording_URL:
+ *                 type: string
+ *                 example: "https://example.com/recording.mp4"
+ *               score:
+ *                 type: number
+ *                 example: 85
+ *               calories:
+ *                 type: number
+ *                 example: 250
+ *     responses:
+ *       201:
+ *         description: Routine History created
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post("/history", createRoutineHistory);
 
 export default router;
