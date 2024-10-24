@@ -2,6 +2,7 @@ import express from "express";
 import {
   getPrograms,
   getProgramsByUser,
+  getCompletedProgramsByUser,
   getProgram,
   createProgram,
   updateProgram,
@@ -79,7 +80,30 @@ router.get("/", getPrograms);
  *         description: Program not found
  */
 router.get("/user/:user_id", getProgramsByUser);
-
+/**
+ * @swagger
+ * /Programs/user/{user_id}:
+ *   get:
+ *     summary: Get all programs that has a specific user ID
+ *     tags: [Programs]
+ *     parameters:
+ *       - in: path
+ *         name: user_id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: The Program details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Program'
+ *       404:
+ *         description: Program not found
+ */
+router.get("/user/:user_id/completed", getCompletedProgramsByUser);
 /**
  * @swagger
  * /Programs/{id}:

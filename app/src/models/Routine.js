@@ -16,6 +16,7 @@ export default class Routine {
    * @param {Boolean} completed
    * @param {Array} exercises - an array of objects of the class Exercise that refers to all the
    * exercises that are part of this routine
+   * @param {Date} compare_date - will have the same value as completed_at but will be use for sorting in history
    */
   constructor(
     id,
@@ -26,7 +27,8 @@ export default class Routine {
     estimated_calories,
     scheduled_date,
     completed,
-    exercises
+    exercises = new Array(),
+    completed_at
   ) {
     this.id = id;
     this.duration = duration;
@@ -36,7 +38,9 @@ export default class Routine {
     this.estimated_calories = estimated_calories;
     this.scheduled_date = scheduled_date;
     this.completed = completed;
-    this.exercises = exercises || [];
+    this.exercises = exercises;
+    this.completed_at = completed_at;
+    this.compare_date = completed_at;
   }
   /**
    * Adds an exercise to the routine and sorts the array according to the order of the exercise

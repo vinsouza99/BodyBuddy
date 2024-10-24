@@ -1,4 +1,7 @@
 import Exercise from "../models/Exercise.js";
+import ExerciseType from "../models/ExerciseType.js";
+import ExerciseGoal from "../models/ExerciseGoal.js";
+import ExerciseMuscleGroup from "../models/ExerciseMuscleGroup.js";
 
 export const getExercises = async (req, res) => {
   try {
@@ -39,7 +42,69 @@ export const getExercise = async (req, res) => {
     });
   }
 };
-
+export const getExerciseTypes = async (req, res) => {
+  try {
+    const exercise_id = req.params.id;
+    const exercisesTypes = await ExerciseType.findAll({
+      where: {
+        exercise_id: exercise_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: exercisesTypes,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getExerciseGoals = async (req, res) => {
+  try {
+    const exercise_id = req.params.id;
+    const exercisesGoals = await ExerciseGoal.findAll({
+      where: {
+        exercise_id: exercise_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: exercisesGoals,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getExerciseMuscleGroups = async (req, res) => {
+  try {
+    const exercise_id = req.params.id;
+    const exercisesMuscleGroup = await ExerciseMuscleGroup.findAll({
+      where: {
+        exercise_id: exercise_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: exercisesMuscleGroup,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
 export const createExercise = async (req, res) => {
   try {
     const { name, description, demo_url, type } = req.body;

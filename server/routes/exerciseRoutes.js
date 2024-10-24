@@ -2,6 +2,9 @@ import express from "express";
 import {
   getExercises,
   getExercise,
+  getExerciseTypes,
+  getExerciseGoals,
+  getExerciseMuscleGroups,
   createExercise,
   updateExercise,
   deleteExercise,
@@ -78,7 +81,81 @@ router.get("/", getExercises);
  *         description: Exercise not found
  */
 router.get("/:id", getExercise);
-
+/**
+ * @swagger
+ * /Exercises/{id}:
+ *   get:
+ *     summary: Get a specific Exercise by ID
+ *     tags: [Exercises]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the Exercise
+ *     responses:
+ *       200:
+ *         description: The Exercise details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
+ *       404:
+ *         description: Exercise not found
+ */
+router.get("/types/:id", getExerciseTypes);
+/**
+ * @swagger
+ * /Exercises/{id}:
+ *   get:
+ *     summary: Get a specific Exercise by ID
+ *     tags: [Exercises]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the Exercise
+ *     responses:
+ *       200:
+ *         description: The Exercise details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
+ *       404:
+ *         description: Exercise not found
+ */
+router.get("/goals/:id", getExerciseGoals);
+/**
+ * @swagger
+ * /Exercises/{id}:
+ *   get:
+ *     summary: Get a specific Exercise by ID
+ *     tags: [Exercises]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *         required: true
+ *         description: The ID of the Exercise
+ *     responses:
+ *       200:
+ *         description: The Exercise details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Exercise'
+ *       404:
+ *         description: Exercise not found
+ */
+router.get("/muscleGroups/:id", getExerciseMuscleGroups);
 /**
  * @swagger
  * /Exercises:

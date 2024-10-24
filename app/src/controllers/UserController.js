@@ -1,4 +1,5 @@
 import axiosClient from "../utils/axiosClient";
+import { historyItemComparator } from "../utils/utils";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
@@ -8,16 +9,18 @@ import {
   getIntensity,
 } from "./LocalTablesController";
 import Achievement from "../models/Achievement";
+import { getUserCompletedPrograms } from "./ProgramController";
+import { getUserCompletedRoutines } from "./RoutineController";
 
-const USER_ROUTE = "users";
-const USER_SETTINGS_ROUTE = "settings";
-const USER_PROGRESS_ROUTE = "progress";
-const USER_SCHEDULE_ROUTE = "schedule";
-const USER_ACHIEVEMENT_ROUTE = "achievement";
+const API_ROUTE = "users";
+const API_USER_SETTINGS_ROUTE = "settings";
+const API_USER_PROGRESS_ROUTE = "progress";
+const API_USER_SCHEDULE_ROUTE = "schedule";
+const API_USER_ACHIEVEMENT_ROUTE = "achievement";
 
 const getUser = async (authUser) => {
   try {
-    const response = await axiosClient.get(`${USER_ROUTE}/${authUser.id}`);
+    const response = await axiosClient.get(`${API_ROUTE}/${authUser.id}`);
     const data = await response.data.data;
     const user = new User(
       authUser.id,
@@ -49,7 +52,7 @@ const getUser = async (authUser) => {
 const getUserSettings = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${id}`
+      `${API_ROUTE}/${API_USER_SETTINGS_ROUTE}/${id}`
     );
     const data = await response.data.data;
     const goal = await getGoal(data.goal_id);
@@ -62,7 +65,7 @@ const getUserSettings = async (id) => {
 const getUserProgress = async (id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${USER_PROGRESS_ROUTE}/${id}`
+      `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${id}`
     );
     const data = await response.data.data;
     const progress = new UserProgress(
@@ -86,7 +89,7 @@ const createUser = async (userObj) => {
       userObj.weight,
       userObj.weight_unit
     );
-    let response = await axiosClient.put(`${USER_ROUTE}/${user.id}`, user);
+    let response = await axiosClient.put(`${API_ROUTE}/${user.id}`, user);
     userObj.settings.user_id = user.id;
     response = await updateUserSettings(userObj.settings);
     user.settings = response;
@@ -115,7 +118,7 @@ const updateUser = async (user_id, updatedUserObj) => {
       updatedUserObj.schedule
     );
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${user_id}`,
+      `${API_ROUTE}/${user_id}`,
       updatedUser
     );
     if (updatedUser.settings) {
@@ -136,7 +139,7 @@ const updateUser = async (user_id, updatedUserObj) => {
 const updateUserSettings = async (user_id, updatedSettingsObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${USER_SETTINGS_ROUTE}/${user_id}`,
+      `${API_ROUTE}/${API_USER_SETTINGS_ROUTE}/${user_id}`,
       {
         user_id: user_id,
         goal_id: updatedSettingsObj.goal_id,
@@ -151,7 +154,7 @@ const updateUserSettings = async (user_id, updatedSettingsObj) => {
 const updateUserProgress = async (user_id, updatedProgressObj) => {
   try {
     const response = await axiosClient.put(
-      `${USER_ROUTE}/${USER_PROGRESS_ROUTE}/${user_id}`,
+      `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${user_id}`,
       updatedProgressObj
     );
     return response;
@@ -159,27 +162,10 @@ const updateUserProgress = async (user_id, updatedProgressObj) => {
     console.log(e);
   }
 };
-
-const getUserHistory = async (user_id) => {
-  try {
-    const programsResponse = await getUserCompletedPrograms(user_id);
-    const routinesReponse = await getUserCompletedRoutines(user_id);
-    const achievementsResponse = await getUserAchivements(user_id);
-    const history = [
-      ...programsResponse,
-      ...routinesReponse,
-      ...achievementsResponse,
-    ];
-    history.sort((a, b) => a.date < b.date);
-    return history;
-  } catch (e) {
-    console.log(e);
-  }
-};
 const getUserSchedule = async (user_id) => {
   try {
     const response = await axiosClient.get(
-      `${USER_ROUTE}/${USER_SCHEDULE_ROUTE}/${user_id}`
+      `${API_ROUTE}/${API_USER_SCHEDULE_ROUTE}/${user_id}`
     );
     return response.data.data.map((info) => info.day);
   } catch (e) {
@@ -191,7 +177,7 @@ const createUserSchedule = async (user_id, scheduleArray) => {
     const promises = [];
     scheduleArray.forEach(async (day) => {
       promises.push(
-        axiosClient.post(`${USER_ROUTE}/${USER_SCHEDULE_ROUTE}/${user_id}`, {
+        axiosClient.post(`${API_ROUTE}/${API_USER_SCHEDULE_ROUTE}/${user_id}`, {
           day: day,
         })
       );
@@ -222,11 +208,28 @@ const updateUserSchedule = async (
     console.log(e);
   }
 };
+const getUserHistory = async (user_id) => {
+  try {
+    const programsResponse = await getUserCompletedPrograms(user_id);
+    const routinesReponse = await getUserCompletedRoutines(user_id);
+    const achievementsResponse = await getUserAchievements(user_id);
+    const history = [
+      ...programsResponse,
+      ...routinesReponse,
+      ...achievementsResponse,
+    ];
+    if (history.length > 1) history.sort(historyItemComparator);
+    return history;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const getUserAchievements = async (user_id) => {
   try {
     const userAchievements = [];
     const userAchievementsResponse = await axiosClient.get(
-      `${USER_ROUTE}/${USER_ACHIEVEMENT_ROUTE}/${user_id}`
+      `${API_ROUTE}/${API_USER_ACHIEVEMENT_ROUTE}/${user_id}`
     );
     if (userAchievementsResponse.status >= 400) return userAchievements;
 
@@ -251,7 +254,7 @@ const getUserAchievements = async (user_id) => {
 const addUserAchievement = async (user_id, achievement_id, earned_at) => {
   try {
     let response = await axiosClient.post(
-      `${USER_ROUTE}/${USER_ACHIEVEMENT_ROUTE}`,
+      `${API_ROUTE}/${API_USER_ACHIEVEMENT_ROUTE}`,
       { user_id: user_id, achievement_id: achievement_id, earned_at: earned_at }
     );
     return response;
@@ -271,4 +274,3 @@ export {
   getUserAchievements,
   addUserAchievement,
 };
-

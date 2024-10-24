@@ -4,14 +4,14 @@ import Exercise from "../models/Exercise";
 import RoutineHistory from "../models/RoutineHistory";
 import { getExercise } from "./ExerciseController";
 
-const ROUTINE_ROUTE = "routines";
-const PROGRAM_ROUTINE_ROUTE = "program";
-const ROUTINE_EXERCISE_ROUTE = "exercises";
+const API_ROUTE = "routines";
+const API_PROGRAM_ROUTINE_ROUTE = "program";
+const API_ROUTINE_EXERCISE_ROUTE = "exercises";
 
 const getRoutinesFromProgram = async (program_id) => {
   try {
     const response = await axiosClient.get(
-      `${ROUTINE_ROUTE}/${PROGRAM_ROUTINE_ROUTE}/${program_id}`
+      `${API_ROUTE}/${API_PROGRAM_ROUTINE_ROUTE}/${program_id}`
     );
     const data = await response.data.data;
 
@@ -41,9 +41,44 @@ const getRoutinesFromProgram = async (program_id) => {
   }
 };
 
+const getUserCompletedRoutines = async (user_id) => {
+  try {
+    const response = await axiosClient.get(`${API_ROUTE}/history/${user_id}`);
+    if (response.status == 404) return [];
+    const data = await response.data;
+    const routines =
+      data && data.length > 0
+        ? data.map(
+            (routine) =>
+              new Routine(
+                routine.id,
+                routine.duration,
+                routine.program_id,
+                routine.name,
+                routine.description,
+                routine.estimated_calories,
+                routine.scheduled_date,
+                routine.completed,
+                []
+              )
+          )
+        : [];
+
+    if (routines.length > 0) {
+      for (const routine of routines) {
+        const routineExercises = await getExercisesFromRoutine(routine.id);
+        routineExercises.forEach((exercise) => routine.addExercise(exercise));
+      }
+    }
+    return routines;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 const getAllPresetRoutines = async () => {
   try {
-    const response = await axiosClient.get(`${ROUTINE_ROUTE}/presets`);
+    const response = await axiosClient.get(`${API_ROUTE}/presets`);
     const data = await response.data;
     const routines = data.data.rows.map(
       (routine) =>
@@ -98,11 +133,11 @@ const createRoutine = async (routineObj) => {
       routineObj.scheduled_date,
       routineObj.completed
     );
-    await axiosClient.post(`${ROUTINE_ROUTE}`, routine);
+    await axiosClient.post(`${API_ROUTE}`, routine);
     // if (response.status == 201) {
     //   for (const exercise of routineObj.exercises) {
     //     const response = await createRoutineExercise(exercise);
-        
+
     //     if (response.status === 201) {
     //       routine.exercises.push(response.data);
     //     }
@@ -121,7 +156,7 @@ const createRoutine = async (routineObj) => {
 const getExercisesFromRoutine = async (routine_id) => {
   try {
     const response = await axiosClient.get(
-      `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}/${routine_id}`
+      `${API_ROUTE}/${API_ROUTINE_EXERCISE_ROUTE}/${routine_id}`
     );
     // Exercise data relating to the specific routine
     const data = await response.data.data;
@@ -172,7 +207,7 @@ const createRoutineExercise = async (exerciseObj) => {
       rest_time: exerciseObj.restPeriod,
     };
     return await axiosClient.post(
-      `${ROUTINE_ROUTE}/${ROUTINE_EXERCISE_ROUTE}`,
+      `${API_ROUTE}/${API_ROUTINE_EXERCISE_ROUTE}`,
       routineExercise
     );
   } catch (e) {
@@ -182,7 +217,9 @@ const createRoutineExercise = async (exerciseObj) => {
 
 const getRoutineHistory = async (user_id) => {
   try {
-    const response = await axiosClient.get(`${ROUTINE_ROUTE}/history/${user_id}`);
+    const response = await axiosClient.get(
+      `${ROUTINE_ROUTE}/history/${user_id}`
+    );
 
     const data = await response.data.data;
 
@@ -202,15 +239,14 @@ const getRoutineHistory = async (user_id) => {
   } catch (e) {
     console.log(e);
   }
-}
+};
 
 export {
   getRoutinesFromProgram,
+  getUserCompletedRoutines,
   getAllPresetRoutines,
   createRoutine,
   createRoutineExercise,
   getExercisesFromRoutine,
   getRoutineHistory,
 };
-
-

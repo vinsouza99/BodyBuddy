@@ -1,5 +1,6 @@
 import Program from "../models/Program.js";
 import ProgramRoutine from "../models/ProgramRoutine.js";
+import { Op } from "sequelize";
 
 export const getPrograms = async (req, res) => {
   try {
@@ -65,6 +66,36 @@ export const getProgramsByUser = async (req, res) => {
     });
   }
 };
+export const getCompletedProgramsByUser = async (req, res) => {
+  try {
+    const user_id = req.params.user_id;
+    const programs = await Program.findAll({
+      where: {
+        user_id: user_id,
+        completed_at: {
+          [Op.ne]: null,
+        },
+      },
+    });
+    if (!programs) {
+      return res.status(404).json({
+        status: "404",
+        message: "Program not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: programs,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
 
 export const createProgram = async (req, res) => {
   try {
@@ -75,7 +106,7 @@ export const createProgram = async (req, res) => {
       name,
       description,
       duration,
-      goal_id
+      goal_id,
     });
     res.status(201).json({
       status: "201",
@@ -147,13 +178,12 @@ export const deleteProgram = async (req, res) => {
 
 export const createProgramRoutine = async (req, res) => {
   try {
-    const { program_id, routine_id, scheduled_date, completed } =
-      req.body;
+    const { program_id, routine_id, scheduled_date, completed } = req.body;
     const newProgramRoutine = await ProgramRoutine.upsert({
       program_id,
       routine_id,
       scheduled_date,
-      completed
+      completed,
     });
     res.status(201).json({
       status: "201",

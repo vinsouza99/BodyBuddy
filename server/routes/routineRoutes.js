@@ -10,6 +10,7 @@ import {
   createRoutineExercise,
   getRoutineExercises,
   updateRoutineExercise,
+  getUserRoutineHistory,
   createRoutineHistory,
   getRoutineHistory,
 } from "../controllers/routineController.js";
@@ -153,6 +154,31 @@ router.get("/:id", getRoutine);
  *         description: Routine not found
  */
 router.get("/exercises/:routine_id", getRoutineExercises);
+
+/**
+ * @swagger
+ * /Routines/History/{user_id}:
+ *   get:
+ *     summary: Get a specific Routine history by user ID
+ *     tags: [Routines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the user
+ *     responses:
+ *       200:
+ *         description: The Routine details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Routine'
+ *       404:
+ *         description: Routine not found
+ */
+router.get("/history/:user_id", getUserRoutineHistory);
 
 /**
  * @swagger

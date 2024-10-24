@@ -5,10 +5,9 @@ const MuscleGroup = sequelize.define(
   "MuscleGroup",
   {
     id: {
-      type: DataTypes.UUID,
-      allowNull: false,
+      type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: false,
+      autoIncrement: true,
     },
     name: {
       type: DataTypes.STRING,
