@@ -20,7 +20,7 @@ export const Profile = (props) => {
       setCurrentUser(userData);
 
       const userHistoryData = await getUserHistory(user.id);
-      //setHistory(userHistoryData);
+      setHistory(userHistoryData);
     }
 
     getUserData();
