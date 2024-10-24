@@ -1,5 +1,6 @@
 import Program from "../models/Program.js";
 import ProgramRoutine from "../models/ProgramRoutine.js";
+import { Op } from "sequelize";
 
 export const getPrograms = async (req, res) => {
   try {
@@ -67,9 +68,10 @@ export const getProgramsByUser = async (req, res) => {
 };
 export const getCompletedProgramsByUser = async (req, res) => {
   try {
+    const user_id = req.params.user_id;
     const programs = await Program.findAll({
       where: {
-        user_id: req.params.user_id,
+        user_id: user_id,
         completed_at: {
           [Op.ne]: null,
         },

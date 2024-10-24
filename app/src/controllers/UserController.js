@@ -1,5 +1,5 @@
 import axiosClient from "../utils/axiosClient";
-import historyItemComparator from "../utils/utils";
+import { historyItemComparator } from "../utils/utils";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
@@ -218,20 +218,13 @@ const getUserHistory = async (user_id) => {
       ...routinesReponse,
       ...achievementsResponse,
     ];
-    history.sort(historyItemComparator);
+    if (history.length > 1) history.sort(historyItemComparator);
     return history;
   } catch (e) {
     console.log(e);
   }
 };
 
-const getUserCompletedRoutines = async (user_id) => {
-  try {
-    //TODO
-  } catch (e) {
-    console.log(e);
-  }
-};
 const getUserAchievements = async (user_id) => {
   try {
     const userAchievements = [];

@@ -61,28 +61,34 @@ const getUserCompletedPrograms = async (user_id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/user/${user_id}/completed`
     );
+    if (response.status == 404) return [];
+
     const data = await response.data;
 
-    const programs = data.map(
-      (program) =>
-        new Program(
-          program.id,
-          program.created_at,
-          program.completed_at,
-          program.duration,
-          program.user_id,
-          program.name,
-          program.description,
-          program.completed_at //do not remove, trust me (Vin)
-        )
-    );
-    for (const program of programs) {
-      const programRoutines = await getRoutinesFromProgram(program.id);
-      if (programRoutines) {
-        programRoutines.forEach((routine) => program.addRoutine(routine));
+    const programs =
+      data && data.length > 0
+        ? data.map(
+            (program) =>
+              new Program(
+                program.id,
+                program.created_at,
+                program.completed_at,
+                program.duration,
+                program.user_id,
+                program.name,
+                program.description,
+                program.completed_at //do not remove, trust me (Vin)
+              )
+          )
+        : [];
+    if (programs.length > 0) {
+      for (const program of programs) {
+        const programRoutines = await getRoutinesFromProgram(program.id);
+        if (programRoutines) {
+          programRoutines.forEach((routine) => program.addRoutine(routine));
+        }
       }
     }
-
     return programs;
   } catch (e) {
     console.log(e);
