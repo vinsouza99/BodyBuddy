@@ -1,4 +1,5 @@
 import axiosClient from "../utils/axiosClient";
+import historyItemComparator from "../utils/utils";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
@@ -8,6 +9,8 @@ import {
   getIntensity,
 } from "./LocalTablesController";
 import Achievement from "../models/Achievement";
+import { getUserCompletedPrograms } from "./ProgramController";
+import { getUserCompletedRoutines } from "./RoutineController";
 
 const API_ROUTE = "users";
 const API_USER_SETTINGS_ROUTE = "settings";
@@ -159,23 +162,6 @@ const updateUserProgress = async (user_id, updatedProgressObj) => {
     console.log(e);
   }
 };
-
-const getUserHistory = async (user_id) => {
-  try {
-    const programsResponse = await getUserCompletedPrograms(user_id);
-    const routinesReponse = await getUserCompletedRoutines(user_id);
-    const achievementsResponse = await getUserAchivements(user_id);
-    const history = [
-      ...programsResponse,
-      ...routinesReponse,
-      ...achievementsResponse,
-    ];
-    history.sort((a, b) => a.date < b.date);
-    return history;
-  } catch (e) {
-    console.log(e);
-  }
-};
 const getUserSchedule = async (user_id) => {
   try {
     const response = await axiosClient.get(
@@ -218,6 +204,30 @@ const updateUserSchedule = async (
       console.log(response);
       return response;
     });
+  } catch (e) {
+    console.log(e);
+  }
+};
+const getUserHistory = async (user_id) => {
+  try {
+    const programsResponse = await getUserCompletedPrograms(user_id);
+    const routinesReponse = await getUserCompletedRoutines(user_id);
+    const achievementsResponse = await getUserAchievements(user_id);
+    const history = [
+      ...programsResponse,
+      ...routinesReponse,
+      ...achievementsResponse,
+    ];
+    history.sort(historyItemComparator);
+    return history;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+const getUserCompletedRoutines = async (user_id) => {
+  try {
+    //TODO
   } catch (e) {
     console.log(e);
   }

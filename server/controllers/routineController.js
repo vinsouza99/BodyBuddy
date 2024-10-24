@@ -309,9 +309,38 @@ export const deleteRoutineExercise = async (req, res) => {
   }
 };
 
+export const getUserRoutineHistory = async (req, res) => {
+  try {
+    const user_id = req.params.user_id;
+    const routineHistory = await RoutineHistory.findAll({
+      where: {
+        user_id: user_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routineHistory,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 export const createRoutineHistory = async (req, res) => {
   try {
-    const { user_id, completed_at, routine_id, recording_url, score, calories } = req.body;
+    const {
+      user_id,
+      completed_at,
+      routine_id,
+      recording_url,
+      score,
+      calories,
+    } = req.body;
     const newRoutineHistory = await RoutineHistory.create({
       user_id,
       completed_at,
@@ -332,4 +361,4 @@ export const createRoutineHistory = async (req, res) => {
       message: "Internal Server Error",
     });
   }
-}
+};

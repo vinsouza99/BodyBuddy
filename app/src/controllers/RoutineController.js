@@ -40,6 +40,10 @@ const getRoutinesFromProgram = async (program_id) => {
   }
 };
 
+const getUserCompletedRoutines = async (user_id) => {
+  //TODO
+};
+
 const getAllPresetRoutines = async () => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/presets`);
@@ -180,6 +184,7 @@ const createRoutineExercise = async (exerciseObj) => {
 };
 export {
   getRoutinesFromProgram,
+  getUserCompletedRoutines,
   getAllPresetRoutines,
   createRoutine,
   createRoutineExercise,

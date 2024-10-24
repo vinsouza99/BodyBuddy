@@ -55,6 +55,39 @@ const getAllUserPrograms = async (user_id) => {
     console.log(e);
   }
 };
+const getUserCompletedPrograms = async (user_id) => {
+  try {
+    if (!user_id) throw new Error("user id is null");
+    const response = await axiosClient.get(
+      `${API_ROUTE}/user/${user_id}/completed`
+    );
+    const data = await response.data;
+
+    const programs = data.map(
+      (program) =>
+        new Program(
+          program.id,
+          program.created_at,
+          program.completed_at,
+          program.duration,
+          program.user_id,
+          program.name,
+          program.description,
+          program.completed_at //do not remove, trust me (Vin)
+        )
+    );
+    for (const program of programs) {
+      const programRoutines = await getRoutinesFromProgram(program.id);
+      if (programRoutines) {
+        programRoutines.forEach((routine) => program.addRoutine(routine));
+      }
+    }
+
+    return programs;
+  } catch (e) {
+    console.log(e);
+  }
+};
 
 const createProgram = async (user_id, generatedProgramObj) => {
   try {
@@ -97,4 +130,10 @@ const createProgramRoutine = async (
   }
 };
 
-export { getProgram, getAllUserPrograms, createProgram, createProgramRoutine };
+export {
+  getProgram,
+  getAllUserPrograms,
+  getUserCompletedPrograms,
+  createProgram,
+  createProgramRoutine,
+};

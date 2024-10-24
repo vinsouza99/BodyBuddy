@@ -29,6 +29,7 @@ export class Program {
     this.name = name;
     this.description = description;
     this.routines = routines;
+    this.compare_date = completed_at; // will have the same value as completed_at but will be use for sorting in history
   }
 
   /**
