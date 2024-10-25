@@ -13,13 +13,16 @@ export const GadgetPremadeRoutineList = ({ presetRoutines = null }) => {
           // flexDirection: "column",
           // gap: 2,
           alignItems: "flex-start",
+          width: "100%",
         }}
       >
-        <Grid container spacing={3}>
+        <Grid container spacing={3} 
+        sx={{width: "100%"}}
+        >
           {presetRoutines && presetRoutines.length > 0 ? (
             presetRoutines.map((routine) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-                <TrainingCard key={routine.id} routine={routine} />
+              <Grid key={routine.id} size={{ xs: 12, sm: 6, md: 4 }}>
+                <TrainingCard routine={routine} />
               </Grid>
             ))
           ) : (
