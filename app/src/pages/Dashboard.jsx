@@ -36,6 +36,9 @@ export const Dashboard = (props) => {
   const [userHistory, setUserHistory] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userProgressLoaded, setUserProgressLoaded] = useState(false);
+  const [userAccumulatedTimesLoaded, setUserAccumulatedTimesLoaded] = useState(false);
+  const [userHistoryLoaded, setUserHistoryLoaded] = useState(false);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
 
@@ -54,8 +57,11 @@ export const Dashboard = (props) => {
       try {
         const userProgress = await getUserProgress(user.id);
         setUserProgress(userProgress);
+        setUserProgressLoaded(true);
+
         const userAccumulatedTime = await getUserAccumulatedTimes(user.id);
         setUserAccumulatedTimes(userAccumulatedTime);
+        setUserAccumulatedTimesLoaded(true);
       } catch (error) {
         console.error("Error loading user progress data:", error);
       }
@@ -66,7 +72,10 @@ export const Dashboard = (props) => {
       try {
         const routineHistories = await getRoutineHistory(user.id);
         // Create Array of history (completed_at)
-        setUserHistory(routineHistories.map((history) => history.completed_at));
+        if (routineHistories && routineHistories.length > 0) {
+          setUserHistory(routineHistories.map((history) => history.completed_at));
+        }
+        setUserHistoryLoaded(true);
       } catch (error) {
         console.error("Error loading routine history data:", error);
       }
@@ -75,10 +84,10 @@ export const Dashboard = (props) => {
   }, []);
 
   useEffect(() => {
-    if (userHistory || userProgress) {
+    if (userProgressLoaded && userAccumulatedTimesLoaded && userHistoryLoaded) {
       setLoading(false);
     }
-  }, [userHistory, userProgress]);
+  }, [userProgressLoaded, userAccumulatedTimesLoaded, userHistoryLoaded]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
@@ -121,7 +130,7 @@ export const Dashboard = (props) => {
         const parsedContent = JSON.parse(
           response_openai.data.data.choices[0].message.content
         );
-        console.log("AI generated data:" + parsedContent);
+        console.log("AI generated data:", parsedContent);
 
         // TODO: Create and Use the font-end controller.
         // Insert program data into the database
@@ -249,7 +258,7 @@ export const Dashboard = (props) => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* ADD GADGETS HERE*/}
             <GadgetAchievement />
-            <GadgetHistory history={userAccumulatedTimes} />
+            <GadgetHistory history={userAccumulatedTimes?.data || []} />
           </Box>
         </Grid2>
       </Grid2>

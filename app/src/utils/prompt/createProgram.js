@@ -1,3 +1,10 @@
+const today = new Date();
+const year = today.getFullYear();
+const month = (today.getMonth() + 1).toString().padStart(2, '0');
+const day = today.getDate().toString().padStart(2, '0');
+const formattedDate = `${year}-${month}-${day}`;
+
+
 export const createProgram = {
   prompt: `
   Now you will create a personalized firness program for the user.
@@ -67,7 +74,8 @@ export const createProgram = {
     ('Bodyweight Squat', 'A lower-body exercise where you bend your knees and hips to lower your body as if sitting in a chair, then rise back up, using only your body weight for resistance. Bodyweight squats are a great way to strengthen your legs and improve mobility!', 'https://hips.hearstapps.com/hmg-prod/images/workouts/2016/03/bodyweightsquat-1457041691.gif', 'fb7180ab-f3e2-4a5d-b731-a2c0fc5de9fa');
 
   Notes:
-  - Please get today's year (2024), month, and day and generate the scheduled_date for routine.
+  - Today's date is "${formattedDate}".
+  - Please assign the first routine today's date.
   - Please think of fancy names and descriptions for the program to motivate the user.
   - Don't include backticks when you return the object.
   `

@@ -26,7 +26,7 @@ const modalStyle = {
   boxShadow: 24,
 };
 
-export const RoutineExercisesList = ({ routineExercises = null }) => {
+export const RoutineExercisesList = ({ routineExercises = null, color = "primary.main" }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
 
@@ -65,7 +65,7 @@ export const RoutineExercisesList = ({ routineExercises = null }) => {
               alt={exercise.name}
               sx={{
                 border: '2px solid',
-                borderColor: 'secondary.main',
+                borderColor: color,
                 borderRadius: '50px',
                 width: '80px',
                 height: '80px',
@@ -129,4 +129,5 @@ export const RoutineExercisesList = ({ routineExercises = null }) => {
 
 RoutineExercisesList.propTypes = {
   routineExercises: PropTypes.array,
+  color: PropTypes.string,
 };

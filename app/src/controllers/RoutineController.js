@@ -218,7 +218,7 @@ const createRoutineExercise = async (exerciseObj) => {
 const getRoutineHistory = async (user_id) => {
   try {
     const response = await axiosClient.get(
-      `${ROUTINE_ROUTE}/history/${user_id}`
+      `${API_ROUTE}/history/${user_id}`
     );
 
     const data = await response.data.data;

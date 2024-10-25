@@ -5,8 +5,6 @@ import { Modal, Box, Typography, IconButton } from '@mui/material';
 // Custom Components for Routine Session
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useLandscapeMode } from './useLandscapeMode';
-// Common Components
-import { useTheme } from '@mui/material/styles';
 // Icons & Images
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
@@ -34,7 +32,6 @@ const modalStyle = {
 };
 
 export const RestTime2 = ({ title = "Time for resting", trigger, duration, onComplete }) => {
-  const theme = useTheme();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const isLandscapeMode = useLandscapeMode();
@@ -67,7 +64,8 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
           duration={duration}
           size={isLandscapeMode ? 100 : 180}
           strokeWidth={isLandscapeMode ? 6 : 8}
-          colors={theme.palette.secondary.main}
+          colors='#FFFFFF'
+          trailColor='transparent'
           onComplete={handleTimerComplete}
         >
           {({ remainingTime }) => (

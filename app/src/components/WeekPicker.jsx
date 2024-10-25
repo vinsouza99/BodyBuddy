@@ -16,8 +16,8 @@ export const WeekPicker = ({
   scheduledDatesBgColor = "transparent",
 
 }) => {
-  const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
-  const [endDate, setEndDate] = useState(getStartOfWeek(addDays(new Date(), 7)));
+  const [startDate, setStartDate] = useState(new Date(getStartOfWeek(new Date()).setHours(0, 0, 0, 0)));
+  const [endDate, setEndDate] = useState(new Date(getStartOfWeek(addDays(new Date(), 7)).setHours(0, 0, 0, 0)));
   const today = new Date();
   const timeZone = 'America/Vancouver';
 

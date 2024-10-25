@@ -274,11 +274,11 @@ const getUserAccumulatedTimes = async (user_id) => {
     console.log(e);
   }
 };
-const updateUserAccumulatedTime = async (user_id, date, minutesToAdd) => {
+const updateUserAccumulatedTime = async (user_id, date, minutes) => {
   try {
     let response = await axiosClient.put(
       `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${API_USER_ACCUMULATED_TIME_ROUTE}/${user_id}`,
-      { user_id: user_id, date: date, minutesToAdd: minutes }
+      { date: date, minutes: minutes }
     );
     return response.data;
   } catch (e) {

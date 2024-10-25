@@ -4,6 +4,7 @@ import UserProgress from "../models/UserProgress.js";
 import UserSettings from "../models/UserSettings.js";
 import UserAchievement from "../models/UserAchievement.js";
 import UserAccumulatedTime from "../models/UserAccumulatedTime.js";
+import { toZonedTime, format } from 'date-fns-tz';
 
 export const getUsers = async (req, res) => {
   try {
@@ -377,12 +378,27 @@ export const getUserAccumulatedTime = async (req, res) => {
     const userAccumulatedTimes = await UserAccumulatedTime.findAll({
       where: { user_id: user_id },
     });
+
     if (!userAccumulatedTimes) {
       return res.status(404).json({
         status: "404",
         message: "User accumulated times not found",
       });
     }
+
+    // NOTE: Need to be discussed. Time in DB is stored in UTC time?
+    // Convert UTC time to local time
+    // const timeZone = 'America/Vancouver';
+    // const convertedTimes = userAccumulatedTimes.map((record) => {
+    //   const localDate = toZonedTime(record.date, timeZone);
+    //   const formattedDate = format(localDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone });
+    //   console.log(formattedDate);
+    //   return {
+    //     ...record.toJSON(),
+    //     date: formattedDate,
+    //   };
+    // });
+
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -400,21 +416,21 @@ export const updateUserAccumulatedTime = async (req, res) => {
   try {
     const user_id = req.params.user_id;
     const { date, minutes } = req.body;
-    const userAccumulatedTime = await UserAccumulatedTime.findOrCreate({
+    const [userAccumulatedTime, created] = await UserAccumulatedTime.findOrCreate({
       where: {
         user_id: user_id,
         date: date,
       },
     });
+    console.log(userAccumulatedTime);
     if (userAccumulatedTime) {
-      userAccumulatedTime.minutes = userAccumulatedTime.minutes += minutes;
-      const updatedUserAccumulatedTime = await UserAccumulatedTime.update(
-        userAccumulatedTime
-      );
+      userAccumulatedTime.minutes += minutes;
+      await userAccumulatedTime.save();
+
       res.status(200).json({
-        status: "201",
+        status: "200",
         message: "Success",
-        data: updatedUserAccumulatedTime,
+        data: userAccumulatedTime,
       });
     } else {
       throw new Error("Error while finding or creating user accumulating time");
