@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { Paper, Box, Typography, Button, Grid2 } from "@mui/material";
+import { Card, CardContent, Typography, Button, Chip, Box } from "@mui/material";
+import Grid from "@mui/material/Grid2";
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const TrainingCard = ({ routine }) => {
@@ -18,39 +19,67 @@ export const TrainingCard = ({ routine }) => {
 
   return (
     <>
-      <Paper elevation={3}>
-        <Grid2 container spacing={2}>
-          <Grid2 size={{xs:12, md:6}}>
-            <Typography>Video will be displayed here.</Typography>
-          </Grid2>
-          <Grid2 size={{xs:12, md:6}}>
-            <Box sx={{width: '100%'}}>
-              <Typography 
-                component="h3" 
-                align="center"
-                sx={{
-                  fontSize: "1.5rem",
-                  fontWeight: "bold"
-                }}
-              >
-                {routine.name ? routine.name : "Name is undefined"}
-              </Typography>
-              <Typography align="left">
-                {routine.description ? routine.description : "Description is undefined"}
-              </Typography>
-              <Typography align="left">
-                {routine.exercises.map((exercise) => (
-                  <Typography key={exercise.id}>{exercise.name}</Typography>
-                ))}
-              </Typography>
-              <Box>
-                <Button onClick={handleOpen}>Learn More...</Button>
-              </Box>
-            </Box>
-          </Grid2>
-        </Grid2>
-      </Paper>
-      <StartRoutineSessionModal open={open} id={routine.id} idType="routine" onClose={handleClose} />
+      <Card>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: "10px",
+            backgroundSize: "cover",
+            height: "240px",
+          }}
+        >
+          {/* Video will be displayed here */}
+          <img
+          src="https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif" // Temporary image
+          alt="Exercise Name"
+          style={{
+            maxWidth: "100%", // Responsive image
+            maxHeight: "100%", // Responsive image
+            height: "auto",
+            display: "block",
+            borderRadius: "8px",
+          }}
+        />
+        </Box>
+
+        <CardContent>
+          <Typography variant="h3" textAlign="left" sx={{ marginBottom: 2 }}>
+            {routine.name ? routine.name : "Name is undefined"}
+          </Typography>
+
+          <Typography textAlign="left" sx={{ marginBottom: 1 }}>
+            {routine.description
+              ? routine.description
+              : "Description is undefined"}
+          </Typography>
+
+          <Box sx={{ display: "flex", gap: 1 }}>
+            {/* Display exercises as chips */}
+            {routine.exercises && routine.exercises.length > 0 ? (
+              routine.exercises.map((exercise, index) => (
+                <Chip key={index} label={exercise.name} variant="outlined" />
+              ))
+            ) : (
+              <Typography>No exercises found</Typography>
+            )}
+          </Box>
+
+          <Box sx={{ textAlign: "right" }}>
+            <Button variant="contained" onClick={handleOpen}>
+              Learn More...
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
+
+      <StartRoutineSessionModal
+        open={open}
+        id={routine.id}
+        idType="routine"
+        onClose={handleClose}
+      />
     </>
   );
 };
@@ -58,4 +87,3 @@ export const TrainingCard = ({ routine }) => {
 TrainingCard.propTypes = {
   routine: PropTypes.object.isRequired,
 };
-
