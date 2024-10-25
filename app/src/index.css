@@ -78,7 +78,7 @@ button:focus-visible {
 /* Toolpad Core Dashboard Layout */
 .css-mra6uu-MuiDrawer-docked .MuiDrawer-paper,
 .css-mra6uu-MuiDrawer-docked {
-  width: 220px !important;
+  width: 200px !important;
 }
 
 .css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
