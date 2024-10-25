@@ -14,6 +14,10 @@ const Type = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    default_duration: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
   },
   {
     tableName: "local_type",
