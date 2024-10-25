@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { Card, CardContent, Typography, Button, Chip, Box } from "@mui/material";
-import Grid from "@mui/material/Grid2";
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const TrainingCard = ({ routine }) => {
@@ -49,11 +48,11 @@ export const TrainingCard = ({ routine }) => {
             {routine.name ? routine.name : "Name is undefined"}
           </Typography>
 
-          <Typography textAlign="left" sx={{ marginBottom: 1 }}>
+          {/* <Typography textAlign="left" sx={{ marginBottom: 1 }}>
             {routine.description
               ? routine.description
               : "Description is undefined"}
-          </Typography>
+          </Typography> */}
 
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {/* Display exercises as chips */}
