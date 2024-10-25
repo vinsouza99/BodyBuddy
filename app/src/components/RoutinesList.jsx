@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import { Box, Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { RoutineExercisesList } from "./RoutineExercisesList";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 export const RoutinesList = ({ routines }) => {
@@ -37,9 +38,13 @@ export const RoutinesList = ({ routines }) => {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>
+                {/* <Typography>
                   {routine.description ? routine.description : "Description is undefined"}
-                </Typography>
+                </Typography> */}
+                <RoutineExercisesList
+                  routineExercises={routine.exercises} 
+                  color={isSameDay(parseISO(routine.scheduled_date), today) ? 'secondary.main' : 'primary.main'}
+                />
               </AccordionDetails>
             </Accordion>
           ))

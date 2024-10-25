@@ -25,6 +25,8 @@ import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from '../utils/axiosClient';
 import { setPageTitle } from "../utils/utils";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
+import { updateUserAccumulatedTime } from "../controllers/UserController.js";
+import { format, addHours } from 'date-fns';
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
@@ -320,9 +322,11 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       if (record) {
         if (exerciseVideo) {
           registerUserActivity();
+          registerUserAccumulatedTime();
         }
       } else {
         registerUserActivity();
+        registerUserAccumulatedTime();
       }
     }
   }, [isFinished, record, exerciseVideo]);
@@ -714,6 +718,25 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     }
   };
 
+  // Insert user accumulated time info to the database
+  const registerUserAccumulatedTime = async () => {
+    try {
+      const now = new Date();
+      const timeZoneOffset = -7; // Vancouver Timezone Offset
+      const adjustedTime = addHours(now, timeZoneOffset);
+      const completedAt = format(adjustedTime, "yyyy-MM-dd'T'HH:mm:ssXXX");
+      console.log(completedAt);
+
+      const response = await updateUserAccumulatedTime(user.id, completedAt, 30);
+      if (Number(response.status) !== 200) {
+        throw new Error("Failed to insert log info");
+      }
+      console.log("User accumurate time inserted successfully:", response.data);
+    } catch (error) {
+      console.error("Error inserting accumulated time info:", error);
+    }
+  };
+
   // Start Rest Time Countdown
   const startRestCountdown = (breakType) => {
     setIsResting(true);
@@ -801,7 +824,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
           <RestTime2
             title = "Time for resting"
             trigger={restForSetIncrement}
-            duration={routine[selectedExerciseIndex]?.rest_time || 0} 
+            // duration={routine[selectedExerciseIndex]?.rest_time || 0} 
+            duration={15}
             onComplete={() => endRestCountdown("set")}
           />
 

@@ -65,7 +65,7 @@ const getExerciseTypes = async (id) => {
     );
     const data = await response.data;
     const promises = [];
-    data.forEach((exerciseType) =>
+    data.data.forEach((exerciseType) =>
       promises.push(getExerciseType(exerciseType.type_id))
     );
     Promise.all(promises)
@@ -86,7 +86,7 @@ const getExerciseGoals = async (id) => {
     );
     const data = await response.data;
     const promises = [];
-    data.forEach((exerciseGoal) =>
+    data.data.forEach((exerciseGoal) =>
       promises.push(getGoal(exerciseGoal.goal_id))
     );
     Promise.all(promises)
@@ -107,7 +107,7 @@ const getExerciseMuscleGroups = async (id) => {
     );
     const data = await response.data;
     const promises = [];
-    data.forEach((exerciseMuscleGroup) =>
+    data.data.forEach((exerciseMuscleGroup) =>
       promises.push(getMuscleGroup(exerciseMuscleGroup.muscle_group_id))
     );
     Promise.all(promises)

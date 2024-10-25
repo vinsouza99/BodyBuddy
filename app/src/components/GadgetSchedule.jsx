@@ -10,8 +10,8 @@ import { isWithinInterval, parseISO, startOfWeek, endOfWeek, addDays } from 'dat
 export const GadgetSchedule = memo(({ programs = null, programRoutines = null }) => {
   const today = new Date();
   const [selectedWeek, setSelectedWeek] = useState({
-    start: startOfWeek(today, { weekStartsOn: 1 }),
-    end: endOfWeek(today, { weekStartsOn: 1 }),
+    start: startOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),
+    end: endOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),
   });
   const [filteredRoutines, setFilteredRoutines] = useState([]);
 

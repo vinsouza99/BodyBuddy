@@ -54,10 +54,6 @@ export const GadgetFavourite = () => {
     fetchExerciseInfo();
   }, []);
 
-  useEffect(() => {
-    console.log(exerciseInfo);
-  }, [exerciseInfo]);
-
   return (
     <GadgetBase title="Your favourite moves">
       <Box 

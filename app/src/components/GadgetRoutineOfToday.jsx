@@ -1,12 +1,14 @@
 import PropTypes from "prop-types";
 import { useState, memo } from "react";
 import { Button, Typography } from "@mui/material";
+import { isSameDay, parseISO } from 'date-fns';
 import { GadgetBase } from './GadgetBase';
 import { RoutineExercisesList } from './RoutineExercisesList';
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
   const [open, setOpen] = useState(false);
+  const today = new Date();
 
   // Open StartRoutineSessionModal
   const handleOpen = () => {
@@ -41,7 +43,10 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
                   {sortedProgramRoutines[0].name}
                 </Typography>
                 {sortedProgramRoutines[0].exercises && sortedProgramRoutines[0].exercises.length > 0 ? (
-                  <RoutineExercisesList routineExercises = { sortedProgramRoutines[0].exercises }/>
+                  <RoutineExercisesList 
+                    routineExercises = { sortedProgramRoutines[0].exercises }
+                    color={isSameDay(parseISO(sortedProgramRoutines[0].scheduled_date), today) ? 'secondary.main' : 'primary.main'}
+                  />
                 ) : (
                   <Typography>No routines found.</Typography>
                 )}
