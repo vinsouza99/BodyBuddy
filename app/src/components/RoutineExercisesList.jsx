@@ -29,6 +29,7 @@ const modalStyle = {
 export const RoutineExercisesList = ({ routineExercises = null, color = "primary.main" }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
+  console.log(routineExercises);
 
   // Open Video Modal
   const handleOpenVideo = (videoUrl) => {

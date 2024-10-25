@@ -65,9 +65,10 @@ const gradientStyles = {
 export const RoutineSession = ({title = "Routine Session"}) => {
   const { user } = useAuth(); // For session management
   const navigate = useNavigate();
-  const isLandscapeMode = useLandscapeMode();
   const location = useLocation();
+  const isLandscapeMode = useLandscapeMode();
   const { record = false, id = false, idType = null, reps = 0 } = location.state || {}; // Receive from the StartRoutineModal as a prop
+
   const angleChangeThreshold = 3;
   let previousAngle = null;
 
@@ -159,6 +160,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         // setRoutine(createRoutineTimeSchedule(response.data.data));
 
         const exercises = await getExercisesFromRoutine(id);
+        
+        // Order by exercise order
+        exercises.sort((a, b) => a.order - b.order);
+
         setRoutine(createRoutineTimeSchedule(exercises));
       } catch (error) {
         console.error("Error fetching routine:", error);
