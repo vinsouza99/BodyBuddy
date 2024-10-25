@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Modal, Box, Typography, Button, IconButton } from "@mui/material"
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ExitConfirm from "../../assets/exit_confirm.png";
 
 const modalStyle = {
   // Layout and positioning
@@ -59,12 +59,12 @@ export const ExitRoutineSessionModal = ( {open = false, onClose = false, onCompl
         >
           <CloseIcon />
         </IconButton>
-        <ErrorOutlineIcon style={{ fontSize: 50 }} />
+        <img src={ExitConfirm} alt="Exit confirmation" />
         <Typography textAlign="center">
           You haven&apos;t completed the routine yet. Save progress and continue later?
         </Typography>
-        <Button variant="outlined" color="secondary" fullWidth disabled>
-          Save and continue later
+        <Button variant="outlined" onClick={handleClose} color="primary" fullWidth>
+          Continue
         </Button>
         <Button variant="contained" onClick={handleComplete} color="primary" fullWidth>
           Exit

@@ -10,7 +10,7 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import background_image from '../../assets/bg_exercise_demo_light.png';
+import background_image from '../../assets/bg_light.png';
 
 const modalStyle = {
   // Layout and positioning
