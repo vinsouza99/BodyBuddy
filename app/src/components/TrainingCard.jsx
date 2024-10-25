@@ -55,7 +55,7 @@ export const TrainingCard = ({ routine }) => {
               : "Description is undefined"}
           </Typography>
 
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
             {/* Display exercises as chips */}
             {routine.exercises && routine.exercises.length > 0 ? (
               routine.exercises.map((exercise, index) => (
