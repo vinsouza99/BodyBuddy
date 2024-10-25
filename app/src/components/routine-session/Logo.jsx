@@ -1,11 +1,13 @@
+import PropTypes from "prop-types";
 import { Box } from '@mui/material';
-import LogoImage from "../../assets/bodybuddy_logo_white.svg";
+import LogoImageWhite from "../../assets/bodybuddy_logo_white.svg";
+import LogoImageColor from "../../assets/bodybuddy_logo_color.svg";
 
-export const Logo = () => {
+export const Logo = ({ color = true }) => {
   return (
     <Box
       component="img"
-      src={LogoImage}
+      src={color ? LogoImageColor : LogoImageWhite}
       alt="BodyBuddy"
       sx={{
         position: 'absolute',
@@ -19,3 +21,7 @@ export const Logo = () => {
     />
   )
 }
+
+Logo.propTypes = {
+  color: PropTypes.bool,
+};

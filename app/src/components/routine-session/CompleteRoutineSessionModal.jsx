@@ -1,11 +1,16 @@
 // React and Material-UI
 import PropTypes from "prop-types";
+import { useNavigate } from "react-router-dom";
 import { Modal, Box, Typography, Button } from "@mui/material"
 // Custom Components for Routine Session
 import { MetricCard } from "./MetricCard";
 import { useLandscapeMode } from "./useLandscapeMode";
 // Icons & Images
-import BodyBuddy from "../../assets/bodybuddy_logo_color.svg";
+import Completed from "../../assets/completed.png";
+import Mins from "../../assets/mins.png";
+import Calories from "../../assets/calories.png";
+import Score from "../../assets/score.png";
+import BG from "../../assets/bg_light.png";
 
 const modalStyle = {
   // Layout and positioning
@@ -21,27 +26,32 @@ const modalStyle = {
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: 2,
+  gap: 8,
   // Visual effects
   bgcolor: "background.paper",
   boxShadow: 24,
+  backgroundImage: `url(${BG})`,
+  backgroundSize: 'cover',
 };
 
 export const CompleteRoutineSessionModal = ( {open = false, onComplete = false } ) => {
   const isLandscapeMode = useLandscapeMode();
+  const navigate = useNavigate();
 
   const handleComplete = () => {
     onComplete();
+    navigate("/training");
   }
 
   return (
     <Modal 
       open={open}
+      
     >
       <Box sx={modalStyle}>
         <Box
           component="img"
-          src={BodyBuddy}
+          src={Completed}
           alt="Completed Exercise"
           sx={{
             maxHeight: isLandscapeMode ? '80px' : '250px',
@@ -61,22 +71,31 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false }
           sx={{
             display: 'flex', 
             justifyContent: 'center', 
-            gap: 4, 
+            gap: 10, 
             width: '450px',
           }}>
-          <MetricCard title="Mins" color="black" />
-          <MetricCard title="Calories" color="black" />
-          <MetricCard title="Score" color="black" />
+          <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+            <img src={Mins} alt="mins" style={{ width: "45px", height: "45px", marginBottom: "4px" }}/>
+            <MetricCard title="Mins" color="black" />
+          </Box>
+          <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+            <img src={Calories} alt="calories" style={{ width: "37px", height: "45px", marginBottom: "4px" }}/>
+            <MetricCard title="Calories" color="black" />
+          </Box>
+          <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+            <img src={Score} alt="score" style={{ width: "45px", height: "45px", marginBottom: "4px" }}/>
+            <MetricCard title="Score" color="black" />
+          </Box>
         </Box>
-        <Button 
+        {/* <Button 
           variant="outlined" 
           sx={{
             width: '250px',
           }} 
-          disabled
+          onClick={() => {navigate("/training")}}
         >
-          Check my upcoming schedule
-        </Button>
+          View My Program
+        </Button> */}
         <Button
           variant="contained" 
           sx={{ 
@@ -84,7 +103,7 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false }
           }} 
           onClick={handleComplete}
         >
-          Home  
+          View My Program 
         </Button>
       </Box>
     </Modal>
