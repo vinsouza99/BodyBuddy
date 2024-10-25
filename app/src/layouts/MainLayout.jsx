@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box } from '@mui/material';
+import { Box } from "@mui/material";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -109,7 +109,7 @@ export const MainLayout = () => {
           disableCollapsibleSidebar
           slots={{ toolbarActions: Notification }}
         >
-          <Box sx={{ margin: 2 }}>
+          <Box sx={{ margin: 2, minHeight: "calc(100vh - 80px)" }}>
             <Outlet />
           </Box>
           <Footer />

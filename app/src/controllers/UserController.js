@@ -212,11 +212,11 @@ const updateUserSchedule = async (
 const getUserHistory = async (user_id) => {
   try {
     const programsResponse = await getUserCompletedPrograms(user_id);
-    const routinesReponse = await getUserCompletedRoutines(user_id);
+    const routinesResponse = await getUserCompletedRoutines(user_id);
     const achievementsResponse = await getUserAchievements(user_id);
     const history = [
       ...programsResponse,
-      ...routinesReponse,
+      ...routinesResponse,
       ...achievementsResponse,
     ];
     if (history.length > 1) history.sort(historyItemComparator);
