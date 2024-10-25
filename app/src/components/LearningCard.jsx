@@ -90,12 +90,12 @@ const LearningCard = ({ exercise, exercise_type }) => {
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
           {/* Log exercise object */}
-          {console.log("Exercise object:", exercise)}
+          {/*console.log("Exercise object:", exercise)*/}
 
           {/* COCOY TODO: Display exercise types */}
           {exercise && exercise.types && exercise.types.length > 0 ? (
             exercise.types.map((type, index) => (
-              <Chip key={index} label={type} variant="outlined" />
+              <Chip key={index} label={type.name} variant="outlined" />
             ))
           ) : (
             // Message if no exercise type

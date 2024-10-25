@@ -6,6 +6,7 @@ export default class Exercise {
    * @param {string} description
    * @param {string} demo_url
    * @param {Array} types - An array that contains one or multiple types
+   * @param {Array} muscleGroups
    * @param {Array} goals - An array that contains one or multiple goals
    */
   constructor(
@@ -20,6 +21,7 @@ export default class Exercise {
     rest_period,
     demo_url,
     types = new Array(),
+    muscleGroups = new Array(),
     goals = new Array()
   ) {
     this.id = id;
@@ -33,6 +35,7 @@ export default class Exercise {
     this.rest_period = rest_period;
     this.demo_url = demo_url;
     this.types = types;
+    this.muscleGroups = muscleGroups;
     this.goals = goals;
   }
 }

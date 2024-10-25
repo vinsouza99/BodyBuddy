@@ -13,22 +13,23 @@ const API_EXERCISE_MUSCLE_GROUPS_ROUTE = "muscleGroups";
 
 const getAllExercises = async () => {
   const response = await axiosClient.get(`${API_ROUTE}`);
-  const exercises = await response.data.data.map(
-    (exercise) =>
-      new Exercise(
-        exercise.id,
-        undefined,
-        exercise.name,
-        exercise.description,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        exercise.demo_url,
-        undefined
-      )
-  );
+  const exercises = await response.data.data.map((item) => {
+    const exercise = new Exercise();
+    exercise.id = item.id;
+    exercise.name = item.name;
+    exercise.description = item.description;
+    exercise.demo_url = item.demo_url;
+    return exercise;
+  });
+  for (let exercise of exercises) {
+    const exerciseTypes = await getExerciseTypes(exercise.id);
+    const exerciseGoals = await getExerciseGoals(exercise.id);
+    const exerciseMuscleGroups = await getExerciseMuscleGroups(exercise.id);
+    exercise.types = exerciseTypes;
+    exercise.goals = exerciseGoals;
+    exercise.muscleGroups = exerciseMuscleGroups;
+  }
+  console.log(exercises);
   return exercises;
 };
 const getExercise = async (id) => {
@@ -53,6 +54,7 @@ const getExercise = async (id) => {
     exercise.types = exerciseTypes;
     exercise.goals = exerciseGoals;
     exercise.muscleGroups = exerciseMuscleGroups;
+    console.log(exercise);
     return exercise;
   } catch (e) {
     console.log(e);
@@ -63,18 +65,14 @@ const getExerciseTypes = async (id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_EXERCISE_TYPE_ROUTE}/${id}`
     );
-    const data = await response.data;
-    const promises = [];
-    data.data.forEach((exerciseType) =>
-      promises.push(getExerciseType(exerciseType.type_id))
-    );
-    Promise.all(promises)
-      .then((typeArray) => {
-        return typeArray;
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
+    const data = await response.data.data;
+    const typeArray = [];
+
+    for (let exerciseType of data) {
+      const type = await getExerciseType(exerciseType.type_id);
+      typeArray.push(type);
+    }
+    return typeArray;
   } catch (e) {
     console.log(e);
   }
@@ -84,18 +82,14 @@ const getExerciseGoals = async (id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_EXERCISE_GOALS_ROUTE}/${id}`
     );
-    const data = await response.data;
-    const promises = [];
-    data.data.forEach((exerciseGoal) =>
-      promises.push(getGoal(exerciseGoal.goal_id))
-    );
-    Promise.all(promises)
-      .then((goalsArray) => {
-        return goalsArray;
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
+    const data = await response.data.data;
+    const goalsArray = [];
+
+    for (let exerciseGoal of data) {
+      const goal = await getGoal(exerciseGoal.goal_id);
+      goalsArray.push(goal);
+    }
+    return goalsArray;
   } catch (e) {
     console.log(e);
   }
@@ -105,18 +99,16 @@ const getExerciseMuscleGroups = async (id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_EXERCISE_MUSCLE_GROUPS_ROUTE}/${id}`
     );
-    const data = await response.data;
-    const promises = [];
-    data.data.forEach((exerciseMuscleGroup) =>
-      promises.push(getMuscleGroup(exerciseMuscleGroup.muscle_group_id))
-    );
-    Promise.all(promises)
-      .then((muscleGroupsArray) => {
-        return muscleGroupsArray;
-      })
-      .catch((e) => {
-        throw new Error(e);
-      });
+    const data = await response.data.data;
+    console.log(data);
+    const muscleGroupsArray = [];
+
+    for (let item of data) {
+      const muscleGroup = await getMuscleGroup(item.muscle_group_id);
+      muscleGroupsArray.push(muscleGroup);
+    }
+    console.log(muscleGroupsArray);
+    return muscleGroupsArray;
   } catch (e) {
     console.log(e);
   }

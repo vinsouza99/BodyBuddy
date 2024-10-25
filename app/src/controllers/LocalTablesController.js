@@ -100,7 +100,7 @@ const getExerciseType = async (type_id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_TYPE_ROUTE}/${type_id}`
     );
-    const type = await response.data;
+    const type = await response.data.data;
     return new ExerciseType(type.id, type.name);
   } catch (e) {
     console.log(e);
@@ -125,7 +125,7 @@ const getMuscleGroup = async (muscle_group_id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_MUSCLE_GROUPS_ROUTE}/${muscle_group_id}`
     );
-    const muscleGroup = await response.data;
+    const muscleGroup = await response.data.data;
     return new MuscleGroup(muscleGroup.id, muscleGroup.name);
   } catch (e) {
     console.log(e);
