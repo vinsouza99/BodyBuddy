@@ -32,7 +32,7 @@ function CustomTabPanel(props) {
       id={`tabpanel-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && <Box>{children}</Box>}
     </div>
   );
 }

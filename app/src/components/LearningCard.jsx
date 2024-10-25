@@ -92,7 +92,8 @@ const LearningCard = ({ exercise, exercise_type }) => {
           {/* Log exercise object */}
           {console.log("Exercise object:", exercise)}
 
-          {exercise && exercise.types ? (
+          {/* COCOY TODO: Display exercise types */}
+          {exercise && exercise.types && exercise.types.length > 0 ? (
             exercise.types.map((type, index) => (
               <Chip key={index} label={type} variant="outlined" />
             ))
