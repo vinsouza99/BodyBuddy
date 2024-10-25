@@ -3,9 +3,9 @@ export const setPageTitle = (title) => {
 };
 export const historyItemComparator = (a, b) => {
   if (a.compare_date > b.compare_date) {
-    return 1;
-  } else if (a.compare_date < b.compare_date) {
     return -1;
+  } else if (a.compare_date < b.compare_date) {
+    return 1;
   }
   return 0;
 };

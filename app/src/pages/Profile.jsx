@@ -18,9 +18,11 @@ export const Profile = (props) => {
     async function getUserData() {
       const userData = await getUser(user);
       setCurrentUser(userData);
+      console.log(userData);
 
       const userHistoryData = await getUserHistory(user.id);
       setHistory(userHistoryData);
+      console.log(userHistoryData);
     }
 
     getUserData();

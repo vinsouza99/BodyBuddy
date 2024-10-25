@@ -8,6 +8,26 @@ const API_ROUTE = "routines";
 const API_PROGRAM_ROUTINE_ROUTE = "program";
 const API_ROUTINE_EXERCISE_ROUTE = "exercises";
 
+const getRoutine = async (routine_id) => {
+  try {
+    const response = await axiosClient.get(`${API_ROUTE}/${routine_id}`);
+    const data = await response.data.data;
+    console.log(data);
+    const routine = new Routine(
+      data.id,
+      data.duration,
+      undefined,
+      data.name,
+      data.description,
+      data.estimated_calories,
+      data.scheduled_date,
+      data.completed
+    );
+    return routine;
+  } catch (e) {
+    console.log(e);
+  }
+};
 const getRoutinesFromProgram = async (program_id) => {
   try {
     const response = await axiosClient.get(
@@ -45,30 +65,24 @@ const getUserCompletedRoutines = async (user_id) => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/history/${user_id}`);
     if (response.status == 404) return [];
-    const data = await response.data;
-    const routines =
-      data && data.length > 0
-        ? data.map(
-            (routine) =>
-              new Routine(
-                routine.id,
-                routine.duration,
-                routine.program_id,
-                routine.name,
-                routine.description,
-                routine.estimated_calories,
-                routine.scheduled_date,
-                routine.completed,
-                []
-              )
-          )
-        : [];
-
-    if (routines.length > 0) {
-      for (const routine of routines) {
-        const routineExercises = await getExercisesFromRoutine(routine.id);
-        routineExercises.forEach((exercise) => routine.addExercise(exercise));
-      }
+    const data = await response.data.data;
+    console.log(data);
+    const routines = [];
+    for (let element of data) {
+      const routine = await getRoutine(element.routine_id);
+      routines.push(
+        new Routine(
+          routine.id,
+          routine.duration,
+          routine.program_id,
+          routine.name,
+          routine.description,
+          routine.estimated_calories,
+          routine.scheduled_date,
+          routine.completed,
+          element.completed_at
+        )
+      );
     }
     return routines;
   } catch (e) {
@@ -217,9 +231,7 @@ const createRoutineExercise = async (exerciseObj) => {
 
 const getRoutineHistory = async (user_id) => {
   try {
-    const response = await axiosClient.get(
-      `${API_ROUTE}/history/${user_id}`
-    );
+    const response = await axiosClient.get(`${API_ROUTE}/history/${user_id}`);
 
     const data = await response.data.data;
 

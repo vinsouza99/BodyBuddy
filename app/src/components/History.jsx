@@ -20,7 +20,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 // import Typography from '@mui/material/Typography';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 
@@ -30,7 +30,7 @@ import dayjs from "dayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
+import { DateRangeCalendar } from "@mui/x-date-pickers-pro/DateRangeCalendar";
 
 function History({ data }) {
   const [modalSwitch, setSwitch] = useState(false);
@@ -91,35 +91,58 @@ function History({ data }) {
         <div>
           {data && data.length > 0
             ? data.map((item, index) => (
-                <Accordion elevation={0} key={index} 
+                <Accordion
+                  elevation={0}
+                  key={index}
                   sx={{
-                  marginTop: 1,
-                  borderLeft: '2px solid #4A90E2',
-                  borderTop: 'none',
-                  borderRight: 'none',
-                  borderBottom: 'none'
-                }}>
+                    marginTop: 1,
+                    borderLeft: "2px solid #4A90E2",
+                    borderTop: "none",
+                    borderRight: "none",
+                    borderBottom: "none",
+                  }}
+                >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel2-content"
                     id="panel2-header"
                   >
-                    <Typography>{item.date}</Typography>
+                    <Typography>
+                      {new Date(item.compare_date).toDateString()} - {item.name}
+                    </Typography>
                   </AccordionSummary>
                   <Box>
                     <AccordionDetails>
-                      <Paper elevation={2} sx={{ display: "flex", alignItems: "center", marginBottom: 2, borderRadius: 10, backgroundColor: '#f3f3f3' }}>
+                      <Paper
+                        elevation={2}
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: 2,
+                          borderRadius: 10,
+                          backgroundColor: "#f3f3f3",
+                        }}
+                      >
                         <IconButton sx={{ padding: 0, marginRight: 1 }}>
-                          <PlayCircleIcon onClick={videoOpen} sx={{ color: "#4A90E2", fontSize: 60 }} />
+                          <PlayCircleIcon
+                            onClick={videoOpen}
+                            sx={{ color: "#4A90E2", fontSize: 60 }}
+                          />
                         </IconButton>
 
-                        <Typography variant="body1" >
-                        {item.content}
-                        </Typography>
+                        <Typography variant="body1">{item.content}</Typography>
                       </Paper>
                       <Stack direction="row" spacing={1}>
-                        <Chip label={`${item.duration} min`} variant="outlined" sx={{ borderRadius: 2 }} />
-                        <Chip label={`${item.calories} cal`} variant="outlined"  sx={{ borderRadius: 2 }} />
+                        <Chip
+                          label={`${item.duration} min`}
+                          variant="outlined"
+                          sx={{ borderRadius: 2 }}
+                        />
+                        <Chip
+                          label={`${item.calories} cal`}
+                          variant="outlined"
+                          sx={{ borderRadius: 2 }}
+                        />
                       </Stack>
                     </AccordionDetails>
                   </Box>
@@ -161,11 +184,7 @@ function History({ data }) {
       </Card>
 
       {/* Modal part */}
-      <Dialog
-        open={modalSwitch}
-        onClose={handleClickClose}
-        maxWidth="md"
-      >
+      <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md">
         <DialogContent>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <IconButton
@@ -175,7 +194,7 @@ function History({ data }) {
               <CloseIcon />
             </IconButton>
 
-            <DemoContainer components={['DateRangeCalendar']}>
+            <DemoContainer components={["DateRangeCalendar"]}>
               <DateRangeCalendar />
             </DemoContainer>
           </LocalizationProvider>

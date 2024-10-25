@@ -3,6 +3,7 @@ import { historyItemComparator } from "../utils/utils";
 import User from "../models/User";
 import UserSettings from "../models/UserSettings";
 import UserProgress from "../models/UserProgress";
+import UserAchievement from "../models/UserAchievement";
 import {
   getAllAchievements,
   getGoal,
@@ -234,13 +235,13 @@ const getUserAchievements = async (user_id) => {
     );
     if (userAchievementsResponse.status >= 400) return userAchievements;
 
-    const achievements = (await getAllAchievements()).data;
+    const achievements = await getAllAchievements();
     userAchievementsResponse.data.data.forEach((achievement) => {
       let localAchievement = achievements.find(
-        (element) => element.id == achievement.id
+        (element) => element.id == achievement.achievement_id
       );
       userAchievements.push(
-        new Achievement(
+        new UserAchievement(
           localAchievement.id,
           localAchievement.name,
           achievement.earned_at
