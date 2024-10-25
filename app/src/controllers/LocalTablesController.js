@@ -89,7 +89,9 @@ const getAllExerciseTypes = async () => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${API_TYPE_ROUTE}`);
     const data = await response.data;
-    return data.map((type) => new ExerciseType(type.id, type.name));
+    return data.map(
+      (type) => new ExerciseType(type.id, type.name, type.default_duration)
+    );
   } catch (e) {
     console.log(e);
   }
@@ -101,7 +103,7 @@ const getExerciseType = async (type_id) => {
       `${API_ROUTE}/${API_TYPE_ROUTE}/${type_id}`
     );
     const type = await response.data.data;
-    return new ExerciseType(type.id, type.name);
+    return new ExerciseType(type.id, type.name, type.default_duration);
   } catch (e) {
     console.log(e);
   }
