@@ -9,6 +9,8 @@ import {
   DialogContent,
   IconButton,
   Box,
+  Paper,
+  Grid2,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
@@ -18,8 +20,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 // import Typography from '@mui/material/Typography';
-import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 
@@ -29,7 +30,7 @@ import dayjs from "dayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import { DateRangeCalendar } from '@mui/x-date-pickers-pro/DateRangeCalendar';
 
 function History({ data }) {
   const [modalSwitch, setSwitch] = useState(false);
@@ -90,26 +91,38 @@ function History({ data }) {
         <div>
           {data && data.length > 0
             ? data.map((item, index) => (
-                <Accordion key={index}>
+                <Accordion elevation={0} key={index} 
+                  sx={{
+                  marginTop: 1,
+                  borderLeft: '2px solid #4A90E2',
+                  borderTop: 'none',
+                  borderRight: 'none',
+                  borderBottom: 'none'
+                }}>
                   <AccordionSummary
-                    expandIcon={<ArrowDropDownIcon />}
+                    expandIcon={<ExpandMoreIcon />}
                     aria-controls="panel2-content"
                     id="panel2-header"
                   >
                     <Typography>{item.date}</Typography>
                   </AccordionSummary>
-                  <AccordionDetails>
-                    <Typography>
-                      <IconButton>
-                        <PlayCircleIcon onClick={videoOpen} />
-                      </IconButton>
-                      {item.content}
-                    </Typography>
-                    <Stack direction="row" spacing={1}>
-                      <Chip label={item.duration} variant="outlined" />
-                      <Chip label={item.calories} cal variant="outlined" />
-                    </Stack>
-                  </AccordionDetails>
+                  <Box>
+                    <AccordionDetails>
+                      <Paper elevation={2} sx={{ display: "flex", alignItems: "center", marginBottom: 2, borderRadius: 10, backgroundColor: '#f3f3f3' }}>
+                        <IconButton sx={{ padding: 0, marginRight: 1 }}>
+                          <PlayCircleIcon onClick={videoOpen} sx={{ color: "#4A90E2", fontSize: 60 }} />
+                        </IconButton>
+
+                        <Typography variant="body1" >
+                        {item.content}
+                        </Typography>
+                      </Paper>
+                      <Stack direction="row" spacing={1}>
+                        <Chip label={`${item.duration} min`} variant="outlined" sx={{ borderRadius: 2 }} />
+                        <Chip label={`${item.calories} cal`} variant="outlined"  sx={{ borderRadius: 2 }} />
+                      </Stack>
+                    </AccordionDetails>
+                  </Box>
 
                   {/* Session Modal */}
                   <Dialog
@@ -151,24 +164,19 @@ function History({ data }) {
       <Dialog
         open={modalSwitch}
         onClose={handleClickClose}
-        fullWidth
         maxWidth="md"
       >
         <DialogContent>
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={["DateRangePicker", "DateRangePicker"]}>
-              <DemoItem label="Duration" component="DateRangePicker">
-                <IconButton
-                  onClick={handleClickClose}
-                  sx={{ position: "absolute", right: 8, top: 8 }}
-                >
-                  <CloseIcon />
-                </IconButton>
+            <IconButton
+              onClick={handleClickClose}
+              sx={{ position: "absolute", right: 8, top: 8 }}
+            >
+              <CloseIcon />
+            </IconButton>
 
-                <DateRangePicker
-                  defaultValue={[dayjs("2024-09-01"), dayjs("2024-10-30")]}
-                />
-              </DemoItem>
+            <DemoContainer components={['DateRangeCalendar']}>
+              <DateRangeCalendar />
             </DemoContainer>
           </LocalizationProvider>
         </DialogContent>
