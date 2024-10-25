@@ -130,7 +130,7 @@ export const Dashboard = (props) => {
         const parsedContent = JSON.parse(
           response_openai.data.data.choices[0].message.content
         );
-        console.log("AI generated data:" + parsedContent);
+        console.log("AI generated data:", parsedContent);
 
         // TODO: Create and Use the font-end controller.
         // Insert program data into the database
