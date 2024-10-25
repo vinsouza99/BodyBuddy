@@ -6,7 +6,8 @@
 
 /* Use loaded fonts */
 :root {
-  font-family: 'Montserrat', 'Urbanist', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", "Urbanist", system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -72,4 +73,20 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+/* Toolpad Core Dashboard Layout */
+.css-mra6uu-MuiDrawer-docked .MuiDrawer-paper,
+.css-mra6uu-MuiDrawer-docked {
+  width: 220px !important;
+}
+
+.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
+  background: linear-gradient(90deg, rgba(45,144,224,1) 0%, rgba(171,211,243,1) 100%) !important;
+  color: #FFF;
+}
+
+.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiSvgIcon-root,
+.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiTypography-root {
+  color: #FFF !important;
 }
