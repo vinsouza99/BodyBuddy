@@ -82,7 +82,7 @@ button:focus-visible {
 }
 
 .css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
-  background: linear-gradient(90deg, rgba(45,144,224,1) 0%, rgba(171,211,243,1) 100%) !important;
+  background: linear-gradient(90deg, rgba(45,144,224,1) 60%, rgba(171,211,243,1) 100%) !important;
   color: #FFF;
 }
 
