@@ -7,7 +7,7 @@ import { WeekPicker } from "./WeekPicker";
 import { RoutinesList } from "../components/RoutinesList";
 import { isWithinInterval, parseISO, startOfWeek, endOfWeek, addDays } from 'date-fns';
 
-export const GadgetSchedule = memo(({ program = null, programRoutines = null }) => {
+export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) => {
   const today = new Date();
   const [selectedWeek, setSelectedWeek] = useState({
     start: startOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),

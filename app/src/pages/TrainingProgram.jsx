@@ -76,7 +76,7 @@ export const TrainingProgram = memo((props) => {
         // Find the first program without completed_at
         const activeProgram = programs.find((program) => !program.completed_at);
         setActiveProgram(activeProgram);
-        setProgramRoutines(activeProgram.routines);
+        setProgramRoutines(activeProgram?.routines || []);
       } catch (e) {
         console.log(e);
       } finally {
@@ -92,13 +92,19 @@ export const TrainingProgram = memo((props) => {
       return;
     }
     return (
-      <Grid2 container spacing={2}>
+      <Grid2
+        container spacing={2}
+      >
         {/* LEFT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 7 }}>
+        <Grid2
+          size={{ xs: 12, md: 7 }}
+        >
           <GadgetRoutineOfToday programRoutines={programRoutines} />
         </Grid2>
         {/* RIGHT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 5 }}>
+        <Grid2 
+          size={{ xs: 12, md: 5 }}
+        >
           <GadgetSchedule
             program={activeProgram}
             programRoutines={programRoutines}
