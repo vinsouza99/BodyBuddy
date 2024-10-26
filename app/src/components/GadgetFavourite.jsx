@@ -1,14 +1,16 @@
-import { useState, useEffect } from 'react';
+import PropTypes from "prop-types";
+import { useState } from 'react';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import axiosClient from '../utils/axiosClient';
+// import { getAllExercises } from '../controllers/ExerciseController';
+// import axiosClient from '../utils/axiosClient';
 import { GadgetBase } from './GadgetBase';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
-export const GadgetFavourite = () => {
+export const GadgetFavourite = ({ exerciseInfo = null }) => {
   const navigate = useNavigate();
-  const [exerciseInfo, setExerciseInfo] = useState([]);
+  // const [exerciseInfo, setExerciseInfo] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   const itemsPerPage = 2;
@@ -35,24 +37,18 @@ export const GadgetFavourite = () => {
     });
   }
 
-  useEffect(() => {
-    // Get all exercise information from the database
-    const fetchExerciseInfo = async () => {
-      try {
-        const response = await axiosClient.get(
-          `Exercises/`
-        );
-        if (Number(response.status) !== 200) {
-          throw new Error("Failed to fetch exercise info");
-        }
-        setExerciseInfo(response.data.data);
-
-      } catch (error) {
-        console.error("Error fetching exercise:", error);
-      }
-    };
-    fetchExerciseInfo();
-  }, []);
+  // useEffect(() => {
+  //   // Get all exercise information from the database
+  //   const fetchExerciseInfo = async () => {
+  //     try {
+  //       const response = await getAllExercises();     
+  //       setExerciseInfo(response);
+  //     } catch (error) {
+  //       console.error("Error fetching exercise:", error);
+  //     }
+  //   };
+  //   fetchExerciseInfo();
+  // }, []);
 
   return (
     <GadgetBase title="Your favourite moves">
@@ -144,4 +140,8 @@ export const GadgetFavourite = () => {
       </Button>
     </GadgetBase>
   );
+};
+
+GadgetFavourite.propTypes = {
+  exerciseInfo: PropTypes.array,
 };
