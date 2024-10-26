@@ -168,8 +168,18 @@ const theme = createTheme({
     },
 
     /****************************************/
-    /*          ADD COMPONENT NAME          */
+    /*         TAB / TABS COMPONENT         */
     /****************************************/
+
+    MuiTab: {
+      styleOverrides: {
+        root: {
+          "&:focus": {
+            outline: "none", // Remove focus outline
+          },
+        },
+      },
+    },
 
     /****************************************/
     /*      GLOBAL STYLES (NOT IN USE)      */
