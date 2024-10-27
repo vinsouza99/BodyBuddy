@@ -38,7 +38,7 @@ const tabStyles = {
 export const TrainingProgram = memo((props) => {
   const { user } = useAuth();
   const [presetRoutines, setPresetRoutines] = useState([]);
-  const [programs, setPrograms] = useState([]);
+  const [activeProgram, setActiveProgram] = useState([]);
   const [programRoutines, setProgramRoutines] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -71,10 +71,12 @@ export const TrainingProgram = memo((props) => {
         const presetRoutines = await getAllPresetRoutines();
         setPresetRoutines(presetRoutines);
 
-        // Retrieve Program Routines
+        // Retrieve Program
         const programs = await getAllUserPrograms(user.id);
-        setPrograms(programs);
-        setProgramRoutines(programs[0].routines);
+        // Find the first program without completed_at
+        const activeProgram = programs.find((program) => !program.completed_at);
+        setActiveProgram(activeProgram);
+        setProgramRoutines(activeProgram?.routines || []);
       } catch (e) {
         console.log(e);
       } finally {
@@ -90,21 +92,27 @@ export const TrainingProgram = memo((props) => {
       return;
     }
     return (
-      <Grid2 container spacing={2}>
+      <Grid2
+        container spacing={2}
+      >
         {/* LEFT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 7 }}>
+        <Grid2
+          size={{ xs: 12, md: 7 }}
+        >
           <GadgetRoutineOfToday programRoutines={programRoutines} />
         </Grid2>
         {/* RIGHT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 5 }}>
+        <Grid2 
+          size={{ xs: 12, md: 5 }}
+        >
           <GadgetSchedule
-            programs={programs}
+            program={activeProgram}
             programRoutines={programRoutines}
           />
         </Grid2>
       </Grid2>
     );
-  }, [programs, programRoutines, loading]);
+  }, [activeProgram, programRoutines, loading]);
 
   // Memoize the "Premade Routines" tab content
   const premadeRoutinesTabContent = useMemo(() => {
@@ -141,7 +149,11 @@ export const TrainingProgram = memo((props) => {
 
       <Box sx={{ marginTop: 2 }}>
         {/* MY PROGRAM TAB */}
-        {activeTab === 0 && myProgramTabContent}
+        {activeTab === 0 && (
+          activeProgram  
+          ? ( myProgramTabContent ) 
+          : ( <Typography>No available program</Typography> )
+        )}
         {/* PREMADE ROUTINES TAB */}
         {activeTab === 1 && premadeRoutinesTabContent}
       </Box>

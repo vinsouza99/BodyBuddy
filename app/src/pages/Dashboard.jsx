@@ -2,13 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Grid2,
-  Box,
-  Typography,
-  Backdrop,
-  CircularProgress,
-} from "@mui/material";
+import { Grid2, Box, Typography, Backdrop, CircularProgress } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -18,30 +12,24 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import {
-  getUser,
-  // getUserProgress,
-  getUserAccumulatedTimes,
-} from "../controllers/UserController";
+import { getUser, getUserAccumulatedTimes } from "../controllers/UserController";
+import { getAllExercises } from "../controllers/ExerciseController";
 import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
-// import { getRoutineHistory } from "../controllers/RoutineController";
 import axiosClient from "../utils/axiosClient";
 // Prompts
-import { createProgram } from "../utils/prompt/createProgram";
+import { generateProgramPrompt } from "../utils/prompt/generateProgramPrompt";
 
 export const Dashboard = (props) => {
   const { user } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
-  // const [userProgress, setUserProgress] = useState(null);
   const [userAccumulatedTimes, setUserAccumulatedTimes] = useState(null);
-  // const [userHistory, setUserHistory] = useState(null);
+  const [exerciseInfo, setExerciseInfo] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  // const [userProgressLoaded, setUserProgressLoaded] = useState(false);
   const [userAccumulatedTimesLoaded, setUserAccumulatedTimesLoaded] = useState(false);
-  // const [userHistoryLoaded, setUserHistoryLoaded] = useState(false);
+  const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
 
@@ -70,33 +58,45 @@ export const Dashboard = (props) => {
       }
     };
     loadUserdata();
+
+    const loadExerciseData = async () => {
+      const response = await getAllExercises();     
+      setExerciseInfo(response);
+      setExerciseInfoLoaded(true);
+    }
+    loadExerciseData();
   }, []);
 
   useEffect(() => {
-    if (userInfoLoaded && userAccumulatedTimesLoaded) {
+    if (userInfoLoaded && userAccumulatedTimesLoaded && exerciseInfoLoaded) {
       setLoading(false);
     }
-  }, [userInfoLoaded, userAccumulatedTimesLoaded]);
+  }, [userInfoLoaded, userAccumulatedTimesLoaded, exerciseInfoLoaded]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
     if (hasFetchedPrograms.current) return;
     hasFetchedPrograms.current = true;
 
-    // Check if the user has a program
+    // Check if the user has an acive program
     const fetchPrograms = async () => {
       try {
         const response = await axiosClient.get(`programs/user/${user.id}`);
-        if (
-          Number(response.status) === 200 &&
-          Number(response.data.data.count) === 0
-        ) {
-          console.log(
-            "No program found for this user. Generating a new personalized program."
+        if (Number(response.status) === 200) {
+          const programs = response.data.data || [];
+          const hasIncompleteProgram = programs.rows.some(
+            (program) => !program.completed_at
           );
-          await generatePersonalizedProgram();
+          console.log("Programs:", programs.rows);
+
+          if (!hasIncompleteProgram) {
+            console.log("No acive program found for this user. Generating a new personalized program.");
+            await generatePersonalizedProgram();
+          } else {
+            console.log("User has active program.");
+          }
         } else {
-          console.log("User already has a program.");
+          throw new Error("Failed to fetch programs");
         }
       } catch (error) {
         console.error("Error fetching programs:", error);
@@ -111,7 +111,7 @@ export const Dashboard = (props) => {
         // TODO: Create and Use the font-end controller.
         // OpenAI will generate the program data
         const response_openai = await axiosClient.post(`openai/`, {
-          prompt: createProgram.prompt,
+          prompt: generateProgramPrompt.prompt,
         });
         if (Number(response_openai.status) !== 200) {
           throw new Error("Failed to get OpenAI response");
@@ -206,25 +206,13 @@ export const Dashboard = (props) => {
     <>
       {/* Backdrop for generating, loading */}
       <Backdrop
-        open={generating} // Control when to show the overlay
+        open={generating || loading}
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Box textAlign="center">
           <CircularProgress color="inherit" />
           <Typography variant="h6" sx={{ mt: 2 }}>
-            Generating personalized program...
-          </Typography>
-        </Box>
-      </Backdrop>
-
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
+            {generating ? "Generating personalized program..." : "Loading..."}
           </Typography>
         </Box>
       </Backdrop>
@@ -236,7 +224,7 @@ export const Dashboard = (props) => {
             {/* ADD GADGETS HERE */}
             <GadgetUserProfile userInfo={userInfo} />
             <GadgetStreaks userInfo={userInfo} history={userAccumulatedTimes?.data || []}/>
-            <GadgetFavourite />
+            <GadgetFavourite exerciseInfo={exerciseInfo || []} />
           </Box>
         </Grid2>
         {/* RIGHT COLUMN */}

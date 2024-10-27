@@ -5,7 +5,7 @@ const day = today.getDate().toString().padStart(2, '0');
 const formattedDate = `${year}-${month}-${day}`;
 
 
-export const createProgram = {
+export const generateProgramPrompt = {
   prompt: `
   Now you will create a personalized firness program for the user.
   A fitness program consists of a routine.
