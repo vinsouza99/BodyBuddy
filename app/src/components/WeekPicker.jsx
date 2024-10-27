@@ -1,7 +1,20 @@
 import PropTypes from "prop-types";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, IconButton, Typography } from '@mui/material';
-import { addDays, subDays, format, isSameDay, parseISO } from 'date-fns';
+import { 
+  addDays, 
+  subDays, 
+  format, 
+  isSameDay, 
+  parseISO, 
+  startOfWeek, 
+  startOfMonth, 
+  endOfMonth, 
+  addMonths, 
+  subMonths,
+  startOfYear,
+  endOfYear,
+ } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -10,36 +23,92 @@ export const WeekPicker = ({
   onSelectDate = null,
   onClickNextWeek = null,
   onClickPreviousWeek = null,
-  displayMode = "full",
+  displayMode = "week-basic", // "week-basic", "week-simple, "month-simple"
   scheduledDates = [],
   scheduledDatesBorderColor = "primary.main",
   scheduledDatesBgColor = "transparent",
 
 }) => {
-  const [startDate, setStartDate] = useState(new Date(getStartOfWeek(new Date()).setHours(0, 0, 0, 0)));
-  const [endDate, setEndDate] = useState(new Date(getStartOfWeek(addDays(new Date(), 7)).setHours(0, 0, 0, 0)));
+  // const [startDate, setStartDate] = useState(new Date(getStartOfWeek(new Date()).setHours(0, 0, 0, 0)));
+  // const [endDate, setEndDate] = useState(new Date(getStartOfWeek(addDays(new Date(), 7)).setHours(0, 0, 0, 0)));
+  const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
+  const [endDate, setEndDate] = useState(addDays(getStartOfWeek(new Date()), 6));
   const today = new Date();
   const timeZone = 'America/Vancouver';
 
+  useEffect(() => {
+    if (displayMode === 'month-simple') {
+      setStartDate(startOfMonth(today));
+      setEndDate(endOfMonth(today));
+    } else if (displayMode === 'year-simple') {
+      setStartDate(startOfYear(today));
+      setEndDate(endOfYear(today));
+    } else {
+      setStartDate(getStartOfWeek(today).setHours(0, 0, 0, 0));
+      setEndDate(addDays(getStartOfWeek(today), 6).setHours(0, 0, 0, 0));
+    }
+  }, [displayMode]);
+
+  // function getStartOfWeek(date) {
+  //   const dayOfWeek = date.getDay();
+  //   const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  //   return addDays(date, diff);
+  // }
   function getStartOfWeek(date) {
-    const dayOfWeek = date.getDay();
-    const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-    return addDays(date, diff);
+    return startOfWeek(date, { weekStartsOn: 1 }); // 1 = Monday
   }
 
   const handlerNextWeek = () => {
-    setStartDate(addDays(startDate, 7));
-    setEndDate(addDays(endDate, 7));
-    if (typeof onClickNextWeek === 'function') {
-      onClickNextWeek(addDays(startDate, 7));
+    // setStartDate(addDays(startDate, 7));
+    // setEndDate(addDays(endDate, 7));
+    // if (typeof onClickNextWeek === 'function') {
+    //   onClickNextWeek(addDays(startDate, 7));
+    // }
+    if (displayMode === 'month-simple') {
+      setStartDate((prev) => startOfMonth(addMonths(prev, 1)));
+      setEndDate((prev) => endOfMonth(addMonths(prev, 1)));
+      if (typeof onClickNextWeek === 'function') {
+        onClickNextWeek(addMonths(startDate, 1));
+      }
+    } else if (displayMode === 'year-simple') {
+      setStartDate(addMonths(startDate, 12));
+      setEndDate(addMonths(endDate, 12));
+      if (typeof onClickNextWeek === 'function') {
+        onClickNextWeek(addMonths(startDate, 12));
+      }
+    } else {
+      setStartDate(addDays(startDate, 7));
+      setEndDate(addDays(endDate, 7));
+      if (typeof onClickNextWeek === 'function') {
+        onClickNextWeek(addDays(startDate, 7));
+      }
     }
   };
 
   const handlerPreviousWeek = () => {
-    setStartDate(subDays(startDate, 7));
-    setEndDate(subDays(endDate, 7));
-    if (typeof onClickPreviousWeek === 'function') {
-      onClickPreviousWeek(addDays(startDate, -7));
+    // setStartDate(subDays(startDate, 7));
+    // setEndDate(subDays(endDate, 7));
+    // if (typeof onClickPreviousWeek === 'function') {
+    //   onClickPreviousWeek(addDays(startDate, -7));
+    // }
+    if (displayMode === 'month-simple') {
+      setStartDate((prev) => startOfMonth(subMonths(prev, 1)));
+      setEndDate((prev) => endOfMonth(subMonths(prev, 1)));
+      if (typeof onClickPreviousWeek === 'function') {
+        onClickPreviousWeek(subMonths(startDate, 1));
+      }
+    } else if (displayMode === 'year-simple') {
+      setStartDate(subMonths(startDate, 12));
+      setEndDate(subMonths(endDate, 12));
+      if (typeof onClickPreviousWeek === 'function') {
+        onClickPreviousWeek(subMonths(startDate, 12));
+      }
+    } else {
+      setStartDate(subDays(startDate, 7));
+      setEndDate(subDays(endDate, 7));
+      if (typeof onClickPreviousWeek === 'function') {
+        onClickPreviousWeek(subDays(startDate, 7));
+      }
     }
   };
 
@@ -94,7 +163,7 @@ export const WeekPicker = ({
           <ArrowBackIosNewIcon />
         </IconButton>
 
-        {displayMode === 'full' ? (
+        {displayMode === 'week-basic' ? (
           weekdays.map((day, index) => (
             <Box
               key={index}
