@@ -66,9 +66,7 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
               <Typography sx={{ fontWeight: "800"}}>
                 {program.name}
               </Typography>
-              <Typography 
-                sx={{ textAlign: "left" }}
-              >
+              <Typography sx={{ textAlign: "left" }}>
                 {program.description ? program.description : "Description is undefined"}
               </Typography>
             </>

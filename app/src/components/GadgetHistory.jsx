@@ -47,6 +47,7 @@ export const GadgetHistory = ({ history = [] }) => {
   const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(startOfMonth(new Date()));
   const [startOfCurrentYear, setStartOfCurrentYear] = useState(startOfYear(new Date()));
+  const [selectedChartElement, setSelectedChartElement] = useState(null);
   const [chartData, setChartData] = useState({
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
@@ -129,7 +130,7 @@ export const GadgetHistory = ({ history = [] }) => {
   const updateWeeklyData = () => {
     const endOfCurrentWeek = addDays(startOfCurrentWeek, 6);
     const weeklyData = Array(7).fill(0);
-    console.log("startOfCurrentWeek - endOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
+    // console.log("startOfCurrentWeek - endOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
@@ -150,7 +151,7 @@ export const GadgetHistory = ({ history = [] }) => {
     const endOfCurrentMonth = endOfMonth(startOfCurrentMonth);
     const daysInMonth = getDate(endOfCurrentMonth);
     const monthlyData = Array(daysInMonth).fill(0);
-    console.log("startOfCurrentMonth - endOfCurrentMonth", startOfCurrentMonth, endOfCurrentMonth);
+    // console.log("startOfCurrentMonth - endOfCurrentMonth", startOfCurrentMonth, endOfCurrentMonth);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
@@ -159,7 +160,7 @@ export const GadgetHistory = ({ history = [] }) => {
         monthlyData[dayOfMonth] += entry.minutes;
       }
     });
-    console.log("monthlyData", monthlyData);
+    // console.log("monthlyData", monthlyData);
 
     setChartData((prevChartData) => ({
       ...prevChartData,
@@ -172,7 +173,7 @@ export const GadgetHistory = ({ history = [] }) => {
   const updatedYearlyData = () => {
     const endOfCurrentYear = endOfYear(startOfCurrentYear);
     const yearlyData = Array(12).fill(0); 
-    console.log("startOfCurrentYear - endOfCurrentYear", startOfCurrentYear, endOfCurrentYear);
+    // console.log("startOfCurrentYear - endOfCurrentYear", startOfCurrentYear, endOfCurrentYear);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
@@ -181,7 +182,7 @@ export const GadgetHistory = ({ history = [] }) => {
         yearlyData[monthOfYear] += entry.minutes;
       }
     });
-    console.log("yearlyData", yearlyData);
+    // console.log("yearlyData", yearlyData);
 
     setChartData((prevChartData) => ({
       ...prevChartData,
@@ -217,14 +218,38 @@ export const GadgetHistory = ({ history = [] }) => {
     }
   };
 
+  const handleChartClick = (event) => {
+    const chart = chartRef.current;
+    if (!chart) return;
+
+    const elements = chart.getElementsAtEventForMode(event.nativeEvent, 'nearest', { intersect: true }, true);
+
+    if (elements.length > 0) {
+      const { index } = elements[0];
+      const label = chartData.labels[index];
+      const value = chartData.datasets[0].data[index];
+      setSelectedChartElement({ label, value });
+    }
+  }
+
   return (
     <GadgetBase>
-      <Box sx={{ width: "100%" }}>
+      <Box 
+        sx={{ 
+          width: "100%", 
+          display: "flex", 
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 2 
+        }}
+      >
         <ToggleButtonGroup
           value={mode}
           exclusive
           onChange={handleModeChange}
           aria-label="mode"
+          sx={{ flexGrow: 1}}
         >
           <ToggleButton 
             value="week-simple" 
@@ -287,12 +312,26 @@ export const GadgetHistory = ({ history = [] }) => {
               data={chartData} 
               options={options} 
               key={windowWidth} 
-              ref={chartRef} 
+              ref={chartRef}
+              onClick={handleChartClick}  
             />
           ) : (
             <Typography>No data available</Typography>
           )}
         </Box>
+        {selectedChartElement && (
+        <Box 
+          sx={{ 
+            border: "1px solid #94DC8A",
+            borderRadius: "25px",
+            padding: "4px 16px",
+          }}
+          >
+            <Typography>
+              {selectedChartElement?.value} min
+            </Typography>
+        </Box>
+        )}
       </Box>
       <Typography>
         We help you track your progress as data and video as you becoming a
