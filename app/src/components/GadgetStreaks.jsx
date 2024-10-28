@@ -65,7 +65,9 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
         }
         maxStreak = Math.max(maxStreak, ongoingStreak);
       } else {
-        currentStreakActive = false;
+        if (i !== 0) {
+          currentStreakActive = false;
+        }
         ongoingStreak = 0;
       }
     }
