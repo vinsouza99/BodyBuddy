@@ -238,7 +238,7 @@ export const Dashboard = (props) => {
             <GadgetUserProfile userInfo={userInfo} />
             <GadgetStreaks
               userInfo={userInfo}
-              history={userAccumulatedTimes?.data || []}
+              history={userAccumulatedStats?.data || []}
             />
             <GadgetFavourite exerciseInfo={exerciseInfo || []} />
           </Box>
