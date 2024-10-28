@@ -63,6 +63,7 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
       >
         <IconButton
           sx={{
+            padding: 0,
             "&:focus": { outline: 'none' },
             "&:hover": { backgroundColor: 'transparent' },
             alignSelf: 'center',
@@ -116,6 +117,7 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
         <IconButton 
           onClick={handleNext}
           sx={{
+            padding: 0,
             "&:focus": { outline: 'none' },
             "&:hover": { backgroundColor: 'transparent' },
             alignSelf: 'center',

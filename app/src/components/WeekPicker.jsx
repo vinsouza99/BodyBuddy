@@ -151,10 +151,13 @@ export const WeekPicker = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
+          flexWrap: 'wrap',
+          flexShrink: 1,
         }}
       >
         <IconButton
           sx={{
+            padding: '0',
             "&:focus": { outline: 'none' },
             "&:hover": { backgroundColor: 'transparent' },
           }}
@@ -201,6 +204,7 @@ export const WeekPicker = ({
         <IconButton 
           onClick={handlerNextWeek}
           sx={{
+            padding: '0',
             "&:focus": { outline: 'none' },
             "&:hover": { backgroundColor: 'transparent' },
           }}

@@ -1,7 +1,7 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Grid2, Box, Typography, Backdrop, CircularProgress } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
@@ -18,7 +18,7 @@ import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
 import axiosClient from "../utils/axiosClient";
 // Prompts
-import { generateProgramPrompt } from "../utils/prompt/generateProgramPrompt";
+import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
 
 export const Dashboard = (props) => {
   const { user } = useAuth();
@@ -31,7 +31,9 @@ export const Dashboard = (props) => {
   const [userAccumulatedTimesLoaded, setUserAccumulatedTimesLoaded] = useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
-  const hasFetchedPrograms = useRef(false);
+  const location = useLocation();
+  const userPreferences = location.state || {};
+  const prompt = useGenerateProgramPrompt({ userPreferences });
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -75,9 +77,6 @@ export const Dashboard = (props) => {
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
-    if (hasFetchedPrograms.current) return;
-    hasFetchedPrograms.current = true;
-
     // Check if the user has an acive program
     const fetchPrograms = async () => {
       try {
@@ -87,7 +86,6 @@ export const Dashboard = (props) => {
           const hasIncompleteProgram = programs.rows.some(
             (program) => !program.completed_at
           );
-          console.log("Programs:", programs.rows);
 
           if (!hasIncompleteProgram) {
             console.log("No acive program found for this user. Generating a new personalized program.");
@@ -106,12 +104,15 @@ export const Dashboard = (props) => {
 
     // Generating personalized program
     const generatePersonalizedProgram = async () => {
+      if (!prompt) return;
       setGenerating(true);
+
       try {
         // TODO: Create and Use the font-end controller.
         // OpenAI will generate the program data
+        console.log(prompt)
         const response_openai = await axiosClient.post(`openai/`, {
-          prompt: generateProgramPrompt.prompt,
+          prompt: prompt,
         });
         if (Number(response_openai.status) !== 200) {
           throw new Error("Failed to get OpenAI response");
@@ -200,7 +201,7 @@ export const Dashboard = (props) => {
         setGenerating(false);
       }
     };
-  }, []);
+  }, [prompt]);
 
   return (
     <>
