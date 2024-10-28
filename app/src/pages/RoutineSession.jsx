@@ -343,11 +343,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (record) {
         if (exerciseVideo) {
           registerUserActivity();
-          registerUserAccumulatedTime();
+          registerUserAccumulatedStat();
         }
       } else {
         registerUserActivity();
-        registerUserAccumulatedTime();
+        registerUserAccumulatedStat();
       }
     }
   }, [isFinished, record, exerciseVideo]);
@@ -753,7 +753,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   };
 
   // Insert user accumulated time info to the database
-  const registerUserAccumulatedTime = async () => {
+  const registerUserAccumulatedStat = async () => {
     try {
       const now = new Date();
       const timeZoneOffset = -7; // Vancouver Timezone Offset
