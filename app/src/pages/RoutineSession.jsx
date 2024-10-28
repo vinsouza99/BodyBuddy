@@ -2,38 +2,51 @@
 import PropTypes from "prop-types";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Snackbar, List, ListItem, ListItemText, IconButton, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Snackbar,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 // Custom Components for Routine Session
-import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
-import { 
-  Counter2, 
-  AngleMeter2, 
-  RestTime2, 
-  MetricCard, 
-  DemoExercise, 
-  Logo, 
+import {
+  PoseLandmarker,
+  FilesetResolver,
+  DrawingUtils,
+} from "@mediapipe/tasks-vision";
+import {
+  Counter2,
+  AngleMeter2,
+  RestTime2,
+  MetricCard,
+  DemoExercise,
+  Logo,
   ExitRoutineSessionModal,
   CompleteRoutineSessionModal,
 } from "../components/routine-session";
 import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader.js";
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { useLandscapeMode } from "../components/routine-session/useLandscapeMode";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
-import theme from '../theme';
+import theme from "../theme";
 import { supabase } from "../utils/supabaseClient.js";
-import axiosClient from '../utils/axiosClient';
+import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedTime } from "../controllers/UserController.js";
-import { format, addHours } from 'date-fns';
+import { updateUserAccumulatedStats } from "../controllers/UserController.js";
+import { format, addHours } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -57,17 +70,23 @@ const gradientStyles = {
   objectFit: "cover",
   top: 0,
   left: 0,
-  pointerEvents: 'none',
-  backgroundImage: 'linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 15%, transparent 85%, rgba(0, 0, 0, 0.9))',
+  pointerEvents: "none",
+  backgroundImage:
+    "linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 15%, transparent 85%, rgba(0, 0, 0, 0.9))",
   zIndex: 1,
 };
 
-export const RoutineSession = ({title = "Routine Session"}) => {
+export const RoutineSession = ({ title = "Routine Session" }) => {
   const { user } = useAuth(); // For session management
   const navigate = useNavigate();
   const location = useLocation();
   const isLandscapeMode = useLandscapeMode();
-  const { record = false, id = false, idType = null, reps = 0 } = location.state || {}; // Receive from the StartRoutineModal as a prop
+  const {
+    record = false,
+    id = false,
+    idType = null,
+    reps = 0,
+  } = location.state || {}; // Receive from the StartRoutineModal as a prop
 
   const angleChangeThreshold = 3;
   let previousAngle = null;
@@ -108,7 +127,6 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   // useEffect(() => {
   //   console.log("Rendering Test: angle");
   // }, [angle]);
-
 
   // ---------------------------------------------------------
   //                      useEffect Hooks
@@ -160,7 +178,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         // setRoutine(createRoutineTimeSchedule(response.data.data));
 
         const exercises = await getExercisesFromRoutine(id);
-        
+
         // Order by exercise order
         exercises.sort((a, b) => a.order - b.order);
 
@@ -175,9 +193,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     const fetchExerciseInfo = async () => {
       // CREATE A ROUTINE INCLUDE ONLY ONE EXERCISE
       try {
-        const response = await axiosClient.get(
-          `Exercises/${id}`
-        );
+        const response = await axiosClient.get(`Exercises/${id}`);
         if (Number(response.status) !== 200) {
           throw new Error("Failed to fetch exercise info");
         }
@@ -191,7 +207,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             duration: 0,
             rest_time: 0,
             image: response.data.data.demo_url,
-          }
+          },
         ];
         setRoutine(routineData);
       } catch (error) {
@@ -215,7 +231,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   //
   // Note: I can't detect the video element ready using useEffect.
   // So, I use MutationObserver to detect the video element ready.
-  // Not sure, this is a right approach as a React 
+  // Not sure, this is a right approach as a React
   // but use this for a workaround for the issue.
   useEffect(() => {
     const observer = new MutationObserver(() => {
@@ -223,7 +239,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.log("VideoRef is now available:", videoRef.current);
         toggleWebCam();
         // Disconnect the observer after the video element is available
-        observer.disconnect(); 
+        observer.disconnect();
       }
     });
 
@@ -277,9 +293,9 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     // Reset success count when exercise changes
     setSuccessRepCount(0);
     setSuccessSetCount(0);
-    
+
     // Load exercise counter based on the selected exercise
-    const selectedExercise = routine[selectedExerciseIndex]
+    const selectedExercise = routine[selectedExerciseIndex];
     const CounterClass = loadExerciseCounter(selectedExercise);
     setExerciseCounter(CounterClass);
   }, [selectedExerciseIndex, routine]);
@@ -297,7 +313,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         window.cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseCounter, webcamRunning, isResting]);
 
   // Read out the rep count
@@ -327,15 +343,15 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       if (record) {
         if (exerciseVideo) {
           registerUserActivity();
-          registerUserAccumulatedTime();
+          registerUserAccumulatedStat();
         }
       } else {
         registerUserActivity();
-        registerUserAccumulatedTime();
+        registerUserAccumulatedStat();
       }
     }
   }, [isFinished, record, exerciseVideo]);
-  
+
   // ---------------------------------------------------------
   //                      Event Handlers
   // ---------------------------------------------------------
@@ -391,7 +407,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   // Handle quitting the routine
   const handleQuitRoutine = () => {
     // Diablog for confirmation
-    setIsConfirmDialogOpen(true)
+    setIsConfirmDialogOpen(true);
   };
 
   // Handle quitting the routine (Confirm)
@@ -417,7 +433,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       stopRecording();
       handleUploadRecording();
     }
- 
+
     // Show completion modal
     setIsFinished(true);
   };
@@ -439,7 +455,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   // Create routine time schedule
   const createRoutineTimeSchedule = (routineData) => {
     const transformedRoutine = [];
-  
+
     routineData.forEach((item) => {
       let goalString;
       if (item.reps > 0) {
@@ -450,24 +466,24 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       } else {
         goalString = `${item.sets} sets`;
       }
-  
+
       // If reps is available, set duration to 0
       if (item.reps !== 0 && item.duration !== 0) {
         item.duration = 0;
       }
-  
+
       // Add current exercise to the transformed array
       transformedRoutine.push({
         name: item.name,
         goal: goalString,
         sets: item.sets ? item.sets : 0,
         reps: item.reps ? item.reps : 0,
-        duration: item.duration ? (item.duration / 1000) : 0,
-        rest_time: (item.rest_time / 1000) ? (item.rest_time / 1000) : 0,
+        duration: item.duration ? item.duration / 1000 : 0,
+        rest_time: item.rest_time / 1000 ? item.rest_time / 1000 : 0,
         image: item.demo_url,
       });
     });
-  
+
     return transformedRoutine;
   };
 
@@ -488,10 +504,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     //   console.error("PoseLandmarker not loaded.");
     //   return;
     // }
-  
+
     const videoElement = videoRef.current;
     const constraints = { video: true };
-  
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       videoElement.srcObject = stream;
@@ -510,7 +526,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
     const stream = videoElement.srcObject;
     if (stream) {
       const tracks = stream.getTracks();
-      tracks.forEach(track => {
+      tracks.forEach((track) => {
         track.stop();
         stream.removeTrack(track); // This might be not needed, but just in case.
       });
@@ -573,13 +589,16 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         console.log("Exercise counter is loaded.", selectedExercise.name);
         return new CounterClass();
       } else {
-        console.error("Exercise counter is not implemented for:", selectedExercise.name);
+        console.error(
+          "Exercise counter is not implemented for:",
+          selectedExercise.name
+        );
         return null;
       }
     } else {
       return null;
     }
-  }
+  };
 
   // Perform posture detection on webcam feed and count reps
   const predictPosture = async () => {
@@ -625,14 +644,15 @@ export const RoutineSession = ({title = "Routine Session"}) => {
           setSuccessRepCount((prevSuccessRepCount) => {
             if (count !== prevSuccessRepCount) {
               // When the rep count reaches the target, increment the set count
-              if (count >= routine[selectedExerciseIndex].reps
-                && routine[selectedExerciseIndex].reps !== 0
+              if (
+                count >= routine[selectedExerciseIndex].reps &&
+                routine[selectedExerciseIndex].reps !== 0
               ) {
                 // Count up the set count
                 incrementSetsCount();
 
                 // Reset count for next set
-                exerciseCounter.resetCount(); 
+                exerciseCounter.resetCount();
 
                 // Rest time after each set (except for the final set)
                 if (successSetCount + 1 < routine[selectedExerciseIndex].sets) {
@@ -650,7 +670,10 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
           // Update angle for the meter when the angle diff over the "threshold"
           const angle = exerciseCounter?.getAngle(results.landmarks[0]);
-          if (angle !== undefined && Math.abs(angle - previousAngle) > angleChangeThreshold) {
+          if (
+            angle !== undefined &&
+            Math.abs(angle - previousAngle) > angleChangeThreshold
+          ) {
             setAngle(Math.round(angle));
             previousAngle = angle;
           }
@@ -670,13 +693,15 @@ export const RoutineSession = ({title = "Routine Session"}) => {
         drawingUtils.drawConnectors(
           results.landmarks[0],
           PoseLandmarker.POSE_CONNECTIONS,
-          { color: `${theme.palette.primary.main}`, lineWidth: 2 } 
+          { color: `${theme.palette.primary.main}`, lineWidth: 2 }
         );
         // Draw pose landmarks
         drawingUtils.drawLandmarks(results.landmarks[0], {
           radius: 1,
           color: (data) => {
-            return data.index === 0 ? `${theme.palette.primary.main}` : `${theme.palette.primary.main}`;
+            return data.index === 0
+              ? `${theme.palette.primary.main}`
+              : `${theme.palette.primary.main}`;
           },
         });
       }
@@ -689,7 +714,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       // Note:
       // The specified callback function is executed when the next frame is ready to be rendered.
       // It is typically executed 60 times per second.
-      animationFrameIdRef.current = window.requestAnimationFrame(predictPosture);
+      animationFrameIdRef.current =
+        window.requestAnimationFrame(predictPosture);
     }
   };
 
@@ -705,26 +731,29 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       const newHistoryObj = {
         user_id: user.id,
         completed_at: completedAt,
-        routine_id: idType === 'routine' ? id : null,
+        routine_id: idType === "routine" ? id : null,
         recording_url: exerciseVideo,
         score: 30, // TODO: To be implemented
         calories: 50, // TODO: To be implemented
       };
-      
-      const response = await axiosClient.post("/routines/history", newHistoryObj);
+
+      const response = await axiosClient.post(
+        "/routines/history",
+        newHistoryObj
+      );
       if (Number(response.status) !== 201) {
-        throw new Error("Failed to insert log info");
+        throw new Error("Failed to insert routine history info");
       }
       console.log("Routine history inserted successfully:", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error inserting log info:", error);
+      console.error("Error inserting routine history info:", error);
       throw error; // Throw to handle error where the function is called
     }
   };
 
   // Insert user accumulated time info to the database
-  const registerUserAccumulatedTime = async () => {
+  const registerUserAccumulatedStat = async () => {
     try {
       const now = new Date();
       const timeZoneOffset = -7; // Vancouver Timezone Offset
@@ -732,13 +761,21 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       const completedAt = format(adjustedTime, "yyyy-MM-dd'T'HH:mm:ssXXX");
       console.log(completedAt);
 
-      const response = await updateUserAccumulatedTime(user.id, completedAt, 30);
+      const response = await updateUserAccumulatedStats(
+        user.id,
+        completedAt,
+        30,
+        0
+      );
       if (Number(response.status) !== 200) {
         throw new Error("Failed to insert log info");
       }
-      console.log("User accumurate time inserted successfully:", response.data);
+      console.log(
+        "User accumulated stat inserted successfully:",
+        response.data
+      );
     } catch (error) {
-      console.error("Error inserting accumulated time info:", error);
+      console.error("Error inserting accumulated stat info:", error);
     }
   };
 
@@ -771,7 +808,7 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       startRestCountdown("exercise");
     } else {
       // Automatically finish when the last exercise is completed
-      handleFinishRoutine(); 
+      handleFinishRoutine();
     }
   };
 
@@ -801,11 +838,21 @@ export const RoutineSession = ({title = "Routine Session"}) => {
   return (
     <>
       {routine.length === 0 ? (
-        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
           <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>Loading...</Typography>
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
         </Box>
-      ) : (  
+      ) : (
         <Box
           sx={{
             height: "100vh",
@@ -827,42 +874,47 @@ export const RoutineSession = ({title = "Routine Session"}) => {
 
           {/* Rest screen before transitioning to the next set */}
           <RestTime2
-            title = "Time for resting"
+            title="Time for resting"
             trigger={restForSetIncrement}
-            // duration={routine[selectedExerciseIndex]?.rest_time || 0} 
+            // duration={routine[selectedExerciseIndex]?.rest_time || 0}
             duration={15}
             onComplete={() => endRestCountdown("set")}
           />
 
           {/* Webcam */}
-          <video ref={videoRef} style={videoStyles} autoPlay playsInline></video>
+          <video
+            ref={videoRef}
+            style={videoStyles}
+            autoPlay
+            playsInline
+          ></video>
           {/* Black Gradient Overlay */}
           <div style={gradientStyles}></div>
           {/* Pose Landmarks */}
           <canvas ref={canvasRef} style={canvasStyles}></canvas>
 
           {/* Logo */}
-          <Logo/>
+          <Logo />
 
           {/* Quit Button */}
-          <IconButton 
-            onClick={handleQuitRoutine} 
+          <IconButton
+            onClick={handleQuitRoutine}
             aria-label="close"
             sx={{
               // Layout and positioning
-              position: 'absolute',
-              top: '10px',
-              right: '10px',
+              position: "absolute",
+              top: "10px",
+              right: "10px",
               zIndex: 1000,
               // Box model
-              padding: '0.5rem',
-              borderRadius: '50%',
+              padding: "0.5rem",
+              borderRadius: "50%",
               // Visual effects
-              fontSize: '2.5rem',
-              color: 'white',
-              backgroundColor: '#333333',
-              '&:hover': {
-                backgroundColor: '#4F4F4F',
+              fontSize: "2.5rem",
+              color: "white",
+              backgroundColor: "#333333",
+              "&:hover": {
+                backgroundColor: "#4F4F4F",
               },
             }}
           >
@@ -879,36 +931,46 @@ export const RoutineSession = ({title = "Routine Session"}) => {
           {/* Exercise Counter */}
           <Box
             sx={{
-              position: 'absolute',
-              top: '10px',
-              left: '100px',
-              right: '100px',
-              display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '2rem',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              position: "absolute",
+              top: "10px",
+              left: "100px",
+              right: "100px",
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "2rem",
+              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
               zIndex: 1000,
             }}
           >
             <AngleMeter2 title={"Angle"} angle={angle} />
-            <Counter2 title={"Reps"} count={successRepCount} target={routine[selectedExerciseIndex]?.reps || 0} /> {/* Regarding increment Rep count, refer to "predictPosture" */}
-            <Counter2 title={"Sets"} count={successSetCount} target={routine[selectedExerciseIndex]?.sets || 0} onComplete={moveToNextExercise} />
+            <Counter2
+              title={"Reps"}
+              count={successRepCount}
+              target={routine[selectedExerciseIndex]?.reps || 0}
+            />{" "}
+            {/* Regarding increment Rep count, refer to "predictPosture" */}
+            <Counter2
+              title={"Sets"}
+              count={successSetCount}
+              target={routine[selectedExerciseIndex]?.sets || 0}
+              onComplete={moveToNextExercise}
+            />
           </Box>
-          
+
           {/* Bottom Menu */}
           <Box
             sx={{
-              position: 'absolute',
-              bottom: '10px',
-              width: '100%',
-              height: isLandscapeMode ? '80px' : '120px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '0 20px',
-              textShadow: '2px 2px 4px rgba(0, 0, 0, 0.5)',
+              position: "absolute",
+              bottom: "10px",
+              width: "100%",
+              height: isLandscapeMode ? "80px" : "120px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              padding: "0 20px",
+              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
               zIndex: 1000,
             }}
           >
@@ -918,12 +980,12 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               src={routine[selectedExerciseIndex].image}
               alt="exercise image"
               sx={{
-                width: '20%',
-                height: isLandscapeMode ? '80px' : '120px',
-                objectFit: 'contain',
-                backgroundColor: 'rgba(255, 255, 255)',
-                borderRadius: '15px',
-                alignItems: 'left',
+                width: "20%",
+                height: isLandscapeMode ? "80px" : "120px",
+                objectFit: "contain",
+                backgroundColor: "rgba(255, 255, 255)",
+                borderRadius: "15px",
+                alignItems: "left",
               }}
             />
 
@@ -931,10 +993,11 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             <MetricCard title="Calories" />
 
             {/* Puase & Play */}
-            <IconButton 
+            <IconButton
               onClick={toggleIsResting}
               onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50, color: 'white' }}>
+              style={{ fontSize: 50, color: "white" }}
+            >
               {isResting ? (
                 <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
               ) : (
@@ -949,29 +1012,30 @@ export const RoutineSession = ({title = "Routine Session"}) => {
               duration={routine[selectedExerciseIndex]?.duration || 0}
               size={isLandscapeMode ? 80 : 120}
               strokeWidth={isLandscapeMode ? 6 : 8}
-              colors='white'
-              trailColor='transparent'
+              colors="white"
+              trailColor="transparent"
               onComplete={incrementSetsCount}
             >
               {({ remainingTime }) => (
                 <Typography
                   variant="h1"
                   component="div"
-                  sx={{ 
-                    fontWeight: "bold", 
-                    color: 'white'
+                  sx={{
+                    fontWeight: "bold",
+                    color: "white",
                   }}
                 >
-                  {remainingTime >= 0 ? remainingTime : 0} 
+                  {remainingTime >= 0 ? remainingTime : 0}
                 </Typography>
               )}
-            </CountdownCircleTimer>                  
+            </CountdownCircleTimer>
 
             {/* Next Exercise */}
-            <IconButton 
+            <IconButton
               onClick={moveToNextExercise}
               onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50, color: 'white' }}>
+              style={{ fontSize: 50, color: "white" }}
+            >
               <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
             </IconButton>
 
@@ -981,36 +1045,41 @@ export const RoutineSession = ({title = "Routine Session"}) => {
             {/* Exercise Menu */}
             <Box
               sx={{
-                position: 'relative',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'flex-end',
-                width: '20%',
-                height: '100%',
+                position: "relative",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "flex-end",
+                width: "20%",
+                height: "100%",
               }}
             >
               <Typography
                 gutterBottom
-                onClick={handleToggleExerciseMenu} 
+                onClick={handleToggleExerciseMenu}
                 sx={{
                   fontSize: isLandscapeMode ? "1rem" : "1.2rem",
                   fontWeight: "bold",
                   textAlign: "right",
-                  display: 'flex',
-                  alignItems: 'center', 
-                  justifyContent: 'flex-end',
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "flex-end",
                   color: `white`,
-                  cursor: 'pointer',
+                  cursor: "pointer",
                 }}
               >
-                Next {isExerciseMenuOpen ? <KeyboardArrowDownIcon sx={{ fontSize: '2rem' }} /> : <KeyboardArrowUpIcon sx={{ fontSize: '2rem' }} />}
+                Next{" "}
+                {isExerciseMenuOpen ? (
+                  <KeyboardArrowDownIcon sx={{ fontSize: "2rem" }} />
+                ) : (
+                  <KeyboardArrowUpIcon sx={{ fontSize: "2rem" }} />
+                )}
               </Typography>
 
-              <Box 
-                sx={{ 
-                  maxHeight: isExerciseMenuOpen ? '200px' : '0',
+              <Box
+                sx={{
+                  maxHeight: isExerciseMenuOpen ? "200px" : "0",
                   overflowY: "scroll",
-                  transition: 'max-Height 0.5s ease',
+                  transition: "max-Height 0.5s ease",
                 }}
               >
                 <List
@@ -1028,8 +1097,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                           cursor: "default",
                           padding: "0.1rem 0.5rem",
                           margin: "0rem",
-                          marginBottom: "0.5rem", 
-                          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                          marginBottom: "0.5rem",
+                          backgroundColor: "rgba(255, 255, 255, 0.6)",
                         }}
                       >
                         <ListItemText
@@ -1043,14 +1112,14 @@ export const RoutineSession = ({title = "Routine Session"}) => {
                             },
                           }}
                           secondaryTypographyProps={{
-                            sx: { 
+                            sx: {
                               fontSize: isLandscapeMode ? "0.8rem" : "1rem",
                               color: "black",
-                            }
+                            },
                           }}
                         />
                       </ListItem>
-                  ))}
+                    ))}
                 </List>
               </Box>
             </Box>
@@ -1077,8 +1146,8 @@ export const RoutineSession = ({title = "Routine Session"}) => {
       />
 
       {/* Routine Completion Modal */}
-      <CompleteRoutineSessionModal 
-        open={isFinished} 
+      <CompleteRoutineSessionModal
+        open={isFinished}
         onComplete={handleMoveToTrainingPage}
       />
     </>

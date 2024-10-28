@@ -2,7 +2,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Grid2, Box, Typography, Backdrop, CircularProgress } from "@mui/material";
+import {
+  Grid2,
+  Box,
+  Typography,
+  Backdrop,
+  CircularProgress,
+} from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -12,7 +18,10 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getUser, getUserAccumulatedTimes } from "../controllers/UserController";
+import {
+  getUser,
+  getUserAccumulatedStats,
+} from "../controllers/UserController";
 import { getAllExercises } from "../controllers/ExerciseController";
 import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
@@ -23,12 +32,13 @@ import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt"
 export const Dashboard = (props) => {
   const { user } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
-  const [userAccumulatedTimes, setUserAccumulatedTimes] = useState(null);
+  const [userAccumulatedStats, setUserAccumulatedStats] = useState(null);
   const [exerciseInfo, setExerciseInfo] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedTimesLoaded, setUserAccumulatedTimesLoaded] = useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
+    useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -52,9 +62,9 @@ export const Dashboard = (props) => {
         setUserInfo(userInfo);
         setUserInfoLoaded(true);
 
-        const userAccumulatedTime = await getUserAccumulatedTimes(user.id);
-        setUserAccumulatedTimes(userAccumulatedTime);
-        setUserAccumulatedTimesLoaded(true);
+        const userAccumulatedStats = await getUserAccumulatedStats(user.id);
+        setUserAccumulatedStats(userAccumulatedStats);
+        setUserAccumulatedStatsLoaded(true);
       } catch (error) {
         console.error("Error loading user progress data:", error);
       }
@@ -62,18 +72,18 @@ export const Dashboard = (props) => {
     loadUserdata();
 
     const loadExerciseData = async () => {
-      const response = await getAllExercises();     
+      const response = await getAllExercises();
       setExerciseInfo(response);
       setExerciseInfoLoaded(true);
-    }
+    };
     loadExerciseData();
   }, []);
 
   useEffect(() => {
-    if (userInfoLoaded && userAccumulatedTimesLoaded && exerciseInfoLoaded) {
+    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded) {
       setLoading(false);
     }
-  }, [userInfoLoaded, userAccumulatedTimesLoaded, exerciseInfoLoaded]);
+  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
@@ -88,7 +98,9 @@ export const Dashboard = (props) => {
           );
 
           if (!hasIncompleteProgram) {
-            console.log("No acive program found for this user. Generating a new personalized program.");
+            console.log(
+              "No acive program found for this user. Generating a new personalized program."
+            );
             await generatePersonalizedProgram();
           } else {
             console.log("User has active program.");
@@ -110,7 +122,7 @@ export const Dashboard = (props) => {
       try {
         // TODO: Create and Use the font-end controller.
         // OpenAI will generate the program data
-        console.log(prompt)
+        console.log(prompt);
         const response_openai = await axiosClient.post(`openai/`, {
           prompt: prompt,
         });
@@ -224,7 +236,10 @@ export const Dashboard = (props) => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* ADD GADGETS HERE */}
             <GadgetUserProfile userInfo={userInfo} />
-            <GadgetStreaks userInfo={userInfo} history={userAccumulatedTimes?.data || []}/>
+            <GadgetStreaks
+              userInfo={userInfo}
+              history={userAccumulatedStats?.data || []}
+            />
             <GadgetFavourite exerciseInfo={exerciseInfo || []} />
           </Box>
         </Grid2>
@@ -233,7 +248,7 @@ export const Dashboard = (props) => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* ADD GADGETS HERE*/}
             <GadgetAchievement />
-            <GadgetHistory history={userAccumulatedTimes?.data || []} />
+            <GadgetHistory history={userAccumulatedStats?.data || []} />
           </Box>
         </Grid2>
       </Grid2>

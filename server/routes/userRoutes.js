@@ -14,8 +14,8 @@ import {
   updateUserSchedule,
   getUserAchievements,
   createUserAchievement,
-  getUserAccumulatedTime,
-  updateUserAccumulatedTime,
+  getUserAccumulatedStats,
+  updateUserAccumulatedStats,
 } from "../controllers/userController.js";
 
 const router = express.Router();
@@ -429,7 +429,7 @@ router.post("/achievement/:id", createUserAchievement);
 
 /**
  * @swagger
- * /Users/Progress/AccumulatedTime/{id}:
+ * /Users/Progress/AccumulatedStats/{id}:
  *   get:
  *     summary: Get the amount of time spent working out from a User by ID
  *     tags: [Users]
@@ -458,10 +458,10 @@ router.post("/achievement/:id", createUserAchievement);
  *       500:
  *         description: Server error
  */
-router.get("/progress/accumulatedTime/:user_id", getUserAccumulatedTime);
+router.get("/progress/stats/:user_id", getUserAccumulatedStats);
 /**
  * @swagger
- * /Users/Progress/AccumulatedTime/{id}:
+ * /Users/Progress/AccumulatedStats/{id}:
  *   put:
  *     summary: Update the amount of time spent working out from a User by ID
  *     tags: [Users]
@@ -490,5 +490,5 @@ router.get("/progress/accumulatedTime/:user_id", getUserAccumulatedTime);
  *       500:
  *         description: Server error
  */
-router.put("/progress/accumulatedTime/:user_id", updateUserAccumulatedTime);
+router.put("/progress/stats/:user_id", updateUserAccumulatedStats);
 export default router;
