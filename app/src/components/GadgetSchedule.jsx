@@ -7,7 +7,7 @@ import { WeekPicker } from "./WeekPicker";
 import { RoutinesList } from "../components/RoutinesList";
 import { isWithinInterval, parseISO, startOfWeek, endOfWeek, addDays } from 'date-fns';
 
-export const GadgetSchedule = memo(({ programs = null, programRoutines = null }) => {
+export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) => {
   const today = new Date();
   const [selectedWeek, setSelectedWeek] = useState({
     start: startOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),
@@ -58,18 +58,17 @@ export const GadgetSchedule = memo(({ programs = null, programRoutines = null })
           flexDirection: "column",
           textAlign: "left",
           gap: 2,
+          width: "100%",
         }}
       >
-        {programs[0] 
+        {program 
           ? 
             <>
               <Typography sx={{ fontWeight: "800"}}>
-                {programs[0].name}
+                {program.name}
               </Typography>
-              <Typography 
-                sx={{ textAlign: "left" }}
-              >
-                {programs[0].description ? programs[0].description : "Description is undefined"}
+              <Typography sx={{ textAlign: "left" }}>
+                {program.description ? program.description : "Description is undefined"}
               </Typography>
             </>
           : <Typography>No available program</Typography>
@@ -81,7 +80,7 @@ export const GadgetSchedule = memo(({ programs = null, programRoutines = null })
 });
 
 GadgetSchedule.propTypes = {
-  programs: PropTypes.array,
+  program: PropTypes.object,
   programRoutines: PropTypes.array,
 };
 

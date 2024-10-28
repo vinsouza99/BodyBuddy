@@ -7,7 +7,7 @@ import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
-import { createUser, updateUser } from "../controllers/UserController";
+import { updateUser } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
 
 export const SignUp = (props) => {
@@ -30,7 +30,8 @@ export const SignUp = (props) => {
   // Transition to Dashboard when user authentication is successful
   useEffect(() => {
     if (user) {
-      navigate("/dashboard");
+      // navigate("/dashboard");
+      navigate("/dashboard", {state : userResponses});
     }
   }, [user, navigate]);
 
@@ -66,7 +67,7 @@ export const SignUp = (props) => {
       updateUser(newUser.id, newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);
-          navigate("/training", userResponses);
+          // navigate("/dashboard", {state : userResponses});
         })
         .catch((error) => {
           throw error;

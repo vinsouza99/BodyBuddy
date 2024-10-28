@@ -20,6 +20,11 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
     setOpen(false);
   };
 
+  const todayRoutine = programRoutines?.find((routine) =>
+    isSameDay(parseISO(routine.scheduled_date), today)
+  ) || null;
+  console.log(todayRoutine);
+  
   // Note: Now just showing the first routine, not considering the schedule. To be updated.
   return (
     <GadgetBase>
@@ -30,58 +35,51 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
         Today&apos;s Routine
       </Typography>
 
-      {programRoutines && programRoutines.length > 0
+      {todayRoutine && todayRoutine.exercises.length > 0
         ? 
-          (() => {
-            const sortedProgramRoutines = [...programRoutines].sort(
-              (a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date)
-            );
+          <>
+            <Typography sx={{ width: '100%', textAlign: 'left' }}>
+              {todayRoutine.name}
+            </Typography>
+            {todayRoutine.exercises && todayRoutine.exercises.length > 0 ? (
+              <RoutineExercisesList 
+                routineExercises = { todayRoutine.exercises }
+                color={isSameDay(parseISO(todayRoutine.scheduled_date), today) ? 'secondary.main' : 'primary.main'}
+              />
+            ) : (
+              <Typography>No routines found.</Typography>
+            )}
+            <Button
+              onClick={handleOpen}
+              sx={{
+                width: '150px',
+                height: '150px',
+                color: 'text.primary',
+                backgroundColor: '#4DC53C',
+                borderRadius: '50%',
+                padding: 0,
+                minWidth: 'unset',
+                fontSize: '1.2rem',
+                marginTop: '0.8rem',
+                marginBottom: '0.8rem',
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)',
+                "&:focus": {
+                  outline: "none", // Removes focus outline on keyboard focus
+                },
+              }}
+            >
+              GET<br />STARTED
+            </Button>
 
-            return (
-              <>
-                <Typography sx={{ width: '100%', textAlign: 'left' }}>
-                  {sortedProgramRoutines[0].name}
-                </Typography>
-                {sortedProgramRoutines[0].exercises && sortedProgramRoutines[0].exercises.length > 0 ? (
-                  <RoutineExercisesList 
-                    routineExercises = { sortedProgramRoutines[0].exercises }
-                    color={isSameDay(parseISO(sortedProgramRoutines[0].scheduled_date), today) ? 'secondary.main' : 'primary.main'}
-                  />
-                ) : (
-                  <Typography>No routines found.</Typography>
-                )}
-                <Button
-                  onClick={handleOpen}
-                  sx={{
-                    width: '150px',
-                    height: '150px',
-                    color: 'text.primary',
-                    backgroundColor: '#4DC53C',
-                    borderRadius: '50%',
-                    padding: 0,
-                    minWidth: 'unset',
-                    fontSize: '1.2rem',
-                    marginTop: '0.8rem',
-                    marginBottom: '0.8rem',
-                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)',
-                    "&:focus": {
-                      outline: "none", // Removes focus outline on keyboard focus
-                    },
-                  }}
-                >
-                  GET<br />STARTED
-                </Button>
+            {/* Transition to session screen */}
+            <StartRoutineSessionModal
+              open={open}
+              id={todayRoutine.id}
+              idType="routine"
+              onClose={handleClose}
+            />
+          </>
 
-                {/* Transition to session screen */}
-                <StartRoutineSessionModal
-                  open={open}
-                  id={sortedProgramRoutines[0].id}
-                  idType="routine"
-                  onClose={handleClose}
-                />
-              </>
-            );
-          })()
         :
           <Typography sx={{ width: '100%', textAlign: 'left' }}>
             No available routine for today.

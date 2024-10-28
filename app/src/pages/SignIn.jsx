@@ -95,7 +95,7 @@ export const SignIn = (props) => {
       </Grid>
 
       {/* Right section with sign-in form */}
-      <Grid item size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <Container
           sx={{
             display: "flex",

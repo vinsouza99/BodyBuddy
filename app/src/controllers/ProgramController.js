@@ -61,9 +61,10 @@ const getUserCompletedPrograms = async (user_id) => {
     const response = await axiosClient.get(
       `${API_ROUTE}/user/${user_id}/completed`
     );
+    console.log(response);
     if (response.status == 404) return [];
 
-    const data = await response.data;
+    const data = await response.data.data;
 
     const programs =
       data && data.length > 0

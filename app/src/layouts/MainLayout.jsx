@@ -109,7 +109,7 @@ export const MainLayout = () => {
           disableCollapsibleSidebar
           slots={{ toolbarActions: Notification }}
         >
-          <Box sx={{ margin: 2, minHeight: "calc(100vh - 80px)" }}>
+          <Box sx={{ margin: 2, minHeight: "calc(100vh - 180px)" }}>
             <Outlet />
           </Box>
           <Footer />

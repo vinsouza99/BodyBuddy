@@ -14,6 +14,7 @@ export default class Routine {
    * @param {number} estimated_calories
    * @param {Date} scheduled_date,
    * @param {Boolean} completed
+   * @param {Date} completed_at
    * @param {Array} exercises - an array of objects of the class Exercise that refers to all the
    * exercises that are part of this routine
    * @param {Date} compare_date - will have the same value as completed_at but will be use for sorting in history
@@ -27,8 +28,8 @@ export default class Routine {
     estimated_calories,
     scheduled_date,
     completed,
-    exercises = new Array(),
-    completed_at
+    completed_at,
+    exercises = new Array()
   ) {
     this.id = id;
     this.duration = duration;
@@ -38,8 +39,8 @@ export default class Routine {
     this.estimated_calories = estimated_calories;
     this.scheduled_date = scheduled_date;
     this.completed = completed;
-    this.exercises = exercises;
     this.completed_at = completed_at;
+    this.exercises = exercises;
     this.compare_date = completed_at;
   }
   /**

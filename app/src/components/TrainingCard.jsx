@@ -1,6 +1,13 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { Card, CardContent, Typography, Button, Chip, Box } from "@mui/material";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Chip,
+  Box,
+} from "@mui/material";
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const TrainingCard = ({ routine }) => {
@@ -18,7 +25,7 @@ export const TrainingCard = ({ routine }) => {
 
   return (
     <>
-      <Card>
+      <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <Box
           sx={{
             display: "flex",
@@ -31,41 +38,57 @@ export const TrainingCard = ({ routine }) => {
         >
           {/* Video will be displayed here */}
           <img
-          src="https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif" // Temporary image
-          alt="Exercise Name"
-          style={{
-            maxWidth: "100%", // Responsive image
-            maxHeight: "100%", // Responsive image
-            height: "auto",
-            display: "block",
-            borderRadius: "8px",
-          }}
-        />
+            src="https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif" // Temporary image
+            alt="Exercise Name"
+            style={{
+              maxWidth: "100%", // Responsive image
+              maxHeight: "100%", // Responsive image
+              height: "auto",
+              display: "block",
+              borderRadius: "8px",
+            }}
+          />
         </Box>
 
-        <CardContent>
-          <Typography variant="h3" textAlign="left" sx={{ marginBottom: 2 }}>
-            {routine.name ? routine.name : "Name is undefined"}
-          </Typography>
+        <CardContent
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flexGrow: 1,
+            justifyContent: "space-between",
+          }}
+        >
+          <Box>
+            <Typography variant="h3" textAlign="left" sx={{ marginBottom: 2 }}>
+              {routine.name ? routine.name : "Name is undefined"}
+            </Typography>
 
-          {/* <Typography textAlign="left" sx={{ marginBottom: 1 }}>
+            {/* <Typography textAlign="left" sx={{ marginBottom: 1 }}>
             {routine.description
               ? routine.description
               : "Description is undefined"}
           </Typography> */}
 
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
-            {/* Display exercises as chips */}
-            {routine.exercises && routine.exercises.length > 0 ? (
-              routine.exercises.map((exercise, index) => (
-                <Chip key={index} label={exercise.name} variant="outlined" />
-              ))
-            ) : (
-              <Typography>No exercises found</Typography>
-            )}
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+              {/* Display exercises as chips */}
+              {routine.exercises && routine.exercises.length > 0 ? (
+                routine.exercises.map((exercise, index) => (
+                  <Chip key={index} label={exercise.name} variant="outlined" />
+                ))
+              ) : (
+                <Typography>No exercises found</Typography>
+              )}
+            </Box>
           </Box>
 
-          <Box sx={{ textAlign: "right" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "end",
+              alignSelf: "end",
+              marginTop: "20px",
+            }}
+          >
             <Button variant="contained" onClick={handleOpen}>
               Learn More...
             </Button>

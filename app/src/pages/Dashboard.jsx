@@ -1,7 +1,7 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Grid2,
   Box,
@@ -19,29 +19,31 @@ import { GadgetHistory } from "../components/GadgetHistory";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
 import {
-  getUserProgress,
+  getUser,
   getUserAccumulatedStats,
 } from "../controllers/UserController";
+import { getAllExercises } from "../controllers/ExerciseController";
 import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
-import { getRoutineHistory } from "../controllers/RoutineController";
 import axiosClient from "../utils/axiosClient";
 // Prompts
-import { createProgram } from "../utils/prompt/createProgram";
+import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
 
 export const Dashboard = (props) => {
   const { user } = useAuth();
-  const [userProgress, setUserProgress] = useState(null);
+  const [userInfo, setUserInfo] = useState(null);
   const [userAccumulatedStats, setUserAccumulatedStats] = useState(null);
-  const [userHistory, setUserHistory] = useState(null);
+  const [exerciseInfo, setExerciseInfo] = useState([]);
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [userProgressLoaded, setUserProgressLoaded] = useState(false);
+  const [userInfoLoaded, setUserInfoLoaded] = useState(false);
   const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
     useState(false);
-  const [userHistoryLoaded, setUserHistoryLoaded] = useState(false);
+  const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
-  const hasFetchedPrograms = useRef(false);
+  const location = useLocation();
+  const userPreferences = location.state || {};
+  const prompt = useGenerateProgramPrompt({ userPreferences });
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -56,9 +58,9 @@ export const Dashboard = (props) => {
 
     const loadUserdata = async () => {
       try {
-        const userProgress = await getUserProgress(user.id);
-        setUserProgress(userProgress);
-        setUserProgressLoaded(true);
+        const userInfo = await getUser(user);
+        setUserInfo(userInfo);
+        setUserInfoLoaded(true);
 
         const userAccumulatedStats = await getUserAccumulatedStats(user.id);
         setUserAccumulatedStats(userAccumulatedStats);
@@ -69,48 +71,42 @@ export const Dashboard = (props) => {
     };
     loadUserdata();
 
-    const loadHistory = async () => {
-      try {
-        const routineHistories = await getRoutineHistory(user.id);
-        // Create Array of history (completed_at)
-        if (routineHistories && routineHistories.length > 0) {
-          setUserHistory(
-            routineHistories.map((history) => history.completed_at)
-          );
-        }
-        setUserHistoryLoaded(true);
-      } catch (error) {
-        console.error("Error loading routine history data:", error);
-      }
+    const loadExerciseData = async () => {
+      const response = await getAllExercises();
+      setExerciseInfo(response);
+      setExerciseInfoLoaded(true);
     };
-    loadHistory();
+    loadExerciseData();
   }, []);
 
   useEffect(() => {
-    if (userProgressLoaded && userAccumulatedStatsLoaded && userHistoryLoaded) {
+    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded) {
       setLoading(false);
     }
-  }, [userProgressLoaded, userAccumulatedStatsLoaded, userHistoryLoaded]);
+  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
-    if (hasFetchedPrograms.current) return;
-    hasFetchedPrograms.current = true;
-
-    // Check if the user has a program
+    // Check if the user has an acive program
     const fetchPrograms = async () => {
       try {
         const response = await axiosClient.get(`programs/user/${user.id}`);
-        if (
-          Number(response.status) === 200 &&
-          Number(response.data.data.count) === 0
-        ) {
-          console.log(
-            "No program found for this user. Generating a new personalized program."
+        if (Number(response.status) === 200) {
+          const programs = response.data.data || [];
+          const hasIncompleteProgram = programs.rows.some(
+            (program) => !program.completed_at
           );
-          await generatePersonalizedProgram();
+
+          if (!hasIncompleteProgram) {
+            console.log(
+              "No acive program found for this user. Generating a new personalized program."
+            );
+            await generatePersonalizedProgram();
+          } else {
+            console.log("User has active program.");
+          }
         } else {
-          console.log("User already has a program.");
+          throw new Error("Failed to fetch programs");
         }
       } catch (error) {
         console.error("Error fetching programs:", error);
@@ -120,12 +116,15 @@ export const Dashboard = (props) => {
 
     // Generating personalized program
     const generatePersonalizedProgram = async () => {
+      if (!prompt) return;
       setGenerating(true);
+
       try {
         // TODO: Create and Use the font-end controller.
         // OpenAI will generate the program data
+        console.log(prompt);
         const response_openai = await axiosClient.post(`openai/`, {
-          prompt: createProgram.prompt,
+          prompt: prompt,
         });
         if (Number(response_openai.status) !== 200) {
           throw new Error("Failed to get OpenAI response");
@@ -214,31 +213,19 @@ export const Dashboard = (props) => {
         setGenerating(false);
       }
     };
-  }, []);
+  }, [prompt]);
 
   return (
     <>
       {/* Backdrop for generating, loading */}
       <Backdrop
-        open={generating} // Control when to show the overlay
+        open={generating || loading}
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Box textAlign="center">
           <CircularProgress color="inherit" />
           <Typography variant="h6" sx={{ mt: 2 }}>
-            Generating personalized program...
-          </Typography>
-        </Box>
-      </Backdrop>
-
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
+            {generating ? "Generating personalized program..." : "Loading..."}
           </Typography>
         </Box>
       </Backdrop>
@@ -248,12 +235,12 @@ export const Dashboard = (props) => {
         <Grid2 size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* ADD GADGETS HERE */}
-            <GadgetUserProfile userProgress={userProgress} />
+            <GadgetUserProfile userInfo={userInfo} />
             <GadgetStreaks
-              userProgress={userProgress}
-              userHidtory={userHistory}
+              userInfo={userInfo}
+              history={userAccumulatedTimes?.data || []}
             />
-            <GadgetFavourite />
+            <GadgetFavourite exerciseInfo={exerciseInfo || []} />
           </Box>
         </Grid2>
         {/* RIGHT COLUMN */}
