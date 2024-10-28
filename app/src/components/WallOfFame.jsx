@@ -45,6 +45,7 @@ export const WallOfFame = () => {
       >
         <IconButton
           sx={{
+            padding: 0,
             "&:focus": { outline: 'none' },
             "&:hover": { backgroundColor: 'transparent' },
           }}
@@ -75,6 +76,7 @@ export const WallOfFame = () => {
         <IconButton 
           onClick={handleNext}
           sx={{
+            padding: 0,
             "&:focus": { outline: 'none' },
             "&:hover": { backgroundColor: 'transparent' },
           }}
