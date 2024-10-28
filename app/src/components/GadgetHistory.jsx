@@ -186,7 +186,8 @@ export const GadgetHistory = ({ history = [] }) => {
 
     setChartData((prevChartData) => ({
       ...prevChartData,
-      labels: Array.from({ length: 12 }, (_, i) => (i + 1).toString()),
+      // labels: Array.from({ length: 12 }, (_, i) => (i + 1).toString()),
+      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       datasets: [{ ...prevChartData.datasets[0], data: yearlyData }],
     }));
     setTotalDuration(yearlyData.reduce((acc, curr) => acc + curr, 0));

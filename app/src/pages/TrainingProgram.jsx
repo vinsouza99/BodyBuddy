@@ -21,9 +21,7 @@ import { getAllPresetRoutines } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
 // import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
 
-// !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
-// import { useLocation } from "react-router-dom";
-// import { generateProgram } from "../utils/openaiService.js";
+
 
 const tabStyles = {
   "&.Mui-selected": {
@@ -43,10 +41,6 @@ export const TrainingProgram = memo((props) => {
   const [activeTab, setActiveTab] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // !!! WILL APPLY THIS CODE LATER TO GET USER PREFERENCES !!!
-  // const location = useLocation();
-  // const [userProgramPreferences, setUserProgramPreferences] = useState(null);
-
   const handleTabChange = (event, value) => {
     setActiveTab(value);
   };
@@ -57,16 +51,6 @@ export const TrainingProgram = memo((props) => {
 
     const loadData = async () => {
       try {
-        // setUserProgramPreferences(
-        //   location.state ? location.state.userResponses : null
-        // );
-        // if (userProgramPreferences) {
-        //   const generatedProgramObj = await generateProgram(
-        //     userProgramPreferences
-        //   );
-        //   await createProgram(user.id, generatedProgramObj);
-        // }
-
         // Retrieve Preset Routines
         const presetRoutines = await getAllPresetRoutines();
         setPresetRoutines(presetRoutines);

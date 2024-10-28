@@ -58,6 +58,7 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
           flexDirection: "column",
           textAlign: "left",
           gap: 2,
+          width: "100%",
         }}
       >
         {program 
