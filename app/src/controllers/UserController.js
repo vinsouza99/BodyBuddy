@@ -17,7 +17,7 @@ const API_USER_SETTINGS_ROUTE = "settings";
 const API_USER_PROGRESS_ROUTE = "progress";
 const API_USER_SCHEDULE_ROUTE = "schedule";
 const API_USER_ACHIEVEMENT_ROUTE = "achievement";
-const API_USER_ACCUMULATED_TIME_ROUTE = "accumulatedTime";
+const API_USER_ACCUMULATED_STATS_ROUTE = "stats";
 
 const getUser = async (authUser) => {
   try {
@@ -263,10 +263,10 @@ const addUserAchievement = async (user_id, achievement_id, earned_at) => {
     console.log(e);
   }
 };
-const getUserAccumulatedTimes = async (user_id) => {
+const getUserAccumulatedStats = async (user_id) => {
   try {
     const response = await axiosClient.get(
-      `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${API_USER_ACCUMULATED_TIME_ROUTE}/${user_id}`
+      `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${API_USER_ACCUMULATED_STATS_ROUTE}/${user_id}`
     );
     if (response.status >= 400) return [];
     return response.data;
@@ -274,11 +274,11 @@ const getUserAccumulatedTimes = async (user_id) => {
     console.log(e);
   }
 };
-const updateUserAccumulatedTime = async (user_id, date, minutes) => {
+const updateUserAccumulatedStats = async (user_id, date, minutes, calories) => {
   try {
     let response = await axiosClient.put(
-      `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${API_USER_ACCUMULATED_TIME_ROUTE}/${user_id}`,
-      { date: date, minutes: minutes }
+      `${API_ROUTE}/${API_USER_PROGRESS_ROUTE}/${API_USER_ACCUMULATED_STATS_ROUTE}/${user_id}`,
+      { date: date, minutes: minutes, calories: calories }
     );
     return response.data;
   } catch (e) {
@@ -296,6 +296,6 @@ export {
   updateUserSchedule,
   getUserAchievements,
   addUserAchievement,
-  getUserAccumulatedTimes,
-  updateUserAccumulatedTime,
+  getUserAccumulatedStats,
+  updateUserAccumulatedStats,
 };

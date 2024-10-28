@@ -20,7 +20,7 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
 import {
   getUserProgress,
-  getUserAccumulatedTimes,
+  getUserAccumulatedStats,
 } from "../controllers/UserController";
 import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
@@ -32,12 +32,13 @@ import { createProgram } from "../utils/prompt/createProgram";
 export const Dashboard = (props) => {
   const { user } = useAuth();
   const [userProgress, setUserProgress] = useState(null);
-  const [userAccumulatedTimes, setUserAccumulatedTimes] = useState(null);
+  const [userAccumulatedStats, setUserAccumulatedStats] = useState(null);
   const [userHistory, setUserHistory] = useState(null);
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userProgressLoaded, setUserProgressLoaded] = useState(false);
-  const [userAccumulatedTimesLoaded, setUserAccumulatedTimesLoaded] = useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
+    useState(false);
   const [userHistoryLoaded, setUserHistoryLoaded] = useState(false);
   const navigate = useNavigate();
   const hasFetchedPrograms = useRef(false);
@@ -59,9 +60,9 @@ export const Dashboard = (props) => {
         setUserProgress(userProgress);
         setUserProgressLoaded(true);
 
-        const userAccumulatedTime = await getUserAccumulatedTimes(user.id);
-        setUserAccumulatedTimes(userAccumulatedTime);
-        setUserAccumulatedTimesLoaded(true);
+        const userAccumulatedStats = await getUserAccumulatedStats(user.id);
+        setUserAccumulatedStats(userAccumulatedStats);
+        setUserAccumulatedStatsLoaded(true);
       } catch (error) {
         console.error("Error loading user progress data:", error);
       }
@@ -73,7 +74,9 @@ export const Dashboard = (props) => {
         const routineHistories = await getRoutineHistory(user.id);
         // Create Array of history (completed_at)
         if (routineHistories && routineHistories.length > 0) {
-          setUserHistory(routineHistories.map((history) => history.completed_at));
+          setUserHistory(
+            routineHistories.map((history) => history.completed_at)
+          );
         }
         setUserHistoryLoaded(true);
       } catch (error) {
@@ -84,10 +87,10 @@ export const Dashboard = (props) => {
   }, []);
 
   useEffect(() => {
-    if (userProgressLoaded && userAccumulatedTimesLoaded && userHistoryLoaded) {
+    if (userProgressLoaded && userAccumulatedStatsLoaded && userHistoryLoaded) {
       setLoading(false);
     }
-  }, [userProgressLoaded, userAccumulatedTimesLoaded, userHistoryLoaded]);
+  }, [userProgressLoaded, userAccumulatedStatsLoaded, userHistoryLoaded]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
@@ -258,7 +261,7 @@ export const Dashboard = (props) => {
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* ADD GADGETS HERE*/}
             <GadgetAchievement />
-            <GadgetHistory history={userAccumulatedTimes?.data || []} />
+            <GadgetHistory history={userAccumulatedStats?.data || []} />
           </Box>
         </Grid2>
       </Grid2>
