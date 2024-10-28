@@ -56,18 +56,6 @@ function UserInfo({user, userProgress = null}) {
             >
             {user.name}
             </Typography>
-            <Typography sx={{ marginTop: 1, fontWeight: "800"}}>
-              Birthday
-            </Typography>
-            <Typography>
-              {user.birthday}
-            </Typography>
-            <Typography sx={{ marginTop: 1, fontWeight: "800"}}>
-              Weight
-            </Typography>
-            <Typography>
-              {user.weight}
-            </Typography>
           </Box>
         </Grid>
 
@@ -90,6 +78,31 @@ function UserInfo({user, userProgress = null}) {
                 >
                 </LinearProgress>
               </Box>
+
+              <Grid marginTop={1} container spacing={5}>
+                <Grid 
+                size={{ md: 6 }} display={"flex"}
+                sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
+                >
+                  <Typography sx={{ marginTop: 1, fontWeight: "800"}}>
+                    Birthday
+                  </Typography>
+                  <Typography>
+                    {user.birthday}
+                  </Typography>
+                </Grid>
+                <Grid 
+                size={{ md: 6 }} display={"flex"}
+                sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
+                >
+                  <Typography sx={{ marginTop: 1, fontWeight: "800"}}>
+                    Weight
+                  </Typography>
+                  <Typography>
+                    {user.weight} lbs
+                  </Typography>
+                </Grid>
+              </Grid>
         <Box 
           sx={{marginTop: 3, display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
         >
