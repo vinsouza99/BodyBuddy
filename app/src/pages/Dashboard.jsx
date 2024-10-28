@@ -29,6 +29,9 @@ import axiosClient from "../utils/axiosClient";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
 
+// Notifications
+import { useNotifications } from "@toolpad/core/useNotifications";
+
 export const Dashboard = (props) => {
   const { user } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
@@ -44,6 +47,7 @@ export const Dashboard = (props) => {
   const location = useLocation();
   const userPreferences = location.state || {};
   const prompt = useGenerateProgramPrompt({ userPreferences });
+  const notifications = useNotifications();
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -85,6 +89,11 @@ export const Dashboard = (props) => {
     }
   }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
 
+  useEffect(() => {
+    notifications.show("Something great just happened!", {
+      severity: "success",
+    });
+  }, [notifications]);
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
     // Check if the user has an acive program
@@ -99,7 +108,7 @@ export const Dashboard = (props) => {
 
           if (!hasIncompleteProgram) {
             console.log(
-              "No acive program found for this user. Generating a new personalized program."
+              "No active program found for this user. Generating a new personalized program."
             );
             await generatePersonalizedProgram();
           } else {
@@ -122,7 +131,7 @@ export const Dashboard = (props) => {
       try {
         // TODO: Create and Use the font-end controller.
         // OpenAI will generate the program data
-        console.log(prompt);
+        //console.log(prompt);
         const response_openai = await axiosClient.post(`openai/`, {
           prompt: prompt,
         });

@@ -12,6 +12,8 @@ import RunCircleIcon from "@mui/icons-material/RunCircle";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import IconButton from "@mui/material/IconButton";
+import { useNotifications } from "@toolpad/core/useNotifications";
+import "./MainLayout.css";
 
 // Links to display in the left Navbar
 const NavBar = [
@@ -39,9 +41,15 @@ const NavBar = [
 
 // Notifications Icon in Header
 function Notification() {
+  const [notifications, setNotifications] = useState([1]);
   return (
     <>
-      <div>
+      <div className="notification-wrapper">
+        {notifications && notifications.length > 0 ? (
+          <div className="notification-count">{notifications.length}</div>
+        ) : (
+          ""
+        )}
         <IconButton type="button" aria-label="search">
           <NotificationsIcon />
         </IconButton>
@@ -57,6 +65,7 @@ export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
+  const notifications = useNotifications();
 
   // Session State from Toolpad Core
   const [session] = useState({
