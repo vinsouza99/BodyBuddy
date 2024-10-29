@@ -4,7 +4,7 @@ import { setPageTitle } from "../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography, Box } from "@mui/material";
 
-export const NotFound = (props) => {
+export const ServerError = (props) => {
   const navigate = useNavigate();
   useEffect(() => {
     setPageTitle(props.title);
@@ -21,8 +21,10 @@ export const NotFound = (props) => {
           justifyContent: "center",
         }}
       >
-        <Typography variant="h1">Not Found</Typography>
-        <Typography variant="body1">This page does not exist</Typography>
+        <Typography variant="h1">Server Error</Typography>
+        <Typography variant="body1">
+          Something bad happened on our servers... Try again later.
+        </Typography>
         <Box>
           <Button variant="contained" onClick={() => navigate("/dashboard")}>
             Back to home
