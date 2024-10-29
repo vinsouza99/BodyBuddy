@@ -23,7 +23,6 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
   const todayRoutine = programRoutines?.find((routine) =>
     isSameDay(parseISO(routine.scheduled_date), today)
   ) || null;
-  console.log(todayRoutine);
   
   // Note: Now just showing the first routine, not considering the schedule. To be updated.
   return (

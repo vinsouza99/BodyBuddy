@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import { Box, Typography, Modal, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-// import ReactPlayer from 'react-player';
 
 const modalStyle = {
   // Layout and positioning

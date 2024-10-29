@@ -529,9 +529,10 @@ const CreateProgram = () => {
       weight_unit: weightUnit,
     };
     if (user) {
-      navigate("/training", {
-        state: { userResponses: formResponse },
-      });
+      navigate("/dashboard", {state : formResponse});
+      // navigate("/training", {
+      //   state: { userResponses: formResponse },
+      // });
     } else {
       navigate("/signup", { state: { userResponses: formResponse } });
     }

@@ -42,35 +42,64 @@ export const GadgetHistory = ({ history = [] }) => {
   const navigate = useNavigate();
   const chartRef = useRef(null);
   const [totalDuration, setTotalDuration] = useState(0);
+  const [totalCalories, setTotalCalories] = useState(0);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [mode, setMode] = useState("week-simple"); 
   const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(startOfMonth(new Date()));
   const [startOfCurrentYear, setStartOfCurrentYear] = useState(startOfYear(new Date()));
-  const [selectedChartElement, setSelectedChartElement] = useState(null);
+  // const [selectedChartElement, setSelectedChartElement] = useState(null);
   const [chartData, setChartData] = useState({
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
+      // For minutes
       {
-        label: "Exercise Time (minutes)",
+        label: "Minutes (min)",
         data: [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "#94DC8A",
         borderColor: "#94DC8A",
         borderWidth: 1,
         borderRadius: 2,
-        barThickness: 15,
+        barThickness: 10,
+      },
+      // For calories
+      {
+        label: "Calories (kcal)",
+        data: [0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: "#489FE4",
+        borderColor: "#489FE4",
+        borderWidth: 1,
+        borderRadius: 2,
+        barThickness: 0,
       },
     ],
   });
 
   // Chart options
   const options = {
+    font: {
+      family: "'Montserrat', 'Arial', sans-serif",
+    },
     responsive: true,
     maintainAspectRatio: false,
     aspectRatio: 2,
     plugins: {
       legend: {
         display: false,
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false,
+        padding: 10,
+        titleColor: '#000',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderColor: 'rgba(0, 0, 0, 0.5)',
+        borderWidth: 1,
+        bodyColor: '#000',
+        titleFont: { size: 16, weight: 'bold' },
+        bodyFont: { size: 16 },
+        caretSize: 10,
+        cornerRadius: 15,
       },
     },
     scales: {
@@ -129,35 +158,43 @@ export const GadgetHistory = ({ history = [] }) => {
 
   const updateWeeklyData = () => {
     const endOfCurrentWeek = addDays(startOfCurrentWeek, 6);
-    const weeklyData = Array(7).fill(0);
+    const weeklyMinutesData = Array(7).fill(0);
+    const weeklyCaloriesData = Array(7).fill(0);
     // console.log("startOfCurrentWeek - endOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
       if (isWithinInterval(entryDate, { start: startOfCurrentWeek, end: endOfCurrentWeek })) {
         const dayOfWeek = (parseInt(format(entryDate, "i")) - 1 + 7) % 7;
-        weeklyData[dayOfWeek] += entry.minutes;
+        weeklyMinutesData[dayOfWeek] += entry.minutes;
+        weeklyCaloriesData[dayOfWeek] += entry.calories;
       }
     });
     setChartData((prevChartData) => ({
       ...prevChartData,
       labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      datasets: [{ ...prevChartData.datasets[0], data: weeklyData }],
+      datasets: [
+        { ...prevChartData.datasets[0], data: weeklyMinutesData }, // minutes
+        { ...prevChartData.datasets[1], data: weeklyCaloriesData }, // calories
+      ],
     }));
-    setTotalDuration(weeklyData.reduce((acc, curr) => acc + curr, 0));
+    setTotalDuration(weeklyMinutesData.reduce((acc, curr) => acc + curr, 0));
+    setTotalCalories(weeklyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
 
   const updateMonthlyData = () => {
     const endOfCurrentMonth = endOfMonth(startOfCurrentMonth);
     const daysInMonth = getDate(endOfCurrentMonth);
-    const monthlyData = Array(daysInMonth).fill(0);
+    const monthlyMinutesData = Array(daysInMonth).fill(0);
+    const monthlyCaloriesData = Array(daysInMonth).fill(0);
     // console.log("startOfCurrentMonth - endOfCurrentMonth", startOfCurrentMonth, endOfCurrentMonth);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
       if (isWithinInterval(entryDate, { start: startOfCurrentMonth, end: endOfCurrentMonth })) {
         const dayOfMonth = getDate(entryDate) - 1;
-        monthlyData[dayOfMonth] += entry.minutes;
+        monthlyMinutesData[dayOfMonth] += entry.minutes;
+        monthlyCaloriesData[dayOfMonth] += entry.calories;
       }
     });
     // console.log("monthlyData", monthlyData);
@@ -165,32 +202,41 @@ export const GadgetHistory = ({ history = [] }) => {
     setChartData((prevChartData) => ({
       ...prevChartData,
       labels: Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString()),
-      datasets: [{ ...prevChartData.datasets[0], data: monthlyData }],
+      datasets: [
+        { ...prevChartData.datasets[0], data: monthlyMinutesData },
+        { ...prevChartData.datasets[1], data: monthlyCaloriesData },
+        ],
     }));
-    setTotalDuration(monthlyData.reduce((acc, curr) => acc + curr, 0));
+    setTotalDuration(monthlyMinutesData.reduce((acc, curr) => acc + curr, 0));
+    setTotalCalories(monthlyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
 
   const updatedYearlyData = () => {
     const endOfCurrentYear = endOfYear(startOfCurrentYear);
-    const yearlyData = Array(12).fill(0); 
+    const yearlyMinutesData = Array(12).fill(0);
+    const yearlyCaloriesData = Array(12).fill(0);
     // console.log("startOfCurrentYear - endOfCurrentYear", startOfCurrentYear, endOfCurrentYear);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
       if (isWithinInterval(entryDate, { start: startOfCurrentYear, end: endOfCurrentYear })) {
         const monthOfYear = getMonth(entryDate);
-        yearlyData[monthOfYear] += entry.minutes;
+        yearlyMinutesData[monthOfYear] += entry.minutes;
+        yearlyCaloriesData[monthOfYear] += entry.calories;
       }
     });
     // console.log("yearlyData", yearlyData);
 
     setChartData((prevChartData) => ({
       ...prevChartData,
-      // labels: Array.from({ length: 12 }, (_, i) => (i + 1).toString()),
       labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-      datasets: [{ ...prevChartData.datasets[0], data: yearlyData }],
+      datasets: [
+        { ...prevChartData.datasets[0], data: yearlyMinutesData },
+        { ...prevChartData.datasets[1], data: yearlyCaloriesData },
+      ],
     }));
-    setTotalDuration(yearlyData.reduce((acc, curr) => acc + curr, 0));
+    setTotalDuration(yearlyMinutesData.reduce((acc, curr) => acc + curr, 0));
+    setTotalCalories(yearlyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
 
   const handleModeChange = (event, newMode) => {
@@ -207,6 +253,7 @@ export const GadgetHistory = ({ history = [] }) => {
     } else if (mode === "year-simple") {
       setStartOfCurrentYear((prev) => addMonths(prev, 12));
     }
+    // setSelectedChartElement(null);
   };
 
   const handlePrevious = () => {
@@ -217,21 +264,23 @@ export const GadgetHistory = ({ history = [] }) => {
     } else if (mode === "year-simple") {
       setStartOfCurrentYear((prev) => addMonths(prev, -12));
     }
+    // setSelectedChartElement(null);
   };
 
-  const handleChartClick = (event) => {
-    const chart = chartRef.current;
-    if (!chart) return;
+  // const handleChartClick = (event) => {
+  //   const chart = chartRef.current;
+  //   if (!chart) return;
 
-    const elements = chart.getElementsAtEventForMode(event.nativeEvent, 'nearest', { intersect: true }, true);
+  //   const elements = chart.getElementsAtEventForMode(event.nativeEvent, 'nearest', { intersect: true }, true);
 
-    if (elements.length > 0) {
-      const { index } = elements[0];
-      const label = chartData.labels[index];
-      const value = chartData.datasets[0].data[index];
-      setSelectedChartElement({ label, value });
-    }
-  }
+  //   if (elements.length > 0) {
+  //     const { index } = elements[0];
+  //     const label = chartData.labels[index];
+  //     const valueMinutes = chartData.datasets[0].data[index];
+  //     const valueCalories = chartData.datasets[1].data[index];
+  //     setSelectedChartElement({ label, valueMinutes, valueCalories });
+  //   }
+  // }
 
   return (
     <GadgetBase>
@@ -250,20 +299,26 @@ export const GadgetHistory = ({ history = [] }) => {
           exclusive
           onChange={handleModeChange}
           aria-label="mode"
-          sx={{ flexGrow: 1}}
+          sx={{
+            "& .MuiToggleButton-root": {
+              border: "1px solid #ccc",
+              "&.Mui-selected": {
+                borderColor: "transparent", 
+                outline: "none",
+                backgroundColor: "#94DC8A",
+              },
+              "&:focus": {
+                borderColor: "transparent",
+                outline: "none",
+              },
+            },
+          }}
         >
           <ToggleButton 
             value="week-simple" 
             aria-label="week" 
             sx={{ 
-              padding: "5px 10px",
-              "&.Mui-selected": {
-                outline: "none", // Removes the blue border for the selected tab
-                border: "none", // Removes border
-              },
-              "&:focus": {
-                outline: "none", // Removes focus outline on keyboard focus
-              },
+              padding: "4px 10px",
             }}
           >
             Week
@@ -272,14 +327,7 @@ export const GadgetHistory = ({ history = [] }) => {
             value="month-simple" 
             aria-label="month" 
             sx={{ 
-              padding: "5px 10px",
-              "&.Mui-selected": {
-                outline: "none", // Removes the blue border for the selected tab
-                border: "none", // Removes border
-              },
-              "&:focus": {
-                outline: "none", // Removes focus outline on keyboard focus
-              },
+              padding: "4px 10px",
             }}
           >
             Month
@@ -288,14 +336,7 @@ export const GadgetHistory = ({ history = [] }) => {
             value="year-simple" 
             aria-label="month" 
             sx={{ 
-              padding: "5px 10px",
-              "&.Mui-selected": {
-                outline: "none", // Removes the blue border for the selected tab
-                border: "none", // Removes border
-              },
-              "&:focus": {
-                outline: "none", // Removes focus outline on keyboard focus
-              },
+              padding: "4px 10px",
             }}
           >
             Year
@@ -306,7 +347,10 @@ export const GadgetHistory = ({ history = [] }) => {
           onClickPreviousWeek={handlePrevious}
           displayMode={mode}
         />
-        <Typography>{`Total: ${totalDuration} min`}</Typography>
+        <Box sx={{display: "flex", gap: 2}}>
+          <Typography>Total: </Typography>
+          <Typography sx={{fontWeight: "bold"}}>{`${totalDuration} min, ${totalCalories} kcal,`}</Typography>
+        </Box>
         <Box sx={{ height: "300px", width: "100%" }}>
           {chartData && chartData.datasets && chartData.datasets[0].data ? (
             <Bar 
@@ -314,13 +358,13 @@ export const GadgetHistory = ({ history = [] }) => {
               options={options} 
               key={windowWidth} 
               ref={chartRef}
-              onClick={handleChartClick}  
+              // onClick={handleChartClick}  
             />
           ) : (
             <Typography>No data available</Typography>
           )}
         </Box>
-        {selectedChartElement && (
+        {/* {selectedChartElement && (
         <Box 
           sx={{ 
             border: "1px solid #94DC8A",
@@ -329,10 +373,10 @@ export const GadgetHistory = ({ history = [] }) => {
           }}
           >
             <Typography>
-              {selectedChartElement?.value} min
+              {selectedChartElement?.valueMinutes} min, {selectedChartElement?.valueCalories} kcal
             </Typography>
         </Box>
-        )}
+        )} */}
       </Box>
       <Typography>
         We help you track your progress as data and video as you becoming a
