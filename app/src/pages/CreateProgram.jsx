@@ -542,8 +542,8 @@ const CreateProgram = () => {
             minHeight={400}
             padding={"1rem"}
           >
-            <Box component={"div"} sx={{ margin: "0 auto", width: "50%" }}>
-              <ProgressBar progress={(step / 6) * 100} />
+            <Box component={"div"} sx={{ margin: "0 auto", width: "75%" }}>
+              <ProgressBar progress={(step / 7) * 100} />
             </Box>
             <form
               method="post"
