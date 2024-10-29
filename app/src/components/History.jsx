@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
+import DownloadIcon from '@mui/icons-material/Download'; // Download Icon
 import PlayCircleIcon from "@mui/icons-material/PlayCircle"; // Play Icon
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
@@ -180,18 +181,17 @@ function History({ data }) {
                       <Typography variant="body1">{item.description}</Typography>
                     </Paper>
                     <Stack direction="row" spacing={1}>
-                        <Chip
-                          label={`${item.duration/60} min`}
-                          variant="outlined"
-                          sx={{ borderRadius: 2 }}
-                        />
-                        <Chip
-                          label={`${item.calories} cal`}
-                          variant="outlined"
-                          sx={{ borderRadius: 2 }}
-                        />
-                      </Stack>
-
+                      <Chip
+                        label={`${item.duration/60} min`}
+                        variant="outlined"
+                        sx={{ borderRadius: 2 }}
+                      />
+                      <Chip
+                        label={`${item.calories} cal`}
+                        variant="outlined"
+                        sx={{ borderRadius: 2 }}
+                      />
+                    </Stack>
                   </AccordionDetails>
 
                   {/* Session Modal */}
@@ -199,35 +199,60 @@ function History({ data }) {
                     open={videoSwitch}
                     onClose={videoClose}
                     fullWidth
-                    maxWidth="sm"
+                    maxWidth="md"
+                    BackdropProps={{
+                      style: {
+                        backgroundColor: 'rgba(71, 71, 71, 0.169)', 
+                      },
+                    }}
+                    sx={{
+                      '& .MuiDialog-paper': {
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                        padding: 1,
+                        backgroundColor: '#f7f7f7'
+                      },
+                    }}
                   >
-                    <DialogTitle>
-                      {item.content}
+                    <DialogTitle sx={{ padding: 0, display:"flex", justifyContent: "end" }}>
+                      {/* Download icon*/}
+                      <IconButton
+                        href={item.recording_url}
+                        download
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+
+                      {/* Close icon*/}
                       <IconButton
                         onClick={videoClose}
-                        sx={{ position: "absolute", right: 8, top: 8 }}
                       >
                         <CloseIcon />
                       </IconButton>
                     </DialogTitle>
+
                     <DialogContent
                       sx={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        padding: 0
                       }}
                     >
-                      <video width="320" height="240" controls>
-                        <source src="item.recording_url" type="video/mp4" />
+                      <video 
+                        width="100%" 
+                        height="auto" 
+                        controls 
+                        style={{
+                        maxWidth: "100%",
+                        borderRadius: "8px",
+                      }}>
+                        <source src={item.recording_url} type="video/mp4" />
                         <source src="movie.ogg" type="video/ogg" />
                       </video>
                     </DialogContent>
                   </Dialog>
-
-
                 </Accordion>
-
-                
               ))
             : isDateSelected && "No history to show..."}
         </div>
@@ -237,6 +262,13 @@ function History({ data }) {
       {/* Modal part */}
       <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md">
         <DialogContent>
+          {/* Close icon*/}
+          <DialogTitle sx={{ display: "flex", padding: 0, justifyContent: "flex-end" }}>
+            <IconButton onClick={handleClickClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box sx={{ display: "flex", gap: "20px" }}>
               <Box>

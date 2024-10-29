@@ -10,6 +10,8 @@ import PropTypes from "prop-types";
 import { WallOfFame } from './WallOfFame';
 import theme from '../theme';
 
+import { UserProgressBar } from "./UserProgressBar";
+
 
 
 
@@ -59,28 +61,10 @@ function UserInfo({user, userProgress = null}) {
           </Box>
         </Grid>
 
-          <Typography textAlign="left" >Level 0</Typography>
-              <Box sx={{ width: '100%' }}>
-                <LinearProgress
-                  variant="determinate"
-                  value={10}
-                  sx={{
-                    '--LinearProgress-radius': '8px',
-                    '--LinearProgress-progressThickness': '30px',
-                    height: '30px',
-                    boxShadow: 'sm',
-                    borderRadius: '15px',
-                    '& .MuiLinearProgress-bar': {
-                      backgroundColor: theme.palette.primary.main,
-                    },
-                    backgroundColor: 'grey.300',
-                  }}
-                >
-                </LinearProgress>
-              </Box>
+        <UserProgressBar level={user.progress.level} levelProgress={user.progress.level_progress}/>
 
-              <Grid marginTop={1} container spacing={5}>
-                <Grid 
+        <Grid marginTop={1} container spacing={5}>
+          <Grid 
                 size={{ md: 6 }} display={"flex"}
                 sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
                 >
@@ -90,19 +74,20 @@ function UserInfo({user, userProgress = null}) {
                   <Typography>
                     {user.birthday}
                   </Typography>
-                </Grid>
-                <Grid 
-                size={{ md: 6 }} display={"flex"}
-                sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
-                >
-                  <Typography sx={{ marginTop: 1, fontWeight: "800"}}>
-                    Weight
-                  </Typography>
-                  <Typography>
-                    {user.weight} lbs
-                  </Typography>
-                </Grid>
-              </Grid>
+          </Grid>
+          <Grid 
+            size={{ md: 6 }} display={"flex"}
+            sx={{display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
+          >
+            <Typography sx={{ marginTop: 1, fontWeight: "800"}}>
+              Weight
+            </Typography>
+            <Typography>
+              {user.weight} lbs
+            </Typography>
+          </Grid>
+        </Grid>
+
         <Box 
           sx={{marginTop: 3, display: 'flex', alignItems: 'flex-start', flexDirection: 'column'}}
         >
