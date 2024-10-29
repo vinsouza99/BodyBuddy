@@ -131,6 +131,14 @@ const CreateProgram = () => {
               onChange={() => setGender("other")}
             />
           </RadioGroup>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "left", margin: "1rem 0" }}
+          >
+            Your sex can affect hormonal balance, muscle composition, and fat
+            distribution, which influence how individuals respond to different
+            types of exercise and nutritional strategies.
+          </Typography>
         </FormControl>
       </>
     );
@@ -276,6 +284,13 @@ const CreateProgram = () => {
             />
           ))}
         </RadioGroup>
+        <Typography
+          variant="body2"
+          sx={{ textAlign: "left", margin: "1rem 0" }}
+        >
+          Past experience sets the foundation for the plan, dictating the
+          starting intensity and progression rate.
+        </Typography>
       </FormControl>
     );
   }
@@ -285,7 +300,7 @@ const CreateProgram = () => {
       <FormControl>
         <FormLabel id="intensityLabel">
           <Typography variant="h3">
-            How intense you want to exercise?
+            How intensely do you want to exercise?
           </Typography>
         </FormLabel>
         <Box
@@ -370,6 +385,14 @@ const CreateProgram = () => {
             />
           ))}
         </RadioGroup>
+        <Typography
+          variant="body2"
+          sx={{ textAlign: "left", margin: "1rem 0" }}
+        >
+          This determines the frequency and difficulty of workouts you expect
+          for the plan, helping to balance progress with recovery. You can
+          always go back to adjust later for your next programs.
+        </Typography>
       </FormControl>
     );
   }
@@ -449,6 +472,15 @@ const CreateProgram = () => {
             />
           ))}
         </FormGroup>
+        <Typography
+          variant="body2"
+          sx={{ textAlign: "left", margin: "1rem 0" }}
+        >
+          Based on your availability, we will suggest the optimal exercise
+          schedule that can efficiently deliver your goal. However, you can
+          always be flexible in choosing exercises and what time you want to do
+          them.
+        </Typography>
       </FormControl>
     );
   }
@@ -460,8 +492,14 @@ const CreateProgram = () => {
           <Typography variant="h3">Last but not least!</Typography>
         </FormLabel>
 
-        <Grid sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: ".5rem", marginLeft: "90px" }}>
-
+        <Grid
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "3fr 1fr",
+            gap: ".5rem",
+            marginLeft: "90px",
+          }}
+        >
           <Grid>
             {/* Birthday Input with DatePicker */}
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -479,12 +517,18 @@ const CreateProgram = () => {
             </LocalizationProvider>
           </Grid>
           <Grid></Grid>
-
         </Grid>
 
         {/* Weight input */}
-        <Grid sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: ".5rem", marginTop: "10px", marginLeft: "90px" }}>
-          
+        <Grid
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "3fr 1fr",
+            gap: ".5rem",
+            marginTop: "10px",
+            marginLeft: "90px",
+          }}
+        >
           <Grid>
             <TextField
               type="number"
@@ -511,7 +555,15 @@ const CreateProgram = () => {
               </Select>
             </FormControl>
           </Grid>
-
+        </Grid>
+        <Grid container sx={{  }}>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "left", margin: "1rem 0", width: "400px" }}
+          >
+            These factors influence the starting point, caloric needs, and the
+            intensity of the plan to ensure it's realistic and sustainable.
+          </Typography>
         </Grid>
       </FormControl>
     );
@@ -545,6 +597,9 @@ const CreateProgram = () => {
         rowGap={5}
         sx={{
           backgroundColor: "lightgray",
+          backgroundImage: "url(./src/assets/create-program.png)",
+          backgroundPosition: "top right",
+          backgroundSize: "cover",
           minHeight: "100vh",
           padding: "2rem 1rem",
         }}
@@ -555,8 +610,10 @@ const CreateProgram = () => {
           width={70}
         />
         <Container
+          maxWidth="sm"
           sx={{
-            backgroundColor: "white",
+            backgroundColor: "rgba(255, 255, 255, .8)",
+            backdropFilter: "blur(4px)",
             borderRadius: 3,
           }}
           className="formWrapper"
@@ -617,7 +674,7 @@ const CreateProgram = () => {
                 </Button>
                 {step == 6 ? (
                   <Button variant="contained" onClick={() => submitForm()}>
-                    Submit
+                    Complete
                   </Button>
                 ) : (
                   <Button variant="contained" onClick={() => nextStep()}>
