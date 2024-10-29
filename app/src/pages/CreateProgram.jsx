@@ -205,7 +205,7 @@ const CreateProgram = () => {
           sx={{
             // Create line behind radio buttons
             position: "absolute",
-            width: "80%",
+            width: "76%",
             borderTop: "1px solid",
             borderColor: "background.light",
             left: "50%",
@@ -307,7 +307,7 @@ const CreateProgram = () => {
           sx={{
             // Create line behind radio buttons
             position: "absolute",
-            width: "80%",
+            width: "76%",
             borderTop: "1px solid",
             borderColor: "background.light",
             left: "50%",
@@ -320,6 +320,7 @@ const CreateProgram = () => {
           aria-labelledby="intensityLabel"
           name="radio-buttons-group3"
           value={intensity}
+          sx={{ display: "flex", justifyContent: "center" }} // Center horizontally
         >
           {intensityOptions.map((intensity, index) => (
             <FormControlLabel
@@ -408,6 +409,7 @@ const CreateProgram = () => {
           aria-labelledby="intensityLabel"
           name="radio-buttons-group4"
           value={schedule}
+          sx={{ display: "flex", justifyContent: "center" }} // Center horizontally
         >
           {weekdays.map((day, index) => (
             <FormControlLabel
@@ -612,7 +614,7 @@ const CreateProgram = () => {
         <Container
           maxWidth="sm"
           sx={{
-            backgroundColor: "rgba(255, 255, 255, .8)",
+            backgroundColor: "rgba(255, 255, 255, .7)",
             backdropFilter: "blur(4px)",
             borderRadius: 3,
           }}
