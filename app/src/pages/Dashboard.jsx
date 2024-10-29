@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  Grid2,
   Box,
   Typography,
   Backdrop,
   CircularProgress,
+  Grid2,
 } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
@@ -37,8 +37,7 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
-    useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -61,6 +60,7 @@ export const Dashboard = (props) => {
         const userInfo = await getUser(user);
         setUserInfo(userInfo);
         setUserInfoLoaded(true);
+        console.log("UserInfo loaded:", userInfo);
 
         const userAccumulatedStats = await getUserAccumulatedStats(user.id);
         setUserAccumulatedStats(userAccumulatedStats);
@@ -247,7 +247,7 @@ export const Dashboard = (props) => {
         <Grid2 size={{ xs: 12, md: 6 }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
             {/* ADD GADGETS HERE*/}
-            <GadgetAchievement />
+            <GadgetAchievement userInfo={userInfo} />
             <GadgetHistory history={userAccumulatedStats?.data || []} />
           </Box>
         </Grid2>

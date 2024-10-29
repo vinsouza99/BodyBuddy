@@ -1,25 +1,46 @@
 import PropTypes from "prop-types";
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-// import { getAllExercises } from '../controllers/ExerciseController';
-// import axiosClient from '../utils/axiosClient';
 import { GadgetBase } from './GadgetBase';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 
 export const GadgetFavourite = ({ exerciseInfo = null }) => {
   const navigate = useNavigate();
-  // const [exerciseInfo, setExerciseInfo] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-
-  const itemsPerPage = 2;
+  const [itemsPerPage, setItemsPerPage] = useState(2);
+  const containerRef = useRef(null);
   const totalPages = Math.ceil(exerciseInfo.length / itemsPerPage);
 
-  const currentItems = exerciseInfo.slice(
+  const currentItems = exerciseInfo?.slice(
     currentPage * itemsPerPage,
     currentPage * itemsPerPage + itemsPerPage
   );
+
+  useEffect(() => {
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0].contentRect.width;
+
+      if (width < 480) {
+        setItemsPerPage(1);
+      } else if (width < 700) {
+        setItemsPerPage(2);
+      } else {
+        setItemsPerPage(3);
+      }
+    });
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        observer.unobserve(containerRef.current);
+      }
+    };
+  }, []);
 
   const handleNext = () => {
     setCurrentPage((prevPage) => (prevPage + 1) % totalPages);
@@ -37,22 +58,10 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
     });
   }
 
-  // useEffect(() => {
-  //   // Get all exercise information from the database
-  //   const fetchExerciseInfo = async () => {
-  //     try {
-  //       const response = await getAllExercises();     
-  //       setExerciseInfo(response);
-  //     } catch (error) {
-  //       console.error("Error fetching exercise:", error);
-  //     }
-  //   };
-  //   fetchExerciseInfo();
-  // }, []);
-
   return (
-    <GadgetBase title="Your favourite moves">
-      <Box 
+    <GadgetBase title="Master the moves">
+      <Box
+        ref={containerRef}
         sx={{
           display: 'flex',
           direction: 'row',
