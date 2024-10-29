@@ -17,6 +17,7 @@
     "@mui/material": "^6.1.5",
     "@mui/x-data-grid": "^7.18.0",
     "@mui/x-date-pickers": "^7.22.0",
+    "@mui/x-date-pickers-pro": "^7.22.0",
     "@supabase/supabase-js": "^2.45.4",
     "@toolpad/core": "^0.7.0",
     "axios": "^1.7.7",

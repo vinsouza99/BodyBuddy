@@ -486,91 +486,6 @@ const CreateProgram = () => {
       </FormControl>
     );
   }
-
-  function PersonalInfoStep() {
-    return (
-      <FormControl>
-        <FormLabel id="personalInfoLabel">
-          <Typography variant="h3">Last but not least!</Typography>
-        </FormLabel>
-
-        <Grid
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "3fr 1fr",
-            gap: ".5rem",
-            marginLeft: "90px",
-          }}
-        >
-          <Grid>
-            {/* Birthday Input with DatePicker */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                sx={{ marginTop: "30px" }}
-                label="Birthday"
-                value={birthday ? dayjs(birthday) : null} // Pass a dayjs object or null
-                fullWidth
-                onChange={(newValue) => {
-                  setBirthday(dayjs(newValue).format("YYYY-MM-DD")); // Format the date only when saving to state
-                }}
-                // autoFocus (enable if preferred)
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid></Grid>
-        </Grid>
-
-        {/* Weight input */}
-        <Grid
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "3fr 1fr",
-            gap: ".5rem",
-            marginTop: "10px",
-            marginLeft: "90px",
-          }}
-        >
-          <Grid>
-            <TextField
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              label="Weight"
-              variant="outlined"
-              fullWidth
-            />
-          </Grid>
-
-          {/* Weight Unit Selector */}
-          <Grid>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="weight-unit-label">Unit</InputLabel>
-              <Select
-                labelId="weight-unit-label"
-                value={weightUnit}
-                onChange={(e) => setWeightUnit(e.target.value)}
-                label="Unit"
-              >
-                <MenuItem value="lbs">Lbs</MenuItem>
-                <MenuItem value="kg">Kg</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-        </Grid>
-        <Grid container sx={{  }}>
-          <Typography
-            variant="body2"
-            sx={{ textAlign: "left", margin: "1rem 0", width: "400px" }}
-          >
-            These factors influence the starting point, caloric needs, and the
-            intensity of the plan to ensure it's realistic and sustainable.
-          </Typography>
-        </Grid>
-      </FormControl>
-    );
-  }
-
   async function submitForm() {
     const formResponse = {
       gender: gender,
@@ -655,7 +570,90 @@ const CreateProgram = () => {
                 <ScheduleStep />
               </Box>
               <Box component={"div"} display={step == 6 ? "block" : "none"}>
-                <PersonalInfoStep />
+                <FormControl>
+                  <FormLabel id="personalInfoLabel">
+                    <Typography variant="h3">Last but not least!</Typography>
+                  </FormLabel>
+
+                  <Grid
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "3fr 1fr",
+                      gap: ".5rem",
+                      marginLeft: "90px",
+                    }}
+                  >
+                    <Grid>
+                      {/* Birthday Input with DatePicker */}
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          sx={{ marginTop: "30px" }}
+                          label="Birthday"
+                          value={birthday ? dayjs(birthday) : null} // Pass a dayjs object or null
+                          fullWidth
+                          onChange={(newValue) => {
+                            setBirthday(dayjs(newValue).format("YYYY-MM-DD")); // Format the date only when saving to state
+                          }}
+                          // autoFocus (enable if preferred)
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid></Grid>
+                  </Grid>
+
+                  {/* Weight input */}
+                  <Grid
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "3fr 1fr",
+                      gap: ".5rem",
+                      marginTop: "10px",
+                      marginLeft: "90px",
+                    }}
+                  >
+                    <Grid>
+                      <TextField
+                        type="number"
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        label="Weight"
+                        variant="outlined"
+                        fullWidth
+                      />
+                    </Grid>
+
+                    {/* Weight Unit Selector */}
+                    <Grid>
+                      <FormControl variant="outlined" fullWidth>
+                        <InputLabel id="weight-unit-label">Unit</InputLabel>
+                        <Select
+                          labelId="weight-unit-label"
+                          value={weightUnit}
+                          onChange={(e) => setWeightUnit(e.target.value)}
+                          label="Unit"
+                        >
+                          <MenuItem value="lbs">Lbs</MenuItem>
+                          <MenuItem value="kg">Kg</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                  <Grid container sx={{}}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        textAlign: "left",
+                        margin: "1rem 0",
+                        width: "400px",
+                      }}
+                    >
+                      These factors influence the starting point, caloric needs,
+                      and the intensity of the plan to ensure it's realistic and
+                      sustainable.
+                    </Typography>
+                  </Grid>
+                </FormControl>
               </Box>
               <Grid
                 container
