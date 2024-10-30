@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Typography,
@@ -26,6 +26,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
 
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
@@ -35,10 +36,34 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 
+import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
+
 function History({ data }) {
   const [modalSwitch, setSwitch] = useState(false);
   const [videoSwitch, videoSet] = useState(false);
+  const [isDateSelected, setIsDateSelected] = useState(false); // State if dates are picked
+  const [startDate, setStartDate] = useState(dayjs()); // State the picked start dates
+  const [endDate, setEndDate] = useState(dayjs()); // State the picked end dates
+  const [filteredData, setFilteredData] = useState(data); // Save filtered Data from Duration
 
+  // useEffect to fetch letest data when initial page loading or reloading
+  useEffect(() => {
+    if (data.length > 0) {
+      const latestDate = dayjs(Math.max(...data.map(item => dayjs(item.compare_date).valueOf())));
+      setStartDate(latestDate.startOf('day'));
+      setEndDate(latestDate.endOf('day'));
+      
+      const initialFiltered = data.filter(item => 
+        dayjs(item.compare_date).isBetween(latestDate.startOf('day'), latestDate.endOf('day'), null, '[]')
+      );
+      
+      setFilteredData(initialFiltered);
+      setIsDateSelected(true);
+    }
+  }, [data]);
+
+  console.log(data);
+  
   // Open StartRoutineSessionModal
   const videoOpen = () => {
     videoSet(true);
@@ -59,10 +84,7 @@ function History({ data }) {
     setSwitch(false);
   };
 
-  // State if dates are picked
-  const [isDateSelected, setIsDateSelected] = useState(false);
-
-
+  // OK button on duration modal
   const handleOKClick = () => {
     const startOfStartDate = startDate.startOf('day');
     const endOfEndDate = endDate.endOf('day');
@@ -71,29 +93,19 @@ function History({ data }) {
       const itemDate = dayjs(item.compare_date);
       return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
     });
-
     setFilteredData(filtered);
     setIsDateSelected(true);
     setSwitch(false);
   };
 
-
-
+  // Cancel button on duration modal
   const handleCancelClick = () => {
     setStartDate(dayjs()); // Initializa
     setEndDate(dayjs()); // Initializa
   };
 
-  // State the picked start and end dates
-  const [startDate, setStartDate] = useState(dayjs());
-  const [endDate, setEndDate] = useState(dayjs());
-
   console.log(`Selected Start Date: ${startDate.format()}`);
   console.log(`Selected End Date: ${endDate.format()}`);
-  
-
-  // Save filtered Data from Duration
-  const [filteredData, setFilteredData] = useState(data);
   
   return (
     <>
@@ -138,7 +150,11 @@ function History({ data }) {
           </Box>
         </Box>
 
-        <div>
+        <div 
+          style={{
+            maxHeight: '80vh', // Set the displayed height
+            overflowY: 'auto', // Scrolling
+          }}>
           {isDateSelected && filteredData.length > 0
             ? filteredData.map((item, index) => (
                 <Accordion
@@ -172,15 +188,23 @@ function History({ data }) {
                         backgroundColor: "#f3f3f3",
                       }}
                     >
-                      <IconButton sx={{ padding: 0, marginRight: 1 }}>
-                        <PlayCircleIcon
-                          onClick={videoOpen}
-                          sx={{ color: "#4A90E2", fontSize: 60 }}
-                        />
-                      </IconButton>
-                      <Typography variant="body1">{item.description}</Typography>
+
+                      {/* Video icon shows up when ther is "recording_url" */}
+                      {item.recording_url ? (
+                        <IconButton sx={{ padding: 0, marginRight: 1 }}>
+                          <PlayCircleIcon
+                            onClick={videoOpen}
+                            sx={{ color: "#4A90E2", fontSize: 60 }}
+                          />
+                        </IconButton>
+                      ) : null}              
+
+
+                      {/* description always shows up*/}
+                      <Typography variant="body1" sx={{margin: 2}} >{item.description}</Typography>
                     </Paper>
                     <Stack direction="row" spacing={1}>
+
                       <Chip
                         label={`${item.duration/60} min`}
                         variant="outlined"
@@ -198,8 +222,8 @@ function History({ data }) {
                   <Dialog
                     open={videoSwitch}
                     onClose={videoClose}
-                    fullWidth
-                    maxWidth="md"
+                    // fullWidth
+                    // maxWidth="md"
                     BackdropProps={{
                       style: {
                         backgroundColor: 'rgba(71, 71, 71, 0.169)', 
@@ -208,16 +232,20 @@ function History({ data }) {
                     sx={{
                       '& .MuiDialog-paper': {
                         borderRadius: 4,
-                        overflow: 'hidden',
-                        padding: 1,
-                        backgroundColor: '#f7f7f7'
+                        padding: 0,
+                        backgroundColor: '#f7f7f7',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
                       },
                     }}
                   >
-                    <DialogTitle sx={{ padding: 0, display:"flex", justifyContent: "end" }}>
+                    <DialogTitle sx={{ padding: 0 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                       {/* Download icon*/}
                       <IconButton
                         href={item.recording_url}
+                        target="_blank" // opens in a new tab for downloading
                         download
                       >
                         <DownloadIcon />
@@ -229,6 +257,7 @@ function History({ data }) {
                       >
                         <CloseIcon />
                       </IconButton>
+                    </Box>
                     </DialogTitle>
 
                     <DialogContent
@@ -236,19 +265,23 @@ function History({ data }) {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        padding: 0
+                        padding: 1,
+                        // width: "100%",
+                        // height: "auto",
                       }}
                     >
                       <video 
-                        width="100%" 
-                        height="auto" 
+                        // width="100%" 
+                        // height="auto" 
                         controls 
                         style={{
-                        maxWidth: "100%",
-                        borderRadius: "8px",
+                          maxWidth: "100%",
+                          maxHeight: "80vh",
+                          borderRadius: "8px",
                       }}>
-                        <source src={item.recording_url} type="video/mp4" />
-                        <source src="movie.ogg" type="video/ogg" />
+                        <source src={item.recording_url} type="video/webm" />
+                        {/* <source src={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm"} type="video/webm" /> */}
+
                       </video>
                     </DialogContent>
                   </Dialog>
