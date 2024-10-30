@@ -530,8 +530,8 @@ const CreateProgram = () => {
         <Container
           maxWidth="sm"
           sx={{
-            backgroundColor: "rgba(255, 255, 255, .7)",
-            backdropFilter: "blur(4px)",
+            backgroundColor: "rgba(255, 255, 255, .9)",
+            backdropFilter: "blur(2px)",
             borderRadius: 3,
           }}
           className="formWrapper"
