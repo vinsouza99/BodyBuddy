@@ -76,17 +76,42 @@ button:focus-visible {
 }
 
 /* Toolpad Core Dashboard Layout */
-.css-mra6uu-MuiDrawer-docked .MuiDrawer-paper,
+/* .css-mra6uu-MuiDrawer-docked .MuiDrawer-paper,
 .css-mra6uu-MuiDrawer-docked {
   width: 200px !important;
 }
 
 .css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected {
-  background: linear-gradient(90deg, rgba(45,144,224,1) 60%, rgba(171,211,243,1) 100%) !important;
-  color: #FFF;
+  background: linear-gradient(
+    90deg,
+    rgba(45, 144, 224, 1) 60%,
+    rgba(171, 211, 243, 1) 100%
+  ) !important;
+  color: #fff !important;
 }
 
-.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiSvgIcon-root,
-.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected .MuiTypography-root {
-  color: #FFF !important;
+.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected
+  .MuiSvgIcon-root,
+.css-udq11e-MuiButtonBase-root-MuiListItemButton-root.Mui-selected
+  .MuiTypography-root {
+  color: #fff !important;
+} */
+
+/* COCOY TODO: Check if the codes below are enough, then remove the 3 above */
+.MuiDrawer-docked .MuiDrawer-paper,
+.MuiDrawer-docked {
+  width: 200px !important;
+}
+
+.MuiButtonBase-root.MuiListItemButton-root.Mui-selected {
+  background: linear-gradient(
+    90deg,
+    rgba(45, 144, 224, 1) 60%,
+    rgba(171, 211, 243, 1) 100%
+  );
+}
+
+.MuiButtonBase-root.MuiListItemButton-root.Mui-selected .MuiSvgIcon-root,
+.MuiButtonBase-root.MuiListItemButton-root.Mui-selected .MuiTypography-root {
+  color: #fff;
 }
