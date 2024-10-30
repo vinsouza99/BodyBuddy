@@ -48,13 +48,14 @@ export const getUser = async (req, res) => {
 
 export const createUser = async (req, res) => {
   try {
-    const { id, birthday, gender, weight, weight_unit } = req.body;
+    const { id, birthday, gender, weight, weight_unit, picture } = req.body;
     const newUser = await User.create({
       id,
       birthday,
       gender,
       weight,
       weight_unit,
+      picture,
     });
     res.status(201).json({
       status: "201",

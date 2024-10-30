@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import { Footer } from "../components/Footer";
@@ -12,6 +12,7 @@ import RunCircleIcon from "@mui/icons-material/RunCircle";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import IconButton from "@mui/material/IconButton";
+import { getUser } from "../controllers/UserController.js";
 
 // Links to display in the left Navbar
 const NavBar = [
@@ -57,13 +58,22 @@ export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
+  const [userInfo, setUserInfo] = useState({});
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const response = await getUser(user);
+      setUserInfo(response);
+    };
+    getUserInfo();
+  }, []);
 
   // Session State from Toolpad Core
   const [session] = useState({
     user: {
-      name: user.user_metadata.full_name,
+      name: userInfo.name,
       email: user.email,
-      image: user.user_metadata.avatar_url ? user.user_metadata.avatar_url : "",
+      image: userInfo.picture,
     },
   });
 

@@ -31,7 +31,7 @@ export const SignUp = (props) => {
   useEffect(() => {
     if (user) {
       // navigate("/dashboard");
-      navigate("/dashboard", {state : userResponses});
+      navigate("/dashboard", { state: userResponses });
     }
   }, [user, navigate]);
 
@@ -56,7 +56,7 @@ export const SignUp = (props) => {
       const newUser = {
         id: data.user.id,
         name: name,
-        profile_picture_URL: data.profile_picture_url,
+        picture: data.user_metadata.profile_picture_url,
         birthday: userResponses.birthday,
         gender: userResponses.gender,
         weight: userResponses.weight,
