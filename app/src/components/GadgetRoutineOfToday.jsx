@@ -6,7 +6,7 @@ import { GadgetBase } from './GadgetBase';
 import { RoutineExercisesList } from './RoutineExercisesList';
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
-export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
+export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
   const [open, setOpen] = useState(false);
   const today = new Date();
 
@@ -62,9 +62,6 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
                 marginTop: '0.8rem',
                 marginBottom: '0.8rem',
                 boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.4)',
-                "&:focus": {
-                  outline: "none", // Removes focus outline on keyboard focus
-                },
               }}
             >
               GET<br />STARTED
@@ -90,7 +87,6 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = null }) => {
 
 GadgetRoutineOfToday.propTypes = {
   programRoutines: PropTypes.array,
-  // routineExercises: PropTypes.array,
 };
 
 GadgetRoutineOfToday.displayName = 'GadgetRoutineOfToday';

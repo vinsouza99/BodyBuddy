@@ -48,7 +48,6 @@ export const GadgetHistory = ({ history = [] }) => {
   const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(startOfMonth(new Date()));
   const [startOfCurrentYear, setStartOfCurrentYear] = useState(startOfYear(new Date()));
-  // const [selectedChartElement, setSelectedChartElement] = useState(null);
   const [chartData, setChartData] = useState({
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     datasets: [
@@ -102,7 +101,7 @@ export const GadgetHistory = ({ history = [] }) => {
     scales: {
       x: {
         grid: {
-          display: true,
+          display: false,
         },
       },
       y: {
@@ -111,7 +110,7 @@ export const GadgetHistory = ({ history = [] }) => {
     },
     animation: {
       duration: 500,
-      easing: 'easeInOutCubic',
+      easing: 'easeInOutQuad',
     },
   };
 
@@ -254,7 +253,6 @@ export const GadgetHistory = ({ history = [] }) => {
     } else if (mode === "year-simple") {
       setStartOfCurrentYear((prev) => addMonths(prev, 12));
     }
-    // setSelectedChartElement(null);
   };
 
   const handlePrevious = () => {
@@ -265,23 +263,7 @@ export const GadgetHistory = ({ history = [] }) => {
     } else if (mode === "year-simple") {
       setStartOfCurrentYear((prev) => addMonths(prev, -12));
     }
-    // setSelectedChartElement(null);
   };
-
-  // const handleChartClick = (event) => {
-  //   const chart = chartRef.current;
-  //   if (!chart) return;
-
-  //   const elements = chart.getElementsAtEventForMode(event.nativeEvent, 'nearest', { intersect: true }, true);
-
-  //   if (elements.length > 0) {
-  //     const { index } = elements[0];
-  //     const label = chartData.labels[index];
-  //     const valueMinutes = chartData.datasets[0].data[index];
-  //     const valueCalories = chartData.datasets[1].data[index];
-  //     setSelectedChartElement({ label, valueMinutes, valueCalories });
-  //   }
-  // }
 
   return (
     <GadgetBase>
@@ -365,19 +347,6 @@ export const GadgetHistory = ({ history = [] }) => {
             <Typography>No data available</Typography>
           )}
         </Box>
-        {/* {selectedChartElement && (
-        <Box 
-          sx={{ 
-            border: "1px solid #94DC8A",
-            borderRadius: "25px",
-            padding: "4px 16px",
-          }}
-          >
-            <Typography>
-              {selectedChartElement?.valueMinutes} min, {selectedChartElement?.valueCalories} kcal
-            </Typography>
-        </Box>
-        )} */}
       </Box>
       <Typography>
         We help you track your progress as data and video as you becoming a
