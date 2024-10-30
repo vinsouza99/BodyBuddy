@@ -62,7 +62,15 @@ export const WallOfFame = ({ userInfo = {} }) => {
     // ResizeObserver to adjust the number of items to show
     const observer = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width;
-      setItemsToShow(width < 500 ? 3 : 5);
+      const newItemsToShow = width < 500 ? 3 : 5;
+      setItemsToShow(newItemsToShow);
+
+      if (badges.length > newItemsToShow) {
+        setCanNavigate(true);
+      } else {
+        setCanNavigate(false);
+        setCurrentIndex(0);
+      }
     });
 
     if (boxRef.current) {
@@ -158,7 +166,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               "&:hover": { backgroundColor: 'transparent' },
             }}
             onClick={handlePrevious}
-            disabled={!canNavigate}
+            disabled={!canNavigate || currentIndex === 0}
           >
             <ArrowBackIosNewIcon />
           </IconButton>        
@@ -190,7 +198,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               "&:hover": { backgroundColor: 'transparent' },
             }}
             onClick={handleNext}
-            disabled={!canNavigate}
+            disabled={!canNavigate || currentIndex + itemsToShow >= badges.length}
           >
             <ArrowForwardIosIcon />
           </IconButton>
@@ -253,7 +261,18 @@ export const WallOfFame = ({ userInfo = {} }) => {
           {displayAllBadges.map((badge, index) => (
             <Box 
               key={index}
-              sx={{cursor: 'pointer'}}
+              sx={{
+                cursor: 'pointer',
+                display: 'flex',
+                gap: 1,
+                flexDirection: 'column',
+                justifyContent: 'start',
+                alignItems: 'center',
+                textAlign: 'center',
+                width: 200,
+                height: 150,
+                // border: '1px solid #ccc',
+              }}
               onClick={(e) => handleBadgeClick(e, badge.description)}
             >
               <img
