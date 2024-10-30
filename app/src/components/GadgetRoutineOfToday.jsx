@@ -37,7 +37,7 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
       {todayRoutine && todayRoutine.exercises.length > 0
         ? 
           <>
-            <Typography sx={{ width: '100%', textAlign: 'left' }}>
+            <Typography variant="h6" sx={{ width: '100%', textAlign: 'left' }}>
               {todayRoutine.name}
             </Typography>
             {todayRoutine.exercises && todayRoutine.exercises.length > 0 ? (
