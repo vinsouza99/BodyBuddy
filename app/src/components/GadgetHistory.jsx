@@ -67,7 +67,7 @@ export const GadgetHistory = ({ history = [] }) => {
         backgroundColor: "#489FE4",
         borderColor: "#489FE4",
         borderRadius: 2,
-        // barThickness: 0,
+        barThickness: 0,
       },
     ],
   });
