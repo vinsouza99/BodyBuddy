@@ -58,9 +58,7 @@ export const GadgetHistory = ({ history = [] }) => {
         data: [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "#94DC8A",
         borderColor: "#94DC8A",
-        borderWidth: 1,
         borderRadius: 2,
-        barThickness: 10,
       },
       // For calories
       {
@@ -68,9 +66,8 @@ export const GadgetHistory = ({ history = [] }) => {
         data: [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "#489FE4",
         borderColor: "#489FE4",
-        borderWidth: 1,
         borderRadius: 2,
-        barThickness: 0,
+        // barThickness: 0,
       },
     ],
   });
@@ -103,9 +100,13 @@ export const GadgetHistory = ({ history = [] }) => {
       },
     },
     scales: {
+      x: {
+        grid: {
+          display: true,
+        },
+      },
       y: {
         beginAtZero: true,
-        max: mode === "year-simple" ? 300 : 100,
       },
     },
     animation: {

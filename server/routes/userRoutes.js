@@ -425,7 +425,7 @@ router.get("/achievement/:id", getUserAchievements);
  *       404:
  *         description: User not found
  */
-router.post("/achievement/:id", createUserAchievement);
+router.post("/achievement/", createUserAchievement);
 
 /**
  * @swagger

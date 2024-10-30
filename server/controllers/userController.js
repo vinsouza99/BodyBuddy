@@ -386,19 +386,6 @@ export const getUserAccumulatedStats = async (req, res) => {
       });
     }
 
-    // NOTE: Need to be discussed. Stat in DB is stored in UTC time?
-    // Convert UTC time to local time
-    // const timeZone = 'America/Vancouver';
-    // const convertedTimes = userAccumulatedTimes.map((record) => {
-    //   const localDate = toZonedTime(record.date, timeZone);
-    //   const formattedDate = format(localDate, "yyyy-MM-dd'T'HH:mm:ssXXX", { timeZone });
-    //   console.log(formattedDate);
-    //   return {
-    //     ...record.toJSON(),
-    //     date: formattedDate,
-    //   };
-    // });
-
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -421,7 +408,6 @@ export const updateUserAccumulatedStats = async (req, res) => {
         where: {
           user_id: user_id,
           date: date,
-          calories: calories,
         },
       });
     console.log(userAccumulatedStats);

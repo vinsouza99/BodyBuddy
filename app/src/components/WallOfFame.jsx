@@ -48,7 +48,6 @@ export const WallOfFame = ({ userInfo = {} }) => {
         src: Badge1,
         alt: achievement?.name,
       }));
-      console.log(earnedBadges);
       setBadges(earnedBadges);
     }
     // ResizeObserver to adjust the number of items to show

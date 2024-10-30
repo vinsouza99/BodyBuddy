@@ -8,6 +8,7 @@ import {
   Backdrop,
   CircularProgress,
   Grid2,
+  useMediaQuery,
 } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
@@ -26,6 +27,7 @@ import { getAllExercises } from "../controllers/ExerciseController";
 import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
 import axiosClient from "../utils/axiosClient";
+import theme from "../theme";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
 
@@ -215,6 +217,8 @@ export const Dashboard = (props) => {
     };
   }, [prompt]);
 
+  const isMdUp = useMediaQuery(theme.breakpoints.up('md')); 
+
   return (
     <>
       {/* Backdrop for generating, loading */}
@@ -231,26 +235,37 @@ export const Dashboard = (props) => {
       </Backdrop>
 
       <Grid2 container spacing={2}>
-        {/* LEFT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 6 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* ADD GADGETS HERE */}
-            <GadgetUserProfile userInfo={userInfo} />
-            <GadgetStreaks
-              userInfo={userInfo}
-              history={userAccumulatedStats?.data || []}
-            />
-            <GadgetFavourite exerciseInfo={exerciseInfo || []} />
-          </Box>
-        </Grid2>
-        {/* RIGHT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 6 }}>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {/* ADD GADGETS HERE*/}
-            <GadgetAchievement userInfo={userInfo} />
-            <GadgetHistory history={userAccumulatedStats?.data || []} />
-          </Box>
-        </Grid2>
+        {isMdUp ? (
+          <>
+            {/* LEFT COLUMN */}
+            <Grid2 size={{ xs: 12, md: 6 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {/* ADD GADGETS HERE */}
+                <GadgetUserProfile userInfo={userInfo} />
+                <GadgetStreaks userInfo={userInfo} history={userAccumulatedStats?.data || []} />
+                <GadgetFavourite exerciseInfo={exerciseInfo || []} />
+              </Box>
+            </Grid2>
+            {/* RIGHT COLUMN */}
+            <Grid2 size={{ xs: 12, md: 6 }}>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                {/* ADD GADGETS HERE*/}
+                <GadgetAchievement userInfo={userInfo} />
+                <GadgetHistory history={userAccumulatedStats?.data || []} />
+              </Box>
+            </Grid2>
+          </>
+        ) : (
+          <Grid2 xs={12}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <GadgetUserProfile userInfo={userInfo} />
+              <GadgetAchievement userInfo={userInfo} />
+              <GadgetStreaks userInfo={userInfo} history={userAccumulatedStats?.data || []} />
+              <GadgetHistory history={userAccumulatedStats?.data || []} />
+              <GadgetFavourite exerciseInfo={exerciseInfo || []} />
+            </Box>
+          </Grid2>
+        )}
       </Grid2>
     </>
   );
