@@ -26,14 +26,14 @@ const modalStyle = {
   boxShadow: 24,
 };
 
-export const RoutineExercisesList = ({ routineExercises = null, color = "primary.main" }) => {
+export const RoutineExercisesList = ({ routineExercises = [], color = "primary.main" }) => {
   const [showVideo, setShowVideo] = useState(false);
   const [selectedExercise, setselectedExercise] = useState('');
   const [showMore, setShowMore] = useState(false);
 
   // Open Video Modal
-  const handleOpenVideo = (videoUrl) => {
-    setselectedExercise(videoUrl);
+  const handleOpenVideo = (exercise) => {
+    setselectedExercise(exercise);
     setShowVideo(true);
   };
 
@@ -134,16 +134,16 @@ export const RoutineExercisesList = ({ routineExercises = null, color = "primary
               variant="contained"
               onClick={() => setShowMore(!showMore)}
             >
-              {!showMore 
+              {showMore 
               ? 
-                <>
-                  Show More
-                  <KeyboardArrowDownIcon/>
-                </>
-              : 
                 <>
                   Show Less
                   <KeyboardArrowUpIcon/>
+                </>
+              : 
+                <>
+                Show More
+                  <KeyboardArrowDownIcon/>
                 </>
               }
             </Button>
