@@ -59,6 +59,7 @@ export const MainLayout = () => {
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
   const [userInfo, setUserInfo] = useState({});
+  const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -66,6 +67,26 @@ export const MainLayout = () => {
       setUserInfo(response);
     };
     getUserInfo();
+  }, []);
+
+  // Update logo based on screen size
+  useEffect(() => {
+    const updateLogo = () => {
+      if (window.innerWidth <= 600) {
+        setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
+      } else {
+        setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
+      }
+    };
+
+    // Set initial logo
+    updateLogo();
+
+    // Add resize event listener
+    window.addEventListener("resize", updateLogo);
+    return () => {
+      window.removeEventListener("resize", updateLogo); // Clean up listener
+    };
   }, []);
 
   // Session State from Toolpad Core
@@ -105,7 +126,7 @@ export const MainLayout = () => {
         theme={theme}
         // Display branding
         branding={{
-          logo: <img src="./src/assets/bodybuddy.svg" alt="BodyBuddy" />,
+          logo: <img src={logoSource} alt="BodyBuddy" />,
           title: "",
         }}
         // Session and Authentication
