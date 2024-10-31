@@ -12,6 +12,7 @@ import { SignUp } from "./pages/SignUp";
 import { Dashboard } from "./pages/Dashboard";
 import { Profile } from "./pages/Profile";
 import { Learn } from "./pages/Learn";
+import { LearnExercise } from "./pages/LearnExercise";
 import { RoutineSession } from "./pages/RoutineSession";
 import { NotFound } from "./pages/NotFound";
 import { useAuth } from "./utils/AuthProvider";
@@ -46,6 +47,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
           <Route path="/learn" element={<Learn title="Learn" />} />
+          <Route path="/learn-exercise" element={<LearnExercise title="LearnExercise" />} />
           <Route
             path="/training"
             element={<TrainingProgram title="Training" />}
