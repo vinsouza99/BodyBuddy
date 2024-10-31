@@ -50,6 +50,7 @@ CustomTabPanel.propTypes = {
 export const Learn = memo((props) => {
   const { user, handleSignOut } = useAuth();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
+  const [filteredExercises, setFilteredExercises] = useState([]);
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,26 +63,26 @@ export const Learn = memo((props) => {
 
     const loadData = async () => {
       try {
-      // Cocoy: Load exercises
-      const response = await getAllExercises();
+        // Cocoy: Load exercises
+        const response = await getAllExercises();
 
-      // Log the full response
-      //console.log("Loaded exercises:", response);
+        // Log the full response
+        //console.log("Loaded exercises:", response);
 
-      // Access exercises from the response.data property
-      const exercisesData = response;
+        // Access exercises from the response.data property
+        const exercisesData = response;
 
-      // Log the exercises data
-      //console.log("Exercises Data:", exercisesData);
+        // Log the exercises data
+        //console.log("Exercises Data:", exercisesData);
 
-      // Update the state with the loaded routines
-      setExercises(exercisesData);
+        // Update the state with the loaded routines
+        setExercises(exercisesData);
+        setFilteredExercises(exercisesData);
+        const muscleGroupsData = await getAllMuscleGroups();
+        setMuscleGroups(muscleGroupsData);
 
-      const muscleGroupsData = await getAllMuscleGroups();
-      setMuscleGroups(muscleGroupsData);
-
-      const fitnessGoalsData = await getAllGoals();
-      setGoals(fitnessGoalsData);
+        const fitnessGoalsData = await getAllGoals();
+        setGoals(fitnessGoalsData);
       } catch (e) {
         console.log(e);
       } finally {
@@ -97,25 +98,45 @@ export const Learn = memo((props) => {
     setValue(newValue); // Update selected tab
   };
   const filterExercisesByMuscleGroup = (muscleGroupID) => {
-    //TODO
+    const filteredArray = filteredExercises.filter((exercise) => {
+      const muscleGroup = exercise.muscleGroups.find(
+        (muscleGroup) => muscleGroup.id == muscleGroupID
+      );
+      if (muscleGroup) {
+        return true;
+      } else {
+        return false;
+      }
+    });
+    setFilteredExercises(filteredArray);
   };
   const filterExercisesByGoal = (goalID) => {
-    //TODO
+    /*
+    setFilteredExercises(
+      filteredExercises.filter((exercise) => {
+        const goal = exercise.goals.find((goal) => goal.id == goalID);
+        if (goal) {
+          return true;
+        } else {
+          return false;
+        }
+      })
+    );
+    */
   };
 
   // Memoize the exercises grid
   const exercisesGrid = useMemo(() => {
     return (
-    <Grid container spacing={3}>
-      {exercises.length > 0
-        ? exercises.map((exercise, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-              <LearningCard exercise={exercise} />
-            </Grid>
-          ))
-        : null
-      }
-    </Grid>
+      <Grid container spacing={3}>
+        {filteredExercises.length > 0
+          ? filteredExercises.map((exercise, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <LearningCard exercise={exercise} />
+              </Grid>
+            ))
+          : null}
+      </Grid>
     );
   }, [exercises, loading]);
 
@@ -148,7 +169,12 @@ export const Learn = memo((props) => {
 
       {/* Tab for Exercises by Muscle */}
       <CustomTabPanel value={value} index={0}>
-        <Box display="flex" gap={1} flexWrap="wrap" sx={{ marginTop: 2, marginBottom: 4 }}>
+        <Box
+          display="flex"
+          gap={1}
+          flexWrap="wrap"
+          sx={{ marginTop: 2, marginBottom: 4 }}
+        >
           {/* Buttons for filtering exercises by muscle groups */}
           {muscleGroups.map((muscleGroup) => (
             <Button
@@ -165,14 +191,15 @@ export const Learn = memo((props) => {
 
       {/* Tab for Exercises by Goal */}
       <CustomTabPanel value={value} index={1}>
-        <Box display="flex" gap={1} flexWrap="wrap" sx={{ marginTop: 2, marginBottom: 4 }}>
-
+        <Box
+          display="flex"
+          gap={1}
+          flexWrap="wrap"
+          sx={{ marginTop: 2, marginBottom: 4 }}
+        >
           {/* Buttons for filtering exercises by fitness goals */}
           {goals.map((goal) => (
-            <Button
-              variant="outlined"
-              onClick={filterExercisesByGoal(goal.id)}
-            >
+            <Button variant="outlined" onClick={filterExercisesByGoal(goal.id)}>
               {goal.name}
             </Button>
           ))}
