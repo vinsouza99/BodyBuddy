@@ -18,7 +18,7 @@ export const GadgetBase = ({ title = null, frame = true, children }) => {
       }}
     >
       {title && (
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6">
           {title}
         </Typography>
       )}

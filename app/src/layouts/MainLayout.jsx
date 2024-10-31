@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import { Footer } from "../components/Footer";
@@ -12,6 +12,7 @@ import RunCircleIcon from "@mui/icons-material/RunCircle";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import IconButton from "@mui/material/IconButton";
+import { getUser } from "../controllers/UserController.js";
 
 // Links to display in the left Navbar
 const NavBar = [
@@ -57,13 +58,43 @@ export const MainLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
+  const [userInfo, setUserInfo] = useState({});
+  const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const response = await getUser(user);
+      setUserInfo(response);
+    };
+    getUserInfo();
+  }, []);
+
+  // Update logo based on screen size
+  useEffect(() => {
+    const updateLogo = () => {
+      if (window.innerWidth <= 600) {
+        setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
+      } else {
+        setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
+      }
+    };
+
+    // Set initial logo
+    updateLogo();
+
+    // Add resize event listener
+    window.addEventListener("resize", updateLogo);
+    return () => {
+      window.removeEventListener("resize", updateLogo); // Clean up listener
+    };
+  }, []);
 
   // Session State from Toolpad Core
   const [session] = useState({
     user: {
-      name: user.user_metadata.full_name,
+      name: userInfo.name,
       email: user.email,
-      image: user.user_metadata.avatar_url ? user.user_metadata.avatar_url : "",
+      image: userInfo.picture,
     },
   });
 
@@ -95,7 +126,7 @@ export const MainLayout = () => {
         theme={theme}
         // Display branding
         branding={{
-          logo: <img src="./src/assets/bodybuddy.svg" alt="BodyBuddy" />,
+          logo: <img src={logoSource} alt="BodyBuddy" />,
           title: "",
         }}
         // Session and Authentication

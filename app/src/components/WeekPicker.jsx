@@ -171,7 +171,7 @@ export const WeekPicker = ({
             <Box
               key={index}
               sx={{
-                cursor: 'pointer',
+                // cursor: 'pointer',
                 textAlign: 'center',
               }}
               onClick={() => handleDayClick(day)}

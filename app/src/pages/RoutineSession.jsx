@@ -38,8 +38,8 @@ import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedStats } from "../controllers/UserController.js";
-import { format, addHours } from "date-fns";
+import { updateUserAccumulatedStats, getUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
+import { format } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
@@ -88,6 +88,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     reps = 0,
   } = location.state || {}; // Receive from the StartRoutineModal as a prop
 
+  const startedAtRef = useRef(null);
   const angleChangeThreshold = 3;
   let previousAngle = null;
 
@@ -136,6 +137,12 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     setPageTitle(title);
 
+    // Get session start time
+    if (!startedAtRef.current) {
+      startedAtRef.current = new Date();
+      console.log('Started at:', startedAtRef.current);
+    }
+
     // Overwrite the style of #root
     const rootElement = document.getElementById("root");
     rootElement.style.margin = "0";
@@ -168,15 +175,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     // Retrieve routine information from the database (if idType is "routine")
     const fetchRoutineInfo = async () => {
       try {
-        // const response = await axiosClient.get(
-        //   `RoutineExercises/routine/${id}`
-        // );
-        // if (Number(response.status) !== 200) {
-        //   throw new Error("Failed to fetch routine info");
-        // }
-        // console.log(response.data);
-        // setRoutine(createRoutineTimeSchedule(response.data.data));
-
         const exercises = await getExercisesFromRoutine(id);
 
         // Order by exercise order
@@ -188,7 +186,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       }
     };
 
-    // Note: To be implemented
     // Rerieve exercise information from the database (if idType is "exercise")
     const fetchExerciseInfo = async () => {
       // CREATE A ROUTINE INCLUDE ONLY ONE EXERCISE
@@ -225,6 +222,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     } else {
       console.error("Invalid idType:", idType);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Enable webcam when videoRef is available
@@ -251,19 +249,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (webcamRunning) toggleWebCam();
       observer.disconnect();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  // useEffect( () => {
-  //   console.log("VideoRef:", videoRef.current);
-  //   if (videoRef.current) {
-  //     toggleWebCam();
-  //   }
-
-  //   // Cleanup
-  //   return () => {
-  //     // Disable Webcam
-  //     if (webcamRunning) toggleWebCam();
-  //   };
-  // }, [videoRef.current]);
 
   // Enable recoding when webcam is running (ONLY WHEN RECORDING IS APPROVED)
   useEffect(() => {
@@ -276,6 +263,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Stop recording
       if (isRecording) stopRecording();
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcamRunning, record, isRecording]);
 
   // Reset selected exercise index when routine changes
@@ -313,7 +301,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         window.cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseCounter, webcamRunning, isResting]);
 
   // Read out the rep count
@@ -337,19 +325,26 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   }, [postureAlert]);
 
-  // Upload user routine history
+  // Record user activity
   useEffect(() => {
-    if (isFinished) {
-      if (record) {
-        if (exerciseVideo) {
+    const handleUserActivity = async () => {
+      if (isFinished) {
+        if (record) {
+          if (exerciseVideo) {
+            registerUserActivity();
+            await registerUserAccumulatedStat();
+            earnBadges();
+          }
+        } else {
           registerUserActivity();
-          registerUserAccumulatedStat();
+          await registerUserAccumulatedStat();
+          earnBadges();
         }
-      } else {
-        registerUserActivity();
-        registerUserAccumulatedStat();
       }
-    }
+    };
+    handleUserActivity();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished, record, exerciseVideo]);
 
   // ---------------------------------------------------------
@@ -500,11 +495,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Enable WebCam
   const startWebCam = async () => {
-    // if (!poseLandmarkerRef.current) {
-    //   console.error("PoseLandmarker not loaded.");
-    //   return;
-    // }
-
     const videoElement = videoRef.current;
     const constraints = { video: true };
 
@@ -756,26 +746,35 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const registerUserAccumulatedStat = async () => {
     try {
       const now = new Date();
-      const timeZoneOffset = -7; // Vancouver Timezone Offset
-      const adjustedTime = addHours(now, timeZoneOffset);
-      const completedAt = format(adjustedTime, "yyyy-MM-dd'T'HH:mm:ssXXX");
-      console.log(completedAt);
+      const completedAt = format(now, "yyyy-MM-dd");
+      const duration = Math.ceil((now - startedAtRef.current)/ (1000 * 60));
 
       const response = await updateUserAccumulatedStats(
         user.id,
         completedAt,
-        30,
-        0
+        duration, // minutes
+        0 // calories
       );
-      if (Number(response.status) !== 200) {
-        throw new Error("Failed to insert log info");
-      }
       console.log(
         "User accumulated stat inserted successfully:",
         response.data
       );
     } catch (error) {
       console.error("Error inserting accumulated stat info:", error);
+    }
+  };
+
+  const earnBadges = async () => {
+    try {
+      // If this is the first time to finish the routine, earn the "Starter" badge
+      const response = await getUserAccumulatedStats(user.id);
+      console.log("User accumulated stats:", response);
+      if (response.data.length === 1) {
+        await addUserAchievement(user.id, 1, new Date().toISOString());
+        console.log("Starter badge earned!");
+      }
+    } catch (error) {
+      console.error("Error earning badge:", error);
     }
   };
 

@@ -27,7 +27,7 @@ const getUser = async (authUser) => {
     const user = new User(
       authUser.id,
       authUser?.user_metadata.full_name,
-      authUser?.user_metadata.picture,
+      data.picture,
       data.birthday,
       data.gender,
       data.weight,
@@ -84,13 +84,13 @@ const getUserProgress = async (id) => {
 
 const createUser = async (userObj) => {
   try {
-    const user = new User(
-      userObj.id,
-      userObj.birthday,
-      userObj.gender,
-      userObj.weight,
-      userObj.weight_unit
-    );
+    const user = new User();
+    user.id = userObj.id;
+    user.picture = userObj.picture;
+    user.birthday = userObj.birthday;
+    user.gender = userObj.gender;
+    user.weight = userObj.weight;
+    user.weight_unit = userObj.weight_unit;
     let response = await axiosClient.put(`${API_ROUTE}/${user.id}`, user);
     userObj.settings.user_id = user.id;
     response = await updateUserSettings(userObj.settings);
@@ -244,6 +244,7 @@ const getUserAchievements = async (user_id) => {
         new UserAchievement(
           localAchievement.id,
           localAchievement.name,
+          localAchievement.description,
           achievement.earned_at
         )
       );

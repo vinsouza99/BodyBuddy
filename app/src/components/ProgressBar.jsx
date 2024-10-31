@@ -42,7 +42,7 @@ const ProgressBar = ({ progress }) => {
         </Box>
         <Box component={"div"} flexitem="true">
           <Typography variant={"body1"} sx={{ display: "block" }}>
-            {progress.toFixed(2)}%
+            {progress.toFixed(0)}%
           </Typography>
         </Box>
       </Grid>
