@@ -40,14 +40,14 @@ function App() {
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
 
         {/* Authentication required (MainLayout is applied) */}
-        <Route
-          path="/"
-          element={user ? <MainLayout /> : <Navigate to="/" />}
-        >
+        <Route path="/" element={user ? <MainLayout /> : <Navigate to="/" />}>
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
           <Route path="/learn" element={<Learn title="Learn" />} />
-          <Route path="/learn-exercise" element={<LearnExercise title="LearnExercise" />} />
+          <Route
+            path="/learn/:exercise_id"
+            element={<LearnExercise title="Learn Exercise" />}
+          />
           <Route
             path="/training"
             element={<TrainingProgram title="Training" />}
@@ -59,7 +59,11 @@ function App() {
         <Route
           path="/routine"
           element={
-            user ? <RoutineSession title="RoutineSession" /> : <Navigate to="/signin" />
+            user ? (
+              <RoutineSession title="RoutineSession" />
+            ) : (
+              <Navigate to="/signin" />
+            )
           }
         />
       </>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { setPageTitle } from "../utils/utils";
-import { useAuth } from "../utils/AuthProvider.jsx";
-import { getAllExercises } from "../controllers/ExerciseController.js";
+import { useNavigate } from "react-router-dom";
+import { getExercise } from "../controllers/ExerciseController.js";
 import {
   Box,
   Button,
@@ -15,10 +15,12 @@ import {
 } from "@mui/material";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
+import { Navigate, useParams } from "react-router-dom";
 
 export const LearnExercise = (props) => {
-  const { user } = useAuth();
-  const [exercises, setExercises] = useState([]);
+  const { exercise_id } = useParams();
+  const navigate = useNavigate();
+  const [exercise, setExercise] = useState({});
   const [loading, setLoading] = useState(true);
   const [videoLoading, setVideoLoading] = useState(true); // New state for video loading
 
@@ -27,8 +29,9 @@ export const LearnExercise = (props) => {
 
     const loadData = async () => {
       try {
-        const exercisesData = await getAllExercises();
-        setExercises(exercisesData);
+        const exerciseData = await getExercise(exercise_id);
+        setExercise(exerciseData);
+        console.log(exerciseData);
       } catch (e) {
         console.log(e);
       } finally {
@@ -37,10 +40,7 @@ export const LearnExercise = (props) => {
     };
 
     loadData();
-  }, [props.title, user.id]);
-
-  // COCOY TODO: Make this dynamic, passed from Learn.jsx
-  const exercise = exercises[0];
+  }, []);
 
   // Set loading to false when exercise data is available
   useEffect(() => {
@@ -77,6 +77,9 @@ export const LearnExercise = (props) => {
     );
   }, [exercise?.name]);
 
+  function redirectToSession() {
+    navigate("/routine", { state: { id: exercise.id, idType: "exercise" } });
+  }
   return (
     <>
       {/* Backdrop for loading */}
@@ -334,6 +337,7 @@ export const LearnExercise = (props) => {
             variant="contained"
             color="success"
             size="large"
+            onClick={() => redirectToSession()}
             sx={(theme) => ({
               width: "120px",
               height: "120px",
@@ -341,9 +345,10 @@ export const LearnExercise = (props) => {
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
               color: "text.primary",
               background: `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`,
+              textTransform: "uppercase",
             })}
           >
-            PRACTICE
+            Practice
           </Button>
         </Box>
       )}

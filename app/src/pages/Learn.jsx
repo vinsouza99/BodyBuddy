@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
 import { useAuth } from "../utils/AuthProvider.jsx";
@@ -49,6 +50,7 @@ CustomTabPanel.propTypes = {
 
 export const Learn = memo((props) => {
   const { user, handleSignOut } = useAuth();
+  const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
   const [filteredExercises, setFilteredExercises] = useState([]);
   const [muscleGroups, setMuscleGroups] = useState([]);
@@ -124,21 +126,26 @@ export const Learn = memo((props) => {
     );
     */
   };
-
   // Memoize the exercises grid
   const exercisesGrid = useMemo(() => {
     return (
       <Grid container spacing={3}>
         {filteredExercises.length > 0
           ? filteredExercises.map((exercise, index) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                <LearningCard exercise={exercise} />
+              <Grid
+                size={{ xs: 12, sm: 6, md: 4 }}
+                key={index}
+                onClick={() => navigate(`/learn/${exercise.id}`)}
+              >
+                <Link to={`/learn/${exercise.id}`}>
+                  <LearningCard exercise={exercise} />
+                </Link>
               </Grid>
             ))
           : null}
       </Grid>
     );
-  }, [exercises, loading]);
+  }, [filteredExercises, loading]);
 
   return (
     <>
