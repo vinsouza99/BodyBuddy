@@ -126,7 +126,7 @@ function UserInfo({ user, userProgress = null }) {
         </Box>
 
         <Grid sx={{ marginTop: 3, borderTop: 1 }}>
-          <WallOfFame />
+          <WallOfFame userInfo={user} />
         </Grid>
       </Card>
     </>

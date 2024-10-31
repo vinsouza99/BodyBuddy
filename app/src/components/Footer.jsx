@@ -5,7 +5,8 @@ import Link from "@mui/material/Link";
 
 export const Footer = () => {
   return (
-    <Box display="flex" justifyContent="center" sx={{ padding: 4 }}>
+    <Box display="flex" justifyContent="center" alignItems="center"
+     sx={{ padding: 4, flexDirection: { xs: "column", sm: "row" }, textAlign: "center" }}>
       <Typography variant="body2" color="text.primary">
         <Link href="#" sx={{ marginRight: 2 }}>
           Privacy Policy

@@ -1,44 +1,386 @@
 [
     {
-      "date": "Oct 04",
-      "content": "Routine 3: Upper Body Muscle Mass",
-      "duration": "30",
+      "compare_date": "2024-10-28 22:53:15+00",
+      "name": "3x3 Power Circuit",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
       "calories": 600
     },
     {
-      "date": "Oct 02",
-      "content": "Routine 2: Core Stability and Hip Mobility",
-      "duration": "30",
+      "compare_date": "2024-10-28 22:53:15+00",
+      "name": "Quick Upper Body Strength (No video)",
+      "description": "This is Dammy description",
+      "recording_url": null,
+      "duration": "3000",
+      "calories": 300
+    },
+    {
+      "compare_date": "2024-10-27 22:53:15+00",
+      "name": "Core Stability and Hip Strength",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "3000",
       "calories": 600
     },
     {
-      "date": "Sep 29",
-      "content": "Routine 1: Lower Body Strength",
-      "duration": "30",
+      "compare_date": "2024-10-26 22:53:15+00",
+      "name": "Lower Body Strength",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm",
+      "duration": "3000",
       "calories": 600
     },
     {
-      "date": "Sep 28",
-      "content": "Routine 1: Lower Body Strength",
-      "duration": "30",
+      "compare_date": "2024-10-25 22:53:15+00",
+      "name": "Quick Lower Body Strength (No video)",
+      "description": "This is Dammy description",
+      "recording_url": "",
+      "duration": "3000",
+      "calories": 400
+    },
+    {
+      "compare_date": "2024-10-24 22:53:15+00",
+      "name": "Upper Body Muscle Mass",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
       "calories": 600
     },
     {
-      "date": "Sep 26",
-      "content": "Routine 1: Lower Body Strength",
-      "duration": "30",
+      "compare_date": "2024-10-21 22:53:15+00",
+      "name": "Full Body Strength",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
       "calories": 600
     },
     {
-      "date": "Sep 23",
-      "content": "Routine 1: Lower Body Strength",
-      "duration": "30",
+      "compare_date": "2024-10-20 22:53:15+00",
+      "name": "Demo",
+      "description": "Demo Program",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311603665.webm",
+      "duration": "8000",
+      "calories": 1000
+    },
+    {
+      "compare_date": "2024-10-10 22:53:15+00",
+      "name": "Langara Special (No video)",
+      "description": "It has 5 sessions!",
+      "recording_url": "",
+      "duration": "10000",
+      "calories": 2500
+    },
+    {
+      "compare_date": "2024-07-09 22:53:15+00",
+      "name": "Muschle Designing",
+      "description": "Wanna built muscle functionally or just looking awesome?",
+      "recording_url": "",
+      "duration": "1000",
+      "calories": 50
+    },
+    {
+      "compare_date": "2024-10-28 22:53:15+00",
+      "name": "3x3 Power Circuit",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
       "calories": 600
     },
     {
-      "date": "Sep 22",
-      "content": "Routine 1: Lower Body Strength",
-      "duration": "30",
+      "compare_date": "2024-10-28 22:53:15+00",
+      "name": "Quick Upper Body Strength (No video)",
+      "description": "This is Dammy description",
+      "recording_url": null,
+      "duration": "3000",
+      "calories": 300
+    },
+    {
+      "compare_date": "2024-05-22 22:53:15+00",
+      "name": "Core Stability and Hip Strength",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-05-10 22:53:15+00",
+      "name": "Lower Body Strength",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-05-10 22:53:15+00",
+      "name": "Quick Lower Body Strength (No video)",
+      "description": "This is Dammy description",
+      "recording_url": "",
+      "duration": "3000",
+      "calories": 400
+    },
+    {
+      "compare_date": "2024-08-12 22:53:15+00",
+      "name": "Upper Body Muscle Mass",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-06-15 22:53:15+00",
+      "name": "Full Body Strength",
+      "description": "This is Dammy description",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-03-23 22:53:15+00",
+      "name": "Demo",
+      "description": "Demo Program",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311603665.webm",
+      "duration": "8000",
+      "calories": 1000
+    },
+    {
+      "compare_date": "2024-01-10 22:53:15+00",
+      "name": "Langara Special (No video)",
+      "description": "It has 5 sessions!",
+      "recording_url": "",
+      "duration": "10000",
+      "calories": 2500
+    },
+    {
+      "compare_date": "2024-05-09 22:53:15+00",
+      "name": "Muschle Designing",
+      "description": "Wanna built muscle functionally or just looking awesome?",
+      "recording_url": "",
+      "duration": "1000",
+      "calories": 50
+    },
+    {
+      "compare_date": "2024-09-29 18:27:43+00",
+      "name": "Strength Endurance Circuit",
+      "description": "Endurance workout",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311603665.webm",
+      "duration": "4000",
+      "calories": 450
+    },
+    {
+      "compare_date": "2024-02-05 11:20:17+00",
+      "name": "Full Body Workout",
+      "description": "Complete body session",
+      "recording_url": "",
+      "duration": "7000",
+      "calories": 800
+    },
+    {
+      "compare_date": "2024-03-16 09:08:04+00",
+      "name": "High Intensity Lower Body",
+      "description": "Leg-focused HIIT",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
+      "calories": 550
+    },
+    {
+      "compare_date": "2024-07-10 15:43:32+00",
+      "name": "Upper Body Blast",
+      "description": "Upper body strength",
+      "recording_url": null,
+      "duration": "3500",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-10-01 14:18:52+00",
+      "name": "Power Circuit",
+      "description": "Full-body power",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "2500",
+      "calories": 700
+    },
+    {
+      "compare_date": "2024-04-21 22:57:16+00",
+      "name": "Stamina Booster",
+      "description": "Improve endurance",
+      "recording_url": "",
+      "duration": "5000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-06-15 07:22:49+00",
+      "name": "Lower Body Stability (No video)",
+      "description": "Focus on stability",
+      "recording_url": null,
+      "duration": "3000",
+      "calories": 400
+    },
+    {
+      "compare_date": "2024-01-23 13:45:36+00",
+      "name": "Muscle Building Circuit",
+      "description": "Muscle growth",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311603665.webm",
+      "duration": "4500",
+      "calories": 650
+    },
+    {
+      "compare_date": "2024-05-27 19:34:17+00",
+      "name": "Core Stability Drill (No video)",
+      "description": "Core-focused drill",
+      "recording_url": "",
+      "duration": "2800",
+      "calories": 300
+    },
+    {
+      "compare_date": "2024-08-14 10:11:32+00",
+      "name": "Body Toning Circuit",
+      "description": "Tone entire body",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm",
+      "duration": "4000",
+      "calories": 500
+    },
+    {
+      "compare_date": "2024-01-19 08:04:56+00",
+      "name": "Strength and Conditioning",
+      "description": "Strength and conditioning",
+      "recording_url": null,
+      "duration": "6000",
+      "calories": 700
+    },
+    {
+      "compare_date": "2024-03-01 16:25:40+00",
+      "name": "Power Endurance",
+      "description": "Enhance endurance",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "7000",
+      "calories": 750
+    },
+    {
+      "compare_date": "2024-06-29 15:18:22+00",
+      "name": "High Intensity Training",
+      "description": "Intense full-body",
+      "recording_url": "",
+      "duration": "3000",
+      "calories": 900
+    },
+    {
+      "compare_date": "2024-07-08 12:11:12+00",
+      "name": "Quick Core Session (No video)",
+      "description": "Short core routine",
+      "recording_url": null,
+      "duration": "2000",
+      "calories": 200
+    },
+    {
+      "compare_date": "2024-02-14 10:33:24+00",
+      "name": "3x3 Power Circuit",
+      "description": "Circuit for power building",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-03-20 14:24:52+00",
+      "name": "Quick Upper Body Strength (No video)",
+      "description": "Quick strength workout",
+      "recording_url": null,
+      "duration": "3000",
+      "calories": 300
+    },
+    {
+      "compare_date": "2024-06-19 07:12:16+00",
+      "name": "Core Stability and Hip Strength",
+      "description": "Stability and hip strength",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-10-05 09:45:37+00",
+      "name": "Lower Body Strength (No video)",
+      "description": "Focus on legs and core",
+      "recording_url": "",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-08-29 15:18:48+00",
+      "name": "Quick Lower Body Strength",
+      "description": "Quick lower body workout",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "3000",
+      "calories": 400
+    },
+    {
+      "compare_date": "2024-01-09 12:04:23+00",
+      "name": "Upper Body Muscle Mass",
+      "description": "Upper muscle focus",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-03-24 19:53:11+00",
+      "name": "Full Body Strength",
+      "description": "Full body endurance",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311603665.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-05-02 11:35:29+00",
+      "name": "Demo (No video)",
+      "description": "Demo program session",
+      "recording_url": null,
+      "duration": "8000",
+      "calories": 1000
+    },
+    {
+      "compare_date": "2024-07-23 09:18:39+00",
+      "name": "Langara Special",
+      "description": "Special session pack",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm",
+      "duration": "10000",
+      "calories": 2500
+    },
+    {
+      "compare_date": "2024-04-27 17:43:14+00",
+      "name": "Muschle Designing (No video)",
+      "description": "Muscle design workout",
+      "recording_url": "",
+      "duration": "1000",
+      "calories": 50
+    },
+    {
+      "compare_date": "2024-01-17 13:23:45+00",
+      "name": "Quick Upper Body Strength",
+      "description": "Strength upper body",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "3000",
+      "calories": 300
+    },
+    {
+      "compare_date": "2024-09-12 20:34:55+00",
+      "name": "3x3 Power Circuit (No video)",
+      "description": "Build power quickly",
+      "recording_url": null,
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-06-05 16:12:30+00",
+      "name": "Core Stability and Hip Strength",
+      "description": "Core and hip workout",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730310488962.webm",
+      "duration": "3000",
+      "calories": 600
+    },
+    {
+      "compare_date": "2024-08-10 21:15:48+00",
+      "name": "Lower Body Strength",
+      "description": "Strengthen legs",
+      "recording_url": "https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm",
+      "duration": "3000",
       "calories": 600
     }
-  ]
+]
