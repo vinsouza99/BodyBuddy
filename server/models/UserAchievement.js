@@ -9,7 +9,7 @@ const UserAchievement = sequelize.define(
       primaryKey: true,
     },
     achievement_id: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
     },
     earned_at: {

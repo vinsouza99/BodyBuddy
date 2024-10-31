@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
-import { Box, Typography, Modal, IconButton } from "@mui/material";
+import { Box, Typography, Modal, IconButton, Button, Divider } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const modalStyle = {
   // Layout and positioning
@@ -11,7 +13,6 @@ const modalStyle = {
   transform: "translate(-50%, -50%)",
   // Box model
   width: '600px',
-  height: '450px',
   padding: 4,
   borderRadius: '15px',
   // Flexbox alignment
@@ -25,13 +26,14 @@ const modalStyle = {
   boxShadow: 24,
 };
 
-export const RoutineExercisesList = ({ routineExercises = null, color = "primary.main" }) => {
+export const RoutineExercisesList = ({ routineExercises = [], color = "primary.main" }) => {
   const [showVideo, setShowVideo] = useState(false);
-  const [videoUrl, setVideoUrl] = useState('');
+  const [selectedExercise, setselectedExercise] = useState('');
+  const [showMore, setShowMore] = useState(false);
 
   // Open Video Modal
-  const handleOpenVideo = (videoUrl) => {
-    setVideoUrl(videoUrl);
+  const handleOpenVideo = (exercise) => {
+    setselectedExercise(exercise);
     setShowVideo(true);
   };
 
@@ -46,7 +48,7 @@ export const RoutineExercisesList = ({ routineExercises = null, color = "primary
         {routineExercises.map((exercise, index) => (
           <Box
             key={index}
-            onClick={() => handleOpenVideo(exercise.demo_url)}
+            onClick={() => handleOpenVideo(exercise)}
             sx={{
               cursor: 'pointer',
               display: 'flex',
@@ -109,17 +111,51 @@ export const RoutineExercisesList = ({ routineExercises = null, color = "primary
           >
             <CloseIcon />
           </IconButton>
-
           <Box
             component="img"
-            src={videoUrl}
+            src={selectedExercise.demo_url}
             sx={{
               width: '100%',
               height: '100%',
               objectFit: 'contain', 
             }}
           />
-          {/* <ReactPlayer url={"https://youtu.be/4KmY44Xsg2w?si=0w5wBdkHskQ1OfIF"} controls={true} /> */}
+          <Box
+            sx={{
+              display: "flex", 
+              flexDirection: "row", 
+              justifyContent: "space-between", 
+              alignItems: "center",
+              width: '100%',
+            }}
+          >
+            <Typography sx={{fontWeight: "bold"}}>{selectedExercise.name}</Typography>
+            <Button
+              variant="contained"
+              onClick={() => setShowMore(!showMore)}
+            >
+              {showMore 
+              ? 
+                <>
+                  Show Less
+                  <KeyboardArrowUpIcon/>
+                </>
+              : 
+                <>
+                Show More
+                  <KeyboardArrowDownIcon/>
+                </>
+              }
+            </Button>
+          </Box>
+          {showMore &&
+            <Box
+              sx={{display: "flex", flexDirection: "column", gap: 2}}
+            >
+              <Divider></Divider>
+              <Typography>{selectedExercise.description}</Typography>
+            </Box>
+          }
         </Box>
       </Modal>
     </>

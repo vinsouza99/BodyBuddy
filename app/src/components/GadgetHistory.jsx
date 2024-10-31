@@ -48,35 +48,7 @@ export const GadgetHistory = ({ history = [] }) => {
   const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(startOfMonth(new Date()));
   const [startOfCurrentYear, setStartOfCurrentYear] = useState(startOfYear(new Date()));
-  // const [selectedChartElement, setSelectedChartElement] = useState(null);
-  const [chartData, setChartData] = useState({
-    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-    datasets: [
-      // For minutes
-      {
-        label: "Minutes (min)",
-        data: [0, 0, 0, 0, 0, 0, 0],
-        backgroundColor: "#94DC8A",
-        borderColor: "#94DC8A",
-        borderWidth: 1,
-        borderRadius: 2,
-        barThickness: 10,
-      },
-      // For calories
-      {
-        label: "Calories (kcal)",
-        data: [0, 0, 0, 0, 0, 0, 0],
-        backgroundColor: "#489FE4",
-        borderColor: "#489FE4",
-        borderWidth: 1,
-        borderRadius: 2,
-        barThickness: 0,
-      },
-    ],
-  });
-
-  // Chart options
-  const options = {
+  const [options, setOptions] = useState({
     font: {
       family: "'Montserrat', 'Arial', sans-serif",
     },
@@ -100,19 +72,52 @@ export const GadgetHistory = ({ history = [] }) => {
         bodyFont: { size: 16 },
         caretSize: 10,
         cornerRadius: 15,
+        position: 'average',
+        yAlign: 'bottom', 
       },
     },
     scales: {
+      x: {
+        ticks: {
+          align: 'end',
+        },
+        grid: {
+          display: false,
+        },
+      },
       y: {
         beginAtZero: true,
-        max: mode === "year-simple" ? 300 : 100,
+        max: 70,
       },
     },
     animation: {
       duration: 500,
-      easing: 'easeInOutCubic',
+      easing: 'easeInOutQuad',
     },
-  };
+  });
+  const [chartData, setChartData] = useState({
+    labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    datasets: [
+      // For minutes
+      {
+        label: "Minutes (min)",
+        data: [0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: "#94DC8A",
+        borderColor: "#94DC8A",
+        borderRadius: 2,
+        barPercentage: 1,
+      },
+      // For calories
+      {
+        label: "Calories (kcal)",
+        data: [0, 0, 0, 0, 0, 0, 0],
+        backgroundColor: "#489FE4",
+        borderColor: "#489FE4",
+        borderRadius: 2,
+        barThickness: 0,
+      },
+    ],
+  });
 
   // Initialization
   useEffect(() => {
@@ -178,6 +183,16 @@ export const GadgetHistory = ({ history = [] }) => {
         { ...prevChartData.datasets[1], data: weeklyCaloriesData }, // calories
       ],
     }));
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      scales: {
+        ...prevOptions.scales,
+        y: {
+          ...prevOptions.scales.y,
+          max: Math.max(...weeklyMinutesData) + 5,
+        },
+      },
+    }));
     setTotalDuration(weeklyMinutesData.reduce((acc, curr) => acc + curr, 0));
     setTotalCalories(weeklyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
@@ -207,6 +222,16 @@ export const GadgetHistory = ({ history = [] }) => {
         { ...prevChartData.datasets[1], data: monthlyCaloriesData },
         ],
     }));
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      scales: {
+        ...prevOptions.scales,
+        y: {
+          ...prevOptions.scales.y,
+          max: Math.max(...monthlyMinutesData) + 5,
+        },
+      },
+    }));
     setTotalDuration(monthlyMinutesData.reduce((acc, curr) => acc + curr, 0));
     setTotalCalories(monthlyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
@@ -235,6 +260,16 @@ export const GadgetHistory = ({ history = [] }) => {
         { ...prevChartData.datasets[1], data: yearlyCaloriesData },
       ],
     }));
+    setOptions((prevOptions) => ({
+      ...prevOptions,
+      scales: {
+        ...prevOptions.scales,
+        y: {
+          ...prevOptions.scales.y,
+          max: Math.max(...yearlyMinutesData) + 50,
+        },
+      },
+    }));
     setTotalDuration(yearlyMinutesData.reduce((acc, curr) => acc + curr, 0));
     setTotalCalories(yearlyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
@@ -253,7 +288,6 @@ export const GadgetHistory = ({ history = [] }) => {
     } else if (mode === "year-simple") {
       setStartOfCurrentYear((prev) => addMonths(prev, 12));
     }
-    // setSelectedChartElement(null);
   };
 
   const handlePrevious = () => {
@@ -264,23 +298,7 @@ export const GadgetHistory = ({ history = [] }) => {
     } else if (mode === "year-simple") {
       setStartOfCurrentYear((prev) => addMonths(prev, -12));
     }
-    // setSelectedChartElement(null);
   };
-
-  // const handleChartClick = (event) => {
-  //   const chart = chartRef.current;
-  //   if (!chart) return;
-
-  //   const elements = chart.getElementsAtEventForMode(event.nativeEvent, 'nearest', { intersect: true }, true);
-
-  //   if (elements.length > 0) {
-  //     const { index } = elements[0];
-  //     const label = chartData.labels[index];
-  //     const valueMinutes = chartData.datasets[0].data[index];
-  //     const valueCalories = chartData.datasets[1].data[index];
-  //     setSelectedChartElement({ label, valueMinutes, valueCalories });
-  //   }
-  // }
 
   return (
     <GadgetBase>
@@ -364,19 +382,6 @@ export const GadgetHistory = ({ history = [] }) => {
             <Typography>No data available</Typography>
           )}
         </Box>
-        {/* {selectedChartElement && (
-        <Box 
-          sx={{ 
-            border: "1px solid #94DC8A",
-            borderRadius: "25px",
-            padding: "4px 16px",
-          }}
-          >
-            <Typography>
-              {selectedChartElement?.valueMinutes} min, {selectedChartElement?.valueCalories} kcal
-            </Typography>
-        </Box>
-        )} */}
       </Box>
       <Typography>
         We help you track your progress as data and video as you becoming a

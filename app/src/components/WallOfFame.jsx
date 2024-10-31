@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from 'react';
-import { Box, Typography, IconButton, Modal, Button } from '@mui/material';
+import { Box, Typography, IconButton, Modal, Button, Popover } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -36,25 +36,41 @@ export const WallOfFame = ({ userInfo = {} }) => {
   const [showAllBadges, setshowAllBadges] = useState(false);
   const [badges, setBadges] = useState([]); // Add badge user already earned to this array
   const [itemsToShow, setItemsToShow] = useState(5);
+  const [canNavigate, setCanNavigate] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const boxRef = useRef(null); // for ResizeObserver
 
+  // Popover for Badge Description
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [popoverContent, setPopoverContent] = useState('');
+  const open = Boolean(anchorEl);
+
+  // Initialization
   useEffect(() => {
     // Add badge user already earned to badges array    
     if (userInfo?.achievements) {
+      console.log(userInfo.achievements);
       const earnedBadges = userInfo.achievements.map((achievement) => ({
         id: achievement?.achievement_id,
         name: achievement?.name,
+        description: achievement?.description,
         src: Badge1,
         alt: achievement?.name,
       }));
-      console.log(earnedBadges);
       setBadges(earnedBadges);
     }
     // ResizeObserver to adjust the number of items to show
     const observer = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width;
-      setItemsToShow(width < 500 ? 3 : 5);
+      const newItemsToShow = width < 500 ? 3 : 5;
+      setItemsToShow(newItemsToShow);
+
+      if (badges.length > newItemsToShow) {
+        setCanNavigate(true);
+      } else {
+        setCanNavigate(false);
+        setCurrentIndex(0);
+      }
     });
 
     if (boxRef.current) {
@@ -66,16 +82,21 @@ export const WallOfFame = ({ userInfo = {} }) => {
         observer.unobserve(boxRef.current);
       }
     };
-  }, [userInfo]);
+  }, [userInfo, itemsToShow, badges.length]);
 
-  const canNavigate = badges.length > itemsToShow;
+  // Check if the user can navigate to the next set of badges
+  useEffect(() => {
+    setCanNavigate(badges.length > itemsToShow);
+  }, [badges, itemsToShow]);
 
+  // Click to navigate to the next set of badges
   const handleNext = () => {
     if (canNavigate) {
       setCurrentIndex((prevIndex) => (prevIndex + itemsToShow) % badges.length);
     }
   };
 
+  // Click to navigate to the previous set of badges
   const handlePrevious = () => {
     if (canNavigate) {
       setCurrentIndex((prevIndex) => (prevIndex - itemsToShow + badges.length) % badges.length);
@@ -85,6 +106,17 @@ export const WallOfFame = ({ userInfo = {} }) => {
   // Close AllBadges Modal
   const handleCloseAllBadges = () => {
     setshowAllBadges(false);
+  };
+
+  // Popover for Badge Description
+  const handleBadgeClick = (event, description) => {
+    setAnchorEl(event.currentTarget);
+    setPopoverContent(description);
+  };
+
+  // Popover for Badge Description
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
   };
 
   const displayBadges = badges
@@ -134,7 +166,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               "&:hover": { backgroundColor: 'transparent' },
             }}
             onClick={handlePrevious}
-            disabled={!canNavigate}
+            disabled={!canNavigate || currentIndex === 0}
           >
             <ArrowBackIosNewIcon />
           </IconButton>        
@@ -166,7 +198,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               "&:hover": { backgroundColor: 'transparent' },
             }}
             onClick={handleNext}
-            disabled={!canNavigate}
+            disabled={!canNavigate || currentIndex + itemsToShow >= badges.length}
           >
             <ArrowForwardIosIcon />
           </IconButton>
@@ -227,7 +259,22 @@ export const WallOfFame = ({ userInfo = {} }) => {
 
           {/* Listed All Badges */}
           {displayAllBadges.map((badge, index) => (
-            <Box key={index}>
+            <Box 
+              key={index}
+              sx={{
+                cursor: 'pointer',
+                display: 'flex',
+                gap: 1,
+                flexDirection: 'column',
+                justifyContent: 'start',
+                alignItems: 'center',
+                textAlign: 'center',
+                width: 200,
+                height: 150,
+                // border: '1px solid #ccc',
+              }}
+              onClick={(e) => handleBadgeClick(e, badge.description)}
+            >
               <img
                 src={badge.src || BadgePlaceholder}
                 alt={badge.alt}
@@ -237,6 +284,27 @@ export const WallOfFame = ({ userInfo = {} }) => {
               </Typography>
             </Box>
           ))}
+
+          {/* Popover for Badge Description */}
+          <Popover
+            open={open}
+            anchorEl={anchorEl}
+            onClose={handlePopoverClose}
+            anchorOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
+            transformOrigin={{
+              vertical: 'bottom',
+              horizontal: 'center',
+            }}
+            disableRestoreFocus
+          >
+            <Box sx={{ p: 2, maxWidth: 200 }}>
+              <Typography>{popoverContent || "No description available"}</Typography>
+            </Box>
+          </Popover>
+
         </Box>
       </Modal>
     </>

@@ -244,6 +244,7 @@ const getUserAchievements = async (user_id) => {
         new UserAchievement(
           localAchievement.id,
           localAchievement.name,
+          localAchievement.description,
           achievement.earned_at
         )
       );
