@@ -20,7 +20,7 @@ import {
 } from "@mediapipe/tasks-vision";
 import {
   Counter2,
-  AngleMeter2,
+  // AngleMeter2,
   RestTime2,
   MetricCard,
   DemoExercise,
@@ -37,6 +37,7 @@ import theme from "../theme";
 import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
+import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
 import { updateUserAccumulatedStats, getUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
 import { format } from "date-fns";
@@ -89,19 +90,24 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   } = location.state || {}; // Receive from the StartRoutineModal as a prop
 
   const startedAtRef = useRef(null);
-  const angleChangeThreshold = 3;
-  let previousAngle = null;
+
+  // Note: Angle meters are temporarily removed as they are not an effective UI
+  // const angleChangeThreshold = 3;
+  // let previousAngle = null;
 
   // --- State ---
   // NOTE: useReducer might be a better choice for managing multiple states
+  const [userInfo, setUserInfo] = useState({});
   const [routine, setRoutine] = useState([]);
   const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(0);
   const [successSetCount, setSuccessSetCount] = useState(0);
   const [successRepCount, setSuccessRepCount] = useState(0);
+  const [calorie, setCalorie] = useState(0);
+  const [score, setScore] = useState(0);
   const [postureAlert, setPostureAlert] = useState(null);
-  const [angle, setAngle] = useState(180);
+  // const [angle, setAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -120,14 +126,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const poseLandmarkerRef = useRef(null);
   const runningMode = useRef("VIDEO");
   const animationFrameIdRef = useRef(null);
-
-  // !!! FOR RE-RENDERTING TEST !!!
-  // useEffect(() => {
-  //   console.log("Rendering Test: Routine Component");
-  // });
-  // useEffect(() => {
-  //   console.log("Rendering Test: angle");
-  // }, [angle]);
+  const calorieUpdatedRef = useRef(false);
 
   // ---------------------------------------------------------
   //                      useEffect Hooks
@@ -137,18 +136,30 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     setPageTitle(title);
 
-    // Get session start time
-    if (!startedAtRef.current) {
-      startedAtRef.current = new Date();
-      console.log('Started at:', startedAtRef.current);
-    }
-
     // Overwrite the style of #root
     const rootElement = document.getElementById("root");
     rootElement.style.margin = "0";
     rootElement.style.padding = "0";
     rootElement.style.width = "100%";
     rootElement.style.maxWidth = "100%";
+
+    // Get session start time
+    if (!startedAtRef.current) {
+      startedAtRef.current = new Date();
+      console.log('Started at:', startedAtRef.current);
+    }
+
+    // Get user info
+    const fetchUserInfo = async () => {
+      try {
+        const data = await getUser(user);
+        console.log(data);
+        setUserInfo(data);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    fetchUserInfo();
 
     // Setup MediaPipe PoseLandmarker when component mounts
     const createPoseLandmarker = async () => {
@@ -346,6 +357,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished, record, exerciseVideo]);
+
+  // Note: This is a workaround to prevent multiple calorie updates
+  useEffect(() => {
+    calorieUpdatedRef.current = false;
+  }, [successRepCount]);
 
   // ---------------------------------------------------------
   //                      Event Handlers
@@ -626,13 +642,29 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Process detected landmarks data
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const { count = 0, alert = null } =
+        const { count = 0, alert = null, calorie = 0, score = 0 } =
           exerciseCounter?.processPose(results.landmarks[0]) || {};
 
         // Update success count
         if (count !== undefined) {
           setSuccessRepCount((prevSuccessRepCount) => {
             if (count !== prevSuccessRepCount) {
+              // Update calorie
+              if (!calorieUpdatedRef.current) {
+                setCalorie((prevCalorie) => {
+                  if (userInfo?.weight) {
+                    const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+                    return prevCalorie + Math.round(calorie * userInfo.weight * weightFactor);
+                  }
+                  return prevCalorie;
+                });
+
+                // Update score
+                setScore((prevScore) => prevScore + score);
+
+                calorieUpdatedRef.current = true;
+              }
+
               // When the rep count reaches the target, increment the set count
               if (
                 count >= routine[selectedExerciseIndex].reps &&
@@ -659,14 +691,14 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
           });
 
           // Update angle for the meter when the angle diff over the "threshold"
-          const angle = exerciseCounter?.getAngle(results.landmarks[0]);
-          if (
-            angle !== undefined &&
-            Math.abs(angle - previousAngle) > angleChangeThreshold
-          ) {
-            setAngle(Math.round(angle));
-            previousAngle = angle;
-          }
+          // const angle = exerciseCounter?.getAngle(results.landmarks[0]);
+          // if (
+          //   angle !== undefined &&
+          //   Math.abs(angle - previousAngle) > angleChangeThreshold
+          // ) {
+          //   setAngle(Math.round(angle));
+          //   previousAngle = angle;
+          // }
         }
 
         // Update alert if any posture issue
@@ -943,7 +975,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               zIndex: 1000,
             }}
           >
-            <AngleMeter2 title={"Angle"} angle={angle} />
+            {/* Angle meters are temporarily removed as they are not an effective UI */}
+            {/* <AngleMeter2 title={"Angle"} angle={angle} /> */}
+
             <Counter2
               title={"Reps"}
               count={successRepCount}
@@ -989,7 +1023,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             />
 
             {/* Calories */}
-            <MetricCard title="Calories" />
+            <MetricCard title="Calories" value={calorie}/>
 
             {/* Puase & Play */}
             <IconButton
@@ -1039,7 +1073,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             </IconButton>
 
             {/* Score */}
-            <MetricCard title="Score" />
+            <MetricCard title="Score" value={score}/>
 
             {/* Exercise Menu */}
             <Box
