@@ -82,7 +82,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
         observer.unobserve(boxRef.current);
       }
     };
-  }, [userInfo]);
+  }, [userInfo, itemsToShow, badges.length]);
 
   // Check if the user can navigate to the next set of badges
   useEffect(() => {
