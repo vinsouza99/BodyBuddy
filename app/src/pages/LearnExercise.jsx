@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { setPageTitle } from "../utils/utils";
-import { useNavigate } from "react-router-dom";
 import { getExercise } from "../controllers/ExerciseController.js";
 import {
   Box,
@@ -15,7 +14,7 @@ import {
 } from "@mui/material";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
-import { Navigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const LearnExercise = (props) => {
   const { exercise_id } = useParams();
