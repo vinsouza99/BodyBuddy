@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -10,7 +9,6 @@ import {
   IconButton,
   Box,
   Paper,
-  Grid2,
   Button,
 } from "@mui/material";
 
@@ -28,50 +26,44 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
-import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
-
 import dayjs from "dayjs";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 
-import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
+// import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
+
+// dayjs plugins for timezone support
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 function History({ data }) {
   const [modalSwitch, setSwitch] = useState(false);
-  const [videoSwitch, videoSet] = useState(false);
+  const [videoSwitch, setVideoSwitch] = useState(false);
   const [isDateSelected, setIsDateSelected] = useState(false); // State if dates are picked
   const [startDate, setStartDate] = useState(dayjs()); // State the picked start dates
   const [endDate, setEndDate] = useState(dayjs()); // State the picked end dates
   const [filteredData, setFilteredData] = useState(data); // Save filtered Data from Duration
 
-  // useEffect to fetch letest data when initial page loading or reloading
   useEffect(() => {
-    if (data.length > 0) {
-      const latestDate = dayjs(Math.max(...data.map(item => dayjs(item.compare_date).valueOf())));
-      setStartDate(latestDate.startOf('day'));
-      setEndDate(latestDate.endOf('day'));
-      
-      const initialFiltered = data.filter(item => 
-        dayjs(item.compare_date).isBetween(latestDate.startOf('day'), latestDate.endOf('day'), null, '[]')
-      );
-      
-      setFilteredData(initialFiltered);
-      setIsDateSelected(true);
-    }
+    // Default to display all data without filtering
+    setFilteredData(data);
+    setIsDateSelected(false); // Optional: if you want to indicate that no date is selected
   }, [data]);
 
   console.log(data);
   
   // Open StartRoutineSessionModal
   const videoOpen = () => {
-    videoSet(true);
+    setVideoSwitch(true);
   };
 
   // Close StartRoutineSessionModal
   const videoClose = () => {
-    videoSet(false);
+    setVideoSwitch(false);
   };
 
   // Open Modal
@@ -85,14 +77,26 @@ function History({ data }) {
   };
 
   // OK button on duration modal
-  const handleOKClick = () => {
-    const startOfStartDate = startDate.startOf('day');
-    const endOfEndDate = endDate.endOf('day');
-    // Fitering dates
+const handleOKClick = () => {
+    // 日付の範囲を1日単位に合わせる
+    const startOfStartDate = startDate.startOf('day').utc(); // UTCに変換
+    const endOfEndDate = endDate.endOf('day').utc(); // UTCに変換
+
+    // フィルタリング処理
     const filtered = data.filter(item => {
-      const itemDate = dayjs(item.compare_date);
+      const itemDate = dayjs(item.compare_date).utc(); // UTCとして比較
       return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
     });
+
+  // const handleOKClick = () => {
+  //   const startOfStartDate = startDate.startOf('day').tz("America/Vancouver");
+  //   const endOfEndDate = endDate.endOf('day').tz("America/Vancouver");
+  //   // Fitering dates
+  //   const filtered = data.filter(item => {
+  //     const itemDate = dayjs(item.compare_date).tz("America/Vancouver");
+  //     return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
+  //   });
+    
     setFilteredData(filtered);
     setIsDateSelected(true);
     setSwitch(false);
@@ -155,7 +159,7 @@ function History({ data }) {
             maxHeight: '80vh', // Set the displayed height
             overflowY: 'auto', // Scrolling
           }}>
-          {isDateSelected && filteredData.length > 0
+          {filteredData.length > 0
             ? filteredData.map((item, index) => (
                 <Accordion
                   elevation={0}
@@ -189,7 +193,7 @@ function History({ data }) {
                       }}
                     >
 
-                      {/* Video icon shows up when ther is "recording_url" */}
+                      {/* Video icon shows up when there is "recording_url" */}
                       {item.recording_url ? (
                         <IconButton sx={{ padding: 0, marginRight: 1 }}>
                           <PlayCircleIcon
@@ -222,8 +226,9 @@ function History({ data }) {
                   <Dialog
                     open={videoSwitch}
                     onClose={videoClose}
-                    // fullWidth
-                    // maxWidth="md"
+                    fullWidth
+                    maxWidth="md"
+                    maxHeight="lg"
                     BackdropProps={{
                       style: {
                         backgroundColor: 'rgba(71, 71, 71, 0.169)', 
@@ -232,24 +237,22 @@ function History({ data }) {
                     sx={{
                       '& .MuiDialog-paper': {
                         borderRadius: 4,
-                        padding: 0,
+                        overflow: 'hidden',
+                        padding: 1,
                         backgroundColor: '#f7f7f7',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
+                        height: "auto"
                       },
                     }}
                   >
-                    <DialogTitle sx={{ padding: 0 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <DialogTitle sx={{ padding: 0, display:"flex", justifyContent: "end" }}>
                       {/* Download icon*/}
-                      <IconButton
-                        href={item.recording_url}
+                      {/* <IconButton
+                        href={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm"}
                         target="_blank" // opens in a new tab for downloading
                         download
                       >
                         <DownloadIcon />
-                      </IconButton>
+                      </IconButton> */}
 
                       {/* Close icon*/}
                       <IconButton
@@ -257,7 +260,6 @@ function History({ data }) {
                       >
                         <CloseIcon />
                       </IconButton>
-                    </Box>
                     </DialogTitle>
 
                     <DialogContent
@@ -265,22 +267,22 @@ function History({ data }) {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        padding: 1,
-                        // width: "100%",
-                        // height: "auto",
+                        padding: 0,
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "8px",
+
                       }}
                     >
                       <video 
-                        // width="100%" 
-                        // height="auto" 
+                        width="100%" 
+                        height="100%" 
                         controls 
                         style={{
-                          maxWidth: "100%",
-                          maxHeight: "80vh",
-                          borderRadius: "8px",
+                        maxWidth: "100%",
                       }}>
                         <source src={item.recording_url} type="video/webm" />
-                        {/* <source src={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730243631342.webm"} type="video/webm" /> */}
+                        {/* <source src={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm"} type="video/webm" /> */}
 
                       </video>
                     </DialogContent>
