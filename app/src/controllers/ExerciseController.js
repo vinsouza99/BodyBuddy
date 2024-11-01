@@ -5,13 +5,16 @@ import {
   getGoal,
   getMuscleGroup,
 } from "./LocalTablesController";
+import ExerciseType from "../models/ExerciseType";
+import Goal from "../models/Goal";
+import MuscleGroup from "../models/MuscleGroup";
 
 const API_ROUTE = "exercises";
 const API_EXERCISE_TYPE_ROUTE = "types";
 const API_EXERCISE_GOALS_ROUTE = "goals";
 const API_EXERCISE_MUSCLE_GROUPS_ROUTE = "muscleGroups";
 
-const getAllExercises = async () => {
+const getAllExercises = async (allInfo = true) => {
   const response = await axiosClient.get(`${API_ROUTE}`);
   const exercises = await response.data.data.map((item) => {
     const exercise = new Exercise();
@@ -24,8 +27,11 @@ const getAllExercises = async () => {
   });
   for (let exercise of exercises) {
     const exerciseTypes = await getExerciseTypes(exercise.id);
-    const exerciseGoals = await getExerciseGoals(exercise.id);
-    const exerciseMuscleGroups = await getExerciseMuscleGroups(exercise.id);
+    const exerciseGoals = await getExerciseGoals(exercise.id, allInfo);
+    const exerciseMuscleGroups = await getExerciseMuscleGroups(
+      exercise.id,
+      allInfo
+    );
     exercise.types = exerciseTypes;
     exercise.goals = exerciseGoals;
     exercise.muscleGroups = exerciseMuscleGroups;
@@ -33,19 +39,18 @@ const getAllExercises = async () => {
   console.log(exercises);
   return exercises;
 };
-const getExercise = async (id) => {
+const getExercise = async (id, allInfo = true) => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${id}`);
     const data = await response.data.data;
     const exercise = new Exercise();
-    console.log(data);
     exercise.id = data.id;
     exercise.name = data.name;
     exercise.description = data.description;
     exercise.demo_url = data.demo_url;
-    exercise.types = await getExerciseTypes(exercise.id);
-    exercise.goals = await getExerciseGoals(exercise.id);
-    exercise.muscleGroups = await getExerciseMuscleGroups(exercise.id);
+    exercise.types = await getExerciseTypes(exercise.id, allInfo);
+    exercise.goals = await getExerciseGoals(exercise.id, allInfo);
+    exercise.muscleGroups = await getExerciseMuscleGroups(exercise.id, allInfo);
     exercise.video_tutorial_url = data.video_tutorial_url;
     exercise.execution_steps = data.execution_steps;
     return exercise;
@@ -53,7 +58,7 @@ const getExercise = async (id) => {
     console.log(e);
   }
 };
-const getExerciseTypes = async (id) => {
+const getExerciseTypes = async (id, allInfo = true) => {
   try {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_EXERCISE_TYPE_ROUTE}/${id}`
@@ -62,7 +67,9 @@ const getExerciseTypes = async (id) => {
     const typeArray = [];
 
     for (let exerciseType of data) {
-      const type = await getExerciseType(exerciseType.type_id);
+      const type = allInfo
+        ? await getExerciseType(exerciseType.type_id)
+        : new ExerciseType(exerciseType.type_id);
       typeArray.push(type);
     }
     return typeArray;
@@ -70,7 +77,7 @@ const getExerciseTypes = async (id) => {
     console.log(e);
   }
 };
-const getExerciseGoals = async (id) => {
+const getExerciseGoals = async (id, allInfo = true) => {
   try {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_EXERCISE_GOALS_ROUTE}/${id}`
@@ -79,7 +86,9 @@ const getExerciseGoals = async (id) => {
     const goalsArray = [];
 
     for (let exerciseGoal of data) {
-      const goal = await getGoal(exerciseGoal.goal_id);
+      const goal = allInfo
+        ? await getGoal(exerciseGoal.goal_id)
+        : new Goal(exerciseGoal.goal_id);
       goalsArray.push(goal);
     }
     return goalsArray;
@@ -87,7 +96,7 @@ const getExerciseGoals = async (id) => {
     console.log(e);
   }
 };
-const getExerciseMuscleGroups = async (id) => {
+const getExerciseMuscleGroups = async (id, allInfo = true) => {
   try {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_EXERCISE_MUSCLE_GROUPS_ROUTE}/${id}`
@@ -96,7 +105,9 @@ const getExerciseMuscleGroups = async (id) => {
     const muscleGroupsArray = [];
 
     for (let item of data) {
-      const muscleGroup = await getMuscleGroup(item.muscle_group_id);
+      const muscleGroup = allInfo
+        ? await getMuscleGroup(item.muscle_group_id)
+        : new MuscleGroup(item.muscle_group_id);
       muscleGroupsArray.push(muscleGroup);
     }
     return muscleGroupsArray;

@@ -1,11 +1,16 @@
 import axiosClient from "../utils/axiosClient";
 import { Program } from "../models/Program";
 import { getRoutinesFromProgram } from "./RoutineController";
+import { getExercise } from "./ExerciseController";
 
 const API_ROUTE = "programs";
 const API_PROGRAM_ROUTINE_ROUTE = "routines";
 
-const getProgram = async (id) => {
+const getProgram = async (
+  id,
+  getRoutines = true,
+  getRoutineExercises = true
+) => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${id}`);
     const data = await response.data;
@@ -18,14 +23,23 @@ const getProgram = async (id) => {
       data.name,
       data.description
     );
-    const programRoutines = await getRoutinesFromProgram(program.id);
-    programRoutines.forEach((routine) => program.addRoutine(routine));
+    if (getRoutines) {
+      const programRoutines = await getRoutinesFromProgram(
+        program.id,
+        getRoutineExercises
+      );
+      programRoutines.forEach((routine) => program.addRoutine(routine));
+    }
     return program;
   } catch (e) {
     console.log(e);
   }
 };
-const getAllUserPrograms = async (user_id) => {
+const getAllUserPrograms = async (
+  user_id,
+  getRoutines = true,
+  getRoutineExercises = true
+) => {
   try {
     if (!user_id) throw new Error("user id is null");
     const response = await axiosClient.get(`${API_ROUTE}/user/${user_id}`);
@@ -43,10 +57,15 @@ const getAllUserPrograms = async (user_id) => {
           program.description
         )
     );
-    for (const program of programs) {
-      const programRoutines = await getRoutinesFromProgram(program.id);
-      if (programRoutines) {
-        programRoutines.forEach((routine) => program.addRoutine(routine));
+    if (getRoutines) {
+      for (const program of programs) {
+        const programRoutines = await getRoutinesFromProgram(
+          program.id,
+          getRoutineExercises
+        );
+        if (programRoutines) {
+          programRoutines.forEach((routine) => program.addRoutine(routine));
+        }
       }
     }
 
@@ -55,7 +74,11 @@ const getAllUserPrograms = async (user_id) => {
     console.log(e);
   }
 };
-const getUserCompletedPrograms = async (user_id) => {
+const getUserCompletedPrograms = async (
+  user_id,
+  getRoutines = true,
+  getRoutineExercises = true
+) => {
   try {
     if (!user_id) throw new Error("user id is null");
     const response = await axiosClient.get(
@@ -82,14 +105,20 @@ const getUserCompletedPrograms = async (user_id) => {
               )
           )
         : [];
-    if (programs.length > 0) {
-      for (const program of programs) {
-        const programRoutines = await getRoutinesFromProgram(program.id);
-        if (programRoutines) {
-          programRoutines.forEach((routine) => program.addRoutine(routine));
+    if (getRoutines) {
+      if (programs.length > 0) {
+        for (const program of programs) {
+          const programRoutines = await getRoutinesFromProgram(
+            program.id,
+            getRoutineExercises
+          );
+          if (programRoutines) {
+            programRoutines.forEach((routine) => program.addRoutine(routine));
+          }
         }
       }
     }
+
     return programs;
   } catch (e) {
     console.log(e);

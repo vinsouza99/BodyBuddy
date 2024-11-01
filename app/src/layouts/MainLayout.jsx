@@ -63,7 +63,7 @@ export const MainLayout = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const response = await getUser(user);
+      const response = await getUser(user, false);
       setUserInfo(response);
     };
     getUserInfo();

@@ -28,7 +28,7 @@ export const LearnExercise = (props) => {
 
     const loadData = async () => {
       try {
-        const exerciseData = await getExercise(exercise_id);
+        const exerciseData = await getExercise(exercise_id, true);
         setExercise(exerciseData);
         console.log(exerciseData);
       } catch (e) {

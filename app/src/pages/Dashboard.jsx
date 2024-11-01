@@ -39,7 +39,8 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
+    useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -74,7 +75,7 @@ export const Dashboard = (props) => {
     loadUserdata();
 
     const loadExerciseData = async () => {
-      const response = await getAllExercises();
+      const response = await getAllExercises(false);
       setExerciseInfo(response);
       setExerciseInfoLoaded(true);
     };
@@ -217,7 +218,7 @@ export const Dashboard = (props) => {
     };
   }, [prompt]);
 
-  const isMdUp = useMediaQuery(theme.breakpoints.up('md')); 
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <>
@@ -242,7 +243,10 @@ export const Dashboard = (props) => {
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* ADD GADGETS HERE */}
                 <GadgetUserProfile userInfo={userInfo} />
-                <GadgetStreaks userInfo={userInfo} history={userAccumulatedStats?.data || []} />
+                <GadgetStreaks
+                  userInfo={userInfo}
+                  history={userAccumulatedStats?.data || []}
+                />
                 <GadgetFavourite exerciseInfo={exerciseInfo || []} />
               </Box>
             </Grid2>
@@ -257,10 +261,13 @@ export const Dashboard = (props) => {
           </>
         ) : (
           <Grid2 xs={12}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <GadgetUserProfile userInfo={userInfo} />
               <GadgetAchievement userInfo={userInfo} />
-              <GadgetStreaks userInfo={userInfo} history={userAccumulatedStats?.data || []} />
+              <GadgetStreaks
+                userInfo={userInfo}
+                history={userAccumulatedStats?.data || []}
+              />
               <GadgetHistory history={userAccumulatedStats?.data || []} />
               <GadgetFavourite exerciseInfo={exerciseInfo || []} />
             </Box>
