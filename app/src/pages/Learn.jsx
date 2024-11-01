@@ -68,7 +68,7 @@ export const Learn = memo((props) => {
     const loadData = async () => {
       try {
         // Cocoy: Load exercises
-        const response = await getAllExercises();
+        const response = await getAllExercises(false);
 
         // Log the full response
         //console.log("Loaded exercises:", response);

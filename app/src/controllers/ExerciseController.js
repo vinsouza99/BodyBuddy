@@ -25,7 +25,7 @@ const getAllExercises = async (allInfo = true) => {
     return exercise;
   });
   for (let exercise of exercises) {
-    const exerciseTypes = await getExerciseTypes(exercise.id, allInfo);
+    const exerciseTypes = await getExerciseTypes(exercise.id);
     const exerciseGoals = await getExerciseGoals(exercise.id, allInfo);
     const exerciseMuscleGroups = await getExerciseMuscleGroups(
       exercise.id,
