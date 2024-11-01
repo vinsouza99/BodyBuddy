@@ -40,6 +40,7 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
   // Close Video Modal
   const handleCloseVideo = () => {
     setShowVideo(false);
+    setShowMore(false);
   };
 
   return (

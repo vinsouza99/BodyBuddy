@@ -92,9 +92,9 @@ export const MainLayout = () => {
   // Session State from Toolpad Core
   const [session] = useState({
     user: {
-      name: userInfo.name,
+      name: userInfo?.name,
       email: user.email,
-      image: userInfo.picture,
+      image: userInfo?.picture,
     },
   });
 

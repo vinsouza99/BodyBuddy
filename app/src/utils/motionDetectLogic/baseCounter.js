@@ -7,7 +7,7 @@ export class BaseCounter {
     this.down = false;
     this.alert = null;
     this.alertCount = 0;
-    this.alertThreshold = 150;
+    this.alertThreshold = 50;
 
     this.previousLandmarks = null; // Store the previous frame's landmarks
     this.movementThreshold = 0.1; // Threshold for detecting large movements

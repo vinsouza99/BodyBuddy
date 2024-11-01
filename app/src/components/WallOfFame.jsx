@@ -49,7 +49,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
   useEffect(() => {
     // Add badge user already earned to badges array    
     if (userInfo?.achievements) {
-      console.log(userInfo.achievements);
+      // console.log(userInfo.achievements);
       const earnedBadges = userInfo.achievements.map((achievement) => ({
         id: achievement?.achievement_id,
         name: achievement?.name,
