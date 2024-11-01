@@ -193,8 +193,10 @@ export const Learn = memo((props) => {
               label="Muscle Group"
               onChange={handleSelectMuscleGroup}
             >
-              {muscleGroups.map((muscleGroup) => (
-                <MenuItem value={muscleGroup.id}>{muscleGroup.name}</MenuItem>
+              {muscleGroups.map((muscleGroup, index) => (
+                <MenuItem value={muscleGroup.id}>
+                  {muscleGroup.name} key={index}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -220,8 +222,10 @@ export const Learn = memo((props) => {
               label="Goal"
               onChange={handleSelectGoal}
             >
-              {goals.map((goal) => (
-                <MenuItem value={goal.id}>{goal.name}</MenuItem>
+              {goals.map((goal, index) => (
+                <MenuItem value={goal.id} key={index}>
+                  {goal.name}
+                </MenuItem>
               ))}
             </Select>
           </FormControl>

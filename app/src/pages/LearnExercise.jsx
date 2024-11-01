@@ -171,79 +171,33 @@ export const LearnExercise = (props) => {
 
               <List>
                 {/* EXERCISE STEP 1 */}
-                <ListItem sx={{ padding: "0", marginBottom: "1rem" }}>
-                  <Box
-                    component="span"
-                    sx={{
-                      display: "inline-flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "24px",
-                      height: "24px",
-                      minWidth: "24px",
-                      minHeight: "24px",
-                      border: "1px solid",
-                      borderRadius: "50%",
-                      marginRight: "0.75rem",
-                    }}
-                  >
-                    1
-                  </Box>
-                  <Typography component="span">
-                    Step 1 for performing the exercise (fetch from exercise
-                    table?)
-                  </Typography>
-                </ListItem>
-
-                {/* EXERCISE STEP 2 */}
-                <ListItem sx={{ padding: "0", marginBottom: "1rem" }}>
-                  <Box
-                    component="span"
-                    sx={{
-                      display: "inline-flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "24px",
-                      height: "24px",
-                      minWidth: "24px",
-                      minHeight: "24px",
-                      border: "1px solid",
-                      borderRadius: "50%",
-                      marginRight: "0.75rem",
-                    }}
-                  >
-                    2
-                  </Box>
-                  <Typography component="span">
-                    Step 2 for performing the exercise (fetch from exercise
-                    table?)
-                  </Typography>
-                </ListItem>
-
-                {/* EXERCISE STEP 3 */}
-                <ListItem sx={{ padding: "0" }}>
-                  <Box
-                    component="span"
-                    sx={{
-                      display: "inline-flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      width: "24px",
-                      height: "24px",
-                      minWidth: "24px",
-                      minHeight: "24px",
-                      border: "1px solid",
-                      borderRadius: "50%",
-                      marginRight: "0.75rem",
-                    }}
-                  >
-                    3
-                  </Box>
-                  <Typography component="span">
-                    Step 3 for performing the exercise (fetch from exercise
-                    table?)
-                  </Typography>
-                </ListItem>
+                {exercise.execution_steps
+                  ? exercise.execution_steps.map((step, index) => (
+                      <ListItem
+                        sx={{ padding: "0", marginBottom: "1rem" }}
+                        key={index}
+                      >
+                        <Box
+                          component="span"
+                          sx={{
+                            display: "inline-flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "24px",
+                            height: "24px",
+                            minWidth: "24px",
+                            minHeight: "24px",
+                            border: "1px solid",
+                            borderRadius: "50%",
+                            marginRight: "0.75rem",
+                          }}
+                        >
+                          {index + 1}
+                        </Box>
+                        <Typography component="span">{step}</Typography>
+                      </ListItem>
+                    ))
+                  : ""}
               </List>
             </Box>
 

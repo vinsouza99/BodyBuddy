@@ -22,6 +22,14 @@ const Exercise = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    video_tutorial_url: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    execution_steps: {
+      type: DataTypes.ARRAY(DataTypes.TEXT),
+      allowNull: true,
+    },
   },
   {
     tableName: "exercise",
