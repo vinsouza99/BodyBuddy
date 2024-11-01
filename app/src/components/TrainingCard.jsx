@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -89,9 +90,9 @@ export const TrainingCard = ({ routine }) => {
               marginTop: "20px",
             }}
           >
-            <Button variant="contained" onClick={handleOpen}>
-              Learn More...
-            </Button>
+            <Link to={`/training/${routine.id}`}>
+              <Button variant="contained">Learn More...</Button>
+            </Link>
           </Box>
         </CardContent>
       </Card>

@@ -255,6 +255,7 @@ const getRoutineHistory = async (user_id) => {
 };
 
 export {
+  getRoutine,
   getRoutinesFromProgram,
   getUserCompletedRoutines,
   getAllPresetRoutines,
