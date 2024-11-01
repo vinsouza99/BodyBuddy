@@ -38,4 +38,18 @@ export default class Exercise {
     this.muscleGroups = muscleGroups;
     this.goals = goals;
   }
+
+  hasMuscleGroup(muscleGroupID) {
+    for (const muscleGroup of this.muscleGroups) {
+      if (muscleGroup.id == muscleGroupID) return true;
+    }
+    return false;
+  }
+
+  hasGoal(goalID) {
+    for (const goal of this.goals) {
+      if (goal.id == goalID) return true;
+    }
+    return false;
+  }
 }

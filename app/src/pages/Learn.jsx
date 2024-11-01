@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
 import { useAuth } from "../utils/AuthProvider.jsx";
@@ -49,7 +50,11 @@ CustomTabPanel.propTypes = {
 
 export const Learn = memo((props) => {
   const { user, handleSignOut } = useAuth();
+  const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
+  const [filteredExercises, setFilteredExercises] = useState([]);
+  const [selectedMuscleGroupID, setSelectedMuscleGroupID] = useState("");
+  const [selectedGoalID, setSelectedGoalID] = useState("");
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -62,26 +67,26 @@ export const Learn = memo((props) => {
 
     const loadData = async () => {
       try {
-      // Cocoy: Load exercises
-      const response = await getAllExercises();
+        // Cocoy: Load exercises
+        const response = await getAllExercises();
 
-      // Log the full response
-      //console.log("Loaded exercises:", response);
+        // Log the full response
+        //console.log("Loaded exercises:", response);
 
-      // Access exercises from the response.data property
-      const exercisesData = response;
+        // Access exercises from the response.data property
+        const exercisesData = response;
 
-      // Log the exercises data
-      //console.log("Exercises Data:", exercisesData);
+        // Log the exercises data
+        //console.log("Exercises Data:", exercisesData);
 
-      // Update the state with the loaded routines
-      setExercises(exercisesData);
+        // Update the state with the loaded routines
+        setExercises(exercisesData);
+        setFilteredExercises(exercisesData);
+        const muscleGroupsData = await getAllMuscleGroups();
+        setMuscleGroups(muscleGroupsData);
 
-      const muscleGroupsData = await getAllMuscleGroups();
-      setMuscleGroups(muscleGroupsData);
-
-      const fitnessGoalsData = await getAllGoals();
-      setGoals(fitnessGoalsData);
+        const fitnessGoalsData = await getAllGoals();
+        setGoals(fitnessGoalsData);
       } catch (e) {
         console.log(e);
       } finally {
@@ -96,28 +101,53 @@ export const Learn = memo((props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
   };
+  useEffect(() => {
+    filterExercisesByMuscleGroup(selectedMuscleGroupID);
+  }, [selectedMuscleGroupID]);
+
+  useEffect(() => {
+    filterExercisesByGoal(selectedGoalID);
+  }, [selectedGoalID]);
+
+  const handleSelectMuscleGroup = (event) => {
+    setSelectedMuscleGroupID(event.target.value);
+  };
+  const handleSelectGoal = (event) => {
+    setSelectedGoalID(event.target.value);
+  };
   const filterExercisesByMuscleGroup = (muscleGroupID) => {
-    //TODO
+    const filteredArray = exercises.filter((exercise) =>
+      exercise.hasMuscleGroup(muscleGroupID)
+    );
+    setFilteredExercises(filteredArray);
   };
   const filterExercisesByGoal = (goalID) => {
-    //TODO
-  };
+    const filteredArray = exercises.filter((exercise) =>
+      exercise.hasGoal(goalID)
+    );
 
+    setFilteredExercises(filteredArray);
+  };
   // Memoize the exercises grid
   const exercisesGrid = useMemo(() => {
     return (
-    <Grid container spacing={3}>
-      {exercises.length > 0
-        ? exercises.map((exercise, index) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-              <LearningCard exercise={exercise} />
-            </Grid>
-          ))
-        : null
-      }
-    </Grid>
+      <Grid container spacing={3}>
+        {filteredExercises.length > 0
+          ? filteredExercises.map((exercise, index) => (
+              <Grid
+                size={{ xs: 12, sm: 6, md: 4 }}
+                key={index}
+                onClick={() => navigate(`/learn/${exercise.id}`)}
+              >
+                <Link to={`/learn/${exercise.id}`}>
+                  <LearningCard exercise={exercise} />
+                </Link>
+              </Grid>
+            ))
+          : null}
+      </Grid>
     );
-  }, [exercises, loading]);
+  }, [filteredExercises, loading]);
 
   return (
     <>
@@ -148,16 +178,26 @@ export const Learn = memo((props) => {
 
       {/* Tab for Exercises by Muscle */}
       <CustomTabPanel value={value} index={0}>
-        <Box display="flex" gap={1} flexWrap="wrap" sx={{ marginTop: 2, marginBottom: 4 }}>
-          {/* Buttons for filtering exercises by muscle groups */}
-          {muscleGroups.map((muscleGroup) => (
-            <Button
-              variant="outlined"
-              onClick={() => filterExercisesByMuscleGroup(muscleGroup.id)}
+        <Box
+          display="flex"
+          gap={1}
+          flexWrap="wrap"
+          sx={{ marginTop: 2, marginBottom: 4 }}
+        >
+          <FormControl sx={{ m: 1, minWidth: 80 }}>
+            <InputLabel id="muscle-group-label">MuscleGroup</InputLabel>
+            <Select
+              labelId="muscle-group-label"
+              id="muscle-group-select"
+              value={selectedMuscleGroupID}
+              label="Muscle Group"
+              onChange={handleSelectMuscleGroup}
             >
-              {muscleGroup.name}
-            </Button>
-          ))}
+              {muscleGroups.map((muscleGroup) => (
+                <MenuItem value={muscleGroup.id}>{muscleGroup.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
         {/* Grid to display LearningCard components */}
         {exercisesGrid}
@@ -165,17 +205,26 @@ export const Learn = memo((props) => {
 
       {/* Tab for Exercises by Goal */}
       <CustomTabPanel value={value} index={1}>
-        <Box display="flex" gap={1} flexWrap="wrap" sx={{ marginTop: 2, marginBottom: 4 }}>
-
-          {/* Buttons for filtering exercises by fitness goals */}
-          {goals.map((goal) => (
-            <Button
-              variant="outlined"
-              onClick={filterExercisesByGoal(goal.id)}
+        <Box
+          display="flex"
+          gap={1}
+          flexWrap="wrap"
+          sx={{ marginTop: 2, marginBottom: 4 }}
+        >
+          <FormControl sx={{ m: 1, minWidth: 80 }}>
+            <InputLabel id="goal-label">Goals</InputLabel>
+            <Select
+              labelId="goal-label"
+              id="goal-select"
+              value={selectedGoalID}
+              label="Goal"
+              onChange={handleSelectGoal}
             >
-              {goal.name}
-            </Button>
-          ))}
+              {goals.map((goal) => (
+                <MenuItem value={goal.id}>{goal.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
         {/* Grid to display LearningCard components */}
         {exercisesGrid}
