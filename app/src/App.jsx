@@ -22,6 +22,7 @@ import theme from "./theme";
 import { CssBaseline } from "@mui/material";
 import { TrainingProgram } from "./pages/TrainingProgram";
 import { Landing } from "./pages/Landing";
+import { PremadeRoutine } from "./pages/PremadeRoutine";
 import CreateProgram from "./pages/CreateProgram";
 
 function App() {
@@ -51,6 +52,10 @@ function App() {
           <Route
             path="/training"
             element={<TrainingProgram title="Training" />}
+          />
+          <Route
+            path="/training/:routine_id"
+            element={<PremadeRoutine title="Premade Routine" />}
           />
         </Route>
         <Route path="/create-program" element={<CreateProgram />}></Route>
