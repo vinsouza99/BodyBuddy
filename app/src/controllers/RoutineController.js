@@ -80,7 +80,8 @@ const getUserCompletedRoutines = async (user_id) => {
           routine.estimated_calories,
           routine.scheduled_date,
           routine.completed,
-          element.completed_at
+          element.completed_at,
+          element.recording_url
         )
       );
     }
@@ -254,6 +255,7 @@ const getRoutineHistory = async (user_id) => {
 };
 
 export {
+  getRoutine,
   getRoutinesFromProgram,
   getUserCompletedRoutines,
   getAllPresetRoutines,

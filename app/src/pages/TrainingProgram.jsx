@@ -19,17 +19,14 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
 import { getAllPresetRoutines } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
-// import { getExercisesFromRoutine } from "../controllers/RoutineExerciseController.js";
-
-
 
 const tabStyles = {
   "&.Mui-selected": {
-    outline: "none", // Removes the blue border for the selected tab
-    border: "none", // Removes border
+    outline: "none",
+    border: "none",
   },
   "&:focus": {
-    outline: "none", // Removes focus outline on keyboard focus
+    outline: "none",
   },
 };
 
@@ -76,19 +73,13 @@ export const TrainingProgram = memo((props) => {
       return;
     }
     return (
-      <Grid2
-        container spacing={2}
-      >
+      <Grid2 container spacing={2} >
         {/* LEFT COLUMN */}
-        <Grid2
-          size={{ xs: 12, md: 7 }}
-        >
+        <Grid2 size={{ xs: 12, md: 7 }} >
           <GadgetRoutineOfToday programRoutines={programRoutines} />
         </Grid2>
         {/* RIGHT COLUMN */}
-        <Grid2 
-          size={{ xs: 12, md: 5 }}
-        >
+        <Grid2 size={{ xs: 12, md: 5 }} >
           <GadgetSchedule
             program={activeProgram}
             programRoutines={programRoutines}

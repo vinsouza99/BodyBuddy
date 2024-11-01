@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Typography,
@@ -10,11 +9,11 @@ import {
   IconButton,
   Box,
   Paper,
-  Grid2,
   Button,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
+import DownloadIcon from '@mui/icons-material/Download'; // Download Icon
 import PlayCircleIcon from "@mui/icons-material/PlayCircle"; // Play Icon
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
@@ -25,27 +24,46 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
-
-import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
+import TextField from "@mui/material/TextField";
 
 import dayjs from "dayjs";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 
+// import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
+
+// dayjs plugins for timezone support
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 function History({ data }) {
   const [modalSwitch, setSwitch] = useState(false);
-  const [videoSwitch, videoSet] = useState(false);
+  const [videoSwitch, setVideoSwitch] = useState(false);
+  const [isDateSelected, setIsDateSelected] = useState(false); // State if dates are picked
+  const [startDate, setStartDate] = useState(dayjs()); // State the picked start dates
+  const [endDate, setEndDate] = useState(dayjs()); // State the picked end dates
+  const [filteredData, setFilteredData] = useState(data); // Save filtered Data from Duration
 
+  useEffect(() => {
+    // Default to display all data without filtering
+    setFilteredData(data);
+    setIsDateSelected(false); // Optional: if you want to indicate that no date is selected
+  }, [data]);
+
+  console.log(data);
+  
   // Open StartRoutineSessionModal
   const videoOpen = () => {
-    videoSet(true);
+    setVideoSwitch(true);
   };
 
   // Close StartRoutineSessionModal
   const videoClose = () => {
-    videoSet(false);
+    setVideoSwitch(false);
   };
 
   // Open Modal
@@ -58,41 +76,40 @@ function History({ data }) {
     setSwitch(false);
   };
 
-  // State if dates are picked
-  const [isDateSelected, setIsDateSelected] = useState(false);
+  // OK button on duration modal
+const handleOKClick = () => {
+    // 日付の範囲を1日単位に合わせる
+    const startOfStartDate = startDate.startOf('day').utc(); // UTCに変換
+    const endOfEndDate = endDate.endOf('day').utc(); // UTCに変換
 
-
-  const handleOKClick = () => {
-    const startOfStartDate = startDate.startOf('day');
-    const endOfEndDate = endDate.endOf('day');
-    // Fitering dates
+    // フィルタリング処理
     const filtered = data.filter(item => {
-      const itemDate = dayjs(item.compare_date);
+      const itemDate = dayjs(item.compare_date).utc(); // UTCとして比較
       return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
     });
 
+  // const handleOKClick = () => {
+  //   const startOfStartDate = startDate.startOf('day').tz("America/Vancouver");
+  //   const endOfEndDate = endDate.endOf('day').tz("America/Vancouver");
+  //   // Fitering dates
+  //   const filtered = data.filter(item => {
+  //     const itemDate = dayjs(item.compare_date).tz("America/Vancouver");
+  //     return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
+  //   });
+    
     setFilteredData(filtered);
     setIsDateSelected(true);
     setSwitch(false);
   };
 
-
-
+  // Cancel button on duration modal
   const handleCancelClick = () => {
     setStartDate(dayjs()); // Initializa
     setEndDate(dayjs()); // Initializa
   };
 
-  // State the picked start and end dates
-  const [startDate, setStartDate] = useState(dayjs());
-  const [endDate, setEndDate] = useState(dayjs());
-
   console.log(`Selected Start Date: ${startDate.format()}`);
   console.log(`Selected End Date: ${endDate.format()}`);
-  
-
-  // Save filtered Data from Duration
-  const [filteredData, setFilteredData] = useState(data);
   
   return (
     <>
@@ -137,8 +154,12 @@ function History({ data }) {
           </Box>
         </Box>
 
-        <div>
-          {isDateSelected && filteredData.length > 0
+        <div 
+          style={{
+            maxHeight: '80vh', // Set the displayed height
+            overflowY: 'auto', // Scrolling
+          }}>
+          {filteredData.length > 0
             ? filteredData.map((item, index) => (
                 <Accordion
                   elevation={0}
@@ -171,27 +192,34 @@ function History({ data }) {
                         backgroundColor: "#f3f3f3",
                       }}
                     >
-                      <IconButton sx={{ padding: 0, marginRight: 1 }}>
-                        <PlayCircleIcon
-                          onClick={videoOpen}
-                          sx={{ color: "#4A90E2", fontSize: 60 }}
-                        />
-                      </IconButton>
-                      <Typography variant="body1">{item.description}</Typography>
+
+                      {/* Video icon shows up when there is "recording_url" */}
+                      {item.recording_url ? (
+                        <IconButton sx={{ padding: 0, marginRight: 1 }}>
+                          <PlayCircleIcon
+                            onClick={videoOpen}
+                            sx={{ color: "#4A90E2", fontSize: 60 }}
+                          />
+                        </IconButton>
+                      ) : null}              
+
+
+                      {/* description always shows up*/}
+                      <Typography variant="body1" sx={{margin: 2}} >{item.description}</Typography>
                     </Paper>
                     <Stack direction="row" spacing={1}>
-                        <Chip
-                          label={`${item.duration/60} min`}
-                          variant="outlined"
-                          sx={{ borderRadius: 2 }}
-                        />
-                        <Chip
-                          label={`${item.calories} cal`}
-                          variant="outlined"
-                          sx={{ borderRadius: 2 }}
-                        />
-                      </Stack>
 
+                      <Chip
+                        label={`${item.duration/60} min`}
+                        variant="outlined"
+                        sx={{ borderRadius: 2 }}
+                      />
+                      <Chip
+                        label={`${item.calories} cal`}
+                        variant="outlined"
+                        sx={{ borderRadius: 2 }}
+                      />
+                    </Stack>
                   </AccordionDetails>
 
                   {/* Session Modal */}
@@ -199,35 +227,67 @@ function History({ data }) {
                     open={videoSwitch}
                     onClose={videoClose}
                     fullWidth
-                    maxWidth="sm"
+                    maxWidth="md"
+                    maxHeight="lg"
+                    BackdropProps={{
+                      style: {
+                        backgroundColor: 'rgba(71, 71, 71, 0.169)', 
+                      },
+                    }}
+                    sx={{
+                      '& .MuiDialog-paper': {
+                        borderRadius: 4,
+                        overflow: 'hidden',
+                        padding: 1,
+                        backgroundColor: '#f7f7f7',
+                        height: "auto"
+                      },
+                    }}
                   >
-                    <DialogTitle>
-                      {item.content}
+                    <DialogTitle sx={{ padding: 0, display:"flex", justifyContent: "end" }}>
+                      {/* Download icon*/}
+                      {/* <IconButton
+                        href={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm"}
+                        target="_blank" // opens in a new tab for downloading
+                        download
+                      >
+                        <DownloadIcon />
+                      </IconButton> */}
+
+                      {/* Close icon*/}
                       <IconButton
                         onClick={videoClose}
-                        sx={{ position: "absolute", right: 8, top: 8 }}
                       >
                         <CloseIcon />
                       </IconButton>
                     </DialogTitle>
+
                     <DialogContent
                       sx={{
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
+                        padding: 0,
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "8px",
+
                       }}
                     >
-                      <video width="320" height="240" controls>
-                        <source src="item.recording_url" type="video/mp4" />
-                        <source src="movie.ogg" type="video/ogg" />
+                      <video 
+                        width="100%" 
+                        height="100%" 
+                        controls 
+                        style={{
+                        maxWidth: "100%",
+                      }}>
+                        <source src={item.recording_url} type="video/webm" />
+                        {/* <source src={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm"} type="video/webm" /> */}
+
                       </video>
                     </DialogContent>
                   </Dialog>
-
-
                 </Accordion>
-
-                
               ))
             : isDateSelected && "No history to show..."}
         </div>
@@ -237,6 +297,13 @@ function History({ data }) {
       {/* Modal part */}
       <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md">
         <DialogContent>
+          {/* Close icon*/}
+          <DialogTitle sx={{ display: "flex", padding: 0, justifyContent: "flex-end" }}>
+            <IconButton onClick={handleClickClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box sx={{ display: "flex", gap: "20px" }}>
               <Box>

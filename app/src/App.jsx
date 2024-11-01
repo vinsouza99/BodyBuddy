@@ -12,6 +12,7 @@ import { SignUp } from "./pages/SignUp";
 import { Dashboard } from "./pages/Dashboard";
 import { Profile } from "./pages/Profile";
 import { Learn } from "./pages/Learn";
+import { LearnExercise } from "./pages/LearnExercise";
 import { RoutineSession } from "./pages/RoutineSession";
 import { NotFound } from "./pages/NotFound";
 import { useAuth } from "./utils/AuthProvider";
@@ -21,6 +22,7 @@ import theme from "./theme";
 import { CssBaseline } from "@mui/material";
 import { TrainingProgram } from "./pages/TrainingProgram";
 import { Landing } from "./pages/Landing";
+import { PremadeRoutine } from "./pages/PremadeRoutine";
 import CreateProgram from "./pages/CreateProgram";
 
 function App() {
@@ -39,16 +41,21 @@ function App() {
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
 
         {/* Authentication required (MainLayout is applied) */}
-        <Route
-          path="/"
-          element={user ? <MainLayout /> : <Navigate to="/" />}
-        >
+        <Route path="/" element={user ? <MainLayout /> : <Navigate to="/" />}>
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
           <Route path="/learn" element={<Learn title="Learn" />} />
           <Route
+            path="/learn/:exercise_id"
+            element={<LearnExercise title="Learn Exercise" />}
+          />
+          <Route
             path="/training"
             element={<TrainingProgram title="Training" />}
+          />
+          <Route
+            path="/training/:routine_id"
+            element={<PremadeRoutine title="Premade Routine" />}
           />
         </Route>
         <Route path="/create-program" element={<CreateProgram />}></Route>
@@ -57,7 +64,11 @@ function App() {
         <Route
           path="/routine"
           element={
-            user ? <RoutineSession title="RoutineSession" /> : <Navigate to="/signin" />
+            user ? (
+              <RoutineSession title="RoutineSession" />
+            ) : (
+              <Navigate to="/signin" />
+            )
           }
         />
       </>

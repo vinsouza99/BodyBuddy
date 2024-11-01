@@ -114,7 +114,7 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
           width: '50%',
         }} 
       >
-        Start Today&apos;sexercise
+        Today&apos;s Routine
       </Button>
     </GadgetBase>
   );

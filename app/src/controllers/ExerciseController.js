@@ -37,6 +37,7 @@ const getExercise = async (id) => {
     const response = await axiosClient.get(`${API_ROUTE}/${id}`);
     const data = await response.data.data;
     const exercise = new Exercise();
+    console.log(data);
     exercise.id = data.id;
     exercise.name = data.name;
     exercise.description = data.description;
@@ -44,6 +45,8 @@ const getExercise = async (id) => {
     exercise.types = await getExerciseTypes(exercise.id);
     exercise.goals = await getExerciseGoals(exercise.id);
     exercise.muscleGroups = await getExerciseMuscleGroups(exercise.id);
+    exercise.video_tutorial_url = data.video_tutorial_url;
+    exercise.execution_steps = data.execution_steps;
     return exercise;
   } catch (e) {
     console.log(e);

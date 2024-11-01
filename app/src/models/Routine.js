@@ -15,6 +15,7 @@ export default class Routine {
    * @param {Date} scheduled_date,
    * @param {Boolean} completed
    * @param {Date} completed_at
+   * @param {String} recording_url
    * @param {Array} exercises - an array of objects of the class Exercise that refers to all the
    * exercises that are part of this routine
    * @param {Date} compare_date - will have the same value as completed_at but will be use for sorting in history
@@ -29,6 +30,7 @@ export default class Routine {
     scheduled_date,
     completed,
     completed_at,
+    recording_url,
     exercises = new Array()
   ) {
     this.id = id;
@@ -40,6 +42,7 @@ export default class Routine {
     this.scheduled_date = scheduled_date;
     this.completed = completed;
     this.completed_at = completed_at;
+    this.recording_url = recording_url;
     this.exercises = exercises;
     this.compare_date = completed_at;
   }

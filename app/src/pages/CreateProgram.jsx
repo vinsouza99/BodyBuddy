@@ -131,6 +131,14 @@ const CreateProgram = () => {
               onChange={() => setGender("other")}
             />
           </RadioGroup>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: "left", margin: "1rem 0" }}
+          >
+            Your sex can affect hormonal balance, muscle composition, and fat
+            distribution, which influence how individuals respond to different
+            types of exercise and nutritional strategies.
+          </Typography>
         </FormControl>
       </>
     );
@@ -197,7 +205,7 @@ const CreateProgram = () => {
           sx={{
             // Create line behind radio buttons
             position: "absolute",
-            width: "80%",
+            width: "76%",
             borderTop: "1px solid",
             borderColor: "background.light",
             left: "50%",
@@ -276,6 +284,13 @@ const CreateProgram = () => {
             />
           ))}
         </RadioGroup>
+        <Typography
+          variant="body2"
+          sx={{ textAlign: "left", margin: "1rem 0" }}
+        >
+          Past experience sets the foundation for the plan, dictating the
+          starting intensity and progression rate.
+        </Typography>
       </FormControl>
     );
   }
@@ -285,14 +300,14 @@ const CreateProgram = () => {
       <FormControl>
         <FormLabel id="intensityLabel">
           <Typography variant="h3">
-            How intense you want to exercise?
+            How intensely do you want to exercise?
           </Typography>
         </FormLabel>
         <Box
           sx={{
             // Create line behind radio buttons
             position: "absolute",
-            width: "80%",
+            width: "76%",
             borderTop: "1px solid",
             borderColor: "background.light",
             left: "50%",
@@ -305,6 +320,7 @@ const CreateProgram = () => {
           aria-labelledby="intensityLabel"
           name="radio-buttons-group3"
           value={intensity}
+          sx={{ display: "flex", justifyContent: "center" }} // Center horizontally
         >
           {intensityOptions.map((intensity, index) => (
             <FormControlLabel
@@ -370,6 +386,14 @@ const CreateProgram = () => {
             />
           ))}
         </RadioGroup>
+        <Typography
+          variant="body2"
+          sx={{ textAlign: "left", margin: "1rem 0" }}
+        >
+          This determines the frequency and difficulty of workouts you expect
+          for the plan, helping to balance progress with recovery. You can
+          always go back to adjust later for your next programs.
+        </Typography>
       </FormControl>
     );
   }
@@ -385,6 +409,7 @@ const CreateProgram = () => {
           aria-labelledby="intensityLabel"
           name="radio-buttons-group4"
           value={schedule}
+          sx={{ display: "flex", justifyContent: "center" }} // Center horizontally
         >
           {weekdays.map((day, index) => (
             <FormControlLabel
@@ -449,74 +474,18 @@ const CreateProgram = () => {
             />
           ))}
         </FormGroup>
+        <Typography
+          variant="body2"
+          sx={{ textAlign: "left", margin: "1rem 0" }}
+        >
+          Based on your availability, we will suggest the optimal exercise
+          schedule that can efficiently deliver your goal. However, you can
+          always be flexible in choosing exercises and what time you want to do
+          them.
+        </Typography>
       </FormControl>
     );
   }
-
-  function PersonalInfoStep() {
-    return (
-      <FormControl>
-        <FormLabel id="personalInfoLabel">
-          <Typography variant="h3">Last but not least!</Typography>
-        </FormLabel>
-
-        <Grid sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: ".5rem", marginLeft: "90px" }}>
-
-          <Grid>
-            {/* Birthday Input with DatePicker */}
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                sx={{ marginTop: "30px" }}
-                label="Birthday"
-                value={birthday ? dayjs(birthday) : null} // Pass a dayjs object or null
-                fullWidth
-                onChange={(newValue) => {
-                  setBirthday(dayjs(newValue).format("YYYY-MM-DD")); // Format the date only when saving to state
-                }}
-                // autoFocus (enable if preferred)
-                renderInput={(params) => <TextField {...params} />}
-              />
-            </LocalizationProvider>
-          </Grid>
-          <Grid></Grid>
-
-        </Grid>
-
-        {/* Weight input */}
-        <Grid sx={{ display: "grid", gridTemplateColumns: "3fr 1fr", gap: ".5rem", marginTop: "10px", marginLeft: "90px" }}>
-          
-          <Grid>
-            <TextField
-              type="number"
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              label="Weight"
-              variant="outlined"
-              fullWidth
-            />
-          </Grid>
-
-          {/* Weight Unit Selector */}
-          <Grid>
-            <FormControl variant="outlined" fullWidth>
-              <InputLabel id="weight-unit-label">Unit</InputLabel>
-              <Select
-                labelId="weight-unit-label"
-                value={weightUnit}
-                onChange={(e) => setWeightUnit(e.target.value)}
-                label="Unit"
-              >
-                <MenuItem value="lbs">Lbs</MenuItem>
-                <MenuItem value="kg">Kg</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-        </Grid>
-      </FormControl>
-    );
-  }
-
   async function submitForm() {
     const formResponse = {
       gender: gender,
@@ -529,9 +498,10 @@ const CreateProgram = () => {
       weight_unit: weightUnit,
     };
     if (user) {
-      navigate("/training", {
-        state: { userResponses: formResponse },
-      });
+      navigate("/dashboard", {state : formResponse});
+      // navigate("/training", {
+      //   state: { userResponses: formResponse },
+      // });
     } else {
       navigate("/signup", { state: { userResponses: formResponse } });
     }
@@ -545,6 +515,9 @@ const CreateProgram = () => {
         rowGap={5}
         sx={{
           backgroundColor: "lightgray",
+          backgroundImage: "url(./src/assets/create-program.png)",
+          backgroundPosition: "top right",
+          backgroundSize: "cover",
           minHeight: "100vh",
           padding: "2rem 1rem",
         }}
@@ -555,8 +528,10 @@ const CreateProgram = () => {
           width={70}
         />
         <Container
+          maxWidth="sm"
           sx={{
-            backgroundColor: "white",
+            backgroundColor: "rgba(255, 255, 255, .9)",
+            backdropFilter: "blur(2px)",
             borderRadius: 3,
           }}
           className="formWrapper"
@@ -568,8 +543,8 @@ const CreateProgram = () => {
             minHeight={400}
             padding={"1rem"}
           >
-            <Box component={"div"} sx={{ margin: "0 auto", width: "50%" }}>
-              <ProgressBar progress={(step / 6) * 100} />
+            <Box component={"div"} sx={{ margin: "0 auto", width: "75%" }}>
+              <ProgressBar progress={(step / 7) * 100} />
             </Box>
             <form
               method="post"
@@ -596,7 +571,90 @@ const CreateProgram = () => {
                 <ScheduleStep />
               </Box>
               <Box component={"div"} display={step == 6 ? "block" : "none"}>
-                <PersonalInfoStep />
+                <FormControl>
+                  <FormLabel id="personalInfoLabel">
+                    <Typography variant="h3">Last but not least!</Typography>
+                  </FormLabel>
+
+                  <Grid
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "3fr 1fr",
+                      gap: ".5rem",
+                      marginLeft: "90px",
+                    }}
+                  >
+                    <Grid>
+                      {/* Birthday Input with DatePicker */}
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          sx={{ marginTop: "30px" }}
+                          label="Birthday"
+                          value={birthday ? dayjs(birthday) : null} // Pass a dayjs object or null
+                          fullWidth
+                          onChange={(newValue) => {
+                            setBirthday(dayjs(newValue).format("YYYY-MM-DD")); // Format the date only when saving to state
+                          }}
+                          // autoFocus (enable if preferred)
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                    <Grid></Grid>
+                  </Grid>
+
+                  {/* Weight input */}
+                  <Grid
+                    sx={{
+                      display: "grid",
+                      gridTemplateColumns: "3fr 1fr",
+                      gap: ".5rem",
+                      marginTop: "10px",
+                      marginLeft: "90px",
+                    }}
+                  >
+                    <Grid>
+                      <TextField
+                        type="number"
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        label="Weight"
+                        variant="outlined"
+                        fullWidth
+                      />
+                    </Grid>
+
+                    {/* Weight Unit Selector */}
+                    <Grid>
+                      <FormControl variant="outlined" fullWidth>
+                        <InputLabel id="weight-unit-label">Unit</InputLabel>
+                        <Select
+                          labelId="weight-unit-label"
+                          value={weightUnit}
+                          onChange={(e) => setWeightUnit(e.target.value)}
+                          label="Unit"
+                        >
+                          <MenuItem value="lbs">Lbs</MenuItem>
+                          <MenuItem value="kg">Kg</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </Grid>
+                  <Grid container sx={{}}>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        textAlign: "left",
+                        margin: "1rem 0",
+                        width: "400px",
+                      }}
+                    >
+                      These factors influence the starting point, caloric needs,
+                      and the intensity of the plan to ensure it's realistic and
+                      sustainable.
+                    </Typography>
+                  </Grid>
+                </FormControl>
               </Box>
               <Grid
                 container
@@ -617,7 +675,7 @@ const CreateProgram = () => {
                 </Button>
                 {step == 6 ? (
                   <Button variant="contained" onClick={() => submitForm()}>
-                    Submit
+                    Complete
                   </Button>
                 ) : (
                   <Button variant="contained" onClick={() => nextStep()}>
