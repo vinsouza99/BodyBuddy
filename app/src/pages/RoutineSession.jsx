@@ -39,7 +39,7 @@ import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
 import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedStats, getUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
+import { updateUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
 import { format } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
@@ -89,15 +89,15 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     reps = 0,
   } = location.state || {}; // Receive from the StartRoutineModal as a prop
 
-  const startedAtRef = useRef(null);
-
   // Note: Angle meters are temporarily removed as they are not an effective UI
   // const angleChangeThreshold = 3;
   // let previousAngle = null;
+  // const [angle, setAngle] = useState(180);
 
   // --- State ---
   // NOTE: useReducer might be a better choice for managing multiple states
   const [userInfo, setUserInfo] = useState({});
+  const [programId, setProgramId] = useState(null);
   const [routine, setRoutine] = useState([]);
   const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
@@ -107,7 +107,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const [calorie, setCalorie] = useState(0);
   const [score, setScore] = useState(0);
   const [postureAlert, setPostureAlert] = useState(null);
-  // const [angle, setAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -127,6 +126,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const runningMode = useRef("VIDEO");
   const animationFrameIdRef = useRef(null);
   const calorieUpdatedRef = useRef(false);
+  const startedAtRef = useRef(null);
 
   // ---------------------------------------------------------
   //                      useEffect Hooks
@@ -153,7 +153,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     const fetchUserInfo = async () => {
       try {
         const data = await getUser(user);
-        console.log(data);
+        // console.log(data);
         setUserInfo(data);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -182,6 +182,23 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       }
     };
     createPoseLandmarker();
+
+    // Retrieve program ID from the routine ID
+    const fetchProgramId = async () => {
+      try {
+        if (idType === "routine") {
+          const response = await axiosClient.get(`programs/routine/${id}`);
+          if (Number(response.status) !== 200) {
+            throw new Error("Failed to fetch program ID");
+          }
+          // console.log(response);
+          setProgramId(response.data.data.program_id);
+        }
+      } catch (error) {
+        console.error("Error fetching program ID:", error);
+      }
+    };
+    fetchProgramId();
 
     // Retrieve routine information from the database (if idType is "routine")
     const fetchRoutineInfo = async () => {
@@ -245,7 +262,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     const observer = new MutationObserver(() => {
       if (videoRef.current) {
-        console.log("VideoRef is now available:", videoRef.current);
+        // console.log("VideoRef is now available:", videoRef.current);
         toggleWebCam();
         // Disconnect the observer after the video element is available
         observer.disconnect();
@@ -338,22 +355,16 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Record user activity
   useEffect(() => {
-    const handleUserActivity = async () => {
-      if (isFinished) {
-        if (record) {
-          if (exerciseVideo) {
-            registerUserActivity();
-            await registerUserAccumulatedStat();
-            earnBadges();
-          }
-        } else {
-          registerUserActivity();
-          await registerUserAccumulatedStat();
-          earnBadges();
-        }
+    const updateUserHistory = async () => {
+      if (isFinished && (!record || (record && exerciseVideo))) {
+        await updateUserActivity();
+        await updateRoutineCompletionStatus();
+        await updateProgramCompletionStatus();
+        await updateUserAccumulatedStat();
+        earnBadges();  
       }
     };
-    handleUserActivity();
+    updateUserHistory();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished, record, exerciseVideo]);
@@ -746,8 +757,63 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
   }, []);
 
+  // Update program routine completion status
+  const updateRoutineCompletionStatus = async () => {
+    try {
+      if (idType !== "routine") return;
+      const response = await axiosClient.put(
+        `/programs/routines`,
+        { 
+          program_id: programId,
+          routine_id: id,
+          scheduled_date:format(new Date(), 'yyyy-MM-dd'),
+          completed: true
+        }
+      );
+      if (Number(response.status) !== 200 && Number(response.status) !== 204) {
+        throw new Error("Failed to update Program_Routine");
+      }
+      console.log("Program_Routine has been successfully updaed:", response.data);
+    } catch (error) {
+      console.error("Failed to update Program_Routine:", error);
+    }
+  }
+
+  // Update program completion status
+  const updateProgramCompletionStatus = async () => {
+    try {
+      if (idType !== "routine") return;
+      
+      // Fetch all routines in the program
+      const fetchResponse = await axiosClient.get(`/routines/program/${programId}`);
+      if (Number(fetchResponse.status) !== 200) {
+        throw new Error("Failed to fetch Program");
+      }
+
+      // Check if all routines in the program are completed
+      fetchResponse.data.data.forEach(async (routine) => {
+        if (!routine.completed) {
+          console.log("Program has uncompleted routines");
+          return;
+        }
+      });
+
+      // Update program completion status to "completed(true)"
+      const response = await axiosClient.put(
+        `/programs/${programId}`,
+        { completed: true }
+      );
+      if (Number(response.status) !== 200 && Number(response.status) !== 204) {
+        throw new Error("Failed to update Program");
+      }
+      console.log("Program has been successfully updaed:", response.data);
+    } catch (error) {
+      console.error("Failed to update Program:", error);
+    }
+  }
+
   // Insert user activity log info to the database
-  const registerUserActivity = async () => {
+  const updateUserActivity = async () => {
     try {
       const completedAt = new Date().toISOString();
       const newHistoryObj = {
@@ -755,8 +821,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         completed_at: completedAt,
         routine_id: idType === "routine" ? id : null,
         recording_url: exerciseVideo,
-        score: 30, // TODO: To be implemented
-        calories: 50, // TODO: To be implemented
+        score: score,
+        calories: calorie,
       };
 
       const response = await axiosClient.post(
@@ -764,18 +830,16 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         newHistoryObj
       );
       if (Number(response.status) !== 201) {
-        throw new Error("Failed to insert routine history info");
+        throw new Error("Failed to update Routine_History");
       }
-      console.log("Routine history inserted successfully:", response.data);
-      return response.data;
+      console.log("Routine_History has been successfully updaed:", response.data);
     } catch (error) {
-      console.error("Error inserting routine history info:", error);
-      throw error; // Throw to handle error where the function is called
+      console.error("Failed to update Routine_History:", error);
     }
   };
 
   // Insert user accumulated time info to the database
-  const registerUserAccumulatedStat = async () => {
+  const updateUserAccumulatedStat = async () => {
     try {
       const now = new Date();
       const completedAt = format(now, "yyyy-MM-dd");
@@ -785,26 +849,32 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         user.id,
         completedAt,
         duration, // minutes
-        0 // calories
+        calorie,
       );
-      console.log(
-        "User accumulated stat inserted successfully:",
-        response.data
-      );
+      console.log("User_Accumulated_Workout_Stats has been successfully updaed:", response.data);
     } catch (error) {
-      console.error("Error inserting accumulated stat info:", error);
+      console.error("Failed to update User_Accumulated_Workout_Stats:", error);
     }
   };
 
   const earnBadges = async () => {
     try {
-      // If this is the first time to finish the routine, earn the "Starter" badge
-      const response = await getUserAccumulatedStats(user.id);
-      console.log("User accumulated stats:", response);
-      if (response.data.length === 1) {
-        await addUserAchievement(user.id, 1, new Date().toISOString());
-        console.log("Starter badge earned!");
+      // Badge 1: The first routine completion
+      const response = await axiosClient.get(`/routines/history/${user.id}`);
+      if (Number(response.status) !== 200) {
+        throw new Error("Failed to fetch user accumulated stats");
       }
+
+      if (response.data.data.length === 1) {
+        const response =  await addUserAchievement(user.id, 1, new Date().toISOString());
+        console.log("Starter badge earned!", response);
+      } else {
+        console.log("Starter badge already earned.");
+      }
+
+      // Badge 2: The first program completion
+      // To be implemented.
+
     } catch (error) {
       console.error("Error earning badge:", error);
     }
