@@ -194,8 +194,8 @@ export const Learn = memo((props) => {
               onChange={handleSelectMuscleGroup}
             >
               {muscleGroups.map((muscleGroup, index) => (
-                <MenuItem value={muscleGroup.id}>
-                  {muscleGroup.name} key={index}
+                <MenuItem value={muscleGroup.id} key={index}>
+                  {muscleGroup.name}
                 </MenuItem>
               ))}
             </Select>
