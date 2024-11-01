@@ -28,7 +28,7 @@ const getRoutine = async (routine_id) => {
     console.log(e);
   }
 };
-const getRoutinesFromProgram = async (program_id) => {
+const getRoutinesFromProgram = async (program_id, getExercises = true) => {
   try {
     const response = await axiosClient.get(
       `${API_ROUTE}/${API_PROGRAM_ROUTINE_ROUTE}/${program_id}`
@@ -47,7 +47,7 @@ const getRoutinesFromProgram = async (program_id) => {
         routine.completed
       );
     });
-    if (routines && routines.length > 0) {
+    if (getExercises && routines && routines.length > 0) {
       for (const routine of routines) {
         if (routine) {
           const routineExercises = await getExercisesFromRoutine(routine.id);

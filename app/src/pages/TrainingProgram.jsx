@@ -17,7 +17,10 @@ import { GadgetPremadeRoutineList } from "../components/GadgetPremadeRoutineList
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getAllPresetRoutines } from "../controllers/RoutineController";
+import {
+  getAllPresetRoutines,
+  getExercisesFromRoutine,
+} from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
 
 const tabStyles = {
@@ -53,11 +56,13 @@ export const TrainingProgram = memo((props) => {
         setPresetRoutines(presetRoutines);
 
         // Retrieve Program
-        const programs = await getAllUserPrograms(user.id);
+        const programs = await getAllUserPrograms(user.id, true, false);
         // Find the first program without completed_at
         const activeProgram = programs.find((program) => !program.completed_at);
-        setActiveProgram(activeProgram);
-        setProgramRoutines(activeProgram?.routines || []);
+        if (activeProgram) {
+          setActiveProgram(activeProgram);
+          setProgramRoutines(activeProgram?.routines || []);
+        }
       } catch (e) {
         console.log(e);
       } finally {
@@ -73,13 +78,13 @@ export const TrainingProgram = memo((props) => {
       return;
     }
     return (
-      <Grid2 container spacing={2} >
+      <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 7 }} >
+        <Grid2 size={{ xs: 12, md: 7 }}>
           <GadgetRoutineOfToday programRoutines={programRoutines} />
         </Grid2>
         {/* RIGHT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 5 }} >
+        <Grid2 size={{ xs: 12, md: 5 }}>
           <GadgetSchedule
             program={activeProgram}
             programRoutines={programRoutines}
@@ -124,11 +129,12 @@ export const TrainingProgram = memo((props) => {
 
       <Box sx={{ marginTop: 2 }}>
         {/* MY PROGRAM TAB */}
-        {activeTab === 0 && (
-          activeProgram  
-          ? ( myProgramTabContent ) 
-          : ( <Typography>No available program</Typography> )
-        )}
+        {activeTab === 0 &&
+          (activeProgram ? (
+            myProgramTabContent
+          ) : (
+            <Typography>No available program</Typography>
+          ))}
         {/* PREMADE ROUTINES TAB */}
         {activeTab === 1 && premadeRoutinesTabContent}
       </Box>

@@ -20,7 +20,7 @@ const API_USER_SCHEDULE_ROUTE = "schedule";
 const API_USER_ACHIEVEMENT_ROUTE = "achievement";
 const API_USER_ACCUMULATED_STATS_ROUTE = "stats";
 
-const getUser = async (authUser) => {
+const getUser = async (authUser, allInfo = true) => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${authUser.id}`);
     const data = await response.data.data;
@@ -33,17 +33,19 @@ const getUser = async (authUser) => {
       data.weight,
       data.weight_unit
     );
-    const settings = await getUserSettings(user.id);
-    user.settings = settings;
+    if (allInfo) {
+      const settings = await getUserSettings(user.id);
+      user.settings = settings;
 
-    const progress = await getUserProgress(user.id);
-    user.progress = progress;
+      const progress = await getUserProgress(user.id);
+      user.progress = progress;
 
-    const schedule = await getUserSchedule(user.id);
-    user.schedule = schedule;
+      const schedule = await getUserSchedule(user.id);
+      user.schedule = schedule;
 
-    const achievements = await getUserAchievements(user.id);
-    user.achievements = achievements;
+      const achievements = await getUserAchievements(user.id);
+      user.achievements = achievements;
+    }
 
     return user;
   } catch (e) {
