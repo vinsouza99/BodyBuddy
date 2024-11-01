@@ -53,6 +53,8 @@ export const Learn = memo((props) => {
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
   const [filteredExercises, setFilteredExercises] = useState([]);
+  const [selectedMuscleGroupID, setSelectedMuscleGroupID] = useState("");
+  const [selectedGoalID, setSelectedGoalID] = useState("");
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -99,32 +101,32 @@ export const Learn = memo((props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
   };
+  useEffect(() => {
+    filterExercisesByMuscleGroup(selectedMuscleGroupID);
+  }, [selectedMuscleGroupID]);
+
+  useEffect(() => {
+    filterExercisesByGoal(selectedGoalID);
+  }, [selectedGoalID]);
+
+  const handleSelectMuscleGroup = (event) => {
+    setSelectedMuscleGroupID(event.target.value);
+  };
+  const handleSelectGoal = (event) => {
+    setSelectedGoalID(event.target.value);
+  };
   const filterExercisesByMuscleGroup = (muscleGroupID) => {
-    const filteredArray = filteredExercises.filter((exercise) => {
-      const muscleGroup = exercise.muscleGroups.find(
-        (muscleGroup) => muscleGroup.id == muscleGroupID
-      );
-      if (muscleGroup) {
-        return true;
-      } else {
-        return false;
-      }
-    });
+    const filteredArray = exercises.filter((exercise) =>
+      exercise.hasMuscleGroup(muscleGroupID)
+    );
     setFilteredExercises(filteredArray);
   };
   const filterExercisesByGoal = (goalID) => {
-    /*
-    setFilteredExercises(
-      filteredExercises.filter((exercise) => {
-        const goal = exercise.goals.find((goal) => goal.id == goalID);
-        if (goal) {
-          return true;
-        } else {
-          return false;
-        }
-      })
+    const filteredArray = exercises.filter((exercise) =>
+      exercise.hasGoal(goalID)
     );
-    */
+
+    setFilteredExercises(filteredArray);
   };
   // Memoize the exercises grid
   const exercisesGrid = useMemo(() => {
@@ -182,15 +184,20 @@ export const Learn = memo((props) => {
           flexWrap="wrap"
           sx={{ marginTop: 2, marginBottom: 4 }}
         >
-          {/* Buttons for filtering exercises by muscle groups */}
-          {muscleGroups.map((muscleGroup) => (
-            <Button
-              variant="outlined"
-              onClick={() => filterExercisesByMuscleGroup(muscleGroup.id)}
+          <FormControl sx={{ m: 1, minWidth: 80 }}>
+            <InputLabel id="muscle-group-label">MuscleGroup</InputLabel>
+            <Select
+              labelId="muscle-group-label"
+              id="muscle-group-select"
+              value={selectedMuscleGroupID}
+              label="Muscle Group"
+              onChange={handleSelectMuscleGroup}
             >
-              {muscleGroup.name}
-            </Button>
-          ))}
+              {muscleGroups.map((muscleGroup) => (
+                <MenuItem value={muscleGroup.id}>{muscleGroup.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
         {/* Grid to display LearningCard components */}
         {exercisesGrid}
@@ -204,12 +211,20 @@ export const Learn = memo((props) => {
           flexWrap="wrap"
           sx={{ marginTop: 2, marginBottom: 4 }}
         >
-          {/* Buttons for filtering exercises by fitness goals */}
-          {goals.map((goal) => (
-            <Button variant="outlined" onClick={filterExercisesByGoal(goal.id)}>
-              {goal.name}
-            </Button>
-          ))}
+          <FormControl sx={{ m: 1, minWidth: 80 }}>
+            <InputLabel id="goal-label">Goals</InputLabel>
+            <Select
+              labelId="goal-label"
+              id="goal-select"
+              value={selectedGoalID}
+              label="Goal"
+              onChange={handleSelectGoal}
+            >
+              {goals.map((goal) => (
+                <MenuItem value={goal.id}>{goal.name}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Box>
         {/* Grid to display LearningCard components */}
         {exercisesGrid}
