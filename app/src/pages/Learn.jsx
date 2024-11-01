@@ -49,7 +49,6 @@ CustomTabPanel.propTypes = {
 };
 
 export const Learn = memo((props) => {
-  const { user, handleSignOut } = useAuth();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
   const [filteredExercises, setFilteredExercises] = useState([]);
@@ -61,9 +60,6 @@ export const Learn = memo((props) => {
 
   useEffect(() => {
     setPageTitle(props.title); // Set the page title
-
-    // Log user id
-    console.log(user.id);
 
     const loadData = async () => {
       try {
@@ -95,7 +91,7 @@ export const Learn = memo((props) => {
     };
 
     loadData();
-  }, [props.title, user.id]);
+  }, [props.title]);
 
   const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const handleChange = (event, newValue) => {

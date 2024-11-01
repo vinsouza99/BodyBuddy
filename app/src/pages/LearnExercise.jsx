@@ -58,8 +58,8 @@ export const LearnExercise = (props) => {
     return (
       <iframe
         // src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
-        // src={exercise.video_tutorial_url ? exercise.video_tutorial_url : "Video Tutorial URL"}
-        src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM" // TEMPORARY VIDEO PLACEHOLDER
+        src={exercise.video_tutorial_url ? exercise.video_tutorial_url : "Video Tutorial URL"}
+        // src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM"
         title={exercise?.name || "Exercise Name"}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
