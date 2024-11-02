@@ -43,12 +43,18 @@ const LearningCard = ({ exercise, exercise_type }) => {
     navigate(`/exercise/${id}`);
   };
 
+  // Extract the video thumbnail
+  const videoURL = exercise.video_tutorial_url;
+  const videoThumbnail = videoURL
+    ? `http://img.youtube.com/vi/${videoURL.split("/embed/")[1]}/sddefault.jpg`
+    : null;
+  console.log("THE VIDEO THUMBNAIL IS " + videoThumbnail);
+
   // Memoize the iframe using useMemo
   const memoizedIframe = useMemo(() => {
     return (
       <iframe
-        // src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
-        src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM"
+        src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
         title={exercise.name ? exercise.name : "Exercise Name"}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
@@ -70,8 +76,8 @@ const LearningCard = ({ exercise, exercise_type }) => {
       <Box
         sx={{
           position: "relative",
-          width: "100%",
-          paddingTop: "56.25%", // Aspect ratio 16:9
+          // width: "100%",
+          // paddingTop: "56.25%",
 
           // Temporary styles for gif
           // display: "flex",
@@ -79,12 +85,12 @@ const LearningCard = ({ exercise, exercise_type }) => {
           // alignItems: "center",
           // padding: "10px",
           // backgroundSize: "cover",
-          // height: "240px",
+          height: "240px",
         }}
       >
         {/* Temporary styles for gif */}
-        {/* <img
-          src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
+        <img
+          src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
           alt={exercise.name ? exercise.name : "Exercise Name"}
           style={{
             maxWidth: "100%",
@@ -92,8 +98,10 @@ const LearningCard = ({ exercise, exercise_type }) => {
             height: "auto",
             display: "block",
             borderRadius: "8px",
+            backgroundSize: "cover",
+            overflow: "hidden",
           }}
-        /> */}
+        />
 
         {/* Show loading spinner until video loads */}
         {loading && (
@@ -151,3 +159,17 @@ const LearningCard = ({ exercise, exercise_type }) => {
 };
 
 export default LearningCard;
+
+// The URL to extract the ID from
+// const url = "https://www.youtube.com/embed/Zqc_lc93hak";
+
+// Extract the ID from the URL
+// const videoId = url.split("/embed/")[1];
+
+// Use the ID to create the full video URL
+// const videoUrl = `https://www.youtube.com/embed/${videoId}`;
+
+// Assuming you have an `exercise` object
+// const src = exercise.video_tutorial_url ? exercise.video_tutorial_url : videoUrl;
+
+// console.log(src);

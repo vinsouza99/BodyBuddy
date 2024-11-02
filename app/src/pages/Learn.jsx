@@ -49,7 +49,6 @@ CustomTabPanel.propTypes = {
 };
 
 export const Learn = memo((props) => {
-  const { user, handleSignOut } = useAuth();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
   const [filteredExercises, setFilteredExercises] = useState([]);
@@ -62,13 +61,10 @@ export const Learn = memo((props) => {
   useEffect(() => {
     setPageTitle(props.title); // Set the page title
 
-    // Log user id
-    console.log(user.id);
-
     const loadData = async () => {
       try {
         // Cocoy: Load exercises
-        const response = await getAllExercises();
+        const response = await getAllExercises(false);
 
         // Log the full response
         //console.log("Loaded exercises:", response);
@@ -95,7 +91,7 @@ export const Learn = memo((props) => {
     };
 
     loadData();
-  }, [props.title, user.id]);
+  }, [props.title]);
 
   const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const handleChange = (event, newValue) => {
@@ -194,8 +190,8 @@ export const Learn = memo((props) => {
               onChange={handleSelectMuscleGroup}
             >
               {muscleGroups.map((muscleGroup, index) => (
-                <MenuItem value={muscleGroup.id}>
-                  {muscleGroup.name} key={index}
+                <MenuItem value={muscleGroup.id} key={index}>
+                  {muscleGroup.name}
                 </MenuItem>
               ))}
             </Select>

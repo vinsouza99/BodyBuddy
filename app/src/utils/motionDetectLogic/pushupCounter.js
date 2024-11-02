@@ -9,6 +9,9 @@ export class PushupCounter extends BaseCounter {
     this.sholderHipAnkleAngle = null;
   }
 
+  static MET = 8.0; // Metabolic equivalent of task (MET) for pushups
+  static TIME_PER_REP = 6; // Time taken to complete one pushup rep
+
   _validateCustomConditions(landmarks) {
     // Make sure the user has his/her hands on the floor.
     const leftWrist = landmarks[landmarkNames.LEFT_WRIST];
@@ -42,7 +45,12 @@ export class PushupCounter extends BaseCounter {
     // Process Count
     this.#processCount(leftShoulder, leftElbow, leftWrist, rightShoulder, rightElbow, rightWrist);
 
-    return { count: this.successCount, alert: this.alert };
+    return { 
+      count: this.successCount, 
+      alert: this.alert,
+      calorie: PushupCounter.MET * (PushupCounter.TIME_PER_REP / 3600) * 1.05,
+      score: 1,
+    };
   }
 
   #processAlert(leftShoulder, leftHip, leftAnkle, rightShoulder, rightHip, rightAnkle) {

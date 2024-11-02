@@ -77,25 +77,25 @@ function History({ data }) {
   };
 
   // OK button on duration modal
-const handleOKClick = () => {
-    // 日付の範囲を1日単位に合わせる
-    const startOfStartDate = startDate.startOf('day').utc(); // UTCに変換
-    const endOfEndDate = endDate.endOf('day').utc(); // UTCに変換
-
-    // フィルタリング処理
-    const filtered = data.filter(item => {
-      const itemDate = dayjs(item.compare_date).utc(); // UTCとして比較
-      return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
-    });
-
   // const handleOKClick = () => {
-  //   const startOfStartDate = startDate.startOf('day').tz("America/Vancouver");
-  //   const endOfEndDate = endDate.endOf('day').tz("America/Vancouver");
-  //   // Fitering dates
+  //   // 日付の範囲を1日単位に合わせる
+  //   const startOfStartDate = startDate.startOf('day').utc(); // Transformation to UTC
+  //   const endOfEndDate = endDate.endOf('day').utc(); // Transformation to UTC
+
+  //   // Filtering
   //   const filtered = data.filter(item => {
-  //     const itemDate = dayjs(item.compare_date).tz("America/Vancouver");
+  //     const itemDate = dayjs(item.compare_date).utc(); // Comapre as UTC
   //     return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
   //   });
+
+  const handleOKClick = () => {
+    const startOfStartDate = startDate.startOf('day').tz("America/Vancouver");
+    const endOfEndDate = endDate.endOf('day').tz("America/Vancouver");
+    // Fitering dates
+    const filtered = data.filter(item => {
+      const itemDate = dayjs(item.compare_date).tz("America/Vancouver");
+      return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
+    });
     
     setFilteredData(filtered);
     setIsDateSelected(true);
@@ -156,40 +156,44 @@ const handleOKClick = () => {
 
         <div 
           style={{
-            maxHeight: '80vh', // Set the displayed height
+            maxHeight: '100vh', // Set the displayed height
             overflowY: 'auto', // Scrolling
           }}>
           {filteredData.length > 0
             ? filteredData.map((item, index) => (
                 <Accordion
                   elevation={0}
+                  square={true}
                   key={index}
                   sx={{
                     marginTop: 1,
-                    borderLeft: "2px solid #4A90E2",
-                    borderTop: "none",
-                    borderRight: "none",
-                    borderBottom: "none",
+                    borderLeft: index === 0 ? "3px solid #ff4da9" : "3px solid #2d90e0", 
+                    borderTop: "none",                   
                   }}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
-                    aria-controls="panel2-content"
-                    id="panel2-header"
+                    // aria-controls="panel2-content"
+                    // id="panel2-header"
+                    sx={{ 
+                      height: '80px',
+                    }}
                   >
                     <Typography>
                       {new Date(item.compare_date).toDateString()} - {item.name}
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Paper
-                      elevation={2}
+                    <Box
+                      onClick={item.recording_url ? videoOpen : null}
                       sx={{
+                        cursor: item.recording_url ? 'pointer' : 'default',                        
                         display: "flex",
                         alignItems: "center",
                         marginBottom: 2,
                         borderRadius: 10,
                         backgroundColor: "#f3f3f3",
+                        boxShadow: 3,
                       }}
                     >
 
@@ -197,16 +201,19 @@ const handleOKClick = () => {
                       {item.recording_url ? (
                         <IconButton sx={{ padding: 0, marginRight: 1 }}>
                           <PlayCircleIcon
-                            onClick={videoOpen}
-                            sx={{ color: "#4A90E2", fontSize: 60 }}
+                            sx={{ color: "#2d90e0", fontSize: 60 }}
                           />
                         </IconButton>
-                      ) : null}              
+                      ) : (
+                        <IconButton sx={{ padding: 0, marginRight: 1 }} disabled>
+                          <PlayCircleIcon sx={{ color: "gray", fontSize: 60 }} />
+                        </IconButton>
+                      )}  
 
 
                       {/* description always shows up*/}
-                      <Typography variant="body1" sx={{margin: 2}} >{item.description}</Typography>
-                    </Paper>
+                      <Typography variant="body1" sx={{margin: 2}} >Recording Session</Typography>
+                    </Box>
                     <Stack direction="row" spacing={1}>
 
                       <Chip

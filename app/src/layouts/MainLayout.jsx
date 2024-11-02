@@ -51,7 +51,7 @@ export const MainLayout = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      const response = await getUser(user);
+      const response = await getUser(user, false);
       setUserInfo(response);
     };
     getUserInfo();
@@ -81,9 +81,9 @@ export const MainLayout = () => {
   // Session State from Toolpad Core
   const [session] = useState({
     user: {
-      name: userInfo.name,
+      name: userInfo?.name,
       email: user.email,
-      image: userInfo.picture,
+      image: userInfo?.picture,
     },
   });
 

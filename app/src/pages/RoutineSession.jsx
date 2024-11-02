@@ -20,7 +20,7 @@ import {
 } from "@mediapipe/tasks-vision";
 import {
   Counter2,
-  AngleMeter2,
+  // AngleMeter2,
   RestTime2,
   MetricCard,
   DemoExercise,
@@ -37,8 +37,9 @@ import theme from "../theme";
 import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
+import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedStats, getUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
+import { updateUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
 import { format } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
@@ -88,20 +89,24 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     reps = 0,
   } = location.state || {}; // Receive from the StartRoutineModal as a prop
 
-  const startedAtRef = useRef(null);
-  const angleChangeThreshold = 3;
-  let previousAngle = null;
+  // Note: Angle meters are temporarily removed as they are not an effective UI
+  // const angleChangeThreshold = 3;
+  // let previousAngle = null;
+  // const [angle, setAngle] = useState(180);
 
   // --- State ---
   // NOTE: useReducer might be a better choice for managing multiple states
+  const [userInfo, setUserInfo] = useState({});
+  const [programId, setProgramId] = useState(null);
   const [routine, setRoutine] = useState([]);
   const [exerciseVideo, setExerciseVideo] = useState(null);
   const [exerciseCounter, setExerciseCounter] = useState(null);
   const [selectedExerciseIndex, setSelectedExerciseIndex] = useState(0);
   const [successSetCount, setSuccessSetCount] = useState(0);
   const [successRepCount, setSuccessRepCount] = useState(0);
+  const [calorie, setCalorie] = useState(0);
+  const [score, setScore] = useState(0);
   const [postureAlert, setPostureAlert] = useState(null);
-  const [angle, setAngle] = useState(180);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -120,14 +125,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const poseLandmarkerRef = useRef(null);
   const runningMode = useRef("VIDEO");
   const animationFrameIdRef = useRef(null);
-
-  // !!! FOR RE-RENDERTING TEST !!!
-  // useEffect(() => {
-  //   console.log("Rendering Test: Routine Component");
-  // });
-  // useEffect(() => {
-  //   console.log("Rendering Test: angle");
-  // }, [angle]);
+  const calorieUpdatedRef = useRef(false);
+  const startedAtRef = useRef(null);
 
   // ---------------------------------------------------------
   //                      useEffect Hooks
@@ -137,18 +136,30 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     setPageTitle(title);
 
-    // Get session start time
-    if (!startedAtRef.current) {
-      startedAtRef.current = new Date();
-      console.log('Started at:', startedAtRef.current);
-    }
-
     // Overwrite the style of #root
     const rootElement = document.getElementById("root");
     rootElement.style.margin = "0";
     rootElement.style.padding = "0";
     rootElement.style.width = "100%";
     rootElement.style.maxWidth = "100%";
+
+    // Get session start time
+    if (!startedAtRef.current) {
+      startedAtRef.current = new Date();
+      console.log('Started at:', startedAtRef.current);
+    }
+
+    // Get user info
+    const fetchUserInfo = async () => {
+      try {
+        const data = await getUser(user);
+        // console.log(data);
+        setUserInfo(data);
+      } catch (error) {
+        console.error("Error fetching user info:", error);
+      }
+    };
+    fetchUserInfo();
 
     // Setup MediaPipe PoseLandmarker when component mounts
     const createPoseLandmarker = async () => {
@@ -171,6 +182,29 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       }
     };
     createPoseLandmarker();
+
+    // Retrieve program ID from the routine ID
+    const fetchProgramId = async () => {
+      try {
+        if (idType === "routine") {
+          const response = await axiosClient.get(`programs/routine/${id}`, {
+            validateStatus: (status) => status === 200 || status === 404
+          });
+
+          if (Number(response.status) === 200) {
+            setProgramId(response.data.data.program_id);
+          } else if (Number(response.status) === 404) { 
+            console.log("This is a premade routine.");
+            setProgramId(null);
+          }else {
+            throw new Error("Failed to fetch program ID");
+          } 
+        }
+      } catch (error) {
+        console.error("Error fetching program ID:", error);
+      }
+    };
+    fetchProgramId();
 
     // Retrieve routine information from the database (if idType is "routine")
     const fetchRoutineInfo = async () => {
@@ -234,7 +268,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     const observer = new MutationObserver(() => {
       if (videoRef.current) {
-        console.log("VideoRef is now available:", videoRef.current);
+        // console.log("VideoRef is now available:", videoRef.current);
         toggleWebCam();
         // Disconnect the observer after the video element is available
         observer.disconnect();
@@ -327,25 +361,24 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Record user activity
   useEffect(() => {
-    const handleUserActivity = async () => {
-      if (isFinished) {
-        if (record) {
-          if (exerciseVideo) {
-            registerUserActivity();
-            await registerUserAccumulatedStat();
-            earnBadges();
-          }
-        } else {
-          registerUserActivity();
-          await registerUserAccumulatedStat();
-          earnBadges();
-        }
+    const updateUserHistory = async () => {
+      if (isFinished && (!record || (record && exerciseVideo))) {
+        await updateUserActivity();
+        await updateRoutineCompletionStatus();
+        await updateProgramCompletionStatus();
+        await updateUserAccumulatedStat();
+        earnBadges();  
       }
     };
-    handleUserActivity();
+    updateUserHistory();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished, record, exerciseVideo]);
+
+  // Note: This is a workaround to prevent multiple calorie updates
+  useEffect(() => {
+    calorieUpdatedRef.current = false;
+  }, [successRepCount]);
 
   // ---------------------------------------------------------
   //                      Event Handlers
@@ -626,13 +659,29 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Process detected landmarks data
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const { count = 0, alert = null } =
+        const { count = 0, alert = null, calorie = 0, score = 0 } =
           exerciseCounter?.processPose(results.landmarks[0]) || {};
 
         // Update success count
         if (count !== undefined) {
           setSuccessRepCount((prevSuccessRepCount) => {
             if (count !== prevSuccessRepCount) {
+              // Update calorie
+              if (!calorieUpdatedRef.current) {
+                setCalorie((prevCalorie) => {
+                  if (userInfo?.weight) {
+                    const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+                    return prevCalorie + Math.round(calorie * userInfo.weight * weightFactor);
+                  }
+                  return prevCalorie;
+                });
+
+                // Update score
+                setScore((prevScore) => prevScore + score);
+
+                calorieUpdatedRef.current = true;
+              }
+
               // When the rep count reaches the target, increment the set count
               if (
                 count >= routine[selectedExerciseIndex].reps &&
@@ -659,14 +708,14 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
           });
 
           // Update angle for the meter when the angle diff over the "threshold"
-          const angle = exerciseCounter?.getAngle(results.landmarks[0]);
-          if (
-            angle !== undefined &&
-            Math.abs(angle - previousAngle) > angleChangeThreshold
-          ) {
-            setAngle(Math.round(angle));
-            previousAngle = angle;
-          }
+          // const angle = exerciseCounter?.getAngle(results.landmarks[0]);
+          // if (
+          //   angle !== undefined &&
+          //   Math.abs(angle - previousAngle) > angleChangeThreshold
+          // ) {
+          //   setAngle(Math.round(angle));
+          //   previousAngle = angle;
+          // }
         }
 
         // Update alert if any posture issue
@@ -714,8 +763,63 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
   }, []);
 
+  // Update program routine completion status
+  const updateRoutineCompletionStatus = async () => {
+    try {
+      if (idType !== "routine") return;
+      const response = await axiosClient.put(
+        `/programs/routines`,
+        { 
+          program_id: programId,
+          routine_id: id,
+          scheduled_date:format(new Date(), 'yyyy-MM-dd'),
+          completed: true
+        }
+      );
+      if (Number(response.status) !== 200 && Number(response.status) !== 204) {
+        throw new Error("Failed to update Program_Routine");
+      }
+      console.log("Program_Routine has been successfully updaed:", response.data);
+    } catch (error) {
+      console.error("Failed to update Program_Routine:", error);
+    }
+  }
+
+  // Update program completion status
+  const updateProgramCompletionStatus = async () => {
+    try {
+      if (idType !== "routine" || programId === null ) return;
+      
+      // Fetch all routines in the program
+      const fetchResponse = await axiosClient.get(`/routines/program/${programId}`);
+      if (Number(fetchResponse.status) !== 200) {
+        throw new Error("Failed to fetch Program");
+      }
+
+      // Check if all routines in the program are completed
+      fetchResponse.data.data.forEach(async (routine) => {
+        if (!routine.completed) {
+          console.log("Program has uncompleted routines");
+          return;
+        }
+      });
+
+      // Update program completion status to "completed(true)"
+      const response = await axiosClient.put(
+        `/programs/${programId}`,
+        { completed: true }
+      );
+      if (Number(response.status) !== 200 && Number(response.status) !== 204) {
+        throw new Error("Failed to update Program");
+      }
+      console.log("Program has been successfully updaed:", response.data);
+    } catch (error) {
+      console.error("Failed to update Program:", error);
+    }
+  }
+
   // Insert user activity log info to the database
-  const registerUserActivity = async () => {
+  const updateUserActivity = async () => {
     try {
       const completedAt = new Date().toISOString();
       const newHistoryObj = {
@@ -723,8 +827,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         completed_at: completedAt,
         routine_id: idType === "routine" ? id : null,
         recording_url: exerciseVideo,
-        score: 30, // TODO: To be implemented
-        calories: 50, // TODO: To be implemented
+        score: score,
+        calories: calorie,
       };
 
       const response = await axiosClient.post(
@@ -732,18 +836,16 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         newHistoryObj
       );
       if (Number(response.status) !== 201) {
-        throw new Error("Failed to insert routine history info");
+        throw new Error("Failed to update Routine_History");
       }
-      console.log("Routine history inserted successfully:", response.data);
-      return response.data;
+      console.log("Routine_History has been successfully updaed:", response.data);
     } catch (error) {
-      console.error("Error inserting routine history info:", error);
-      throw error; // Throw to handle error where the function is called
+      console.error("Failed to update Routine_History:", error);
     }
   };
 
   // Insert user accumulated time info to the database
-  const registerUserAccumulatedStat = async () => {
+  const updateUserAccumulatedStat = async () => {
     try {
       const now = new Date();
       const completedAt = format(now, "yyyy-MM-dd");
@@ -753,26 +855,32 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         user.id,
         completedAt,
         duration, // minutes
-        0 // calories
+        calorie,
       );
-      console.log(
-        "User accumulated stat inserted successfully:",
-        response.data
-      );
+      console.log("User_Accumulated_Workout_Stats has been successfully updaed:", response.data);
     } catch (error) {
-      console.error("Error inserting accumulated stat info:", error);
+      console.error("Failed to update User_Accumulated_Workout_Stats:", error);
     }
   };
 
   const earnBadges = async () => {
     try {
-      // If this is the first time to finish the routine, earn the "Starter" badge
-      const response = await getUserAccumulatedStats(user.id);
-      console.log("User accumulated stats:", response);
-      if (response.data.length === 1) {
-        await addUserAchievement(user.id, 1, new Date().toISOString());
-        console.log("Starter badge earned!");
+      // Badge 1: The first routine completion
+      const response = await axiosClient.get(`/routines/history/${user.id}`);
+      if (Number(response.status) !== 200) {
+        throw new Error("Failed to fetch user accumulated stats");
       }
+
+      if (response.data.data.length === 1) {
+        const response =  await addUserAchievement(user.id, 1, new Date().toISOString());
+        console.log("Starter badge earned!", response);
+      } else {
+        console.log("Starter badge already earned.");
+      }
+
+      // Badge 2: The first program completion
+      // To be implemented.
+
     } catch (error) {
       console.error("Error earning badge:", error);
     }
@@ -943,7 +1051,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               zIndex: 1000,
             }}
           >
-            <AngleMeter2 title={"Angle"} angle={angle} />
+            {/* Angle meters are temporarily removed as they are not an effective UI */}
+            {/* <AngleMeter2 title={"Angle"} angle={angle} /> */}
+
             <Counter2
               title={"Reps"}
               count={successRepCount}
@@ -989,7 +1099,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             />
 
             {/* Calories */}
-            <MetricCard title="Calories" />
+            <MetricCard title="Calories" value={calorie}/>
 
             {/* Puase & Play */}
             <IconButton
@@ -1039,7 +1149,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             </IconButton>
 
             {/* Score */}
-            <MetricCard title="Score" />
+            <MetricCard title="Score" value={score}/>
 
             {/* Exercise Menu */}
             <Box
@@ -1148,6 +1258,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       <CompleteRoutineSessionModal
         open={isFinished}
         onComplete={handleMoveToTrainingPage}
+        mins={Math.ceil((new Date() - startedAtRef.current)/ (1000 * 60))}
+        calorie={calorie}
+        score={score}
       />
     </>
   );
