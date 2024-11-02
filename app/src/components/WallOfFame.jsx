@@ -5,8 +5,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { format } from 'date-fns';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import BadgePlaceholder from '../assets/Newbie_No_More_8.png';
-import Badge1 from '../assets/Newbie_No_More_9.png';
+import BadgePlaceholder from '../assets/NewbieNoMore_Off.svg';
+import Badge1 from '../assets/NewbieNoMore_On.svg';
 
 const modalStyle = {
   // Layout and positioning
