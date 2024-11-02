@@ -34,7 +34,7 @@ const modalStyle = {
   backgroundSize: 'cover',
 };
 
-export const CompleteRoutineSessionModal = ( {open = false, onComplete = false } ) => {
+export const CompleteRoutineSessionModal = ( {open = false, onComplete = false, mins = 0, calorie = 0, score = 0 } ) => {
   const isLandscapeMode = useLandscapeMode();
   const navigate = useNavigate();
 
@@ -76,15 +76,15 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false }
           }}>
           <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
             <img src={Mins} alt="mins" style={{ width: "45px", height: "45px", marginBottom: "4px" }}/>
-            <MetricCard title="Mins" color="black" />
+            <MetricCard title="Mins" color="black" value={mins}/>
           </Box>
           <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
             <img src={Calories} alt="calories" style={{ width: "37px", height: "45px", marginBottom: "4px" }}/>
-            <MetricCard title="Calories" color="black" />
+            <MetricCard title="Calories" color="black" value={calorie} />
           </Box>
           <Box sx={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
             <img src={Score} alt="score" style={{ width: "45px", height: "45px", marginBottom: "4px" }}/>
-            <MetricCard title="Score" color="black" />
+            <MetricCard title="Score" color="black" value={score} />
           </Box>
         </Box>
         {/* <Button 
@@ -114,4 +114,7 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false }
 CompleteRoutineSessionModal.propTypes = {
   open: PropTypes.bool.isRequired,
   onComplete: PropTypes.func.isRequired,
+  mins: PropTypes.number.isRequired,
+  calorie: PropTypes.number.isRequired,
+  score: PropTypes.number.isRequired,
 }

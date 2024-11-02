@@ -1,18 +1,35 @@
 import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import { Box, Typography, Accordion, AccordionDetails, AccordionSummary } from "@mui/material";
 import { format, isSameDay, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
+import { getExercisesFromRoutine } from "../controllers/RoutineController";
 import { RoutineExercisesList } from "./RoutineExercisesList";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export const RoutinesList = ({ routines }) => {
+export const RoutinesList = ({ routines = []}) => {
+  const [updatedRoutines, setUpdatedRoutines] = useState([]);
   const timeZone = 'America/Vancouver';
   const today = new Date();
 
+  useEffect(() => {
+    const fetchExercises = async () => {
+      const routinesWithExercises = await Promise.all(
+        routines.map(async (routine) => {
+          const routineExercises = await getExercisesFromRoutine(routine.id);
+          return { ...routine, exercises: routineExercises };
+        })
+      );
+      setUpdatedRoutines(routinesWithExercises);
+    };
+
+    fetchExercises();
+  }, [routines]);
+
   return (
     <>
-      {routines && routines.length > 0
-        ? routines
+      {updatedRoutines && updatedRoutines.length > 0
+        ? updatedRoutines
         .sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date)) // Sort by date
         .map((routine) => (
             <Accordion
@@ -34,13 +51,10 @@ export const RoutinesList = ({ routines }) => {
                 <Box component="span" sx={{ marginRight: '1rem' }}>
                   {format(toZonedTime(routine.scheduled_date, timeZone), 'MMM d')}:
                 </Box>
-                  {routine.name ? routine.name : "Name is undefined"}
+                  {routine.name ? routine.name : "Routine name is undefined"}
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                {/* <Typography>
-                  {routine.description ? routine.description : "Description is undefined"}
-                </Typography> */}
                 <RoutineExercisesList
                   routineExercises={routine.exercises} 
                   color={isSameDay(parseISO(routine.scheduled_date), today) ? 'secondary.main' : 'primary.main'}

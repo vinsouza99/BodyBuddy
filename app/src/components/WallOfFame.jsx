@@ -2,10 +2,11 @@ import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from 'react';
 import { Box, Typography, IconButton, Modal, Button, Popover } from '@mui/material';
 import CloseIcon from "@mui/icons-material/Close";
+import { format } from 'date-fns';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import BadgePlaceholder from '../assets/badge_placeholder.png';
-import Badge1 from '../assets/badge_id_01.png';
+import BadgePlaceholder from '../assets/Newbie_No_More_8.png';
+import Badge1 from '../assets/Newbie_No_More_9.png';
 
 const modalStyle = {
   // Layout and positioning
@@ -42,20 +43,20 @@ export const WallOfFame = ({ userInfo = {} }) => {
 
   // Popover for Badge Description
   const [anchorEl, setAnchorEl] = useState(null);
-  const [popoverContent, setPopoverContent] = useState('');
+  const [popoverContent, setPopoverContent] = useState({});
   const open = Boolean(anchorEl);
 
   // Initialization
   useEffect(() => {
     // Add badge user already earned to badges array    
     if (userInfo?.achievements) {
-      // console.log(userInfo.achievements);
       const earnedBadges = userInfo.achievements.map((achievement) => ({
         id: achievement?.achievement_id,
         name: achievement?.name,
         description: achievement?.description,
         src: Badge1,
         alt: achievement?.name,
+        earned_at: achievement?.earned_at,
       }));
       setBadges(earnedBadges);
     }
@@ -109,9 +110,9 @@ export const WallOfFame = ({ userInfo = {} }) => {
   };
 
   // Popover for Badge Description
-  const handleBadgeClick = (event, description) => {
+  const handleBadgeClick = (event, name, description, earned_at) => {
     setAnchorEl(event.currentTarget);
-    setPopoverContent(description);
+    setPopoverContent({name, description, earned_at});
   };
 
   // Popover for Badge Description
@@ -253,7 +254,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               Wall of Fame
             </Typography>
             <Typography>
-              Keep up with your exercise plan to earn new surprised
+              Achieved {badges.length}
             </Typography>
           </Box>
 
@@ -273,12 +274,13 @@ export const WallOfFame = ({ userInfo = {} }) => {
                 height: 150,
                 // border: '1px solid #ccc',
               }}
-              onClick={(e) => handleBadgeClick(e, badge.description)}
+              onClick={(e) => handleBadgeClick(e, badge.name, badge.description, badge.earned_at)}
             >
               <img
                 src={badge.src || BadgePlaceholder}
                 alt={badge.alt}
               />
+
               <Typography sx={{textAlign: "center"}}>
                 {badge.name}
               </Typography>
@@ -291,20 +293,72 @@ export const WallOfFame = ({ userInfo = {} }) => {
             anchorEl={anchorEl}
             onClose={handlePopoverClose}
             anchorOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
-            }}
-            transformOrigin={{
               vertical: 'bottom',
               horizontal: 'center',
             }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'center',
+            }}
             disableRestoreFocus
+            slotProps={{
+              paper: {
+                sx: {
+                  overflow: 'visible',
+                  border: "1px solid #94DC8A",
+                  borderRadius: '15px',
+                  width: "30vw",
+                  maxWidth: "30vw",
+                  textAlign: "center",
+                  position: 'relative',
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                  padding: "1rem",
+                  '&::before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: -15,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    borderWidth: '8px',
+                    borderStyle: 'solid',
+                    borderColor: 'transparent transparent white transparent',
+                    zIndex: 1,
+                  },
+                  '&::after': {
+                    content: '""',
+                    position: 'absolute',
+                    top: -17,
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    borderWidth: '8px',
+                    borderStyle: 'solid',
+                    borderColor: 'transparent transparent #94DC8A transparent', // 三角形のボーダーカラー
+                    zIndex: 0,
+                  },
+                },
+              },
+            }}
           >
-            <Box sx={{ p: 2, maxWidth: 200 }}>
-              <Typography>{popoverContent || "No description available"}</Typography>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "1rem",
+              }}
+            >
+              <Typography sx={{ fontWeight: "bold" }}>
+                {popoverContent?.name || "Not available"}
+              </Typography>
+              <Typography>
+                {popoverContent?.description || ""}  
+              </Typography>
+              {popoverContent?.earned_at && (
+                <Typography>{format(new Date(popoverContent.earned_at), 'dd MMM yyyy')}</Typography>
+              )}
             </Box>
           </Popover>
-
         </Box>
       </Modal>
     </>
