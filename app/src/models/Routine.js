@@ -31,7 +31,8 @@ export default class Routine {
     completed,
     completed_at,
     recording_url,
-    exercises = new Array()
+    exercises = new Array(),
+    goals = new Array()
   ) {
     this.id = id;
     this.duration = duration;
@@ -45,6 +46,7 @@ export default class Routine {
     this.recording_url = recording_url;
     this.exercises = exercises;
     this.compare_date = completed_at;
+    this.goals = goals;
   }
   /**
    * Adds an exercise to the routine and sorts the array according to the order of the exercise

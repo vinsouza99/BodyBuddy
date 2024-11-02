@@ -95,7 +95,7 @@ const getAllPresetRoutines = async () => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/presets`);
     const data = await response.data;
-    const routines = data.data.rows.map(
+    const routines = data.data.map(
       (routine) =>
         new Routine(
           routine.id,

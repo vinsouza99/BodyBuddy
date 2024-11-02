@@ -2,6 +2,7 @@ import Routine from "../models/Routine.js";
 import ProgramRoutine from "../models/ProgramRoutine.js";
 import RoutineExercise from "../models/RoutineExercise.js";
 import RoutineHistory from "../models/RoutineHistory.js";
+import RoutineGoal from "../models/RoutineGoal.js";
 
 export const getRoutines = async (req, res) => {
   try {
@@ -61,11 +62,20 @@ export const getRoutinesByProgram = async (req, res) => {
 
 export const getPresetRoutines = async (req, res) => {
   try {
-    const routines = await Routine.findAndCountAll({
+    const routines = await Routine.findAll({
       where: {
         preset: true,
       },
     });
+    for (const routine of routines) {
+      const goals = await RoutineGoal.findAll({
+        where: {
+          routine_id: routine.id,
+        },
+      });
+      routine.goals = goals;
+    }
+
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -115,6 +125,7 @@ export const createRoutine = async (req, res) => {
       estimated_calories,
       scheduled_date,
       completed,
+      goals,
     } = req.body;
     const newRoutine = await Routine.create({
       id,
@@ -130,6 +141,16 @@ export const createRoutine = async (req, res) => {
       scheduled_date: scheduled_date,
       completed: completed,
     });
+    if (!goals) {
+      goals = [{ id: 1 }];
+    }
+    for (const goal of goals) {
+      await RoutineGoal.create({
+        routine_id: newRoutine.id,
+        goal_id: goal.id,
+      });
+    }
+
     res.status(201).json({
       status: "201",
       message: "Routine created successfully",
