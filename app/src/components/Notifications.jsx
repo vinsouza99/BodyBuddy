@@ -16,6 +16,8 @@ import "./Notifications.css";
 import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import CloseIcon from "@mui/icons-material/Close";
+import filledNotificationIcon from "../assets/NotificationsFilled.png"; // Adjust path based on folder structure
+import NewbieNoMoreIcon from "../assets/Newbie_No_More_9.png";
 
 // Notifications Icon in Header
 function Notifications() {
@@ -71,63 +73,82 @@ function Notifications() {
         }
       )
       .subscribe();
+
     // Clean up the subscription on component unmount
     return () => {
       supabase.removeChannel(channel);
     };
   }, []);
-  const markAllAsRead = () => {
-    for (const notification of notifications) markAsRead(notification.id);
+  const markAllAsRead = async () => {
+    for (const notification of notifications) {
+      if (!notification.read) await markAsRead(notification.id);
+    }
+    setUnreadNotifications(0);
   };
 
   const markAsRead = async (notificationId) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("notification")
       .update({ read: true })
-      .eq("id", notificationId);
-
+      .eq("id", notificationId)
+      .select(); // Fetch the updated notification after the update
     if (error) {
       console.error("Error marking notification as read:", error);
-    } else {
+      return;
+    }
+    console.log(data);
+    if (data && data.length > 0) {
+      const updatedNotification = data[0];
+
+      // Update notifications state
       setNotifications((prevNotifications) =>
         prevNotifications.map((notification) =>
-          notification.id === notificationId
-            ? { ...notification, read: true }
+          notification.id === updatedNotification.id
+            ? updatedNotification
             : notification
         )
       );
-      setUnreadNotifications((prevCount) => prevCount - 1);
+      if (updatedNotification.read) {
+        setUnreadNotifications(unreadNotifications - 1);
+      }
     }
   };
-
+  const getNotificationIcon = (icon_id) => {
+    switch (icon_id) {
+      case 0: {
+        return NewbieNoMoreIcon;
+      }
+      default:
+        return NewbieNoMoreIcon;
+    }
+  };
   return (
     <>
       <Box role="presentation" onClick={() => toggleDrawer()}>
         <div className="notification-wrapper">
           {unreadNotifications > 0 ? (
-            <div className="notification-count">{unreadNotifications}</div>
+            <div className="notification-count">
+              <Typography variant="body3">{unreadNotifications}</Typography>
+            </div>
           ) : (
             ""
           )}
-          <IconButton type="button" aria-label="search">
-            <NotificationsIcon />
+          <IconButton type="button" aria-label="Notifications">
+            <NotificationsIcon sx={{ color: "#353E45" }} />
           </IconButton>
         </div>
       </Box>
       <Drawer
         anchor="right"
         open={open}
-        sx={{ minWidth: "330px" }}
+        BackdropProps={{ invisible: true }}
         onClose={() => toggleDrawer()}
       >
         <Toolbar />
         <Box role="presentation">
-          <Divider />
           <Grid container spacing={2}>
-            <Grid size={8}>
-              <Button onClick={markAllAsRead}>
-                <Typography variant="body">Mark all as read</Typography>
-              </Button>
+            <Grid container size={8}>
+              <Typography variant="body">Notifications</Typography>
             </Grid>
             <Grid size={4}>
               <Button onClick={() => toggleDrawer()}>
@@ -135,57 +156,73 @@ function Notifications() {
               </Button>
             </Grid>
           </Grid>
-
           <Divider />
-          <List>
-            {notifications.map((notification, index) => (
-              <>
-                <ListItem
-                  key={index}
-                  disablePadding
-                  alignItems="flex-start"
-                  className={notification.read ? "" : "unread-notification"}
-                >
-                  <ListItemButton onClick={() => markAsRead(notification.id)}>
-                    <ListItemAvatar>
-                      <Avatar
-                        alt="Notification Icon"
-                        src={"../assets/badge_id_01.png"}
+          <Grid container>
+            <Button
+              onClick={markAllAsRead}
+              disabled={notifications.length == 0}
+            >
+              <Typography variant="body">Mark all as read</Typography>
+            </Button>
+          </Grid>
+          <Divider />
+          <List sx={{ minWidth: "330px" }}>
+            {notifications.length > 0 ? (
+              notifications.map((notification, index) => (
+                <React.Fragment key={index}>
+                  <ListItem
+                    key={index}
+                    disablePadding
+                    alignItems="flex-start"
+                    className={notification.read ? "" : "unread-notification"}
+                  >
+                    <ListItemButton onClick={() => markAsRead(notification.id)}>
+                      <ListItemAvatar>
+                        <img
+                          width="45px"
+                          alt="Notification Icon"
+                          src={getNotificationIcon(notification.icon_id)}
+                        />
+                      </ListItemAvatar>
+                      <ListItemText
+                        primary={
+                          <React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="h5"
+                              sx={{
+                                color: "text.primary",
+                                display: "inline",
+                                fontWeight: 700,
+                              }}
+                            >
+                              {notification.title}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="body3"
+                              sx={{ color: "text.primary", display: "inline" }}
+                            >
+                              {`${new Date(notification.created_at).toDateString().toLocaleUpperCase()} - ${new Date(notification.created_at).toLocaleTimeString()}`}
+                            </Typography>
+                          </React.Fragment>
+                        }
                       />
-                    </ListItemAvatar>
-                    <ListItemText
-                      primary={
-                        <React.Fragment>
-                          <Typography
-                            component="span"
-                            variant="h5"
-                            sx={{
-                              color: "text.primary",
-                              display: "inline",
-                              fontWeight: 700,
-                            }}
-                          >
-                            {notification.title}
-                          </Typography>
-                        </React.Fragment>
-                      }
-                      secondary={
-                        <React.Fragment>
-                          <Typography
-                            component="span"
-                            variant="body3"
-                            sx={{ color: "text.primary", display: "inline" }}
-                          >
-                            {new Date(notification.created_at).toDateString()}
-                          </Typography>
-                        </React.Fragment>
-                      }
-                    />
-                  </ListItemButton>
-                </ListItem>
-                <Divider />
-              </>
-            ))}
+                    </ListItemButton>
+                  </ListItem>
+                  {index < notifications.length - 1 && <Divider />}
+                </React.Fragment>
+              ))
+            ) : (
+              <Box container textAlign={"center"}>
+                <img src={filledNotificationIcon} />
+                <Typography variant="body2">No notifications!</Typography>
+              </Box>
+            )}
           </List>
         </Box>
       </Drawer>
