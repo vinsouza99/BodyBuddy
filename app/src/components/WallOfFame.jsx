@@ -254,7 +254,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               Wall of Fame
             </Typography>
             <Typography>
-              Achieved {badges.length}
+              Achieved: {badges.length}
             </Typography>
           </Box>
 
@@ -334,7 +334,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                     transform: 'translateX(-50%)',
                     borderWidth: '8px',
                     borderStyle: 'solid',
-                    borderColor: 'transparent transparent #94DC8A transparent', // 三角形のボーダーカラー
+                    borderColor: 'transparent transparent #94DC8A transparent',
                     zIndex: 0,
                   },
                 },
