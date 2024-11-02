@@ -187,12 +187,18 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     const fetchProgramId = async () => {
       try {
         if (idType === "routine") {
-          const response = await axiosClient.get(`programs/routine/${id}`);
-          if (Number(response.status) !== 200) {
+          const response = await axiosClient.get(`programs/routine/${id}`, {
+            validateStatus: (status) => status === 200 || status === 404
+          });
+
+          if (Number(response.status) === 200) {
+            setProgramId(response.data.data.program_id);
+          } else if (Number(response.status) === 404) { 
+            console.log("This is a premade routine.");
+            setProgramId(null);
+          }else {
             throw new Error("Failed to fetch program ID");
-          }
-          // console.log(response);
-          setProgramId(response.data.data.program_id);
+          } 
         }
       } catch (error) {
         console.error("Error fetching program ID:", error);
@@ -782,7 +788,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Update program completion status
   const updateProgramCompletionStatus = async () => {
     try {
-      if (idType !== "routine") return;
+      if (idType !== "routine" || programId === null ) return;
       
       // Fetch all routines in the program
       const fetchResponse = await axiosClient.get(`/routines/program/${programId}`);
@@ -1252,6 +1258,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       <CompleteRoutineSessionModal
         open={isFinished}
         onComplete={handleMoveToTrainingPage}
+        mins={Math.ceil((new Date() - startedAtRef.current)/ (1000 * 60))}
+        calorie={calorie}
+        score={score}
       />
     </>
   );

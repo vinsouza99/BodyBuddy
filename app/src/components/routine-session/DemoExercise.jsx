@@ -10,6 +10,8 @@ import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import background_image from '../../assets/bg_light.png';
 
 const modalStyle = {
@@ -121,44 +123,50 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
             <Box
               sx={{
                 display: 'flex',
+                flexDirection: 'row',
+                JustifyContent: 'center',
                 alignItems: 'center',
                 gap: 3,
                 width: '100%',
               }}
             >
-              <Typography
-                sx={{ fontWeight: "bold" }}
-              >
-                Next &gt;
-              </Typography>
-              <Typography
-                sx={{ fontWeight: "bold" }}
-              >
-                {nextExerciseInfo ? nextExerciseInfo.name : 'N/A'}
-              </Typography>
-              <Typography
-                sx={{ 
-                  fontWeight: "normal",
-                  display: isLandscapeMode ? 'none' : 'block',
-                }}
-              >
-                {nextExerciseInfo ? nextExerciseInfo.goal : 'N/A'}
-              </Typography>
-              <Button
-                onClick={handleSkipExercise}
-                disabled={!nextExerciseInfo} 
-                variant="text"
-                type="button"
-                sx={{
-                  marginLeft: 'auto',
-                  color: 'black',
-                  "&.Mui-disabled": {
-                    color: 'darkgrey', // overwrite disabled color
-                  }
-                }}
-              >
-                Skip to next movement &gt;
-              </Button>
+            {nextExerciseInfo && (
+              <>
+                <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+                  Next
+                </Typography>
+                <ArrowForwardIosIcon />
+                <Typography sx={{ fontSize: "1rem", fontWeight: "bold" }}>
+                  {nextExerciseInfo?.name ? nextExerciseInfo.name : 'N/A'}
+                </Typography>
+                <Typography
+                  sx={{ 
+                    fontWeight: "normal",
+                    display: isLandscapeMode ? 'none' : 'block',
+                  }}
+                >
+                  {nextExerciseInfo?.goal ? nextExerciseInfo.goal : 'N/A'}
+                </Typography>
+                <Button
+                  onClick={handleSkipExercise}
+                  disabled={!nextExerciseInfo} 
+                  variant="text"
+                  type="button"
+                  sx={{
+                    fontSize: "1rem",
+                    fontWeight: "normal",
+                    marginLeft: 'auto',
+                    // color: 'black',
+                    "&.Mui-disabled": {
+                      color: 'darkgrey', // overwrite disabled color
+                    }
+                  }}
+                >
+                  Skip this exercise
+                  <ArrowForwardIcon />
+                </Button>
+              </>
+            )}
             </Box>
           </Box>
 
