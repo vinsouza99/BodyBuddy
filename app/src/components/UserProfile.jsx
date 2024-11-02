@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { Box, Typography, Avatar, LinearProgress } from "@mui/material";
-import { useAuth } from "../utils/AuthProvider.jsx";
 
 export const UserProfile = ({
   username = "",
@@ -8,8 +7,6 @@ export const UserProfile = ({
   level = 0,
   levelProgress = 0,
 }) => {
-  const { user } = useAuth();
-
   return (
     <Box
       sx={{
@@ -18,8 +15,8 @@ export const UserProfile = ({
         width: "100%",
         gap: 2,
         alignItems: "center",
-        marginTop: 2.5, // Adjustment
-        marginBottom: 2.5, // Adjustment
+        marginTop: 2.5,
+        marginBottom: 2.5,
       }}
     >
       {profilePicture ? (
@@ -38,11 +35,10 @@ export const UserProfile = ({
           {username.charAt(0)}
         </Avatar>
       )}
-      <Box sx={{ flex: 1 }}>
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2, }}>
         <Typography
-          variant="h2"
           textAlign="left"
-          sx={{ fontVariationSettings: "'wght' 800" }}
+          sx={{ fontWeight: "bold", fontSize: "1.5rem" }} 
         >
           Hi, {username}!
         </Typography>
@@ -98,4 +94,6 @@ export const UserProfile = ({
 UserProfile.propTypes = {
   level: PropTypes.number,
   levelProgress: PropTypes.number,
+  profilePicture: PropTypes.string,
+  username: PropTypes.string,
 };

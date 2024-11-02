@@ -19,7 +19,6 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
 import {
   getAllPresetRoutines,
-  getExercisesFromRoutine,
 } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
 

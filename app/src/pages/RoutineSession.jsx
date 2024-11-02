@@ -821,6 +821,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Insert user activity log info to the database
   const updateUserActivity = async () => {
     try {
+      if (idType !== "routine") return;
+      
       const completedAt = new Date().toISOString();
       const newHistoryObj = {
         user_id: user.id,
