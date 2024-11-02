@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -50,57 +49,24 @@ const LearningCard = ({ exercise, exercise_type }) => {
     : null;
   console.log("THE VIDEO THUMBNAIL IS " + videoThumbnail);
 
-  // Memoize the iframe using useMemo
-  const memoizedIframe = useMemo(() => {
-    return (
-      <iframe
-        src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
-        title={exercise.name ? exercise.name : "Exercise Name"}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        onLoad={() => setLoading(false)} // Set loading to false when the video has loaded
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          border: "none",
-        }}
-      ></iframe>
-    );
-  }, [exercise.name]);
-
   return (
     <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box
         sx={{
           position: "relative",
-          // width: "100%",
-          // paddingTop: "56.25%",
-
-          // Temporary styles for gif
-          // display: "flex",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // padding: "10px",
-          // backgroundSize: "cover",
-          height: "240px",
+          height: "100%",
         }}
       >
-        {/* Temporary styles for gif */}
         <img
           src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
           alt={exercise.name ? exercise.name : "Exercise Name"}
           style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            height: "auto",
+            width: "100%",
+            height: "100%",
             display: "block",
-            borderRadius: "8px",
-            backgroundSize: "cover",
-            overflow: "hidden",
+            objectFit: "cover",
           }}
+          onLoad={() => setLoading(false)} // Set loading to false when the image has loaded
         />
 
         {/* Show loading spinner until video loads */}
@@ -122,9 +88,6 @@ const LearningCard = ({ exercise, exercise_type }) => {
             <CircularProgress />
           </Box>
         )}
-
-        {/* Use the memoized iframe */}
-        {memoizedIframe}
       </Box>
 
       <CardContent
@@ -159,17 +122,3 @@ const LearningCard = ({ exercise, exercise_type }) => {
 };
 
 export default LearningCard;
-
-// The URL to extract the ID from
-// const url = "https://www.youtube.com/embed/Zqc_lc93hak";
-
-// Extract the ID from the URL
-// const videoId = url.split("/embed/")[1];
-
-// Use the ID to create the full video URL
-// const videoUrl = `https://www.youtube.com/embed/${videoId}`;
-
-// Assuming you have an `exercise` object
-// const src = exercise.video_tutorial_url ? exercise.video_tutorial_url : videoUrl;
-
-// console.log(src);
