@@ -1,18 +1,9 @@
-.notification-wrapper {
-  position: relative;
-}
-.notification-wrapper .notification-count {
-  position: absolute;
-  box-sizing: border-box;
-  z-index: 2;
-  aspect-ratio: 1/1;
-  width: 15px;
-  top: 5px;
-  right: 5px;
-  color: white;
-  background-color: red;
-  text-align: center;
-  border-radius: 50px;
-  font-size: 0.6rem;
-  font-weight: 700;
+.notification-drawer {
+  position: absolute !important;
+  z-index: 5;
+  right: 0;
+  width: 320px;
+  bottom: 0;
+  top: 100px;
+  background-color: white;
 }

@@ -31,9 +31,6 @@ import theme from "../theme";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
 
-// Notifications
-import { useNotifications } from "@toolpad/core/useNotifications";
-
 export const Dashboard = (props) => {
   const { user } = useAuth();
   const [userInfo, setUserInfo] = useState(null);
@@ -42,13 +39,13 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
+    useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const userPreferences = location.state || {};
   const prompt = useGenerateProgramPrompt({ userPreferences });
-  const notifications = useNotifications();
 
   // Remove hash from URL after Google OAuth redirect
   useEffect(() => {
@@ -90,12 +87,6 @@ export const Dashboard = (props) => {
       setLoading(false);
     }
   }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
-
-  useEffect(() => {
-    notifications.show("Something great just happened!", {
-      severity: "success",
-    });
-  }, [notifications]);
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
     // Check if the user has an acive program
@@ -226,7 +217,7 @@ export const Dashboard = (props) => {
     };
   }, [prompt]);
 
-  const isMdUp = useMediaQuery(theme.breakpoints.up('md')); 
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
     <>
@@ -251,7 +242,10 @@ export const Dashboard = (props) => {
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* ADD GADGETS HERE */}
                 <GadgetUserProfile userInfo={userInfo} />
-                <GadgetStreaks userInfo={userInfo} history={userAccumulatedStats?.data || []} />
+                <GadgetStreaks
+                  userInfo={userInfo}
+                  history={userAccumulatedStats?.data || []}
+                />
                 <GadgetFavourite exerciseInfo={exerciseInfo || []} />
               </Box>
             </Grid2>
@@ -266,10 +260,13 @@ export const Dashboard = (props) => {
           </>
         ) : (
           <Grid2 xs={12}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
               <GadgetUserProfile userInfo={userInfo} />
               <GadgetAchievement userInfo={userInfo} />
-              <GadgetStreaks userInfo={userInfo} history={userAccumulatedStats?.data || []} />
+              <GadgetStreaks
+                userInfo={userInfo}
+                history={userAccumulatedStats?.data || []}
+              />
               <GadgetHistory history={userAccumulatedStats?.data || []} />
               <GadgetFavourite exerciseInfo={exerciseInfo || []} />
             </Box>

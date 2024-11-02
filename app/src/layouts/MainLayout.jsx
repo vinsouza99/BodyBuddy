@@ -128,10 +128,12 @@ export const MainLayout = () => {
         <DashboardLayout
           disableCollapsibleSidebar
           slots={{ toolbarActions: Notifications }}
+          sx={{ position: "relative" }}
         >
           <Box sx={{ margin: 2, minHeight: "calc(100vh - 180px)" }}>
             <Outlet />
           </Box>
+          <div className="notification-drawe">Test</div>
           <Footer />
         </DashboardLayout>
       </AppProvider>
