@@ -147,16 +147,21 @@ function Notifications() {
       >
         <Toolbar />
         <Box role="presentation">
-          <Grid container spacing={2}>
-            <Grid container size={8}>
-              <Typography variant="body">Notifications</Typography>
-            </Grid>
-            <Grid size={4}>
-              <Button onClick={() => toggleDrawer()}>
-                <CloseIcon />
-              </Button>
-            </Grid>
-          </Grid>
+          <Box
+            container
+            display="flex"
+            flexDirection="row"
+            justifyContent="space-between"
+            padding=".5rem"
+            spacing={2}
+          >
+            <Typography variant="body" sx={{ alignContent: "center" }}>
+              Notifications
+            </Typography>
+            <Button onClick={() => toggleDrawer()}>
+              <CloseIcon />
+            </Button>
+          </Box>
           <Divider />
           <Grid container>
             <Button
@@ -167,7 +172,7 @@ function Notifications() {
             </Button>
           </Grid>
           <Divider />
-          <List sx={{ minWidth: "330px" }}>
+          <List sx={{ minWidth: "320px" }}>
             {notifications.length > 0 ? (
               notifications.map((notification, index) => (
                 <React.Fragment key={index}>
