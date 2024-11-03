@@ -8,15 +8,12 @@ import {
   DialogContent,
   IconButton,
   Box,
-  Paper,
   Button,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
-import DownloadIcon from '@mui/icons-material/Download'; // Download Icon
-import PlayCircleIcon from "@mui/icons-material/PlayCircle"; // Play Icon
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -34,6 +31,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 
+
 // import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
 
 // dayjs plugins for timezone support
@@ -47,6 +45,7 @@ function History({ data }) {
   const [startDate, setStartDate] = useState(dayjs()); // State the picked start dates
   const [endDate, setEndDate] = useState(dayjs()); // State the picked end dates
   const [filteredData, setFilteredData] = useState(data); // Save filtered Data from Duration
+  const [videoURL, setVideoURL] = useState(null); 
 
   useEffect(() => {
     // Default to display all data without filtering
@@ -57,13 +56,15 @@ function History({ data }) {
   console.log(data);
   
   // Open StartRoutineSessionModal
-  const videoOpen = () => {
+  const videoOpen = (url) => {
+    setVideoURL(url);
     setVideoSwitch(true);
   };
 
   // Close StartRoutineSessionModal
   const videoClose = () => {
     setVideoSwitch(false);
+    setVideoURL(null);
   };
 
   // Open Modal
@@ -146,7 +147,7 @@ function History({ data }) {
             <Typography 
               variant="body2"
               component="p"
-              sx={{ marginRight: 1 }}
+              sx={{ marginRight: 1, fontWeight: 600 }}
               onClick={handleClickOpen}
             >
               DURATION
@@ -180,12 +181,14 @@ function History({ data }) {
                     }}
                   >
                     <Typography>
-                      {new Date(item.compare_date).toDateString()} - {item.name}
-                    </Typography>
+                      <span style={{ fontWeight: 600 }}>
+                        {new Date(item.compare_date).toDateString()}
+                      </span> - {item.name}
+                    </Typography>                  
                   </AccordionSummary>
                   <AccordionDetails>
                     <Box
-                      onClick={item.recording_url ? videoOpen : null}
+                      onClick={item.recording_url ? () => videoOpen(item.recording_url) : null}
                       sx={{
                         cursor: item.recording_url ? 'pointer' : 'default',                        
                         display: "flex",
@@ -200,13 +203,45 @@ function History({ data }) {
                       {/* Video icon shows up when there is "recording_url" */}
                       {item.recording_url ? (
                         <IconButton sx={{ padding: 0, marginRight: 1 }}>
-                          <PlayCircleIcon
-                            sx={{ color: "#2d90e0", fontSize: 60 }}
-                          />
+                          <Box
+                            sx={{
+                              width: 60,
+                              height: 60,
+                              backgroundImage: 'linear-gradient(to right, #2d90e0, #abd3f3)', 
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: '50%'
+                            }}
+                          >
+                            <PlayArrowIcon
+                              sx={{
+                                color: 'white',
+                                fontSize: 40,
+                              }}
+                            />
+                          </Box>
                         </IconButton>
                       ) : (
                         <IconButton sx={{ padding: 0, marginRight: 1 }} disabled>
-                          <PlayCircleIcon sx={{ color: "gray", fontSize: 60 }} />
+                          <Box
+                            sx={{
+                              width: 60,
+                              height: 60,
+                              backgroundColor: 'grey', 
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                              borderRadius: '50%'
+                            }}
+                          >
+                            <PlayArrowIcon
+                              sx={{
+                                color: 'white',
+                                fontSize: 40,
+                              }}
+                            />
+                          </Box>
                         </IconButton>
                       )}  
 
@@ -222,83 +257,57 @@ function History({ data }) {
                         sx={{ borderRadius: 2 }}
                       />
                       <Chip
-                        label={`${item.calories} cal`}
+                        label={`${item.estimated_calories} cal`}
                         variant="outlined"
                         sx={{ borderRadius: 2 }}
                       />
                     </Stack>
                   </AccordionDetails>
 
-                  {/* Session Modal */}
-                  <Dialog
-                    open={videoSwitch}
-                    onClose={videoClose}
-                    fullWidth
-                    maxWidth="md"
-                    maxHeight="lg"
-                    BackdropProps={{
-                      style: {
-                        backgroundColor: 'rgba(71, 71, 71, 0.169)', 
-                      },
-                    }}
-                    sx={{
-                      '& .MuiDialog-paper': {
-                        borderRadius: 4,
-                        overflow: 'hidden',
-                        padding: 1,
-                        backgroundColor: '#f7f7f7',
-                        height: "auto"
-                      },
-                    }}
-                  >
-                    <DialogTitle sx={{ padding: 0, display:"flex", justifyContent: "end" }}>
-                      {/* Download icon*/}
-                      {/* <IconButton
-                        href={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm"}
-                        target="_blank" // opens in a new tab for downloading
-                        download
-                      >
-                        <DownloadIcon />
-                      </IconButton> */}
-
-                      {/* Close icon*/}
-                      <IconButton
-                        onClick={videoClose}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                    </DialogTitle>
-
-                    <DialogContent
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        padding: 0,
-                        width: "100%",
-                        height: "100%",
-                        borderRadius: "8px",
-
-                      }}
-                    >
-                      <video 
-                        width="100%" 
-                        height="100%" 
-                        controls 
-                        style={{
-                        maxWidth: "100%",
-                      }}>
-                        <source src={item.recording_url} type="video/webm" />
-                        {/* <source src={"https://nahhyooxxbppqrsqaclo.supabase.co/storage/v1/object/public/Training%20Videos/recorded_video_1730311558020.webm"} type="video/webm" /> */}
-
-                      </video>
-                    </DialogContent>
-                  </Dialog>
                 </Accordion>
               ))
             : isDateSelected && "No history to show..."}
         </div>
       </Card>
+
+      {/* Video Dialog */}
+      <Dialog
+        open={videoSwitch}
+        onClose={videoClose}
+        fullWidth
+        maxWidth="md"
+        BackdropProps={{
+          style: { backgroundColor: 'rgba(71, 71, 71, 0.169)' },
+        }}
+        sx={{
+          '& .MuiDialog-paper': {
+            borderRadius: 4,
+            overflow: 'hidden',
+            padding: 1,
+            backgroundColor: '#f7f7f7',
+          },
+        }}
+      >
+        <DialogTitle sx={{ padding: 0, display: "flex", justifyContent: "end" }}>
+          <IconButton onClick={videoClose}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+        <DialogContent sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 0,
+          width: "100%",
+          height: "100%",
+          borderRadius: "8px",
+          overflow: 'hidden',
+        }}>
+          <video width="100%" height="100%" controls>
+            <source src={videoURL} type="video/webm" />
+          </video>
+        </DialogContent>
+      </Dialog>
 
 
       {/* Modal part */}
