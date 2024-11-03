@@ -168,7 +168,7 @@ function History({ data }) {
                   key={index}
                   sx={{
                     marginTop: 1,
-                    borderLeft: index === 0 ? "3px solid #ff4da9" : "3px solid #2d90e0", 
+                    borderLeft: 'program_id' in item ? "3px solid green" : "3px solid #2d90e0",    
                     borderTop: "none",                   
                   }}
                 >
@@ -207,7 +207,9 @@ function History({ data }) {
                             sx={{
                               width: 60,
                               height: 60,
-                              backgroundImage: 'linear-gradient(to right, #2d90e0, #abd3f3)', 
+                              backgroundImage: 'program_id' in item 
+                              ? 'linear-gradient(to right, green, #b4f5ab)' 
+                              : 'linear-gradient(to right, #2d90e0, #abd3f3)',
                               display: 'flex',
                               justifyContent: 'center',
                               alignItems: 'center',
