@@ -1,32 +1,39 @@
+import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
+import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
-import historyData from "../components/HistoryData.json";
 import { useNotifications } from "@toolpad/core/useNotifications";
 
 export const Profile = (props) => {
-  const [currentUser, setCurrentUser] = useState({});
-  const [history, setHistory] = useState(historyData);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [history, setHistory] = useState([]);
   const { user } = useAuth(); // For session management
   const notifications = useNotifications();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setPageTitle(props.title);
 
     async function getUserData() {
-      const userData = await getUser(user);
-      setCurrentUser(userData);
-      console.log(userData);
+      try {
+        const userData = await getUser(user);
+        setCurrentUser(userData);
+        console.log(userData);
 
-      const userHistoryData = await getUserHistory(user.id);
-      setHistory(userHistoryData);
-      console.log(userHistoryData);
+        const userHistoryData = await getUserHistory(user.id);
+        setHistory(userHistoryData);
+        console.log(userHistoryData);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
     }
-
     getUserData();
   }, []);
 
@@ -37,8 +44,21 @@ export const Profile = (props) => {
   }, []);
   return (
     <>
-      {Object.keys(currentUser).length > 0 ? (
-        <Grid container spacing={1}>
+      {/* Backdrop for loading */}
+      <Backdrop
+        open={loading}
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
+        </Box>
+      </Backdrop>
+
+      {currentUser && history ? (
+        <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
             <UserInfo user={currentUser} />
           </Grid>
@@ -52,3 +72,7 @@ export const Profile = (props) => {
 };
 
 export default Profile;
+
+Profile.propTypes = {
+  title: PropTypes.string,
+};
