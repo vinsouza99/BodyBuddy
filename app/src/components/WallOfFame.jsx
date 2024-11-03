@@ -6,14 +6,14 @@ import { format } from 'date-fns';
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import Badge1_Placeholder from '../assets/Badge_NewbieNoMoreLight.svg';
-import Badge2_Placeholder from '../assets/Badge_ConsistencyChampLight.svg';
-import Badge3_Placeholder from '../assets/Badge_CalorieCrusherLight.svg';
-import Badge4_Placeholder from '../assets/Badge_StreakStarLight.svg';
-import Badge1 from '../assets/Badge_NewbieNoMoreDark.svg';
-import Badge2 from '../assets/Badge_ConsistencyChampDark.svg';
-import Badge3 from '../assets/Badge_CalorieCrusherDark.svg';
-import Badge4 from '../assets/Badge_StreakStarDark.svg';
+import Badge1_Placeholder from '../assets/Badge_NewbieNoMoreDark.svg';
+import Badge2_Placeholder from '../assets/Badge_ConsistencyChampDark.svg';
+import Badge3_Placeholder from '../assets/Badge_CalorieCrusherDark.svg';
+import Badge4_Placeholder from '../assets/Badge_StreakStarDark.svg';
+import Badge1 from '../assets/Badge_NewbieNoMoreLight.svg';
+import Badge2 from '../assets/Badge_ConsistencyChampLight.svg';
+import Badge3 from '../assets/Badge_CalorieCrusherLight.svg';
+import Badge4 from '../assets/Badge_StreakStarLight.svg';
 
 const badgeMap = {
   1: Badge1,
@@ -39,6 +39,7 @@ const modalStyle = {
   transform: "translate(-50%, -50%)",
   // Box model
   width: '85%',
+  maxWidth: '900px',
   height: '85%',
   padding: 4,
   borderRadius: '15px',
@@ -49,8 +50,8 @@ const modalStyle = {
   flexWrap: 'wrap',
   alignItems: 'start',
   justifyContent: 'center',
-  columnGap: 8,
-  rowGap: 4,
+  columnGap: 1,
+  rowGap: 1,
   // Visual effects
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -89,8 +90,8 @@ export const WallOfFame = ({ userInfo = {} }) => {
         userInfo?.achievements?.map((achievement) => [achievement.achievement_id, achievement])
       );
 
-      // Create an array of 15 badges
-      const earnedBadges = Array.from({ length: 15 }, (_, index) => {
+      // Create an array of 16 badges
+      const earnedBadges = Array.from({ length: 16 }, (_, index) => {
         const badgeId = index + 1;
         const achievement = earnedBadgesMap.get(badgeId);
         const badgeInfo = allBadges.find((badge) => badge.id === badgeId) || {};
@@ -341,7 +342,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                   border: "1px solid #94DC8A",
                   borderRadius: '15px',
                   width: { xs: "50vw", sm: "30vw" },
-                  maxWidth: { xs: "50vw", sm: "30vw" },
+                  maxWidth: "250px",
                   textAlign: "center",
                   position: 'relative',
                   display: "flex",
