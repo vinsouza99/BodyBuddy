@@ -19,7 +19,7 @@ import { GadgetAchievement } from "../components/GadgetAchievement";
 import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
-import { sendNotification, setPageTitle } from "../utils/utils";
+import { setPageTitle } from "../utils/utils";
 import {
   getUser,
   getUserAccumulatedStats,
@@ -225,14 +225,6 @@ export const Dashboard = (props) => {
   }, [prompt]);
 
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-  const notify = () => {
-    sendNotification({
-      user_id: user.id,
-      title: "Notification works!",
-      message: "yay",
-      icon_id: 0,
-    });
-  };
   return (
     <>
       {/* Backdrop for generating, loading */}
@@ -287,9 +279,6 @@ export const Dashboard = (props) => {
           </Grid2>
         )}
       </Grid2>
-      <Button variant="contained" onClick={notify}>
-        Send test notification
-      </Button>
     </>
   );
 };
