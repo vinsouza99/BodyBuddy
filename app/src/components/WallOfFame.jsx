@@ -5,8 +5,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { format } from 'date-fns';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import BadgePlaceholder from '../assets/Newbie_No_More_8.png';
-import Badge1 from '../assets/Newbie_No_More_9.png';
+import BadgePlaceholder from '../assets/NewbieNoMore_Off.svg';
+import Badge1 from '../assets/NewbieNoMore_On.svg';
 
 const modalStyle = {
   // Layout and positioning
@@ -254,7 +254,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               Wall of Fame
             </Typography>
             <Typography>
-              Achieved {badges.length}
+              Achieved: {badges.length}
             </Typography>
           </Box>
 
@@ -334,7 +334,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                     transform: 'translateX(-50%)',
                     borderWidth: '8px',
                     borderStyle: 'solid',
-                    borderColor: 'transparent transparent #94DC8A transparent', // 三角形のボーダーカラー
+                    borderColor: 'transparent transparent #94DC8A transparent',
                     zIndex: 0,
                   },
                 },

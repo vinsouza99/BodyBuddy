@@ -91,7 +91,9 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
               justifyContent: 'flex-start',
               alignItems: 'center',
               width: '100%',
+              cursor: 'pointer',
             }}
+            onClick={() => navigate(`/learn/${exercise.id}`)}
           >
             <Box 
               sx={{

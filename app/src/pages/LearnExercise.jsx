@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import PropTypes from "prop-types";
+import { useState, useEffect, useMemo } from "react";
 import { setPageTitle } from "../utils/utils";
 import { getExercise } from "../controllers/ExerciseController.js";
 import {
@@ -14,14 +15,15 @@ import {
 } from "@mui/material";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 
 export const LearnExercise = (props) => {
   const { exercise_id } = useParams();
-  const navigate = useNavigate();
   const [exercise, setExercise] = useState({});
   const [loading, setLoading] = useState(true);
   const [videoLoading, setVideoLoading] = useState(true); // New state for video loading
+  const [openSessionModal, setopenSessionModal] = useState(false);
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -48,9 +50,13 @@ export const LearnExercise = (props) => {
     }
   }, [exercise]);
 
+  // Close StartRoutineSessionModal
+  const handleClose = () => {
+    setopenSessionModal(false);
+  };
+
   // Get names from muscleGroups and goals arrays
-  const focusAreas =
-    exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
+  const focusAreas = exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
   const goals = exercise?.goals?.map((goal) => goal.name).join(", ") || "None";
 
   // Memoize the iframe using useMemo
@@ -76,9 +82,6 @@ export const LearnExercise = (props) => {
     );
   }, [exercise?.name]);
 
-  function redirectToSession() {
-    navigate("/routine", { state: { id: exercise.id, idType: "exercise" } });
-  }
   return (
     <>
       {/* Backdrop for loading */}
@@ -290,7 +293,7 @@ export const LearnExercise = (props) => {
             variant="contained"
             color="success"
             size="large"
-            onClick={() => redirectToSession()}
+            onClick={() => setopenSessionModal(true)}
             sx={(theme) => ({
               width: "120px",
               height: "120px",
@@ -305,6 +308,19 @@ export const LearnExercise = (props) => {
           </Button>
         </Box>
       )}
+
+      {/* Transition to session screen */}
+      <StartRoutineSessionModal
+        open={openSessionModal}
+        id={exercise.id}
+        idType="exercise"
+        onClose={handleClose}
+      />
     </>
   );
 };
+
+LearnExercise.propTypes = {
+  title: PropTypes.string,
+};
+

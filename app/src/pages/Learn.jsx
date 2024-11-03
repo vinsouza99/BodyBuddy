@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
-import { useAuth } from "../utils/AuthProvider.jsx";
 import { getAllExercises } from "../controllers/ExerciseController.js";
 import {
   getAllGoals,
@@ -18,7 +17,6 @@ import {
   MenuItem,
   FormControl,
   Select,
-  Button,
   Backdrop,
   CircularProgress,
   Typography,
@@ -232,3 +230,10 @@ export const Learn = memo((props) => {
     </>
   );
 });
+
+Learn.propTypes = {
+  title: PropTypes.string,
+};
+
+// Setting the display name for debugging
+Learn.displayName = "Learn";
