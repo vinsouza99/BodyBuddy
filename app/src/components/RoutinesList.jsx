@@ -6,9 +6,11 @@ import { toZonedTime } from 'date-fns-tz';
 import { getExercisesFromRoutine } from "../controllers/RoutineController";
 import { RoutineExercisesList } from "./RoutineExercisesList";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import CircularProgress from '@mui/material/CircularProgress';
 
-export const RoutinesList = ({ routines = []}) => {
+export const RoutinesList = ({ routines = [] }) => {
   const [updatedRoutines, setUpdatedRoutines] = useState([]);
+  const [loadingRoutineList, setLoadingRoutineList] = useState(true);
   const timeZone = 'America/Vancouver';
   const today = new Date();
 
@@ -21,17 +23,27 @@ export const RoutinesList = ({ routines = []}) => {
         })
       );
       setUpdatedRoutines(routinesWithExercises);
+      setLoadingRoutineList(false);
     };
-
     fetchExercises();
   }, [routines]);
 
   return (
     <>
-      {updatedRoutines && updatedRoutines.length > 0
-        ? updatedRoutines
-        .sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date)) // Sort by date
-        .map((routine) => (
+      {loadingRoutineList ? 
+        (
+          <Box textAlign="center">
+            <CircularProgress color="inherit" />
+            <Typography>
+              Loading...
+            </Typography>
+          </Box>
+        ) : updatedRoutines.length === 0 ? (
+          <Typography textAlign="center">No available routines</Typography>
+        ) : (
+          updatedRoutines
+          .sort((a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date)) // Sort by date
+          .map((routine) => (
             <Accordion
               key={routine.id}
               elevation={2}
@@ -62,7 +74,7 @@ export const RoutinesList = ({ routines = []}) => {
               </AccordionDetails>
             </Accordion>
           ))
-        : <Typography>No available routines</Typography>    
+        )
       }
     </>
   );

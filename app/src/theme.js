@@ -166,7 +166,7 @@ const theme = createTheme({
         },
       },
     },
-
+    
     /****************************************/
     /*         TAB / TABS COMPONENT         */
     /****************************************/
@@ -180,6 +180,29 @@ const theme = createTheme({
         },
       },
     },
+
+    /****************************************/
+    /*         FOCUS                        */
+    /****************************************/
+    // MuiOutlinedInput: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    //         borderColor: 'transparent',
+    //       },
+    //     },
+    //   },
+    // },
+    // MuiButtonBase: {
+    //   styleOverrides: {
+    //     root: {
+    //       '&:focus': {
+    //         outline: 'none',
+    //         boxShadow: 'none',
+    //       },
+    //     },
+    //   },
+    // },
 
     /****************************************/
     /*      GLOBAL STYLES (NOT IN USE)      */
