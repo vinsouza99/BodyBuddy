@@ -33,10 +33,20 @@ const modalStyle = {
 };
 
 export const RoutineExercisesList = ({ routineExercises = [], color = "primary.main" }) => {
+  const [orderedRoutineExercises, setOrderedRoutineExercises] = useState([]);
   const [selectedExercise, setselectedExercise] = useState('');
   const [exerciseDetail, setExerciseDetail] = useState({});
   const [showVideo, setShowVideo] = useState(false);
   const [showMore, setShowMore] = useState(false);
+
+  // Order exercises
+  useEffect(() => {
+    if (routineExercises.length === 0) return;
+
+    // Order routine exercises by specified order
+    const orderedRoutineExercises = [...routineExercises].sort((a, b) => a.order - b.order);
+    setOrderedRoutineExercises(orderedRoutineExercises);
+  }, []);
 
   // Load exercise detail data
   useEffect(() => {
@@ -65,7 +75,7 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
   return (
     <>
       <Box sx={{boxSizing: 'border-box', width: '100%', display: 'flex', flexDirection: 'column', gap: 2}}>
-        {routineExercises.map((exercise, index) => (
+        {orderedRoutineExercises.map((exercise, index) => (
           <Box
             key={index}
             onClick={() => handleOpenVideo(exercise)}
