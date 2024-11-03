@@ -305,12 +305,14 @@ export const LearnExercise = (props) => {
       )}
 
       {/* Transition to session screen */}
-      <StartRoutineSessionModal
-        open={openSessionModal}
-        id={exercise.id}
-        idType="exercise"
-        onClose={handleClose}
-      />
+      {exercise.id && (
+        <StartRoutineSessionModal
+          open={openSessionModal}
+          id={exercise.id}
+          idType="exercise"
+          onClose={handleClose}
+        />
+      )}
     </>
   );
 };
