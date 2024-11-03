@@ -37,6 +37,9 @@ export class Program {
    * @param {Routine} routine - an object of the Routine class
    */
   addRoutine(routine) {
+    if (!Array.isArray(this.routines)) {
+      this.routines = [];
+    }
     this.routines.push(routine);
   }
   /**

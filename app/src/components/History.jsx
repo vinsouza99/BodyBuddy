@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   Typography,
@@ -23,6 +23,8 @@ import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
+import { format, parseISO, isWithinInterval } from "date-fns";
+import { toZonedTime } from 'date-fns-tz';
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -38,7 +40,7 @@ import { DatePicker } from "@mui/x-date-pickers";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-function History({ data }) {
+function History({ data = [] }) {
   const [modalSwitch, setSwitch] = useState(false);
   const [videoSwitch, setVideoSwitch] = useState(false);
   const [isDateSelected, setIsDateSelected] = useState(false); // State if dates are picked
@@ -53,7 +55,7 @@ function History({ data }) {
     setIsDateSelected(false); // Optional: if you want to indicate that no date is selected
   }, [data]);
 
-  console.log(data);
+
   
   // Open StartRoutineSessionModal
   const videoOpen = (url) => {
@@ -77,25 +79,14 @@ function History({ data }) {
     setSwitch(false);
   };
 
-  // OK button on duration modal
-  // const handleOKClick = () => {
-  //   // 日付の範囲を1日単位に合わせる
-  //   const startOfStartDate = startDate.startOf('day').utc(); // Transformation to UTC
-  //   const endOfEndDate = endDate.endOf('day').utc(); // Transformation to UTC
-
-  //   // Filtering
-  //   const filtered = data.filter(item => {
-  //     const itemDate = dayjs(item.compare_date).utc(); // Comapre as UTC
-  //     return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
-  //   });
-
   const handleOKClick = () => {
-    const startOfStartDate = startDate.startOf('day').tz("America/Vancouver");
-    const endOfEndDate = endDate.endOf('day').tz("America/Vancouver");
-    // Fitering dates
+    const timeZone = "America/Vancouver";
+    const startOfStartDate = startDate.startOf('day');
+    const endOfEndDate = endDate.endOf('day');
+
     const filtered = data.filter(item => {
-      const itemDate = dayjs(item.compare_date).tz("America/Vancouver");
-      return itemDate.isBetween(startOfStartDate, endOfEndDate, null, '[]');
+      const itemDate = toZonedTime(parseISO(item.compare_date), timeZone);
+      return isWithinInterval(itemDate, { start: startOfStartDate, end: endOfEndDate });
     });
     
     setFilteredData(filtered);
@@ -108,9 +99,6 @@ function History({ data }) {
     setStartDate(dayjs()); // Initializa
     setEndDate(dayjs()); // Initializa
   };
-
-  console.log(`Selected Start Date: ${startDate.format()}`);
-  console.log(`Selected End Date: ${endDate.format()}`);
   
   return (
     <>
@@ -180,10 +168,10 @@ function History({ data }) {
                       height: '80px',
                     }}
                   >
-                    <Typography>
+                    <Typography sx={{ textAlign: "left" }}>
                       <span style={{ fontWeight: 600 }}>
-                        {new Date(item.compare_date).toDateString()}
-                      </span> - {item.name}
+                        {format(toZonedTime(parseISO(item.compare_date), "America/Vancouver"), "MMM dd yyyy")} :
+                      </span> {item.name}
                     </Typography>                  
                   </AccordionSummary>
                   <AccordionDetails>
@@ -305,7 +293,7 @@ function History({ data }) {
           borderRadius: "8px",
           overflow: 'hidden',
         }}>
-          <video width="100%" height="100%" controls>
+          <video autoPlay width="100%" height="100%" controls>
             <source src={videoURL} type="video/webm" />
           </video>
         </DialogContent>
