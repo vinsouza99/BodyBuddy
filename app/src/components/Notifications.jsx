@@ -17,7 +17,7 @@ import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import CloseIcon from "@mui/icons-material/Close";
 import filledNotificationIcon from "../assets/NotificationsFilled.png"; // Adjust path based on folder structure
-import NewbieNoMoreIcon from "../assets/Newbie_No_More_9.png";
+import NewbieNoMoreIcon from "../assets/NewbieNoMore_off.svg";
 
 // Notifications Icon in Header
 function Notifications() {
@@ -35,8 +35,8 @@ function Notifications() {
       const { data: initialNotifications, error } = await supabase
         .from("notification")
         .select("*")
-        .eq("user_id", user.id); // Filter by the logged-in user's ID
-
+        .eq("user_id", user.id) // Filter by the logged-in user's ID
+        .order("created_at", { ascending: false }); // Order by created_at in descending order
       if (error) {
         console.error("Error fetching notifications:", error);
       } else {
@@ -61,8 +61,8 @@ function Notifications() {
           // Only process notifications for the logged-in user
           if (newNotification.user_id === user.id) {
             setNotifications((prevNotifications) => [
-              ...prevNotifications,
               newNotification,
+              ...prevNotifications,
             ]);
 
             // Update unread count if the new notification is unread
@@ -91,6 +91,7 @@ function Notifications() {
       .from("notification")
       .update({ read: true })
       .eq("id", notificationId)
+      .order("created_at", { ascending: false })
       .select(); // Fetch the updated notification after the update
     if (error) {
       console.error("Error marking notification as read:", error);
