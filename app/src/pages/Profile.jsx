@@ -6,11 +6,13 @@ import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
 import historyData from "../components/HistoryData.json";
+import { useNotifications } from "@toolpad/core/useNotifications";
 
 export const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState({});
   const [history, setHistory] = useState(historyData);
   const { user } = useAuth(); // For session management
+  const notifications = useNotifications();
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -26,8 +28,13 @@ export const Profile = (props) => {
     }
 
     getUserData();
-  }, [props.title, user]);
+  }, []);
 
+  useEffect(() => {
+    const notification = notifications.show("Something great just happened!", {
+      severity: "success",
+    });
+  }, []);
   return (
     <>
       {Object.keys(currentUser).length > 0 ? (

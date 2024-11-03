@@ -9,10 +9,11 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import RunCircleIcon from "@mui/icons-material/RunCircle";
+import Notifications from "../components/Notifications.jsx";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import IconButton from "@mui/material/IconButton";
 import { getUser } from "../controllers/UserController.js";
+import { useNotifications } from "@toolpad/core/useNotifications";
+import "./MainLayout.css";
 
 // Links to display in the left Navbar
 const NavBar = [
@@ -37,19 +38,6 @@ const NavBar = [
     icon: <AccountCircleIcon />,
   },
 ];
-
-// Notifications Icon in Header
-function Notification() {
-  return (
-    <>
-      <div>
-        <IconButton type="button" aria-label="search">
-          <NotificationsIcon />
-        </IconButton>
-      </div>
-    </>
-  );
-}
 
 export const MainLayout = () => {
   // Set up routing
@@ -88,6 +76,7 @@ export const MainLayout = () => {
       window.removeEventListener("resize", updateLogo); // Clean up listener
     };
   }, []);
+  const notifications = useNotifications();
 
   // Session State from Toolpad Core
   const [session] = useState({
@@ -138,11 +127,13 @@ export const MainLayout = () => {
       >
         <DashboardLayout
           disableCollapsibleSidebar
-          slots={{ toolbarActions: Notification }}
+          slots={{ toolbarActions: Notifications }}
+          sx={{ position: "relative" }}
         >
           <Box sx={{ margin: 2, minHeight: "calc(100vh - 180px)" }}>
             <Outlet />
           </Box>
+          <div className="notification-drawe">Test</div>
           <Footer />
         </DashboardLayout>
       </AppProvider>

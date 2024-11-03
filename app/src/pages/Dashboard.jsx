@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Grid2,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
@@ -88,7 +89,6 @@ export const Dashboard = (props) => {
       setLoading(false);
     }
   }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
-
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
     // Check if the user has an acive program
@@ -103,7 +103,7 @@ export const Dashboard = (props) => {
 
           if (!hasIncompleteProgram) {
             console.log(
-              "No acive program found for this user. Generating a new personalized program."
+              "No active program found for this user. Generating a new personalized program."
             );
             setGenerating(true);
             await generatePersonalizedProgram(user.id, prompt);
@@ -225,7 +225,6 @@ export const Dashboard = (props) => {
   }, [prompt]);
 
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
-
   return (
     <>
       {/* Backdrop for generating, loading */}
