@@ -8,10 +8,14 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Grid from "@mui/material/Grid2";
 import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../components/ImageLists";
 
 const LearningCard = ({ exercise, exercise_type }) => {
+  // Access the theme for styling
+  const theme = useTheme();
+  
   // Initialize useNavigate
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -45,27 +49,17 @@ const LearningCard = ({ exercise, exercise_type }) => {
   // Extract the video thumbnail
   const videoURL = exercise.video_tutorial_url;
   const videoThumbnail = videoURL
-    ? `http://img.youtube.com/vi/${videoURL.split("/embed/")[1]}/sddefault.jpg`
+    ? `http://img.youtube.com/vi/${videoURL.split("/embed/")[1]}/maxresdefault.jpg`
     : null;
   console.log("THE VIDEO THUMBNAIL IS " + videoThumbnail);
 
   return (
-    <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Box
-        sx={{
-          position: "relative",
-          height: "100%",
-        }}
-      >
+    <Card>
+      <Box>
         <img
           src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
           alt={exercise.name ? exercise.name : "Exercise Name"}
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "block",
-            objectFit: "cover",
-          }}
+          style={{ width: "100%", borderBottom: `1px solid ${theme.palette.background.light}` }}
           onLoad={() => setLoading(false)} // Set loading to false when the image has loaded
         />
 
