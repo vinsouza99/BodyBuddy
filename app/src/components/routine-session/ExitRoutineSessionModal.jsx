@@ -63,12 +63,21 @@ export const ExitRoutineSessionModal = ( {open = false, onClose = false, onCompl
         <Typography textAlign="center">
           You haven&apos;t completed the routine yet. Save progress and continue later?
         </Typography>
-        <Button variant="outlined" onClick={handleClose} color="primary" fullWidth>
-          Continue
-        </Button>
-        <Button variant="contained" onClick={handleComplete} color="primary" fullWidth>
-          Exit
-        </Button>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            gap: 2,
+            width: '100%',
+          }}
+        >
+          <Button variant="outlined" onClick={handleComplete} color="primary" fullWidth>
+            Exit
+          </Button>
+          <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
+            Continue
+          </Button>
+        </Box>
       </Box>
     </Modal>
   )
