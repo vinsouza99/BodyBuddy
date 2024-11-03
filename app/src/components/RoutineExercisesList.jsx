@@ -16,7 +16,7 @@ const modalStyle = {
   left: '50%',
   transform: "translate(-50%, -50%)",
   // Box model
-  width: { xs: '90%', sm: '90%', md: '50%', lg: '50%' },
+  width: '90%',
   maxWidth: '800px',
   maxHeight: '90vh',
   overflowY: 'auto',
