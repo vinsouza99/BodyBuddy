@@ -74,7 +74,7 @@ function UserInfo({ user, userProgress = null }) {
               flexDirection: "column",
             }}
           >
-            <Typography sx={{ marginTop: 1, fontWeight: "800" }}>
+            <Typography sx={{ fontWeight: "800" }}>
               Birthday
             </Typography>
             <Typography>{user.birthday}</Typography>
@@ -88,7 +88,7 @@ function UserInfo({ user, userProgress = null }) {
               flexDirection: "column",
             }}
           >
-            <Typography sx={{ marginTop: 1, fontWeight: "800" }}>
+            <Typography sx={{ fontWeight: "800" }}>
               Weight
             </Typography>
             <Typography>{user.weight} lbs</Typography>
@@ -97,7 +97,7 @@ function UserInfo({ user, userProgress = null }) {
 
         <Box
           sx={{
-            marginTop: 3,
+            marginTop: 2,
             display: "flex",
             alignItems: "flex-start",
             flexDirection: "column",
@@ -125,7 +125,7 @@ function UserInfo({ user, userProgress = null }) {
           <Typography>{user.schedule || "No availability set"}</Typography>
         </Box>
 
-        <Grid sx={{ marginTop: 3, borderTop: 1 }}>
+        <Grid sx={{ marginTop: 2, paddingTop: 2, borderTop: 1 }}>
           <WallOfFame userInfo={user} />
         </Grid>
       </Card>
@@ -138,37 +138,3 @@ UserInfo.propTypes = {
 };
 
 export default UserInfo;
-
-{
-  /* <Box sx={{ padding: 3, display: "flex", gap: 5, justifyContent: "center", borderBottom: 1 }}>
-          <CardContent>
-              <Typography variant="body2" component="p">
-                        Reach Goals
-              </Typography>
-              <Typography variant="h3" component="p">
-                        148
-              </Typography>
-              <Typography variant="body2" component="p">
-                        /times
-              </Typography>
-          </CardContent>
-          <CardContent>
-              <Typography variant="body2" component="p">
-                        Week Continulty
-              </Typography>
-              <Typography variant="h3" component="p">
-                        20
-              </Typography>
-              <Typography variant="body2" component="p">
-                        /Weeks
-              </Typography>
-          </CardContent>
-        </Box> */
-}
-
-{
-  /* <Box sx={{ display: "flex", gap: 5, justifyContent: "center", margin: 3 }}>
-      <Chip label="SETTING" variant="outlined" onClick={handleClick} />
-      <Chip label="LOGOUT" variant="outlined" onClick={handleClick} />
-    </Box> */
-}
