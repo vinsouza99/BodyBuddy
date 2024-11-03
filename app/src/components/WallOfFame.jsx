@@ -1,12 +1,35 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from 'react';
 import { Box, Typography, IconButton, Modal, Button, Popover } from '@mui/material';
-import CloseIcon from "@mui/icons-material/Close";
+import { getAllAchievements } from '../controllers/LocalTablesController';
 import { format } from 'date-fns';
+import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import BadgePlaceholder from '../assets/NewbieNoMore_Off.svg';
-import Badge1 from '../assets/NewbieNoMore_On.svg';
+import Badge1_Placeholder from '../assets/Badge_NewbieNoMoreLight.svg';
+import Badge2_Placeholder from '../assets/Badge_ConsistencyChampLight.svg';
+import Badge3_Placeholder from '../assets/Badge_CalorieCrusherLight.svg';
+import Badge4_Placeholder from '../assets/Badge_StreakStarLight.svg';
+import Badge1 from '../assets/Badge_NewbieNoMoreDark.svg';
+import Badge2 from '../assets/Badge_ConsistencyChampDark.svg';
+import Badge3 from '../assets/Badge_CalorieCrusherDark.svg';
+import Badge4 from '../assets/Badge_StreakStarDark.svg';
+
+const badgeMap = {
+  1: Badge1,
+  2: Badge2,
+  3: Badge3,
+  4: Badge4,
+  placeholder: Badge1_Placeholder
+};
+
+const badgeMap_Placeholder = {
+  1: Badge1_Placeholder,
+  2: Badge2_Placeholder,
+  3: Badge3_Placeholder,
+  4: Badge4_Placeholder,
+  placeholder: Badge1_Placeholder
+};
 
 const modalStyle = {
   // Layout and positioning
@@ -36,6 +59,7 @@ const modalStyle = {
 export const WallOfFame = ({ userInfo = {} }) => {
   const [showAllBadges, setshowAllBadges] = useState(false);
   const [badges, setBadges] = useState([]); // Add badge user already earned to this array
+  const [allBadges, setAllBadges] = useState([]);
   const [itemsToShow, setItemsToShow] = useState(5);
   const [canNavigate, setCanNavigate] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -48,18 +72,43 @@ export const WallOfFame = ({ userInfo = {} }) => {
 
   // Initialization
   useEffect(() => {
+    // Fetch all badges and set to allBadges state
+    const fetchAllBadges = async () => {
+      const allBadgeData = await getAllAchievements();
+      setAllBadges(allBadgeData);
+    };
+    fetchAllBadges();
+
+  }, []);
+
+  useEffect(() => {
     // Add badge user already earned to badges array    
     if (userInfo?.achievements) {
-      const earnedBadges = userInfo.achievements.map((achievement) => ({
-        id: achievement?.achievement_id,
-        name: achievement?.name,
-        description: achievement?.description,
-        src: Badge1,
-        alt: achievement?.name,
-        earned_at: achievement?.earned_at,
-      }));
+      // Create a map of earned badges
+      const earnedBadgesMap = new Map(
+        userInfo?.achievements?.map((achievement) => [achievement.achievement_id, achievement])
+      );
+
+      // Create an array of 15 badges
+      const earnedBadges = Array.from({ length: 15 }, (_, index) => {
+        const badgeId = index + 1;
+        const achievement = earnedBadgesMap.get(badgeId);
+        const badgeInfo = allBadges.find((badge) => badge.id === badgeId) || {};
+
+        return {
+          id: badgeId,
+          name: achievement?.name || badgeInfo.name || "",
+          description: achievement?.description || badgeInfo.description || "",
+          src: achievement 
+            ? badgeMap[badgeId] || badgeMap_Placeholder.placeholder
+            : badgeMap_Placeholder[badgeId] || badgeMap_Placeholder.placeholder,
+          alt: achievement?.name || 'Placeholder',
+          earned_at: achievement?.earned_at || null,
+        };
+      });
       setBadges(earnedBadges);
     }
+
     // ResizeObserver to adjust the number of items to show
     const observer = new ResizeObserver((entries) => {
       const width = entries[0].contentRect.width;
@@ -83,7 +132,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
         observer.unobserve(boxRef.current);
       }
     };
-  }, [userInfo, itemsToShow, badges.length]);
+  }, [userInfo, allBadges, itemsToShow ]);
 
   // Check if the user can navigate to the next set of badges
   useEffect(() => {
@@ -126,15 +175,6 @@ export const WallOfFame = ({ userInfo = {} }) => {
     Array(Math.max(0, itemsToShow - badges.slice(currentIndex, currentIndex + itemsToShow).length))
       .fill({ id: '', name: '', src: '', alt: 'Placeholder' })
   );
-
-  const numberOfAllBadges = 30;
-  const displayAllBadges = badges
-    .slice(0, numberOfAllBadges)
-    .concat(
-      Array(Math.max(0, numberOfAllBadges - badges.length))
-        .fill({ id: '', name: '', src: BadgePlaceholder, alt: 'Placeholder' })
-    )
-    .slice(0, numberOfAllBadges);
 
   return (
     <>
@@ -181,7 +221,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               }}
             >
               <img
-                src={badge.src || BadgePlaceholder}
+                src={badge.src || Badge1_Placeholder}
                 alt={badge.alt}
                 style={{ 
                   width: '100%',
@@ -210,15 +250,8 @@ export const WallOfFame = ({ userInfo = {} }) => {
         </Typography>
         <Button
           variant="contained" 
-          sx={{ 
-            width: '50%',
-          }}
-          onClick={() => {
-            badges.map((badge) => (
-              console.log(`Badges: ${badge}`)
-            ));
-            setshowAllBadges(true)}
-          }
+          sx={{ width: '50%' }}
+          onClick={() => {setshowAllBadges(true)}}
         >
           View All
         </Button>        
@@ -254,12 +287,12 @@ export const WallOfFame = ({ userInfo = {} }) => {
               Wall of Fame
             </Typography>
             <Typography>
-              Achieved: {badges.length}
+              Achieved: {badges.filter((badge) => badge.earned_at).length}
             </Typography>
           </Box>
 
           {/* Listed All Badges */}
-          {displayAllBadges.map((badge, index) => (
+          {badges.map((badge, index) => (
             <Box 
               key={index}
               sx={{
@@ -277,7 +310,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               onClick={(e) => handleBadgeClick(e, badge.name, badge.description, badge.earned_at)}
             >
               <img
-                src={badge.src || BadgePlaceholder}
+                src={badge.src || Badge1_Placeholder}
                 alt={badge.alt}
               />
 

@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
 import {
   getExercisesFromRoutine,
@@ -11,19 +12,16 @@ import {
   Typography,
   Backdrop,
   CircularProgress,
-  Divider,
   Paper,
 } from "@mui/material";
-import AccessibilityIcon from "@mui/icons-material/Accessibility";
-import TrackChangesIcon from "@mui/icons-material/TrackChanges";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 
 export const PremadeRoutine = (props) => {
   const { routine_id } = useParams();
-  const navigate = useNavigate();
   const [routine, setRoutine] = useState({});
   const [loading, setLoading] = useState(true);
-  const [videoLoading, setVideoLoading] = useState(true); // New state for video loading
+  const [openSessionModal, setOpenSessionModal] = useState(false);
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -44,44 +42,11 @@ export const PremadeRoutine = (props) => {
     loadData();
   }, []);
 
-  // Set loading to false when routine data is available
-  useEffect(() => {
-    if (routine) {
-      setLoading(false);
-    }
-  }, [routine]);
+  // Close StartRoutineSessionModal
+  const handleClose = () => {
+    setOpenSessionModal(false);
+  };
 
-  // Get names from muscleGroups and goals arrays
-  const focusAreas =
-    routine?.muscleGroups?.map((group) => group.name).join(", ") || "None";
-  const goals = routine?.goals?.map((goal) => goal.name).join(", ") || "None";
-
-  // Memoize the iframe using useMemo
-  const MemoizedIframe = useMemo(() => {
-    return (
-      <iframe
-        // src={routine.demo_url ? routine.demo_url : "Demo URL"}
-        // src={routine.video_tutorial_url ? routine.video_tutorial_url : "Video Tutorial URL"}
-        src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM" // TEMPORARY VIDEO PLACEHOLDER
-        title={routine?.name || "Routine Name"}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        onLoad={() => setVideoLoading(false)} // Set video loading to false when iframe loads
-        style={{
-          width: "100%",
-          maxWidth: "900px",
-          height: "auto",
-          aspectRatio: "16 / 9",
-          border: "none",
-        }}
-      ></iframe>
-    );
-  }, [routine?.name]);
-
-  function redirectToSession() {
-    navigate("/routine", { state: { id: routine.id, idType: "routine" } });
-  }
   return (
     <>
       {/* Backdrop for loading */}
@@ -133,131 +98,62 @@ export const PremadeRoutine = (props) => {
               backgroundColor: "background.paper",
             }}
           >
-            <Box sx={{ textAlign: "left", padding: "1rem" }}>
-              <Typography
-                variant="h2"
-                sx={{ fontWeight: "bold", marginBottom: "1rem" }}
-              >
-                {routine?.name || "Routine Name"}
+            <Box
+              sx={{
+                padding: "1rem" ,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                gap: 2,
+                width: "100%",
+              }
+            }>
+              <Typography variant="h6" sx={{ width: "100%", textAlign: "left" }}>
+                {routine?.name || ""}
               </Typography>
 
-              <Divider
-                sx={{
-                  backgroundColor: "background.light",
-                  height: "2px",
-                  marginBottom: "1rem",
-                }}
-              />
               <RoutineExercisesList
                 routineExercises={routine.exercises}
                 color="primary.main"
               />
-            </Box>
 
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "1rem",
-                padding: "1rem",
-              }}
-            >
-              {/* Display Focus Area */}
-              <Box
+              {/* Practice Button */}
+              <Button
+                onClick={() => setOpenSessionModal(true)}
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "left",
-                  borderColor: "text.primary",
+                  width: "150px",
+                  height: "150px",
                   color: "text.primary",
-                  minWidth: "180px",
-                  border: "1px solid",
-                  borderRadius: "8px",
-                  padding: "0.75rem",
-                  gap: "0.5rem",
+                  backgroundColor: "#4DC53C",
+                  borderRadius: "50%",
+                  padding: 0,
+                  minWidth: "unset",
+                  fontSize: "1.2rem",
+                  marginTop: "0.8rem",
+                  marginBottom: "0.8rem",
+                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
                 }}
               >
-                <AccessibilityIcon sx={{ color: "primary.main" }} />
-                <Box>
-                  <Box
-                    component="p"
-                    sx={{
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      margin: "0",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    Focus Areas
-                  </Box>
-                  <Box
-                    component="p"
-                    sx={{ lineHeight: "1.2", margin: "0", fontSize: "0.9rem" }}
-                  >
-                    {focusAreas}
-                  </Box>
-                </Box>
-              </Box>
-
-              {/* Display Goals */}
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "left",
-                  borderColor: "text.primary",
-                  color: "text.primary",
-                  minWidth: "180px",
-                  border: "1px solid",
-                  borderRadius: "8px",
-                  padding: "0.75rem",
-                  gap: "0.5rem",
-                }}
-              >
-                <TrackChangesIcon sx={{ color: "primary.main" }} />
-                <Box>
-                  <Box
-                    component="p"
-                    sx={{
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      margin: "0",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    Goals
-                  </Box>
-                  <Box
-                    component="p"
-                    sx={{ lineHeight: "1.2", margin: "0", fontSize: "0.9rem" }}
-                  >
-                    {goals}
-                  </Box>
-                </Box>
-              </Box>
+                GET
+                <br />
+                STARTED
+              </Button>
             </Box>
           </Paper>
-
-          {/* Practice Button */}
-          <Button
-            variant="contained"
-            color="success"
-            size="large"
-            onClick={() => redirectToSession()}
-            sx={(theme) => ({
-              width: "120px",
-              height: "120px",
-              borderRadius: "50%",
-              boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
-              color: "text.primary",
-              background: `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`,
-              textTransform: "uppercase",
-            })}
-          >
-            Practice
-          </Button>
         </Box>
       )}
+
+      {/* Transition to session screen */}
+      <StartRoutineSessionModal
+        open={openSessionModal}
+        id={routine_id}
+        idType="routine"
+        onClose={handleClose}
+      />
     </>
   );
+};
+
+PremadeRoutine.propTypes = {
+  title: PropTypes.string,
 };

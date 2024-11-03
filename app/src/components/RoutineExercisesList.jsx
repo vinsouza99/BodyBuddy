@@ -1,13 +1,11 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { Box, Typography, Modal, IconButton, Button, Divider } from "@mui/material";
+import { Box, Typography, Modal, IconButton, Button } from "@mui/material";
+import { ExerciseDetails } from "./ExerciseDetails";
 import { getExercise } from "../controllers/ExerciseController";
 import CloseIcon from "@mui/icons-material/Close";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import AccessibilityIcon from "@mui/icons-material/Accessibility";
-import TrackChangesIcon from "@mui/icons-material/TrackChanges";
-
 
 const modalStyle = {
   // Layout and positioning
@@ -35,10 +33,9 @@ const modalStyle = {
 };
 
 export const RoutineExercisesList = ({ routineExercises = [], color = "primary.main" }) => {
-  const [showVideo, setShowVideo] = useState(false);
   const [selectedExercise, setselectedExercise] = useState('');
-  const [focusAreas, setFocusAreas] = useState('');
-  const [goals, setGoals] = useState('');
+  const [exerciseDetail, setExerciseDetail] = useState({});
+  const [showVideo, setShowVideo] = useState(false);
   const [showMore, setShowMore] = useState(false);
 
   // Load exercise detail data
@@ -46,12 +43,9 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
     if (!selectedExercise?.id) return;
 
     const loadExerciseData = async () => {
-      const exercise = await getExercise(selectedExercise?.id, true);
-      console.log(exercise);
-      const focusAreas = exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
-      setFocusAreas(focusAreas);
-      const goals = exercise?.goals?.map((goal) => goal.name).join(", ") || "None";
-      setGoals(goals);
+      const exerciseDetail = await getExercise(selectedExercise?.id, true);
+      setExerciseDetail(exerciseDetail);
+      console.log(exerciseDetail);
     };
     loadExerciseData();
   }, [selectedExercise]);
@@ -104,7 +98,7 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
               {exercise.name}
             </Typography>
             <Typography sx={{ width: '100%', textAlign: 'right' }}>
-              {exercise.reps} Reps
+            {exercise.reps !== 0 ? `${exercise.reps} Reps` : `${exercise.duration/1000} Secs`}
             </Typography>
             <Typography sx={{ width: '100%', textAlign: 'center' }}>
               {exercise.sets} Sets
@@ -129,11 +123,7 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
           <IconButton
             aria-label="close"
             onClick={handleCloseVideo}
-            sx={{
-              position: 'absolute',
-              right: 8,
-              top: 8,
-            }}
+            sx={{ position: 'absolute', right: 8, top: 8 }}
           >
             <CloseIcon />
           </IconButton>
@@ -163,117 +153,21 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
                 variant="contained"
                 onClick={() => setShowMore(!showMore)}
               >
-                {showMore 
-                ? 
+                {showMore ? ( 
                   <>
                     Show Less
                     <KeyboardArrowUpIcon/>
                   </>
-                : 
+                ) : ( 
                   <>
                     Show More
                     <KeyboardArrowDownIcon/>
                   </>
-                }
+                )}
               </Button>
             </Box>
           </Box>
-          {showMore &&
-            <Box
-              sx={{display: "flex", flexDirection: "column", gap: 2, width: "100%"}}
-            >
-              <Divider></Divider>
-              <Typography>{selectedExercise.description}</Typography>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: "1rem",
-                  width: "100%",
-                }}
-              >
-                {/* Display Focus Area */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "left",
-                    borderColor: "text.primary",
-                    color: "text.primary",
-                    // minWidth: "180px",
-                    width: "100%",
-                    border: "1px solid",
-                    borderRadius: "8px",
-                    padding: "0.75rem",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <AccessibilityIcon sx={{ color: "primary.main" }} />
-                  <Box>
-                    <Box
-                      component="p"
-                      sx={{
-                        fontWeight: "bold",
-                        whiteSpace: "nowrap",
-                        margin: "0",
-                        fontSize: "1rem",
-                      }}
-                    >
-                      Focus Areas
-                    </Box>
-                    <Box
-                      component="p"
-                      sx={{ lineHeight: "1.2", margin: "0", fontSize: "0.9rem" }}
-                    >
-                      {focusAreas}
-                    </Box>
-                  </Box>
-                </Box>
-
-                {/* Display Goals */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    textAlign: "left",
-                    borderColor: "text.primary",
-                    color: "text.primary",
-                    // minWidth: "180px",
-                    width: "100%",
-                    border: "1px solid",
-                    borderRadius: "8px",
-                    padding: "0.75rem",
-                    gap: "0.5rem",
-                  }}
-                >
-                  <TrackChangesIcon sx={{ color: "primary.main" }} />
-                  <Box>
-                    <Box
-                      component="p"
-                      sx={{
-                        fontWeight: "bold",
-                        whiteSpace: "nowrap",
-                        margin: "0",
-                        fontSize: "1rem",
-                      }}
-                    >
-                      Goals
-                    </Box>
-                    <Box
-                      component="p"
-                      sx={{ lineHeight: "1.2", margin: "0", fontSize: "0.9rem" }}
-                    >
-                      {goals}
-                    </Box>
-                  </Box>
-                </Box>
-              </Box>
-
-            </Box>
-          }
+          {showMore && <ExerciseDetails exercise={exerciseDetail}/> }
         </Box>
       </Modal>
     </>
