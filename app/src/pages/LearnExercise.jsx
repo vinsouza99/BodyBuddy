@@ -62,23 +62,27 @@ export const LearnExercise = (props) => {
   // Memoize the iframe using useMemo
   const MemoizedIframe = useMemo(() => {
     return (
-      <iframe
-        // src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
-        src={exercise.video_tutorial_url ? exercise.video_tutorial_url : "Video Tutorial URL"}
-        // src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM"
-        title={exercise?.name || "Exercise Name"}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        onLoad={() => setVideoLoading(false)} // Set video loading to false when iframe loads
-        style={{
-          width: "100%",
-          maxWidth: "900px",
-          height: "auto",
-          aspectRatio: "16 / 9",
-          border: "none",
-        }}
-      ></iframe>
+      <>
+        {exercise.video_tutorial_url ? (
+          <iframe
+            src={exercise?.video_tutorial_url}
+            title={exercise?.name || "Exercise Name"}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            onLoad={() => setVideoLoading(false)} // Set video loading to false when iframe loads
+            style={{
+              width: "100%",
+              maxWidth: "900px",
+              height: "auto",
+              aspectRatio: "16 / 9",
+              border: "none",
+            }}
+          ></iframe>
+        ) : (
+          null
+        )}
+      </>
     );
   }, [exercise?.name]);
 
