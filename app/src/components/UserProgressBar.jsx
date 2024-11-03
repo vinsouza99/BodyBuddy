@@ -19,9 +19,9 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
     >
       <Box sx={{ flex: 1 }}>
         <Box
-          sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'space-between' }}
+          sx={{ display: 'flex', marginBottom: 1, flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'space-between' }}
         >
-          <Typography textAlign="left" >Level {level}</Typography>
+          <Typography textAlign="left" sx={{ fontWeight: "800" }}>Level {level}</Typography>
           <Typography textAlign="left" >Earn {100-levelProgress} points to level up</Typography>
         </Box>
         <Box sx={{ width: '100%', position: 'relative'}}>
@@ -36,7 +36,7 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
               boxShadow: 'sm',
               borderRadius: '15px',
               '& .MuiLinearProgress-bar': {
-                backgroundColor: 'primary.main',
+                backgroundImage: 'linear-gradient(to right, #2d90e0, #abd3f3)',
               },
               backgroundColor: 'grey.300',
             }}
