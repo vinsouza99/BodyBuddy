@@ -411,22 +411,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   };
 
-  // NOTE: This function is not used in the current implementation
-  // Download recording
-  // const handleDownloadRecording = () => {
-  //   if (recordedChunks.length) {
-  //     const blob = new Blob(recordedChunks, { type: "video/webm" });
-  //     const url = URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = "recorded_video.webm";
-  //     document.body.appendChild(a);
-  //     a.click();
-  //     setRecordedChunks([]);
-  //     console.log("Recording downloaded");
-  //   }
-  // };
-
   // Handle snackbar close
   const handleCloseSnackbar = () => {
     setIsSnackbarOpen(false);
