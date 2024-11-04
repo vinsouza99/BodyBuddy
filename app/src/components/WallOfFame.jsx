@@ -389,7 +389,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                 {popoverContent?.description || ""}  
               </Typography>
               {popoverContent?.earned_at && (
-                <Typography>{format(new Date(popoverContent.earned_at), 'dd MMM yyyy')}</Typography>
+                <Typography>Unlocked on {format(new Date(popoverContent.earned_at), 'dd MMM yyyy')}</Typography>
               )}
             </Box>
           </Popover>
