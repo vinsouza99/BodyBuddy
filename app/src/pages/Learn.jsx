@@ -20,6 +20,7 @@ import {
   Backdrop,
   CircularProgress,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import LearningCard from "../components/LearningCard";
 
@@ -55,6 +56,9 @@ export const Learn = memo((props) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Media query for screen size <= 600px
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
 
   useEffect(() => {
     setPageTitle(props.title); // Set the page title
@@ -165,8 +169,9 @@ export const Learn = memo((props) => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Exercises by Muscle" />
-          <Tab label="Exercises by Goal" />
+          {/* Display different tab labels based on screen size */}
+          <Tab label={isSmallScreen ? "By Muscle" : "Exercises by Muscle"} />
+          <Tab label={isSmallScreen ? "By Goal" : "Exercises by Goal"} />
         </Tabs>
       </Box>
 
@@ -178,8 +183,8 @@ export const Learn = memo((props) => {
           flexWrap="wrap"
           sx={{ marginTop: 2, marginBottom: 4 }}
         >
-          <FormControl sx={{ m: 1, minWidth: 80 }}>
-            <InputLabel id="muscle-group-label">MuscleGroup</InputLabel>
+          <FormControl sx={{ marginTop: 2, minWidth: 200 }}>
+            <InputLabel id="muscle-group-label">Muscle Group</InputLabel>
             <Select
               labelId="muscle-group-label"
               id="muscle-group-select"
@@ -207,7 +212,7 @@ export const Learn = memo((props) => {
           flexWrap="wrap"
           sx={{ marginTop: 2, marginBottom: 4 }}
         >
-          <FormControl sx={{ m: 1, minWidth: 80 }}>
+          <FormControl sx={{ marginTop: 2, minWidth: 200 }}>
             <InputLabel id="goal-label">Goals</InputLabel>
             <Select
               labelId="goal-label"

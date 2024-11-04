@@ -112,7 +112,7 @@ export const LearnExercise = (props) => {
               fontSize: "1.1rem",
             }}
           >
-            &lt; Back to Exercises by Muscle
+            &lt; Back to Exercises
           </Button>
 
           {/* Exercise Video and Details */}
