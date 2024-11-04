@@ -101,7 +101,11 @@ function UserInfo({ user = {} }) {
           <Typography sx={{ marginTop: 2, fontWeight: "800" }}>
             When can you exercise
           </Typography>
-          <Typography>{user?.schedule || "No availability set"}</Typography>
+          <Typography>
+            {Array.isArray(user?.schedule)
+              ? user.schedule.join(", ")
+              : user?.schedule || "No availability set"}      
+          </Typography>  
         </Box>
 
         <Grid sx={{ marginTop: 2, paddingTop: 2, borderTop: 1 }}>

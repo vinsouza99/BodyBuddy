@@ -170,7 +170,9 @@ function History({ data = [] }) {
                   >
                     <Typography sx={{ textAlign: "left" }}>
                       <span style={{ fontWeight: 600 }}>
-                        {format(toZonedTime(parseISO(item.compare_date), "America/Vancouver"), "MMM dd yyyy")} :
+                        {dayjs(item.compare_date).isSame(dayjs(), 'day') 
+                         ? "Today" 
+                         : format(toZonedTime(parseISO(item.compare_date), "America/Vancouver"), "MMM dd yyyy")} :
                       </span> {item.name}
                     </Typography>                  
                   </AccordionSummary>
