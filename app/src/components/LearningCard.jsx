@@ -54,7 +54,7 @@ const LearningCard = ({ exercise, exercise_type }) => {
   console.log("THE VIDEO THUMBNAIL IS " + videoThumbnail);
 
   return (
-    <Card>
+    <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box>
         <img
           src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
