@@ -20,7 +20,6 @@ const badgeMap = {
   2: Badge2,
   3: Badge3,
   4: Badge4,
-  placeholder: Badge1_Placeholder
 };
 
 const badgeMap_Placeholder = {
@@ -174,7 +173,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
   .slice(currentIndex, currentIndex + itemsToShow)
   .concat(
     Array(Math.max(0, itemsToShow - badges.slice(currentIndex, currentIndex + itemsToShow).length))
-      .fill({ id: '', name: '', src: '', alt: 'Placeholder' })
+      .fill({ id: '', name: '', src: badgeMap_Placeholder.placeholder, alt: 'Placeholder' })
   );
 
   return (
@@ -211,28 +210,28 @@ export const WallOfFame = ({ userInfo = {} }) => {
             disabled={!canNavigate || currentIndex === 0}
           >
             <ArrowBackIosNewIcon />
-          </IconButton>        
+          </IconButton>
+
           {displayBadges.map((badge, index) => (
-            <Box
-              key={index}
-              sx={{
-                maxWidth: '15%',
-                flex: '1 1 auto',
-                opacity: badge.src ? 1 : 0.8,
-              }}
-            >
-              <img
+            <Box key={index} sx={{flex: '1 1 auto',}}>
+              <Box
+                component="img"
                 src={badge.src || Badge1_Placeholder}
                 alt={badge.alt}
-                style={{ 
+                sx={{ 
                   width: '100%',
                   maxWidth: '70px',
                   height: 'auto',
                   objectFit: 'contain',
+                  transition: 'transform 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                  },
                 }} 
               />
             </Box>
           ))}
+
           <IconButton 
             sx={{
               padding: 0,
@@ -306,13 +305,19 @@ export const WallOfFame = ({ userInfo = {} }) => {
                 textAlign: 'center',
                 width: 200,
                 height: 150,
-                // border: '1px solid #ccc',
               }}
               onClick={(e) => handleBadgeClick(e, badge.name, badge.description, badge.earned_at)}
             >
-              <img
+              <Box
+                component="img"
                 src={badge.src || Badge1_Placeholder}
                 alt={badge.alt}
+                sx={{ 
+                  transition: 'transform 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.2)',
+                  },
+                }} 
               />
 
               <Typography sx={{textAlign: "center"}}>
