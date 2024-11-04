@@ -34,6 +34,7 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
               '--LinearProgress-progressThickness': '30px',
               height: '20px',
               boxShadow: 'sm',
+              border: '1px solid #abd3f3',
               borderRadius: '15px',
               '& .MuiLinearProgress-bar': {
                 backgroundImage: 'linear-gradient(to right, #2d90e0, #abd3f3)',
@@ -52,6 +53,7 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
               width: '100%',
               textAlign: 'center',
               lineHeight: '20px',
+              color: 'white',
             }}
           >
             {`${levelProgress} / 100`}
