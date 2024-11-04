@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -47,7 +47,7 @@ export const MainLayout = () => {
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
   const [userInfo, setUserInfo] = useState({});
-  const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
+  // const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -58,24 +58,31 @@ export const MainLayout = () => {
   }, []);
 
   // Update logo based on screen size
-  useEffect(() => {
-    const updateLogo = () => {
-      if (window.innerWidth <= 600) {
-        setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
-      } else {
-        setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
-      }
-    };
+  // useEffect(() => {
+  //   const updateLogo = () => {
+  //     if (window.innerWidth <= 600) {
+  //       setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
+  //     } else {
+  //       setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
+  //     }
+  //   };
 
     // Set initial logo
-    updateLogo();
+    // updateLogo();
 
     // Add resize event listener
-    window.addEventListener("resize", updateLogo);
-    return () => {
-      window.removeEventListener("resize", updateLogo); // Clean up listener
-    };
-  }, []);
+  //   window.addEventListener("resize", updateLogo);
+  //   return () => {
+  //     window.removeEventListener("resize", updateLogo); // Clean up listener
+  //   };
+  // }, []);
+
+  // Use useMediaQuery to define screen width
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  // Set logo source based on screen size
+  const logoSource = isMobile ? "./src/assets/bodybuddy_logo_color.svg" : "./src/assets/bodybuddy.svg";
+
   const notifications = useNotifications();
 
   // Session State from Toolpad Core
