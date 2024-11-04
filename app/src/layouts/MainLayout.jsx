@@ -67,10 +67,10 @@ export const MainLayout = () => {
   //     }
   //   };
 
-    // Set initial logo
-    // updateLogo();
+  // Set initial logo
+  // updateLogo();
 
-    // Add resize event listener
+  // Add resize event listener
   //   window.addEventListener("resize", updateLogo);
   //   return () => {
   //     window.removeEventListener("resize", updateLogo); // Clean up listener
@@ -81,7 +81,9 @@ export const MainLayout = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   // Set logo source based on screen size
-  const logoSource = isMobile ? "./src/assets/bodybuddy_logo_color.svg" : "./src/assets/bodybuddy.svg";
+  const logoSource = isMobile
+    ? "./src/assets/bodybuddy_logo_color.svg"
+    : "./src/assets/bodybuddy.svg";
 
   const notifications = useNotifications();
 
@@ -140,7 +142,6 @@ export const MainLayout = () => {
           <Box sx={{ margin: 2, minHeight: "calc(100vh - 180px)" }}>
             <Outlet />
           </Box>
-          <div className="notification-drawe">Test</div>
           <Footer />
         </DashboardLayout>
       </AppProvider>
