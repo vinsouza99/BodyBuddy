@@ -185,7 +185,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
               key={timerKey}
               isPlaying={isPlaying}
               duration={duration}
-              size={isLandscapeMode ? 100 : 180}
+              size={isLandscapeMode ? 80 : 110}
               strokeWidth={isLandscapeMode ? 6 : 8}
               colors='#353E45'
               trailColor='transparent'
@@ -195,7 +195,7 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
                 <Typography
                   sx={{ 
                     fontWeight: "bold",
-                    fontSize: isLandscapeMode ? '1.5rem' : '3rem',
+                    fontSize: isLandscapeMode ? '3rem' : '4rem',
                   }}
                 >
                   {remainingTime}

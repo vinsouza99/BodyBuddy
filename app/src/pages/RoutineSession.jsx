@@ -1105,7 +1105,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               key={selectedExerciseIndex} // To reset timer when exercise changes
               isPlaying={!isResting}
               duration={routine[selectedExerciseIndex]?.duration || 0}
-              size={isLandscapeMode ? 80 : 120}
+              size={isLandscapeMode ? 80 : 110}
               strokeWidth={isLandscapeMode ? 6 : 8}
               colors="white"
               trailColor="transparent"
@@ -1113,12 +1113,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             >
               {({ remainingTime }) => (
                 <Typography
-                  variant="h1"
-                  component="div"
-                  sx={{
+                  sx={{ 
                     fontWeight: "bold",
+                    fontSize: isLandscapeMode ? '3rem' : '4rem',
                     color: "white",
                   }}
+                  // variant="h1"
+                  // component="div"
+                  // sx={{
+                  //   fontWeight: "bold",
+                  //   color: "white",
+                  // }}
                 >
                   {remainingTime >= 0 ? remainingTime : 0}
                 </Typography>

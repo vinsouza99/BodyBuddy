@@ -383,7 +383,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               }}
             >
               <Typography sx={{ fontWeight: "bold" }}>
-                {popoverContent?.name || "Not available"}
+                {popoverContent?.name || "Coming Soon!"}
               </Typography>
               <Typography>
                 {popoverContent?.description || ""}  
