@@ -107,6 +107,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const [calorie, setCalorie] = useState(0);
   const [score, setScore] = useState(0);
   const [postureAlert, setPostureAlert] = useState(null);
+  const [lastPostureAlertUpdate, setLastPostureAlertUpdate] = useState(0);
   const [webcamRunning, setWebcamRunning] = useState(false);
   const [mediaRecorder, setMediaRecorder] = useState(null);
   const [recordedChunks, setRecordedChunks] = useState([]);
@@ -348,7 +349,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Read out the set count
   useEffect(() => {
     if (successSetCount !== 0) {
-      readoutText(`Great Job!`);
+      readoutText(`Great job!!`);
     }
   }, [successSetCount]);
 
@@ -363,6 +364,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     const updateUserHistory = async () => {
       if (isFinished && (!record || (record && exerciseVideo))) {
+        setIsResting(true);
         await updateUserActivity();
         await updateRoutineCompletionStatus();
         await updateProgramCompletionStatus();
@@ -655,7 +657,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Process detected landmarks data
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const { count = 0, alert = null, calorie = 0, score = 0 } =
+        const { count = 0, alert = "", calorie = 0, score = 0 } =
           exerciseCounter?.processPose(results.landmarks[0]) || {};
 
         // Update success count
@@ -690,9 +692,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 exerciseCounter.resetCount();
 
                 // Rest time after each set (except for the final set)
-                if (successSetCount + 1 < routine[selectedExerciseIndex].sets) {
-                  startRestCountdown("set");
-                }
+                // if (successSetCount + 1 < routine[selectedExerciseIndex].sets) {
+                //   startRestCountdown("set");
+                // }
 
                 // Reset rep count
                 return 0;
@@ -715,13 +717,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         }
 
         // Update alert if any posture issue
-        if (alert !== undefined) {
-          setPostureAlert((prevAlert) => {
-            if (alert !== prevAlert) {
-              return alert;
-            }
-            return prevAlert;
-          });
+        if (alert) {
+          updatePostureAlert(alert);
         }
 
         // Draw pose connections (line between landmarks)
@@ -757,7 +754,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Increment the success set count by reps or duration
   const incrementSetsCount = useCallback(() => {
     setSuccessSetCount((prevSuccessSetCount) => prevSuccessSetCount + 1);
-  }, []);
+    if (successSetCount + 1 < routine[selectedExerciseIndex].sets) {
+      startRestCountdown("set");
+    }
+  }, [routine, selectedExerciseIndex, successSetCount]);
 
   // Update program routine completion status
   const updateRoutineCompletionStatus = async () => {
@@ -793,12 +793,12 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       }
 
       // Check if all routines in the program are completed
-      fetchResponse.data.data.forEach(async (routine) => {
+      for (const routine of fetchResponse.data.data) {
         if (!routine.completed) {
           console.log("Program has uncompleted routines");
           return;
         }
-      });
+      }
 
       // Update program completion status to "completed(true)"
       const response = await axiosClient.put(
@@ -825,8 +825,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         completed_at: completedAt,
         routine_id: idType === "routine" ? id : null,
         recording_url: exerciseVideo,
-        score: score,
-        calories: calorie,
+        score: Math.round(score),
+        calories: Math.round(calorie),
       };
 
       const response = await axiosClient.post(
@@ -861,6 +861,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   };
 
+  // Earn badges based on user activity
   const earnBadges = async () => {
     try {
       // Badge 1: The first routine completion
@@ -931,10 +932,29 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   };
 
   // Text to Speech
-  function readoutText(text) {
+  const readoutText = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
     window.speechSynthesis.speak(utterance);
-  }
+  };
+
+  // Display posture alert (Cue)
+  let timeoutId;
+  const updatePostureAlert = (alert) => {
+    const now = Date.now();
+    if (now - lastPostureAlertUpdate < 3000) {
+      return;
+    }
+ 
+    if (timeoutId) clearTimeout(timeoutId);
+
+    setPostureAlert(alert);
+    setLastPostureAlertUpdate(now);
+
+    timeoutId = setTimeout(() => {
+      setPostureAlert("");
+      setLastPostureAlertUpdate(Date.now());
+    }, 3000);
+  };
 
   // ---------------------------------------------------------
   //                      JSX Return
@@ -1033,6 +1053,22 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             onComplete={handleConfirmQuit}
           />
 
+          {/* Cue */}
+          <Typography
+          sx={{
+            position: "absolute",
+            top: isLandscapeMode ? "60px" : "100px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+            zIndex: 1000,
+            fontSize: isLandscapeMode ? "1.5rem" : "2rem",
+            color: "white",
+          }}
+          >
+            {postureAlert}
+          </Typography>
+
           {/* Exercise Counter */}
           <Box
             sx={{
@@ -1053,17 +1089,18 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             {/* <AngleMeter2 title={"Angle"} angle={angle} /> */}
 
             <Counter2
-              title={"Reps"}
-              count={successRepCount}
-              target={routine[selectedExerciseIndex]?.reps || 0}
-            />{" "}
-            {/* Regarding increment Rep count, refer to "predictPosture" */}
-            <Counter2
               title={"Sets"}
               count={successSetCount}
               target={routine[selectedExerciseIndex]?.sets || 0}
               onComplete={moveToNextExercise}
             />
+            {/* Regarding increment Rep count, refer to "predictPosture" */}
+            <Counter2
+              title={"Reps"}
+              count={successRepCount}
+              target={routine[selectedExerciseIndex]?.reps || 0}
+            />
+            
           </Box>
 
           {/* Bottom Menu */}
@@ -1097,7 +1134,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             />
 
             {/* Calories */}
-            <Box sx={{minWidth: "65px"}}>
+            <Box sx={{minWidth: "85px"}}>
               <MetricCard title="kcal" value={calorie}/>
             </Box>
 
@@ -1116,7 +1153,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
             {/* Timer */}
             <CountdownCircleTimer
-              key={selectedExerciseIndex} // To reset timer when exercise changes
+              // key={selectedExerciseIndex} // To reset timer when exercise changes
+              key={`${selectedExerciseIndex}-${successSetCount}`}
               isPlaying={!isResting}
               duration={routine[selectedExerciseIndex]?.duration || 0}
               size={isLandscapeMode ? 80 : 110}
@@ -1149,7 +1187,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             </IconButton>
 
             {/* Score */}
-            <Box sx={{minWidth: "65px"}}>
+            <Box sx={{minWidth: "85px"}}>
               <MetricCard title="Score" value={score}/>
             </Box>
 

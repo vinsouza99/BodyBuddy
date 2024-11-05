@@ -1,6 +1,5 @@
 import { landmarkNames } from "./landmarkNames";
 import { BaseCounter } from "./baseCounter";
-import { calculateAngle } from "../utils";
 
 export class JumpingJacksCounter extends BaseCounter {
   constructor() {
@@ -8,21 +7,22 @@ export class JumpingJacksCounter extends BaseCounter {
     this.shoulderHipKneeAngle = null;
     this.hipKneeAnkleAngle = null;
     this.kneeAnkleAngle = null;
+    this.alertThreshold = 180;
   }
 
   static MET = 14.0; // Metabolic equivalent of task (MET) for jumpingjacks
 
   _processSpecificPose(landmarks) {
     const leftShoulder = landmarks[landmarkNames.LEFT_SHOULDER];
-    const leftHip = landmarks[landmarkNames.LEFT_HIP];
-    const leftKnee = landmarks[landmarkNames.LEFT_KNEE];
-    const leftAnkle = landmarks[landmarkNames.LEFT_ANKLE];
+    const rightShoulder = landmarks[landmarkNames.RIGHT_SHOULDER];
+    const leftHand = landmarks[landmarkNames.LEFT_WRIST];
+    const rightHand = landmarks[landmarkNames.RIGHT_WRIST];
 
     // Process Alert
-    this.#processAlert(leftHip, leftKnee, leftAnkle);
+    this.#processAlert(leftShoulder, rightShoulder, leftHand, rightHand);
 
     // Process Count
-    this.#processCount(leftShoulder, leftHip, leftKnee, leftAnkle);
+    this.#processCount();
 
     return { 
       count: 0, 
@@ -32,21 +32,23 @@ export class JumpingJacksCounter extends BaseCounter {
     };
   }
 
-  #processAlert(leftHip, leftKnee, leftAnkle) {
-    // Calculate the angle between hip, knee, and ankle
-    this.hipKneeAnkleAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
+  #processAlert(leftShoulder, rightShoulder, leftHand, rightHand) {
+    const handsUp = leftHand.y < leftShoulder.y && rightHand.y < rightShoulder.y;
+    const handsDown = leftHand.y > leftShoulder.y && rightHand.y > rightShoulder.y;
 
     // Check if knee bends too much
-    if (this.hipKneeAnkleAngle < 80) {
+    if (handsDown) {
       this.alertCount += 1;
+    } else if (handsUp) {
+      this.alertCount = 0;
     }
 
     // Return alert message if knee bends too much for a certain number of frames
     if (this.alertCount >= this.alertThreshold) {
-      this.alert = "Keep your hips a bit higher to maintain good form.";
+      this.alert = "Keep it going. Don’t stop.";
       this.alertCount = 0;
     } else {
-      this.alert = null;
+      this.alert = "";
     }
   }
 
