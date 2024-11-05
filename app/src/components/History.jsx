@@ -145,7 +145,7 @@ function History({ data = [] }) {
 
         <div 
           style={{
-            maxHeight: '100vh', // Set the displayed height
+            maxHeight: '80vh', // Set the displayed height
             overflowY: 'auto', // Scrolling
           }}>
           {filteredData.length > 0
@@ -156,7 +156,9 @@ function History({ data = [] }) {
                   key={index}
                   sx={{
                     marginTop: 1,
-                    borderLeft: 'program_id' in item ? "3px solid green" : "3px solid #2d90e0",    
+                    borderLeft: item.record_type === "routine"
+                    ? "3px solid #4cc13c"
+                    : "3px solid #2d90e0",                    
                     borderTop: "none",                   
                   }}
                 >
@@ -197,9 +199,9 @@ function History({ data = [] }) {
                             sx={{
                               width: 60,
                               height: 60,
-                              backgroundImage: 'program_id' in item 
-                              ? 'linear-gradient(to right, green, #b4f5ab)' 
-                              : 'linear-gradient(to right, #2d90e0, #abd3f3)',
+                              backgroundImage: item.record_type === "routine"
+                              ? 'linear-gradient(to right, #4cc13c, #b4f5ab)' 
+                              : 'linear-gradient(to right, #2d90e0, #abd3f3)',                              
                               display: 'flex',
                               justifyContent: 'center',
                               alignItems: 'center',
@@ -239,12 +241,14 @@ function History({ data = [] }) {
 
 
                       {/* description always shows up*/}
-                      <Typography variant="body1" sx={{margin: 2}} >Recording Session</Typography>
+                      <Typography variant="body1" sx={{margin: 2}}>
+                        {item.record_type === "routine" ? `Routine` : `Program`} 
+                      </Typography>
                     </Box>
                     <Stack direction="row" spacing={1}>
 
                       <Chip
-                        label={`${item.duration/60} min`}
+                        label={`${item.duration/60000} min`}
                         variant="outlined"
                         sx={{ borderRadius: 2 }}
                       />
