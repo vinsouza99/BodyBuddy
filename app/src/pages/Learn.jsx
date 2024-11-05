@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
 import { getAllExercises } from "../controllers/ExerciseController.js";
@@ -66,7 +66,7 @@ export const Learn = memo((props) => {
     const loadData = async () => {
       try {
         // Cocoy: Load exercises
-        const response = await getAllExercises(false);
+        const response = await getAllExercises();
 
         // Log the full response
         //console.log("Loaded exercises:", response);
@@ -144,7 +144,10 @@ export const Learn = memo((props) => {
                 key={index}
                 onClick={() => navigate(`/learn/${exercise.id}`)}
               >
-                <Link to={`/learn/${exercise.id}`}>
+                <Link
+                  to={`/learn/${exercise.id}`}
+                  state={{ exerciseInitialData: exercise }}
+                >
                   <LearningCard exercise={exercise} />
                 </Link>
               </Grid>

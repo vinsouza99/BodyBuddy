@@ -25,7 +25,7 @@ const getRoutine = async (routine_id) => {
     );
     return routine;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getRoutinesFromProgram = async (program_id, getExercises = true) => {
@@ -57,7 +57,7 @@ const getRoutinesFromProgram = async (program_id, getExercises = true) => {
     }
     return routines;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -87,7 +87,7 @@ const getUserCompletedRoutines = async (user_id) => {
     }
     return routines;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -118,7 +118,7 @@ const getAllPresetRoutines = async () => {
     }
     return routines;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -160,7 +160,7 @@ const createRoutine = async (routineObj) => {
     // }
     return routine;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -206,7 +206,7 @@ const getExercisesFromRoutine = async (routine_id) => {
     );
     return exerciseDetails;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -226,7 +226,7 @@ const createRoutineExercise = async (exerciseObj) => {
       routineExercise
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -250,7 +250,7 @@ const getRoutineHistory = async (user_id) => {
 
     return routineHistories;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 

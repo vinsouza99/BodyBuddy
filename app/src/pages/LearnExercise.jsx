@@ -1,7 +1,12 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo } from "react";
 import { setPageTitle } from "../utils/utils";
-import { getExercise } from "../controllers/ExerciseController.js";
+import {
+  getExercise,
+  getExerciseGoals,
+  getExerciseMuscleGroups,
+  getExerciseTypes,
+} from "../controllers/ExerciseController.js";
 import {
   Box,
   Button,
@@ -12,7 +17,7 @@ import {
 } from "@mui/material";
 import { ExerciseDetails } from "../components/ExerciseDetails";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 export const LearnExercise = (props) => {
   const { exercise_id } = useParams();
@@ -20,20 +25,34 @@ export const LearnExercise = (props) => {
   const [loading, setLoading] = useState(true);
   const [videoLoading, setVideoLoading] = useState(true); // New state for video loading
   const [openSessionModal, setOpenSessionModal] = useState(false);
+  const { exerciseInitialData } = useLocation();
 
   useEffect(() => {
     setPageTitle(props.title);
-
     const loadData = async () => {
       try {
-        const exerciseData = await getExercise(exercise_id, true);
-        setExercise(exerciseData);
-        console.log(exerciseData);
-        setPageTitle("Learn | " + exerciseData.name);
+        if (exerciseInitialData) {
+          setPageTitle("Learn | " + exerciseInitialData.name);
+          setExercise(exerciseInitialData);
+          setLoading(false);
+          exerciseInitialData.types = await getExerciseTypes(
+            exerciseInitialData.id
+          );
+          exerciseInitialData.goals = await getExerciseGoals(
+            exerciseInitialData.id
+          );
+          exerciseInitialData.muscleGroups = await getExerciseMuscleGroups(
+            exerciseInitialData.id
+          );
+          setExercise(exerciseInitialData);
+        } else {
+          const exerciseData = await getExercise(exercise_id, true);
+          setExercise(exerciseData);
+          setPageTitle("Learn | " + exerciseData.name);
+          setLoading(false);
+        }
       } catch (e) {
-        console.log(e);
-      } finally {
-        setLoading(false);
+        console.error(e);
       }
     };
     loadData();

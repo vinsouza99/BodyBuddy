@@ -23,20 +23,24 @@ const getAllExercises = async (allInfo = true) => {
     exercise.description = item.description;
     exercise.demo_url = item.demo_url;
     exercise.video_tutorial_url = item.video_tutorial_url;
+    exercise.types = [];
+    exercise.goals = [];
+    exercise.muscleGroups = [];
     return exercise;
   });
-  for (let exercise of exercises) {
-    const exerciseTypes = await getExerciseTypes(exercise.id);
-    const exerciseGoals = await getExerciseGoals(exercise.id, allInfo);
-    const exerciseMuscleGroups = await getExerciseMuscleGroups(
-      exercise.id,
-      allInfo
-    );
-    exercise.types = exerciseTypes;
-    exercise.goals = exerciseGoals;
-    exercise.muscleGroups = exerciseMuscleGroups;
+  if (allInfo) {
+    for (let exercise of exercises) {
+      const exerciseTypes = await getExerciseTypes(exercise.id);
+      const exerciseGoals = await getExerciseGoals(exercise.id, false);
+      const exerciseMuscleGroups = await getExerciseMuscleGroups(
+        exercise.id,
+        false
+      );
+      exercise.types = exerciseTypes;
+      exercise.goals = exerciseGoals;
+      exercise.muscleGroups = exerciseMuscleGroups;
+    }
   }
-  console.log(exercises);
   return exercises;
 };
 const getExercise = async (id, allInfo = true) => {
@@ -55,7 +59,7 @@ const getExercise = async (id, allInfo = true) => {
     exercise.execution_steps = data.execution_steps;
     return exercise;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getExerciseTypes = async (id, allInfo = true) => {
@@ -74,7 +78,7 @@ const getExerciseTypes = async (id, allInfo = true) => {
     }
     return typeArray;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getExerciseGoals = async (id, allInfo = true) => {
@@ -93,7 +97,7 @@ const getExerciseGoals = async (id, allInfo = true) => {
     }
     return goalsArray;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getExerciseMuscleGroups = async (id, allInfo = true) => {
@@ -112,7 +116,13 @@ const getExerciseMuscleGroups = async (id, allInfo = true) => {
     }
     return muscleGroupsArray;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
-export { getAllExercises, getExercise };
+export {
+  getAllExercises,
+  getExercise,
+  getExerciseTypes,
+  getExerciseGoals,
+  getExerciseMuscleGroups,
+};

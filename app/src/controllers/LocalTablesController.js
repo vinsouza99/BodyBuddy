@@ -18,7 +18,7 @@ const getAllGoals = async () => {
     const data = await response.data.data;
     return data.map((goal) => new Goal(goal.id, goal.name, goal.description));
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getGoal = async (goal_id) => {
@@ -29,7 +29,7 @@ const getGoal = async (goal_id) => {
     const data = await response.data.data;
     return new Goal(data.id, data.name, data.description);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -41,7 +41,7 @@ const getAllIntensities = async () => {
     const data = await response.data.data;
     return data.map((intensity) => new Intensity(intensity.id, intensity.name));
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getIntensity = async (intensity_id) => {
@@ -52,7 +52,7 @@ const getIntensity = async (intensity_id) => {
     const data = await response.data.data;
     return new Intensity(data.id, data.name);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getAllAchievements = async () => {
@@ -70,7 +70,7 @@ const getAllAchievements = async () => {
         )
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getAchievement = async (achievement_id) => {
@@ -81,7 +81,7 @@ const getAchievement = async (achievement_id) => {
     const data = await response.data;
     return new Achievement(data.id, data.name, data.description);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -93,7 +93,7 @@ const getAllExerciseTypes = async () => {
       (type) => new ExerciseType(type.id, type.name, type.default_duration)
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -105,7 +105,7 @@ const getExerciseType = async (type_id) => {
     const type = await response.data.data;
     return new ExerciseType(type.id, type.name, type.default_duration);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -119,7 +119,7 @@ const getAllMuscleGroups = async () => {
       (muscleGroup) => new MuscleGroup(muscleGroup.id, muscleGroup.name)
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getMuscleGroup = async (muscle_group_id) => {
@@ -130,7 +130,7 @@ const getMuscleGroup = async (muscle_group_id) => {
     const muscleGroup = await response.data.data;
     return new MuscleGroup(muscleGroup.id, muscleGroup.name);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 

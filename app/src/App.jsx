@@ -44,7 +44,7 @@ function App() {
         <Route path="/" element={user ? <MainLayout /> : <Navigate to="/" />}>
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
-          <Route path="/learn" element={<Learn title="Learn" />} />
+          <Route path="/learning" element={<Learn title="Learn" />} />
           <Route
             path="/learn/:exercise_id"
             element={<LearnExercise title="Learn Exercise" />}
