@@ -6,6 +6,16 @@ import { WallOfFame } from "./WallOfFame";
 import { UserProgressBar } from "./UserProgressBar";
 
 function UserInfo({ user = {} }) {
+
+  // Format user birthday
+  const formattedBirthday = user?.birthday
+  ? new Date(user.birthday).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  })
+  : "No birthday set";
+
   console.log(user);
   console.log(user.name);
   return (
@@ -56,7 +66,7 @@ function UserInfo({ user = {} }) {
             <Typography sx={{ fontWeight: "800" }}>
               Birthday
             </Typography>
-            <Typography>{user?.birthday}</Typography>
+            <Typography>{formattedBirthday}</Typography>         
           </Grid>
           <Grid
             size={{ md: 6 }}
@@ -85,12 +95,6 @@ function UserInfo({ user = {} }) {
           <Typography sx={{ fontWeight: "800" }}>Primary Goal</Typography>
           <Typography sx={{ textAlign: "left" }}>
             {user?.settings?.goal?.name || "No goal set"}
-          </Typography>
-          <Typography sx={{ marginTop: 2, fontWeight: "800" }}>
-            Exercise frequency
-          </Typography>
-          <Typography>
-            {user?.settings?.frequency || "No frequency set"}
           </Typography>
           <Typography sx={{ marginTop: 2, fontWeight: "800" }}>
             Exercise intensity
