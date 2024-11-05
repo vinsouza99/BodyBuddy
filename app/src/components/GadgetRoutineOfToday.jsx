@@ -29,8 +29,10 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
         programRoutines?.find((routine) =>
           isSameDay(parseISO(routine.scheduled_date), today)
         ) || null;
-      if (routine)
+      if (routine) {
         routine.exercises = await getExercisesFromRoutine(routine.id);
+      }
+      console.log(routine);
       setTodayRoutine(routine);
       setLoading(false);
     }
