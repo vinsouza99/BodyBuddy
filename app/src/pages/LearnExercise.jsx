@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import PropTypes from "prop-types";
+import { useState, useEffect, useMemo } from "react";
 import { setPageTitle } from "../utils/utils";
 import { getExercise } from "../controllers/ExerciseController.js";
 import {
@@ -7,21 +8,18 @@ import {
   Typography,
   Backdrop,
   CircularProgress,
-  Divider,
   Paper,
-  List,
-  ListItem,
 } from "@mui/material";
-import AccessibilityIcon from "@mui/icons-material/Accessibility";
-import TrackChangesIcon from "@mui/icons-material/TrackChanges";
-import { useNavigate, useParams } from "react-router-dom";
+import { ExerciseDetails } from "../components/ExerciseDetails";
+import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
+import { useParams } from "react-router-dom";
 
 export const LearnExercise = (props) => {
   const { exercise_id } = useParams();
-  const navigate = useNavigate();
   const [exercise, setExercise] = useState({});
   const [loading, setLoading] = useState(true);
   const [videoLoading, setVideoLoading] = useState(true); // New state for video loading
+  const [openSessionModal, setOpenSessionModal] = useState(false);
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -37,7 +35,6 @@ export const LearnExercise = (props) => {
         setLoading(false);
       }
     };
-
     loadData();
   }, []);
 
@@ -48,37 +45,38 @@ export const LearnExercise = (props) => {
     }
   }, [exercise]);
 
-  // Get names from muscleGroups and goals arrays
-  const focusAreas =
-    exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
-  const goals = exercise?.goals?.map((goal) => goal.name).join(", ") || "None";
+  // Close StartRoutineSessionModal
+  const handleClose = () => {
+    setOpenSessionModal(false);
+  };
 
   // Memoize the iframe using useMemo
   const MemoizedIframe = useMemo(() => {
     return (
-      <iframe
-        // src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
-        // src={exercise.video_tutorial_url ? exercise.video_tutorial_url : "Video Tutorial URL"}
-        src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM" // TEMPORARY VIDEO PLACEHOLDER
-        title={exercise?.name || "Exercise Name"}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        onLoad={() => setVideoLoading(false)} // Set video loading to false when iframe loads
-        style={{
-          width: "100%",
-          maxWidth: "900px",
-          height: "auto",
-          aspectRatio: "16 / 9",
-          border: "none",
-        }}
-      ></iframe>
+      <>
+        {exercise.video_tutorial_url ? (
+          <iframe
+            src={exercise?.video_tutorial_url}
+            title={exercise?.name || "Exercise Name"}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+            onLoad={() => setVideoLoading(false)} // Set video loading to false when iframe loads
+            style={{
+              width: "100%",
+              maxWidth: "900px",
+              height: "auto",
+              aspectRatio: "16 / 9",
+              border: "none",
+            }}
+          ></iframe>
+        ) : (
+          null
+        )}
+      </>
     );
   }, [exercise?.name]);
 
-  function redirectToSession() {
-    navigate("/routine", { state: { id: exercise.id, idType: "exercise" } });
-  }
   return (
     <>
       {/* Backdrop for loading */}
@@ -114,7 +112,7 @@ export const LearnExercise = (props) => {
               fontSize: "1.1rem",
             }}
           >
-            &lt; Back to Exercises by Muscle
+            &lt; Back to Exercises
           </Button>
 
           {/* Exercise Video and Details */}
@@ -153,7 +151,7 @@ export const LearnExercise = (props) => {
             {/* Render memoized iframe */}
             {MemoizedIframe}
 
-            <Box sx={{ textAlign: "left", padding: "1rem" }}>
+            <Box sx={{ textAlign: "left", padding: 4 }}>
               <Typography
                 variant="h2"
                 sx={{ fontWeight: "bold", marginBottom: "1rem" }}
@@ -161,46 +159,48 @@ export const LearnExercise = (props) => {
                 {exercise?.name || "Exercise Name"}
               </Typography>
 
-              <Divider
-                sx={{
-                  backgroundColor: "background.light",
-                  height: "2px",
-                  marginBottom: "1rem",
-                }}
-              />
-
-              <List>
-                {/* EXERCISE STEP 1 */}
-                {exercise.execution_steps
-                  ? exercise.execution_steps.map((step, index) => (
-                      <ListItem
-                        sx={{ padding: "0", marginBottom: "1rem" }}
-                        key={index}
-                      >
-                        <Box
-                          component="span"
-                          sx={{
-                            display: "inline-flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "24px",
-                            height: "24px",
-                            minWidth: "24px",
-                            minHeight: "24px",
-                            border: "1px solid",
-                            borderRadius: "50%",
-                            marginRight: "0.75rem",
-                          }}
-                        >
-                          {index + 1}
-                        </Box>
-                        <Typography component="span">{step}</Typography>
-                      </ListItem>
-                    ))
-                  : ""}
-              </List>
+              <ExerciseDetails exercise={exercise}/>
             </Box>
 
+            {/* NOTE: The following code move to ExerciseDetails.jsx component */}
+            {/* <Divider
+              sx={{
+                backgroundColor: "background.light",
+                height: "2px",
+                marginBottom: "1rem",
+              }}
+            />
+
+            <List>
+              {exercise.execution_steps
+                ? exercise.execution_steps.map((step, index) => (
+                    <ListItem
+                      sx={{ padding: "0", marginBottom: "1rem" }}
+                      key={index}
+                    >
+                      <Box
+                        component="span"
+                        sx={{
+                          display: "inline-flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "24px",
+                          height: "24px",
+                          minWidth: "24px",
+                          minHeight: "24px",
+                          border: "1px solid",
+                          borderRadius: "50%",
+                          marginRight: "0.75rem",
+                        }}
+                      >
+                        {index + 1}
+                      </Box>
+                      <Typography component="span">{step}</Typography>
+                    </ListItem>
+                  ))
+                : ""}
+            </List>
+            
             <Box
               sx={{
                 display: "flex",
@@ -209,7 +209,6 @@ export const LearnExercise = (props) => {
                 padding: "1rem",
               }}
             >
-              {/* Display Focus Area */}
               <Box
                 sx={{
                   display: "flex",
@@ -246,7 +245,6 @@ export const LearnExercise = (props) => {
                 </Box>
               </Box>
 
-              {/* Display Goals */}
               <Box
                 sx={{
                   display: "flex",
@@ -282,7 +280,7 @@ export const LearnExercise = (props) => {
                   </Box>
                 </Box>
               </Box>
-            </Box>
+            </Box> */}
           </Paper>
 
           {/* Practice Button */}
@@ -290,7 +288,7 @@ export const LearnExercise = (props) => {
             variant="contained"
             color="success"
             size="large"
-            onClick={() => redirectToSession()}
+            onClick={() => setOpenSessionModal(true)}
             sx={(theme) => ({
               width: "120px",
               height: "120px",
@@ -305,6 +303,21 @@ export const LearnExercise = (props) => {
           </Button>
         </Box>
       )}
+
+      {/* Transition to session screen */}
+      {exercise.id && (
+        <StartRoutineSessionModal
+          open={openSessionModal}
+          id={exercise.id}
+          idType="exercise"
+          onClose={handleClose}
+        />
+      )}
     </>
   );
 };
+
+LearnExercise.propTypes = {
+  title: PropTypes.string,
+};
+

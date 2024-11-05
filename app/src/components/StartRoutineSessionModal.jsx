@@ -7,6 +7,7 @@ import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radi
 import CloseIcon from "@mui/icons-material/Close";
 import Camera_On from '../assets/camera_on.png';
 import Camera_Off from '../assets/camera_off.png';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 const modalStyle = {
   // Layout and positioning
@@ -139,8 +140,9 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
             <Button
               variant="contained"
               type="button"
-              onClick={handleStartRoutine} // ルーチンの開始
+              onClick={handleStartRoutine}
             >
+              <PlayArrowIcon sx={{ marginRight: "0.5rem" }}/>
               Start
             </Button>
           </>

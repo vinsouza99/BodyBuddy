@@ -22,6 +22,7 @@ const getAllExercises = async (allInfo = true) => {
     exercise.name = item.name;
     exercise.description = item.description;
     exercise.demo_url = item.demo_url;
+    exercise.video_tutorial_url = item.video_tutorial_url;
     return exercise;
   });
   for (let exercise of exercises) {

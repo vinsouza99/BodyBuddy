@@ -2,12 +2,14 @@ import express from "express";
 import {
   getPrograms,
   getProgramsByUser,
+  getProgramByRoutine,
   getCompletedProgramsByUser,
   getProgram,
   createProgram,
   updateProgram,
   deleteProgram,
   createProgramRoutine,
+  updateProgramRoutine,
 } from "../controllers/programController.js";
 
 const router = express.Router();
@@ -55,8 +57,6 @@ const router = express.Router();
 router.get("/", getPrograms);
 
 /**
-
-/**
  * @swagger
  * /Programs/user/{user_id}:
  *   get:
@@ -80,6 +80,67 @@ router.get("/", getPrograms);
  *         description: Program not found
  */
 router.get("/user/:user_id", getProgramsByUser);
+
+/**
+ * @swagger
+ * /programs/{routine_id}:
+ *   get:
+ *     summary: Retrieve a program by routine ID
+ *     description: Retrieves a single program based on the specified routine ID.
+ *     tags:
+ *       - Programs
+ *     parameters:
+ *       - in: path
+ *         name: routine_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the routine associated with the program
+ *     responses:
+ *       200:
+ *         description: Success - returns the program associated with the given routine ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "200"
+ *                 message:
+ *                   type: string
+ *                   example: "Success"
+ *                 data:
+ *                   $ref: '#/components/schemas/Program'
+ *       404:
+ *         description: Program not found - no program associated with the specified routine ID
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "404"
+ *                 message:
+ *                   type: string
+ *                   example: "Program not found"
+ *       500:
+ *         description: Internal Server Error - an unexpected error occurred on the server
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "500"
+ *                 message:
+ *                   type: string
+ *                   example: "Internal Server Error"
+ */
+router.get("/routine/:routine_id", getProgramByRoutine);
+
 /**
  * @swagger
  * /Programs/user/{user_id}:
@@ -185,6 +246,48 @@ router.post("/", createProgram);
  *         description: Internal server error
  */
 router.post("/routines", createProgramRoutine);
+
+/**
+ * @swagger
+ * /programs:
+ *   post:
+ *     summary: Create a new program and its associated routines
+ *     tags: [Programs]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               program_id:
+ *                 type: integer
+ *                 description: ID of the program
+ *               routine_id:
+ *                 type: integer
+ *                 description: ID of the routine
+ *               scheduled_date:
+ *                 type: string
+ *                 format: date
+ *                 description: Scheduled date of the routine
+ *                 example: "2024-10-31"
+ *               completed:
+ *                 type: boolean
+ *                 description: Completion status of the routine
+ *                 example: true
+ *             required:
+ *               - routine_id
+ *               - scheduled_date
+ *               - completed
+ *     responses:
+ *       201:
+ *         description: The program and its routines were successfully created
+ *       400:
+ *         description: Bad request, invalid input
+ *       500:
+ *         description: Internal server error
+ */
+router.put("/routines", updateProgramRoutine);
 
 /**
  * @swagger

@@ -92,14 +92,14 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
           <img src={flame1} alt="Flame 1"></img>
           <MetricCard
             title="Week Streaks"
-            value={userInfo ? streak.currentStreak.toString() : "0"}
+            value={userInfo ? streak.currentStreak : 0}
             color="black"/>
         </Box>
         <Box>
           <img src={flame2} alt="Flame 2"></img>
           <MetricCard
             title="Best Streaks"
-            value={userInfo ? streak.maxStreak.toString() : "0"}
+            value={userInfo ? streak.maxStreak : 0}
             color="black" />
         </Box>
       </Box>

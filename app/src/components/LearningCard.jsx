@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useMemo } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
@@ -9,10 +8,14 @@ import {
   Box,
   CircularProgress,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import Grid from "@mui/material/Grid2";
 import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../components/ImageLists";
 
 const LearningCard = ({ exercise, exercise_type }) => {
+  // Access the theme for styling
+  const theme = useTheme();
+  
   // Initialize useNavigate
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -43,57 +46,22 @@ const LearningCard = ({ exercise, exercise_type }) => {
     navigate(`/exercise/${id}`);
   };
 
-  // Memoize the iframe using useMemo
-  const memoizedIframe = useMemo(() => {
-    return (
-      <iframe
-        // src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
-        src="https://www.youtube.com/embed/l83R5PblSMA?si=lPsYf1Jg3kfviBzM"
-        title={exercise.name ? exercise.name : "Exercise Name"}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        onLoad={() => setLoading(false)} // Set loading to false when the video has loaded
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          border: "none",
-        }}
-      ></iframe>
-    );
-  }, [exercise.name]);
+  // Extract the video thumbnail
+  const videoURL = exercise.video_tutorial_url;
+  const videoThumbnail = videoURL
+    ? `http://img.youtube.com/vi/${videoURL.split("/embed/")[1]}/maxresdefault.jpg`
+    : null;
+  console.log("THE VIDEO THUMBNAIL IS " + videoThumbnail);
 
   return (
     <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Box
-        sx={{
-          position: "relative",
-          width: "100%",
-          paddingTop: "56.25%", // Aspect ratio 16:9
-
-          // Temporary styles for gif
-          // display: "flex",
-          // justifyContent: "center",
-          // alignItems: "center",
-          // padding: "10px",
-          // backgroundSize: "cover",
-          // height: "240px",
-        }}
-      >
-        {/* Temporary styles for gif */}
-        {/* <img
-          src={exercise.demo_url ? exercise.demo_url : "Demo URL"}
+      <Box>
+        <img
+          src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
           alt={exercise.name ? exercise.name : "Exercise Name"}
-          style={{
-            maxWidth: "100%",
-            maxHeight: "100%",
-            height: "auto",
-            display: "block",
-            borderRadius: "8px",
-          }}
-        /> */}
+          style={{ width: "100%", borderBottom: `1px solid ${theme.palette.background.light}` }}
+          onLoad={() => setLoading(false)} // Set loading to false when the image has loaded
+        />
 
         {/* Show loading spinner until video loads */}
         {loading && (
@@ -114,9 +82,6 @@ const LearningCard = ({ exercise, exercise_type }) => {
             <CircularProgress />
           </Box>
         )}
-
-        {/* Use the memoized iframe */}
-        {memoizedIframe}
       </Box>
 
       <CardContent

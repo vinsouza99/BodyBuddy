@@ -66,6 +66,32 @@ export const getProgramsByUser = async (req, res) => {
     });
   }
 };
+
+export const getProgramByRoutine = async (req, res) => {
+  try {
+    const program = await ProgramRoutine.findOne({
+      where: { routine_id: req.params.routine_id },
+    });
+    if (!program) {
+      return res.status(404).json({
+        status: "404",
+        message: "Program not found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: program,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+}
+
 export const getCompletedProgramsByUser = async (req, res) => {
   try {
     const user_id = req.params.user_id;
@@ -198,3 +224,24 @@ export const createProgramRoutine = async (req, res) => {
     });
   }
 };
+
+export const updateProgramRoutine = async (req, res) => {
+  try {
+    const { program_id, routine_id, scheduled_date, completed } = req.body;
+    const updatedCount = await ProgramRoutine.update(
+      { completed },
+      { where: { program_id, routine_id, scheduled_date }}
+    );
+    res.status(200).json({
+      status: "200",
+      message: "Program Routine (completed flag) updated successfully",
+      data: updatedCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+}

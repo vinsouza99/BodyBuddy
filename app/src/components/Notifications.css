@@ -1,0 +1,29 @@
+.notification-wrapper {
+  position: relative;
+}
+.notification-wrapper .notification-count {
+  position: absolute;
+  box-sizing: border-box;
+  z-index: 2;
+  aspect-ratio: 1/1;
+  width: 18px;
+  top: 5px;
+  right: 5px;
+  color: white;
+  background-color: red;
+  text-align: center;
+  border-radius: 50px;
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+.unread-notification,
+.unread-notification:hover {
+  background-color: #d5e9f9 !important;
+}
+.notification-icon {
+  color: "#353E45" !important;
+}
+.notification-icon:hover,
+.notification-icon:focus {
+  color: "#2D90E0" !important;
+}

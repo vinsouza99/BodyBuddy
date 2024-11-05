@@ -6,6 +6,7 @@ import { WeekPicker } from "./WeekPicker";
 import { RoutinesList } from "./RoutinesList";
 import { isWithinInterval, parseISO, startOfWeek, endOfWeek, addDays } from 'date-fns';
 import axiosClient from '../utils/axiosClient';
+import CircularProgress from '@mui/material/CircularProgress';
 
 export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) => {
   const today = new Date();
@@ -15,21 +16,29 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
   });
   const [filteredRoutines, setFilteredRoutines] = useState([]);
   const [weeklyGoal, setWeeklyGoal] = useState('');
+  const [loadingProgramRoutine, setloadingProgramRoutine] = useState(true);
+  const [loadingWeeklyGoal, setloadingWeeklyGoal] = useState(true);
 
   // Create filtered routines by selected week
   useEffect(() => {
-    if (programRoutines.length === 0) return;
-
+    if (programRoutines.length === 0) {
+      setloadingProgramRoutine(false);
+      return;
+   }
     const filtered = programRoutines.filter((routine) => {
       const routineDate = parseISO(routine.scheduled_date);
       return isWithinInterval(routineDate, { start: selectedWeek.start, end: selectedWeek.end });
     });
     setFilteredRoutines(filtered);
+    setloadingProgramRoutine(false);
   }, [selectedWeek, programRoutines]);
 
   // Create Weekly Summary
   useEffect(() => {
-    if (filteredRoutines.length === 0) return;
+    if (filteredRoutines.length === 0) {
+      setloadingWeeklyGoal(false);
+      return;
+    }
 
     const summaryDetails = filteredRoutines.map((routine) => {
       const date = routine.scheduled_date;
@@ -55,6 +64,7 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
       });
       const parsedContent = JSON.parse(response_openai.data.data.choices[0].message.content);
       setWeeklyGoal(parsedContent.summary);
+      setloadingWeeklyGoal(false);
     }
     createWeeklySummary();
   }, [filteredRoutines]);
@@ -66,6 +76,8 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
       end: newEndDate,
     });
     setWeeklyGoal('');
+    setloadingProgramRoutine(true);
+    setloadingWeeklyGoal(true);
   };
 
   const handlePreviousWeek = (newStartDate) => {
@@ -75,8 +87,10 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
       end: newEndDate,
     });
     setWeeklyGoal('');
+    setloadingProgramRoutine(true);
+    setloadingWeeklyGoal(true);
   };
-  
+
   // Create array of shceduled dates
   const scheduledDates = programRoutines.map((routine) => routine.scheduled_date);
 
@@ -88,31 +102,41 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
         onClickPreviousWeek={handlePreviousWeek}
       />
       {/* Program Schedule */}
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: "column",
-          textAlign: "left",
-          gap: 2,
-          width: "100%",
-        }}
-      >
-        {program 
-          ? 
-            <>
-              <Typography sx={{ fontWeight: "800"}}>
-                This Week&apos;s Goal
-              </Typography>
-              {weeklyGoal && (
-                <Typography sx={{ textAlign: "left" }}>
-                  {weeklyGoal}
+      {(loadingProgramRoutine || loadingWeeklyGoal) 
+      ? 
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+          <Typography>
+            Loading...
+          </Typography>
+        </Box>
+      : 
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            textAlign: "left",
+            gap: 2,
+            width: "100%",
+          }}
+        >
+          {program 
+            ? 
+              <>
+                <Typography sx={{ fontWeight: "800"}}>
+                  This Week&apos;s Goal
                 </Typography>
-              )}
-              <RoutinesList routines={filteredRoutines} />
-            </>
-          : <Typography>No available program</Typography>
-        }
-      </Box>
+                {weeklyGoal && (
+                  <Typography sx={{ textAlign: "left" }}>
+                    {weeklyGoal}
+                  </Typography>
+                )}
+                <RoutinesList routines={filteredRoutines} />
+              </>
+            : <Typography>No available program</Typography>
+          }
+        </Box>
+  }
     </GadgetBase>
   );
 });

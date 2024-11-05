@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
-import { useAuth } from "../utils/AuthProvider.jsx";
 import { getAllExercises } from "../controllers/ExerciseController.js";
 import {
   getAllGoals,
@@ -18,10 +17,10 @@ import {
   MenuItem,
   FormControl,
   Select,
-  Button,
   Backdrop,
   CircularProgress,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import LearningCard from "../components/LearningCard";
 
@@ -49,7 +48,6 @@ CustomTabPanel.propTypes = {
 };
 
 export const Learn = memo((props) => {
-  const { user, handleSignOut } = useAuth();
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
   const [filteredExercises, setFilteredExercises] = useState([]);
@@ -59,11 +57,11 @@ export const Learn = memo((props) => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Media query for screen size <= 600px
+  const isSmallScreen = useMediaQuery('(max-width:600px)');
+
   useEffect(() => {
     setPageTitle(props.title); // Set the page title
-
-    // Log user id
-    console.log(user.id);
 
     const loadData = async () => {
       try {
@@ -95,7 +93,7 @@ export const Learn = memo((props) => {
     };
 
     loadData();
-  }, [props.title, user.id]);
+  }, [props.title]);
 
   const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const handleChange = (event, newValue) => {
@@ -171,8 +169,9 @@ export const Learn = memo((props) => {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Exercises by Muscle" />
-          <Tab label="Exercises by Goal" />
+          {/* Display different tab labels based on screen size */}
+          <Tab label={isSmallScreen ? "By Muscle" : "Exercises by Muscle"} />
+          <Tab label={isSmallScreen ? "By Goal" : "Exercises by Goal"} />
         </Tabs>
       </Box>
 
@@ -184,14 +183,15 @@ export const Learn = memo((props) => {
           flexWrap="wrap"
           sx={{ marginTop: 2, marginBottom: 4 }}
         >
-          <FormControl sx={{ m: 1, minWidth: 80 }}>
-            <InputLabel id="muscle-group-label">MuscleGroup</InputLabel>
+          <FormControl sx={{ marginTop: 2, minWidth: 200 }}>
+            <InputLabel id="muscle-group-label">Muscle Group</InputLabel>
             <Select
               labelId="muscle-group-label"
               id="muscle-group-select"
               value={selectedMuscleGroupID}
               label="Muscle Group"
               onChange={handleSelectMuscleGroup}
+              sx={{ textAlign: "left" }}
             >
               {muscleGroups.map((muscleGroup, index) => (
                 <MenuItem value={muscleGroup.id} key={index}>
@@ -213,7 +213,7 @@ export const Learn = memo((props) => {
           flexWrap="wrap"
           sx={{ marginTop: 2, marginBottom: 4 }}
         >
-          <FormControl sx={{ m: 1, minWidth: 80 }}>
+          <FormControl sx={{ marginTop: 2, minWidth: 200 }}>
             <InputLabel id="goal-label">Goals</InputLabel>
             <Select
               labelId="goal-label"
@@ -221,6 +221,7 @@ export const Learn = memo((props) => {
               value={selectedGoalID}
               label="Goal"
               onChange={handleSelectGoal}
+              sx={{ textAlign: "left" }}
             >
               {goals.map((goal, index) => (
                 <MenuItem value={goal.id} key={index}>
@@ -236,3 +237,10 @@ export const Learn = memo((props) => {
     </>
   );
 });
+
+Learn.propTypes = {
+  title: PropTypes.string,
+};
+
+// Setting the display name for debugging
+Learn.displayName = "Learn";

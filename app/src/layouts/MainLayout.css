@@ -1,0 +1,9 @@
+.notification-drawer {
+  position: absolute !important;
+  z-index: 5;
+  right: 0;
+  width: 320px;
+  bottom: 0;
+  top: 100px;
+  background-color: white;
+}

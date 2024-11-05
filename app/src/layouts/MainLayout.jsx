@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, useMediaQuery } from "@mui/material";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -9,10 +9,11 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import RunCircleIcon from "@mui/icons-material/RunCircle";
+import Notifications from "../components/Notifications.jsx";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import IconButton from "@mui/material/IconButton";
 import { getUser } from "../controllers/UserController.js";
+import { useNotifications } from "@toolpad/core/useNotifications";
+import "./MainLayout.css";
 
 // Links to display in the left Navbar
 const NavBar = [
@@ -38,19 +39,6 @@ const NavBar = [
   },
 ];
 
-// Notifications Icon in Header
-function Notification() {
-  return (
-    <>
-      <div>
-        <IconButton type="button" aria-label="search">
-          <NotificationsIcon />
-        </IconButton>
-      </div>
-    </>
-  );
-}
-
 export const MainLayout = () => {
   // Set up routing
   // Navigate for navigation, Location for current URL info
@@ -59,7 +47,7 @@ export const MainLayout = () => {
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
   const [userInfo, setUserInfo] = useState({});
-  const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
+  // const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -70,31 +58,41 @@ export const MainLayout = () => {
   }, []);
 
   // Update logo based on screen size
-  useEffect(() => {
-    const updateLogo = () => {
-      if (window.innerWidth <= 600) {
-        setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
-      } else {
-        setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
-      }
-    };
+  // useEffect(() => {
+  //   const updateLogo = () => {
+  //     if (window.innerWidth <= 600) {
+  //       setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
+  //     } else {
+  //       setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
+  //     }
+  //   };
 
-    // Set initial logo
-    updateLogo();
+  // Set initial logo
+  // updateLogo();
 
-    // Add resize event listener
-    window.addEventListener("resize", updateLogo);
-    return () => {
-      window.removeEventListener("resize", updateLogo); // Clean up listener
-    };
-  }, []);
+  // Add resize event listener
+  //   window.addEventListener("resize", updateLogo);
+  //   return () => {
+  //     window.removeEventListener("resize", updateLogo); // Clean up listener
+  //   };
+  // }, []);
+
+  // Use useMediaQuery to define screen width
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  // Set logo source based on screen size
+  const logoSource = isMobile
+    ? "./src/assets/bodybuddy_logo_color.svg"
+    : "./src/assets/bodybuddy.svg";
+
+  const notifications = useNotifications();
 
   // Session State from Toolpad Core
   const [session] = useState({
     user: {
-      name: userInfo.name,
+      name: userInfo?.name,
       email: user.email,
-      image: userInfo.picture,
+      image: userInfo?.picture,
     },
   });
 
@@ -138,7 +136,8 @@ export const MainLayout = () => {
       >
         <DashboardLayout
           disableCollapsibleSidebar
-          slots={{ toolbarActions: Notification }}
+          slots={{ toolbarActions: Notifications }}
+          sx={{ position: "relative" }}
         >
           <Box sx={{ margin: 2, minHeight: "calc(100vh - 180px)" }}>
             <Outlet />
