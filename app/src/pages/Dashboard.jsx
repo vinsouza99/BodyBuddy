@@ -23,7 +23,7 @@ import {
   getUser,
   getUserAccumulatedStats,
 } from "../controllers/UserController";
-import { getAllExercises } from "../controllers/ExerciseController";
+import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
 // import { createProgramRoutine } from "../controllers/ProgramController";
 // import { createRoutineExercise } from "../controllers/RoutineController";
@@ -76,7 +76,7 @@ export const Dashboard = (props) => {
     loadUserdata();
 
     const loadExerciseData = async () => {
-      const response = await getAllExercises(false);
+      const response = await getExercisesThumbnails();
       setExerciseInfo(response);
       setExerciseInfoLoaded(true);
     };

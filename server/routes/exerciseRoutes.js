@@ -54,7 +54,7 @@ const router = express.Router();
  *               items:
  *                 $ref: '#/components/schemas/Exercise'
  */
-router.get("/", getExercises);
+router.get("/offset=:offset_num&limit=:limit_num", getExercises);
 
 /**
  * @swagger

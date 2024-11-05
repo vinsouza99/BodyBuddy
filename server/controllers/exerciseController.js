@@ -4,13 +4,28 @@ import ExerciseGoal from "../models/ExerciseGoal.js";
 import ExerciseMuscleGroup from "../models/ExerciseMuscleGroup.js";
 
 export const getExercises = async (req, res) => {
+  const offset = req.params.offset_num;
+  const limit = req.params.limit_num;
+  console.log(offset, limit);
   try {
-    const exercises = await Exercise.findAll();
-    res.status(200).json({
-      status: "200",
-      message: "Success",
-      data: exercises,
-    });
+    if (offset && limit) {
+      const { count, rows } = await Exercise.findAndCountAll({
+        offset: offset,
+        limit: limit,
+      });
+      res.status(200).json({
+        status: "200",
+        message: "Success",
+        data: rows,
+      });
+    } else {
+      const exercises = await Exercise.findAll();
+      res.status(200).json({
+        status: "200",
+        message: "Success",
+        data: exercises,
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({

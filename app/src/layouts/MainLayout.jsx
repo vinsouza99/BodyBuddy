@@ -27,7 +27,7 @@ const NavBar = [
     icon: <RunCircleIcon />,
   },
   {
-    segment: "learn",
+    segment: "learning",
     title: "Learning",
     icon: <LocalLibraryIcon />,
   },

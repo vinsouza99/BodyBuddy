@@ -15,7 +15,7 @@ import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../com
 const LearningCard = ({ exercise, exercise_type }) => {
   // Access the theme for styling
   const theme = useTheme();
-  
+
   // Initialize useNavigate
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -51,7 +51,6 @@ const LearningCard = ({ exercise, exercise_type }) => {
   const videoThumbnail = videoURL
     ? `http://img.youtube.com/vi/${videoURL.split("/embed/")[1]}/maxresdefault.jpg`
     : null;
-  console.log("THE VIDEO THUMBNAIL IS " + videoThumbnail);
 
   return (
     <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
@@ -59,7 +58,10 @@ const LearningCard = ({ exercise, exercise_type }) => {
         <img
           src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
           alt={exercise.name ? exercise.name : "Exercise Name"}
-          style={{ width: "100%", borderBottom: `1px solid ${theme.palette.background.light}` }}
+          style={{
+            width: "100%",
+            borderBottom: `1px solid ${theme.palette.background.light}`,
+          }}
           onLoad={() => setLoading(false)} // Set loading to false when the image has loaded
         />
 

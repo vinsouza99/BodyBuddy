@@ -14,8 +14,10 @@ const API_EXERCISE_TYPE_ROUTE = "types";
 const API_EXERCISE_GOALS_ROUTE = "goals";
 const API_EXERCISE_MUSCLE_GROUPS_ROUTE = "muscleGroups";
 
-const getAllExercises = async (allInfo = true) => {
-  const response = await axiosClient.get(`${API_ROUTE}`);
+const getAllExercises = async (offset, limit) => {
+  const response = await axiosClient.get(
+    `${API_ROUTE}/offset=${offset}&limit=${limit}`
+  );
   const exercises = await response.data.data.map((item) => {
     const exercise = new Exercise();
     exercise.id = item.id;
@@ -28,20 +30,32 @@ const getAllExercises = async (allInfo = true) => {
     exercise.muscleGroups = [];
     return exercise;
   });
-  if (allInfo) {
-    for (let exercise of exercises) {
-      const exerciseTypes = await getExerciseTypes(exercise.id);
-      const exerciseGoals = await getExerciseGoals(exercise.id, false);
-      const exerciseMuscleGroups = await getExerciseMuscleGroups(
-        exercise.id,
-        false
-      );
-      exercise.types = exerciseTypes;
-      exercise.goals = exerciseGoals;
-      exercise.muscleGroups = exerciseMuscleGroups;
-    }
+  for (let exercise of exercises) {
+    const exerciseTypes = await getExerciseTypes(exercise.id, true);
+    exercise.types = exerciseTypes;
+    const exerciseGoals = await getExerciseGoals(exercise.id, false);
+    exercise.goals = exerciseGoals;
+    const exerciseMuscleGroups = await getExerciseMuscleGroups(
+      exercise.id,
+      false
+    );
+    exercise.muscleGroups = exerciseMuscleGroups;
   }
   return exercises;
+};
+const getExercisesThumbnails = async () => {
+  return await response.data.data.map((item) => {
+    const exercise = new Exercise();
+    exercise.id = item.id;
+    exercise.name = item.name;
+    exercise.description = item.description;
+    exercise.demo_url = item.demo_url;
+    exercise.video_tutorial_url = item.video_tutorial_url;
+    exercise.types = [];
+    exercise.goals = [];
+    exercise.muscleGroups = [];
+    return exercise;
+  });
 };
 const getExercise = async (id, allInfo = true) => {
   try {
@@ -121,6 +135,7 @@ const getExerciseMuscleGroups = async (id, allInfo = true) => {
 };
 export {
   getAllExercises,
+  getExercisesThumbnails,
   getExercise,
   getExerciseTypes,
   getExerciseGoals,

@@ -3,10 +3,13 @@ import Routine from "../models/Routine";
 import Exercise from "../models/Exercise";
 import RoutineHistory from "../models/RoutineHistory";
 import { getExercise } from "./ExerciseController";
+import Goal from "../models/Goal";
 
 const API_ROUTE = "routines";
 const API_PROGRAM_ROUTINE_ROUTE = "program";
 const API_ROUTINE_EXERCISE_ROUTE = "exercises";
+const API_ROUTINE_HISTORY_ROUTE = "history";
+const API_ROUTINE_GOALS_ROUTE = "goals";
 
 const getRoutine = async (routine_id) => {
   try {
@@ -63,7 +66,9 @@ const getRoutinesFromProgram = async (program_id, getExercises = true) => {
 
 const getUserCompletedRoutines = async (user_id) => {
   try {
-    const response = await axiosClient.get(`${API_ROUTE}/history/${user_id}`);
+    const response = await axiosClient.get(
+      `${API_ROUTE}/${API_ROUTINE_HISTORY_ROUTE}/${user_id}`
+    );
     if (response.status == 404) return [];
     const data = await response.data.data;
     console.log(data);
@@ -113,9 +118,12 @@ const getAllPresetRoutines = async () => {
     if (routines && routines.length > 0) {
       for (const routine of routines) {
         const routineExercises = await getExercisesFromRoutine(routine.id);
-        routineExercises.forEach((exercise) => routine.addExercise(exercise));
+        routine.exercises = routineExercises;
+        const routineGoals = await getRoutineGoals(routine.id);
+        routine.goals = routineGoals;
       }
     }
+    console.log(routines);
     return routines;
   } catch (e) {
     console.error(e);
@@ -232,7 +240,9 @@ const createRoutineExercise = async (exerciseObj) => {
 
 const getRoutineHistory = async (user_id) => {
   try {
-    const response = await axiosClient.get(`${API_ROUTE}/history/${user_id}`);
+    const response = await axiosClient.get(
+      `${API_ROUTE}/${API_ROUTINE_HISTORY_ROUTE}/${user_id}`
+    );
 
     const data = await response.data.data;
 
@@ -253,7 +263,21 @@ const getRoutineHistory = async (user_id) => {
     console.error(e);
   }
 };
+const getRoutineGoals = async (routine_id) => {
+  try {
+    const response = await axiosClient.get(
+      `${API_ROUTE}/${API_ROUTINE_GOALS_ROUTE}/${routine_id}`
+    );
 
+    const data = await response.data.data;
+
+    const routineGoals = await data.map((goal) => new Goal(goal.id));
+
+    return routineGoals;
+  } catch (e) {
+    console.error(e);
+  }
+};
 export {
   getRoutine,
   getRoutinesFromProgram,

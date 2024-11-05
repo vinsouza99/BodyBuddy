@@ -2,6 +2,7 @@ import Routine from "../models/Routine.js";
 import ProgramRoutine from "../models/ProgramRoutine.js";
 import RoutineExercise from "../models/RoutineExercise.js";
 import RoutineHistory from "../models/RoutineHistory.js";
+import RoutineGoal from "../models/RoutineGoal.js";
 
 export const getRoutines = async (req, res) => {
   try {
@@ -375,6 +376,27 @@ export const getRoutineHistory = async (req, res) => {
       status: "200",
       message: "Success",
       data: routineHistories,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
+export const getRoutineGoals = async (req, res) => {
+  try {
+    const routine_id = req.params.routine_id;
+    const routineGoals = await RoutineGoal.findAll({
+      where: {
+        routine_id: routine_id,
+      },
+    });
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: routineGoals,
     });
   } catch (error) {
     console.error(error);

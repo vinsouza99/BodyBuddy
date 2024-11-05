@@ -56,6 +56,7 @@ export const Learn = memo((props) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [offset, setOffset] = useState(0); //when pagination button is clicked, change this offset by 9 (increment by 9 if 'next' page is clicked, decrement by 9 if 'prev' is clicked)
 
   // Media query for screen size <= 600px
   const isSmallScreen = useMediaQuery("(max-width:600px)");
@@ -65,21 +66,7 @@ export const Learn = memo((props) => {
 
     const loadData = async () => {
       try {
-        // Cocoy: Load exercises
-        const response = await getAllExercises();
-
-        // Log the full response
-        //console.log("Loaded exercises:", response);
-
-        // Access exercises from the response.data property
-        const exercisesData = response;
-
-        // Log the exercises data
-        //console.log("Exercises Data:", exercisesData);
-
-        // Update the state with the loaded routines
-        setExercises(exercisesData);
-        setFilteredExercises(exercisesData);
+        await loadExerciseData();
         const muscleGroupsData = await getAllMuscleGroups();
         setMuscleGroups([{ id: 0, name: "All" }, ...muscleGroupsData]);
 
@@ -95,6 +82,28 @@ export const Learn = memo((props) => {
     loadData();
   }, [props.title]);
 
+  const loadExerciseData = async () => {
+    try {
+      // Cocoy: Load exercises
+      const response = await getAllExercises(offset, 9);
+
+      // Log the full response
+      //console.log("Loaded exercises:", response);
+
+      // Access exercises from the response.data property
+      const exercisesData = response;
+
+      // Log the exercises data
+      //console.log("Exercises Data:", exercisesData);
+
+      // Update the state with the loaded routines
+      setExercises(exercisesData);
+      setFilteredExercises(exercisesData);
+      console.log(exercisesData);
+    } catch (e) {
+      console.error(e);
+    }
+  };
   const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
@@ -103,13 +112,16 @@ export const Learn = memo((props) => {
     setSelectedMuscleGroupID(0);
   };
   useEffect(() => {
+    loadExerciseData();
+  }, [offset]);
+  useEffect(() => {
     filterExercisesByMuscleGroup(selectedMuscleGroupID);
   }, [selectedMuscleGroupID]);
 
   useEffect(() => {
     filterExercisesByGoal(selectedGoalID);
   }, [selectedGoalID]);
-
+  useEffect(() => {});
   const handleSelectMuscleGroup = (event) => {
     setSelectedMuscleGroupID(event.target.value);
   };
