@@ -44,6 +44,7 @@ const getAllExercises = async (offset, limit) => {
   return exercises;
 };
 const getExercisesThumbnails = async () => {
+  const response = await axiosClient.get(`${API_ROUTE}`);
   return await response.data.data.map((item) => {
     const exercise = new Exercise();
     exercise.id = item.id;

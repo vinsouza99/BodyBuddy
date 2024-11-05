@@ -37,7 +37,23 @@ const router = express.Router();
  *           type: string
  *           description: The url of the exercise demo
  */
-
+/**
+ * @swagger
+ * /Exercises:
+ *   get:
+ *     summary: Returns a list of all Exercises
+ *     tags: [Exercises]
+ *     responses:
+ *       200:
+ *         description: A list of Exercises
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Exercise'
+ */
+router.get("/", getExercises);
 /**
  * @swagger
  * /Exercises:
