@@ -48,7 +48,7 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false, 
       open={open}
       
     >
-      <Box sx={modalStyle}>
+      <Box sx={{...modalStyle, gap: isLandscapeMode ? 2 : 8,}}>
         <Box
           component="img"
           src={Completed}

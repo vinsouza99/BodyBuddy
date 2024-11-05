@@ -4,11 +4,8 @@ import { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 // Custom Components for Routine Session
 import { useLandscapeMode } from "./useLandscapeMode";
-// Common Components
-import { useTheme } from '@mui/material/styles';
 
 export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete }) => {
-  const theme = useTheme();
   const isLandscapeMode = useLandscapeMode();
   const [completed, setCompleted] = useState(true);
 
@@ -50,7 +47,7 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
         <Typography
           sx={{
             fontWeight: 'bold',
-            fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+            fontSize: isLandscapeMode ? '1.5rem' : '2.5rem',
             textAlign: 'center',
           }}
         >
@@ -59,7 +56,7 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
         <Typography
           sx={{
             fontWeight: 'bold',
-            fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+            fontSize: isLandscapeMode ? '1.5rem' : '2.5rem',
             textAlign: 'center',
             marginLeft: 1,
           }}

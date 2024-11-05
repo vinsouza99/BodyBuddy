@@ -100,4 +100,12 @@ export class PushupCounter extends BaseCounter {
   getAngle() {
     return Number(this.leftShoulderElbowWristAngle);
   }
+
+  getCaloriePerSec() {
+    return 0;
+  }
+
+  getScorePerSec() {
+    return 0;
+  }
 }

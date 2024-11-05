@@ -2,12 +2,14 @@
 import PropTypes from "prop-types";
 import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
-import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button, IconButton, TextField } from "@mui/material"
+import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button, IconButton, TextField, useMediaQuery } from "@mui/material"
+import theme from "../theme";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
 import Camera_On from '../assets/camera_on.png';
 import Camera_Off from '../assets/camera_off.png';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import { RotateConfirmationModal } from "./routine-session/RotateConfirmationModal";
 
 const modalStyle = {
   // Layout and positioning
@@ -16,7 +18,8 @@ const modalStyle = {
   left: "50%",
   transform: "translate(-50%, -50%)",
   // Box model
-  width: 450,
+  width: "90%",
+  maxWidth: "450px",
   padding: 4,
   borderRadius: '15px',
   // Flexbox alignment
@@ -32,10 +35,11 @@ const modalStyle = {
 
 export const StartRoutineSessionModal = ( {open = false, id = null, idType = "routine", onClose = false } ) => {
   const navigate = useNavigate();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [record, setRecord] = useState(false);
   const [reps, setReps] = useState(''); // when exercise type is specified
   const [step, setStep] = useState(1); // step 1 for rep setting, step 2 for recording confirmation
-
+  const [openRotateConfirmation, setOpenRotateConfirmation] = useState(true);
   const handleChange = (event) => {
     setRecord(event.target.value === 'true');
   };
@@ -64,92 +68,100 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
   }
 
   return (
-    <Modal 
-      open={open}
-      onClose={handleClose}
-      slotProps={{
-        backdrop: {
-          sx: {
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
-          },
-        },
-      }}
-    >
-      <Box sx={modalStyle}>
-        <IconButton
-          aria-label="close"
-          onClick={handleClose}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
+    <>
+      {open && isMobile && openRotateConfirmation && (
+        <RotateConfirmationModal open={isMobile} onClose={() => {setOpenRotateConfirmation(false)}} />
+      )}
+
+      {open && (!isMobile || !openRotateConfirmation) && (
+        <Modal 
+          open={open}
+          onClose={handleClose}
+          slotProps={{
+            backdrop: {
+              sx: {
+                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+              },
+            },
           }}
         >
-          <CloseIcon />
-        </IconButton>
-
-        {/* Step 1: If type is exercise, ask for reps */}
-        {idType === 'exercise' && step === 1 && (
-          <>
-            <Typography textAlign="center">
-              Please specify the reps for this exercise:
-            </Typography>
-            <TextField
-              label="Reps"
-              type="number"
-              value={reps}
-              onChange={(e) => setReps(e.target.value)}
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              variant="contained"
-              type="button"
-              onClick={handleNextStep}
-              disabled={!reps}
+          <Box sx={modalStyle}>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: 'absolute',
+                right: 8,
+                top: 8,
+              }}
             >
-              Next
-            </Button>
-          </>
-        )}
+              <CloseIcon />
+            </IconButton>
 
-        {/* Step 2: Recording confirmation for both exercise and routine */}
-        {(idType === 'routine' || step === 2) && (
-          <>
-            <Box textAlign="center">
-              { record ? <img src={Camera_On} alt="Camera On" /> : <img src={Camera_Off} alt="Camera Off" /> }
-            </Box>
-            <Typography textAlign="center">
-              Would you like to record your {idType === 'exercise' ? 'exercise' : 'routine'} session?
-            </Typography>
-            <FormControl component="fieldset">
-              <RadioGroup
-                aria-label="options"
-                name="radio-buttons-group"
-                value={record}
-                onChange={handleChange}
-                row
-              >
-                <FormControlLabel value="true" control={<Radio />} label="Yes" />
-                <FormControlLabel value="false" control={<Radio />} label="No" />
-              </RadioGroup>
-            </FormControl>
-            <Typography textAlign="center">
-              The recordings will be saved in your history for your personal progress tracking.
-            </Typography>
-            <Button
-              variant="contained"
-              type="button"
-              onClick={handleStartRoutine}
-            >
-              <PlayArrowIcon sx={{ marginRight: "0.5rem" }}/>
-              Start
-            </Button>
-          </>
-        )}
+            {/* Step 1: If type is exercise, ask for reps */}
+            {idType === 'exercise' && step === 1 && (
+              <>
+                <Typography textAlign="center">
+                  Please specify the reps for this exercise:
+                </Typography>
+                <TextField
+                  label="Reps"
+                  type="number"
+                  value={reps}
+                  onChange={(e) => setReps(e.target.value)}
+                  fullWidth
+                  margin="normal"
+                />
+                <Button
+                  variant="contained"
+                  type="button"
+                  onClick={handleNextStep}
+                  disabled={!reps}
+                >
+                  Next
+                </Button>
+              </>
+            )}
 
-      </Box>
-    </Modal>
+            {/* Step 2: Recording confirmation for both exercise and routine */}
+            {(idType === 'routine' || step === 2) && (
+              <>
+                <Box textAlign="center">
+                  { record ? <img src={Camera_On} alt="Camera On" /> : <img src={Camera_Off} alt="Camera Off" /> }
+                </Box>
+                <Typography textAlign="center">
+                  Would you like to record your {idType === 'exercise' ? 'exercise' : 'routine'} session?
+                </Typography>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    aria-label="options"
+                    name="radio-buttons-group"
+                    value={record}
+                    onChange={handleChange}
+                    row
+                  >
+                    <FormControlLabel value="true" control={<Radio />} label="Yes" />
+                    <FormControlLabel value="false" control={<Radio />} label="No" />
+                  </RadioGroup>
+                </FormControl>
+                <Typography textAlign="center">
+                  The recordings will be saved in your history for your personal progress tracking.
+                </Typography>
+                <Button
+                  variant="contained"
+                  type="button"
+                  onClick={handleStartRoutine}
+                >
+                  <PlayArrowIcon sx={{ marginRight: "0.5rem" }}/>
+                  Start
+                </Button>
+              </>
+            )}
+
+          </Box>
+        </Modal>
+      )}
+    </>
   )
 }
 

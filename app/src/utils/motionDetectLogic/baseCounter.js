@@ -90,6 +90,14 @@ export class BaseCounter {
     throw new Error("getAngle() must be implemented in subclass");
   }
 
+  getCaloriePerSec() {
+    throw new Error("getCaloriePerSec() must be implemented in subclass");
+  }
+
+  getScorePerSec() {
+    throw new Error("getScorePerSec() must be implemented in subclass");
+  }
+  
   resetCount() {
     this.successCount = 0;
   }

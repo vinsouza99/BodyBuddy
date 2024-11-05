@@ -6,21 +6,20 @@ import { format } from 'date-fns';
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import Badge1_Placeholder from '../assets/Badge_NewbieNoMoreLight.svg';
-import Badge2_Placeholder from '../assets/Badge_ConsistencyChampLight.svg';
-import Badge3_Placeholder from '../assets/Badge_CalorieCrusherLight.svg';
-import Badge4_Placeholder from '../assets/Badge_StreakStarLight.svg';
-import Badge1 from '../assets/Badge_NewbieNoMoreDark.svg';
-import Badge2 from '../assets/Badge_ConsistencyChampDark.svg';
-import Badge3 from '../assets/Badge_CalorieCrusherDark.svg';
-import Badge4 from '../assets/Badge_StreakStarDark.svg';
+import Badge1_Placeholder from '../assets/Badge_NewbieNoMoreDark.svg';
+import Badge2_Placeholder from '../assets/Badge_ConsistencyChampDark.svg';
+import Badge3_Placeholder from '../assets/Badge_CalorieCrusherDark.svg';
+import Badge4_Placeholder from '../assets/Badge_StreakStarDark.svg';
+import Badge1 from '../assets/Badge_NewbieNoMoreLight.svg';
+import Badge2 from '../assets/Badge_ConsistencyChampLight.svg';
+import Badge3 from '../assets/Badge_CalorieCrusherLight.svg';
+import Badge4 from '../assets/Badge_StreakStarLight.svg';
 
 const badgeMap = {
   1: Badge1,
   2: Badge2,
   3: Badge3,
   4: Badge4,
-  placeholder: Badge1_Placeholder
 };
 
 const badgeMap_Placeholder = {
@@ -39,8 +38,9 @@ const modalStyle = {
   transform: "translate(-50%, -50%)",
   // Box model
   width: '85%',
-  height: '85%',
-  padding: 4,
+  maxWidth: '920px',
+  height: '90%',
+  padding: 2,
   borderRadius: '15px',
   overflowY: 'auto',
   // Flexbox alignment
@@ -49,8 +49,8 @@ const modalStyle = {
   flexWrap: 'wrap',
   alignItems: 'start',
   justifyContent: 'center',
-  columnGap: 8,
-  rowGap: 4,
+  columnGap: 1,
+  rowGap: 0,
   // Visual effects
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -89,8 +89,8 @@ export const WallOfFame = ({ userInfo = {} }) => {
         userInfo?.achievements?.map((achievement) => [achievement.achievement_id, achievement])
       );
 
-      // Create an array of 15 badges
-      const earnedBadges = Array.from({ length: 15 }, (_, index) => {
+      // Create an array of 16 badges
+      const earnedBadges = Array.from({ length: 16 }, (_, index) => {
         const badgeId = index + 1;
         const achievement = earnedBadgesMap.get(badgeId);
         const badgeInfo = allBadges.find((badge) => badge.id === badgeId) || {};
@@ -173,7 +173,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
   .slice(currentIndex, currentIndex + itemsToShow)
   .concat(
     Array(Math.max(0, itemsToShow - badges.slice(currentIndex, currentIndex + itemsToShow).length))
-      .fill({ id: '', name: '', src: '', alt: 'Placeholder' })
+      .fill({ id: '', name: '', src: badgeMap_Placeholder.placeholder, alt: 'Placeholder' })
   );
 
   return (
@@ -210,28 +210,28 @@ export const WallOfFame = ({ userInfo = {} }) => {
             disabled={!canNavigate || currentIndex === 0}
           >
             <ArrowBackIosNewIcon />
-          </IconButton>        
+          </IconButton>
+
           {displayBadges.map((badge, index) => (
-            <Box
-              key={index}
-              sx={{
-                maxWidth: '15%',
-                flex: '1 1 auto',
-                opacity: badge.src ? 1 : 0.8,
-              }}
-            >
-              <img
+            <Box key={index} sx={{flex: '1 1 auto',}}>
+              <Box
+                component="img"
                 src={badge.src || Badge1_Placeholder}
                 alt={badge.alt}
-                style={{ 
+                sx={{ 
                   width: '100%',
                   maxWidth: '70px',
                   height: 'auto',
                   objectFit: 'contain',
+                  transition: 'transform 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.1)',
+                  },
                 }} 
               />
             </Box>
           ))}
+
           <IconButton 
             sx={{
               padding: 0,
@@ -305,15 +305,20 @@ export const WallOfFame = ({ userInfo = {} }) => {
                 textAlign: 'center',
                 width: 200,
                 height: 150,
-                // border: '1px solid #ccc',
               }}
               onClick={(e) => handleBadgeClick(e, badge.name, badge.description, badge.earned_at)}
             >
-              <img
+              <Box
+                component="img"
                 src={badge.src || Badge1_Placeholder}
                 alt={badge.alt}
+                sx={{ 
+                  transition: 'transform 0.2s ease-in-out',
+                  '&:hover': {
+                    transform: 'scale(1.2)',
+                  },
+                }} 
               />
-
               <Typography sx={{textAlign: "center"}}>
                 {badge.name}
               </Typography>
@@ -341,7 +346,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                   border: "1px solid #94DC8A",
                   borderRadius: '15px',
                   width: { xs: "50vw", sm: "30vw" },
-                  maxWidth: { xs: "50vw", sm: "30vw" },
+                  maxWidth: "250px",
                   textAlign: "center",
                   position: 'relative',
                   display: "flex",
@@ -382,13 +387,13 @@ export const WallOfFame = ({ userInfo = {} }) => {
               }}
             >
               <Typography sx={{ fontWeight: "bold" }}>
-                {popoverContent?.name || "Not available"}
+                {popoverContent?.name || "Coming Soon!"}
               </Typography>
               <Typography>
                 {popoverContent?.description || ""}  
               </Typography>
               {popoverContent?.earned_at && (
-                <Typography>{format(new Date(popoverContent.earned_at), 'dd MMM yyyy')}</Typography>
+                <Typography>Unlocked on {format(new Date(popoverContent.earned_at), 'dd MMM yyyy')}</Typography>
               )}
             </Box>
           </Popover>

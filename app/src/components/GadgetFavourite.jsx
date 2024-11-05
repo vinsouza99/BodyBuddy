@@ -97,7 +97,7 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
           >
             <Box 
               sx={{
-                maxWidth: '200px',
+                width: '200px',
                 height: '200px',
                 backgroundColor: 'white',
                 padding: '10px',

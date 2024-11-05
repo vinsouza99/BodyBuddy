@@ -38,13 +38,13 @@ export class SquatCounter extends BaseCounter {
     this.hipKneeAnkleAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
 
     // Check if knee bends too much
-    if (this.hipKneeAnkleAngle < 80) {
+    if (this.hipKneeAnkleAngle < 85) {
       this.alertCount += 1;
     }
 
     // Return alert message if knee bends too much for a certain number of frames
     if (this.alertCount >= this.alertThreshold) {
-      this.alert = "Keep your hips a bit higher to maintain good form.";
+      this.alert = "Keep your hips a bit higher.";
       this.alertCount = 0;
     } else {
       this.alert = null;
@@ -75,5 +75,13 @@ export class SquatCounter extends BaseCounter {
 
   getAngle() {
     return Number(this.hipKneeAnkleAngle);
+  }
+
+  getCaloriePerSec() {
+    return 0;
+  }
+
+  getScorePerSec() {
+    return 0;
   }
 }

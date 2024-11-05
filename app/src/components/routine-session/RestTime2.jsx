@@ -62,7 +62,7 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
         <CountdownCircleTimer
           isPlaying={isPlaying}
           duration={duration}
-          size={isLandscapeMode ? 100 : 180}
+          size={isLandscapeMode ? 80 : 110}
           strokeWidth={isLandscapeMode ? 6 : 8}
           colors='#FFFFFF'
           trailColor='transparent'
@@ -72,7 +72,7 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
             <Typography
               sx={{ 
                 fontWeight: "bold",
-                fontSize: isLandscapeMode ? '1.5rem' : '3rem',
+                fontSize: isLandscapeMode ? '3rem' : '4rem',
               }}
             >
               {remainingTime}

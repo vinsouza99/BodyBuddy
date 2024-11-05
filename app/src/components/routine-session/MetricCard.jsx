@@ -26,7 +26,7 @@ export const MetricCard = ({ value=0, title="N/A", color="white" }) => {
           color={color}
           sx={{
             fontWeight: "bold",
-            fontSize: isLandscapeMode ? "1.2rem" : "2.5rem",
+            fontSize: isLandscapeMode ? "1.5rem" : "2.5rem",
           }}
         >
           {value}
