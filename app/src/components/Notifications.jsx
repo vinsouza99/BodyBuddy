@@ -135,7 +135,14 @@ function Notifications() {
             ""
           )}
           <IconButton type="button" aria-label="Notifications">
-            <NotificationsIcon sx={{ color: "#353E45" }} />
+            <NotificationsIcon
+              sx={{
+                color: "#353E45",
+                "&:hover": {
+                  color: "#2D90E0", // changes text color on hover
+                },
+              }}
+            />
           </IconButton>
         </div>
       </Box>

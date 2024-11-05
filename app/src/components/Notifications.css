@@ -7,7 +7,6 @@
   z-index: 2;
   aspect-ratio: 1/1;
   width: 18px;
-
   top: 5px;
   right: 5px;
   color: white;
@@ -17,6 +16,14 @@
   font-size: 0.6rem;
   font-weight: 800;
 }
-.unread-notification {
-  background-color: #d5e9f9;
+.unread-notification,
+.unread-notification:hover {
+  background-color: #d5e9f9 !important;
+}
+.notification-icon {
+  color: "#353E45" !important;
+}
+.notification-icon:hover,
+.notification-icon:focus {
+  color: "#2D90E0" !important;
 }
