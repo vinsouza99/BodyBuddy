@@ -2,7 +2,7 @@ import { landmarkNames } from "./landmarkNames";
 import { BaseCounter } from "./baseCounter";
 import { calculateAngle } from "../utils";
 
-export class SquatCounter extends BaseCounter {
+export class JumpingJacksCounter extends BaseCounter {
   constructor() {
     super();
     this.shoulderHipKneeAngle = null;
@@ -10,8 +10,7 @@ export class SquatCounter extends BaseCounter {
     this.kneeAnkleAngle = null;
   }
 
-  static MET = 5.0; // Metabolic equivalent of task (MET) for squats
-  static TIME_PER_REP = 6; // Time taken to complete one squat rep
+  static MET = 14.0; // Metabolic equivalent of task (MET) for jumpingjacks
 
   _processSpecificPose(landmarks) {
     const leftShoulder = landmarks[landmarkNames.LEFT_SHOULDER];
@@ -26,10 +25,10 @@ export class SquatCounter extends BaseCounter {
     this.#processCount(leftShoulder, leftHip, leftKnee, leftAnkle);
 
     return { 
-      count: this.successCount, 
+      count: 0, 
       alert: this.alert,
-      calorie: SquatCounter.MET * (SquatCounter.TIME_PER_REP / 3600) * 1.05,
-      score: 1,
+      calorie: 0,
+      score: 0,
     };
   }
 
@@ -51,37 +50,19 @@ export class SquatCounter extends BaseCounter {
     }
   }
 
-  #processCount(leftShoulder, leftHip, leftKnee, leftAnkle) {
-    this.shoulderHipKneeAngle = calculateAngle(leftShoulder, leftHip, leftKnee);
-    this.hipKneeAnkleAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
-
-    // Judge Squat Up (top position)
-    if (this.shoulderHipKneeAngle > 170 && !this.up) {
-      this.up = true;
-      this.down = false;
-    }
-
-    // Judge Squat Down (bottom position)
-    if (this.up && this.hipKneeAnkleAngle < 100 && !this.down) {
-      this.down = true;
-      this.successCount += 1;
-    }
-
-    // Reset Up state when user returns to the top position
-    if (this.down && this.shoulderHipKneeAngle > 170) {
-      this.up = false;
-    }
+  #processCount() {
+    // No counting logic for jumping jacks
   }
 
   getAngle() {
-    return Number(this.hipKneeAnkleAngle);
+    // No angle for jumping jacks
   }
 
   getCaloriePerSec() {
-    return 0;
+    return JumpingJacksCounter.MET / 3600 * 1.05;
   }
 
   getScorePerSec() {
-    return 0;
+    return 1;
   }
 }
