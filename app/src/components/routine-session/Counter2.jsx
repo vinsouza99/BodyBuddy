@@ -47,7 +47,7 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
         <Typography
           sx={{
             fontWeight: 'bold',
-            fontSize: isLandscapeMode ? '1.2rem' : '2.5rem',
+            fontSize: isLandscapeMode ? '1.5rem' : '2.5rem',
             textAlign: 'center',
           }}
         >
@@ -56,7 +56,7 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
         <Typography
           sx={{
             fontWeight: 'bold',
-            fontSize: isLandscapeMode ? '1.2rem' : '2.5rem',
+            fontSize: isLandscapeMode ? '1.5rem' : '2.5rem',
             textAlign: 'center',
             marginLeft: 1,
           }}
