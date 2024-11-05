@@ -29,6 +29,7 @@ export const LearnExercise = (props) => {
         const exerciseData = await getExercise(exercise_id, true);
         setExercise(exerciseData);
         console.log(exerciseData);
+        setPageTitle("Learn | " + exerciseData.name);
       } catch (e) {
         console.log(e);
       } finally {
@@ -70,9 +71,7 @@ export const LearnExercise = (props) => {
               border: "none",
             }}
           ></iframe>
-        ) : (
-          null
-        )}
+        ) : null}
       </>
     );
   }, [exercise?.name]);
@@ -159,7 +158,7 @@ export const LearnExercise = (props) => {
                 {exercise?.name || "Exercise Name"}
               </Typography>
 
-              <ExerciseDetails exercise={exercise}/>
+              <ExerciseDetails exercise={exercise} />
             </Box>
 
             {/* NOTE: The following code move to ExerciseDetails.jsx component */}
@@ -320,4 +319,3 @@ export const LearnExercise = (props) => {
 LearnExercise.propTypes = {
   title: PropTypes.string,
 };
-

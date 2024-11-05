@@ -58,7 +58,7 @@ export const Learn = memo((props) => {
   const [loading, setLoading] = useState(true);
 
   // Media query for screen size <= 600px
-  const isSmallScreen = useMediaQuery('(max-width:600px)');
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
 
   useEffect(() => {
     setPageTitle(props.title); // Set the page title
@@ -81,10 +81,10 @@ export const Learn = memo((props) => {
         setExercises(exercisesData);
         setFilteredExercises(exercisesData);
         const muscleGroupsData = await getAllMuscleGroups();
-        setMuscleGroups(muscleGroupsData);
+        setMuscleGroups([{ id: 0, name: "All" }, ...muscleGroupsData]);
 
         const fitnessGoalsData = await getAllGoals();
-        setGoals(fitnessGoalsData);
+        setGoals([{ id: 0, name: "All" }, ...fitnessGoalsData]);
       } catch (e) {
         console.log(e);
       } finally {
@@ -98,6 +98,9 @@ export const Learn = memo((props) => {
   const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
+    setFilteredExercises(exercises);
+    setSelectedGoalID(0);
+    setSelectedMuscleGroupID(0);
   };
   useEffect(() => {
     filterExercisesByMuscleGroup(selectedMuscleGroupID);
@@ -114,15 +117,19 @@ export const Learn = memo((props) => {
     setSelectedGoalID(event.target.value);
   };
   const filterExercisesByMuscleGroup = (muscleGroupID) => {
-    const filteredArray = exercises.filter((exercise) =>
-      exercise.hasMuscleGroup(muscleGroupID)
-    );
+    const filteredArray =
+      muscleGroupID == 0
+        ? exercises
+        : exercises.filter((exercise) =>
+            exercise.hasMuscleGroup(muscleGroupID)
+          );
     setFilteredExercises(filteredArray);
   };
   const filterExercisesByGoal = (goalID) => {
-    const filteredArray = exercises.filter((exercise) =>
-      exercise.hasGoal(goalID)
-    );
+    const filteredArray =
+      goalID == 0
+        ? exercises
+        : exercises.filter((exercise) => exercise.hasGoal(goalID));
 
     setFilteredExercises(filteredArray);
   };
@@ -201,8 +208,6 @@ export const Learn = memo((props) => {
             </Select>
           </FormControl>
         </Box>
-        {/* Grid to display LearningCard components */}
-        {exercisesGrid}
       </CustomTabPanel>
 
       {/* Tab for Exercises by Goal */}
@@ -231,9 +236,9 @@ export const Learn = memo((props) => {
             </Select>
           </FormControl>
         </Box>
-        {/* Grid to display LearningCard components */}
-        {exercisesGrid}
       </CustomTabPanel>
+      {/* Grid to display LearningCard components */}
+      {exercisesGrid}
     </>
   );
 });
