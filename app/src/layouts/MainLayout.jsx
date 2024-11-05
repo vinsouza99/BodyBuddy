@@ -12,7 +12,6 @@ import RunCircleIcon from "@mui/icons-material/RunCircle";
 import Notifications from "../components/Notifications.jsx";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import { getUser } from "../controllers/UserController.js";
-import { useNotifications } from "@toolpad/core/useNotifications";
 import "./MainLayout.css";
 
 // Links to display in the left Navbar
@@ -40,43 +39,32 @@ const NavBar = [
 ];
 
 export const MainLayout = () => {
-  // Set up routing
-  // Navigate for navigation, Location for current URL info
-  // Route paths are defined in App.jsx
   const navigate = useNavigate();
   const location = useLocation();
   const { user, handleSignOut } = useAuth();
-  const [userInfo, setUserInfo] = useState({});
-  // const [logoSource, setLogoSource] = useState("./src/assets/bodybuddy.svg"); // COCOY: Default logo, will update based on screen size
+
+  // Session State from Toolpad Core
+  const [session, setSession] = useState({
+    user: {
+      name: "",
+      email: "",
+      image: "",
+    },
+  });
 
   useEffect(() => {
     const getUserInfo = async () => {
       const response = await getUser(user, false);
-      setUserInfo(response);
+      setSession({
+        user: {
+          name: response.name,
+          email: user.email,
+          image: response.picture,
+        },
+      });
     };
     getUserInfo();
   }, []);
-
-  // Update logo based on screen size
-  // useEffect(() => {
-  //   const updateLogo = () => {
-  //     if (window.innerWidth <= 600) {
-  //       setLogoSource("./src/assets/bodybuddy_logo_color.svg"); // Small logo for mobile
-  //     } else {
-  //       setLogoSource("./src/assets/bodybuddy.svg"); // Default logo
-  //     }
-  //   };
-
-  // Set initial logo
-  // updateLogo();
-
-  // Add resize event listener
-  //   window.addEventListener("resize", updateLogo);
-  //   return () => {
-  //     window.removeEventListener("resize", updateLogo); // Clean up listener
-  //   };
-  // }, []);
-
   // Use useMediaQuery to define screen width
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -84,17 +72,6 @@ export const MainLayout = () => {
   const logoSource = isMobile
     ? "./src/assets/bodybuddy_logo_color.svg"
     : "./src/assets/bodybuddy.svg";
-
-  const notifications = useNotifications();
-
-  // Session State from Toolpad Core
-  const [session] = useState({
-    user: {
-      name: userInfo?.name,
-      email: user.email,
-      image: userInfo?.picture,
-    },
-  });
 
   // Authentication logic from Toolpad Core
   const authentication = useMemo(() => {
