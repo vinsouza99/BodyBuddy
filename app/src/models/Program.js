@@ -30,6 +30,7 @@ export class Program {
     this.description = description;
     this.routines = routines;
     this.compare_date = completed_at; // will have the same value as completed_at but will be use for sorting in history
+    this.record_type = "program"; //used to differentiate records on the user history
   }
 
   /**

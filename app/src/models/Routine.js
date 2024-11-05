@@ -44,7 +44,8 @@ export default class Routine {
     this.completed_at = completed_at;
     this.recording_url = recording_url;
     this.exercises = exercises;
-    this.compare_date = completed_at;
+    this.compare_date = completed_at; // will have the same value as completed_at but will be use for sorting in history
+    this.record_type = "routine"; //used to differentiate records on the user history
   }
   /**
    * Adds an exercise to the routine and sorts the array according to the order of the exercise
