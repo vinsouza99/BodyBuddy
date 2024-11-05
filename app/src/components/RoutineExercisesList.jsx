@@ -25,7 +25,7 @@ const modalStyle = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  justifyContent: 'center',
+  justifyContent: 'start',
   gap: 2,
   // Visual effects
   bgcolor: 'background.paper',
@@ -141,8 +141,8 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
             component="img"
             src={selectedExercise.demo_url}
             sx={{
-              width: '60%',
-              height: '60%',
+              width: '45%',
+              height: '45%',
               objectFit: 'contain', 
             }}
           />

@@ -38,9 +38,9 @@ const modalStyle = {
   transform: "translate(-50%, -50%)",
   // Box model
   width: '85%',
-  maxWidth: '900px',
-  height: '85%',
-  padding: 4,
+  maxWidth: '920px',
+  height: '90%',
+  padding: 2,
   borderRadius: '15px',
   overflowY: 'auto',
   // Flexbox alignment
@@ -50,7 +50,7 @@ const modalStyle = {
   alignItems: 'start',
   justifyContent: 'center',
   columnGap: 1,
-  rowGap: 1,
+  rowGap: 0,
   // Visual effects
   bgcolor: 'background.paper',
   boxShadow: 24,
@@ -319,7 +319,6 @@ export const WallOfFame = ({ userInfo = {} }) => {
                   },
                 }} 
               />
-
               <Typography sx={{textAlign: "center"}}>
                 {badge.name}
               </Typography>
