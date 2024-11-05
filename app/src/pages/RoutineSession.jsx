@@ -460,6 +460,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     setIsExerciseMenuOpen((prev) => !prev);
   };
 
+  // Handle incrementing Calorie and Score
+  const handleIncrementCalorieAndScore = () => {
+    const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+    setCalorie((prevCalorie) => {
+      return Math.round((prevCalorie + userInfo.weight * weightFactor * (exerciseCounter?.getCaloriePerSec() || 0)) * 10) / 10;
+    });
+    setScore((prevScore) => {
+      return prevScore + (exerciseCounter?.getScorePerSec() || 0)
+    });
+  };
+
   // ---------------------------------------------------------
   //                      Helper Functions
   // ---------------------------------------------------------
@@ -486,6 +497,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
       // Add current exercise to the transformed array
       transformedRoutine.push({
+        exercise_id: item.id,
         name: item.name,
         goal: goalString,
         sets: item.sets ? item.sets : 0,
@@ -591,7 +603,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Load exercise counter based on the selected exercise
   const loadExerciseCounter = (selectedExercise) => {
     if (selectedExercise) {
-      const CounterClass = exerciseCounterLoader[selectedExercise.name];
+      const CounterClass = exerciseCounterLoader[selectedExercise.exercise_id];
       if (CounterClass) {
         console.log("Exercise counter is loaded.", selectedExercise.name);
         return new CounterClass();
@@ -655,7 +667,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 setCalorie((prevCalorie) => {
                   if (userInfo?.weight) {
                     const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
-                    return prevCalorie + Math.round(calorie * userInfo.weight * weightFactor);
+                    return Math.round((prevCalorie + calorie * userInfo.weight * weightFactor) * 10) / 10;
                   }
                   return prevCalorie;
                 });
@@ -1085,7 +1097,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             />
 
             {/* Calories */}
-            <MetricCard title="Calories" value={calorie}/>
+            <Box sx={{minWidth: "65px"}}>
+              <MetricCard title="kcal" value={calorie}/>
+            </Box>
 
             {/* Puase & Play */}
             <IconButton
@@ -1110,6 +1124,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               colors="white"
               trailColor="transparent"
               onComplete={incrementSetsCount}
+              onUpdate={handleIncrementCalorieAndScore}
             >
               {({ remainingTime }) => (
                 <Typography
@@ -1118,12 +1133,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                     fontSize: isLandscapeMode ? '3rem' : '4rem',
                     color: "white",
                   }}
-                  // variant="h1"
-                  // component="div"
-                  // sx={{
-                  //   fontWeight: "bold",
-                  //   color: "white",
-                  // }}
                 >
                   {remainingTime >= 0 ? remainingTime : 0}
                 </Typography>
@@ -1140,7 +1149,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             </IconButton>
 
             {/* Score */}
-            <MetricCard title="Score" value={score}/>
+            <Box sx={{minWidth: "65px"}}>
+              <MetricCard title="Score" value={score}/>
+            </Box>
 
             {/* Exercise Menu */}
             <Box
