@@ -389,10 +389,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Upload recording to Supabase Storage
   const handleUploadRecording = async () => {
-    const supabaseStorageUrl = import.meta.env.VITE_SUPABASE_STORAGE_URL;
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const fileName = `recorded_video_${Date.now()}.webm`;
+      const fileName = `${user.id}/recorded_video_${Date.now()}.webm`;
 
       const { data, error } = await supabase.storage
         .from("Training Videos")
@@ -404,8 +403,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         console.error("Error uploading file:", error);
       } else {
         console.log("File uploaded successfully:", data);
-        console.log("Public URL:", `${supabaseStorageUrl}${fileName}`);
-        setExerciseVideo(`${supabaseStorageUrl}${fileName}`);
+        console.log("fileName:", `${fileName}`);
+        setExerciseVideo(`${fileName}`);
         setRecordedChunks([]);
 
         // Show Snackbar
@@ -1300,11 +1299,15 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         ContentProps={{
           style: {
-            backgroundColor: "#4CAF50",
-            color: "#FFFFFF",
-            fontWeight: "bold",
-            fontSize: "1.2rem",
+            backgroundColor: "#FFFFFF",
+            border: `1px solid theme.palette.primary.main`,
+            color: theme.palette.primary.main,
+            fontSize: "1rem",
             borderRadius: "8px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center", 
+            alignItems: "center",
           },
         }}
       />

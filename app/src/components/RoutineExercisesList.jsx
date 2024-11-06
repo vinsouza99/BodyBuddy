@@ -95,6 +95,7 @@ export const RoutineExercisesList = ({ routineExercises = [], color = "primary.m
               src={exercise.demo_url}
               alt={exercise.name}
               sx={{
+                display: 'block',
                 border: '2px solid',
                 borderColor: color,
                 borderRadius: '50px',

@@ -10,6 +10,7 @@ import {
   useMediaQuery,
 } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
+import ProgramLoading from "../assets/ProgramLoading.gif";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -125,7 +126,18 @@ export const Dashboard = (props) => {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Box textAlign="center">
-          <CircularProgress color="inherit" />
+          {generating ? (
+            <Box 
+              component="img" 
+              src={ ProgramLoading }
+              alt="Loading"
+              sx={{
+                width: "450px",
+              }}
+            />
+          ) : (
+            <CircularProgress color="inherit" />
+          )}
           <Typography variant="h6" sx={{ mt: 2 }}>
             {generating ? "Generating personalized program..." : "Loading..."}
           </Typography>
