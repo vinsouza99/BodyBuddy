@@ -32,7 +32,7 @@ const getProgram = async (
     }
     return program;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getAllUserPrograms = async (
@@ -71,7 +71,7 @@ const getAllUserPrograms = async (
 
     return programs;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 const getUserCompletedPrograms = async (
@@ -121,7 +121,7 @@ const getUserCompletedPrograms = async (
 
     return programs;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -140,7 +140,7 @@ const createProgram = async (user_id, generatedProgramObj) => {
     //   await createRoutine(routine);
     // });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 
@@ -162,7 +162,7 @@ const createProgramRoutine = async (
       programRoutine
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 

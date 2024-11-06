@@ -19,6 +19,7 @@ export default class Routine {
    * @param {Array} exercises - an array of objects of the class Exercise that refers to all the
    * exercises that are part of this routine
    * @param {Date} compare_date - will have the same value as completed_at but will be use for sorting in history
+   * @param {Array} goals
    */
   constructor(
     id,
@@ -31,7 +32,8 @@ export default class Routine {
     completed,
     completed_at,
     recording_url,
-    exercises = new Array()
+    exercises = new Array(),
+    goals = new Array()
   ) {
     this.id = id;
     this.duration = duration;
@@ -46,6 +48,7 @@ export default class Routine {
     this.exercises = exercises;
     this.compare_date = completed_at; // will have the same value as completed_at but will be use for sorting in history
     this.record_type = "routine"; //used to differentiate records on the user history
+    this.goals = goals;
   }
   /**
    * Adds an exercise to the routine and sorts the array according to the order of the exercise

@@ -13,6 +13,7 @@ import {
   getUserRoutineHistory,
   createRoutineHistory,
   getRoutineHistory,
+  getRoutineGoals,
 } from "../controllers/routineController.js";
 
 const router = express.Router();
@@ -179,7 +180,30 @@ router.get("/exercises/:routine_id", getRoutineExercises);
  *         description: Routine not found
  */
 router.get("/history/:user_id", getUserRoutineHistory);
-
+/**
+ * @swagger
+ * /Routines/Goals/{id}:
+ *   get:
+ *     summary: Get a specific Routine goal by routine ID
+ *     tags: [Routines]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: The ID of the Routine
+ *     responses:
+ *       200:
+ *         description: The Routine goals details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RoutineGoal'
+ *       404:
+ *         description: Routine not found
+ */
+router.get("/goals/:routine_id", getRoutineGoals);
 /**
  * @swagger
  * /Routines:

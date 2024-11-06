@@ -1,4 +1,4 @@
-import { getAllExercises } from "../controllers/ExerciseController";
+import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import axiosClient from "../utils/axiosClient";
 
 const URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
@@ -62,7 +62,7 @@ const getPromptText = async (promptObj) => {
     ? promptObj.availability
     : "Monday, Wednesday, Friday"; //expected values:array of weekdays names. "Monday, Wednesday, Friday" is just for testing
 
-  const exercisesData = await getAllExercises(); //expected value: array of Exercise Objects
+  const exercisesData = await getExercisesThumbnails(); //expected value: array of Exercise Objects
   const exercisesArray = exercisesData.map((exercise) => exercise.name);
   /*TODO: 
     write the prompt/template in such a way that ChatGPT responds with the primary key
