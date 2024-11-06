@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
 import { Onboarding } from "../components/Onboarding";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
-import thumbnail from "../assets/thumbnail.png";
+import CircleCheckIcon from "../assets/icon-circle-check.svg";
 
 export function Landing() {
 
@@ -48,12 +48,12 @@ export function Landing() {
           </Box>
 
           {/* Welcome message */}
-          <Typography variant="h4" sx={{ marginBottom: 2 }}>
+          <Typography variant="h2" sx={{ marginBottom: 2 }}>
             Welcome to BodyBuddy
           </Typography>
 
           {/* Description */}
-          <Typography variant="body1" align="center" sx={{ marginBottom: 4 }}>
+          <Typography variant="body1" align="center" sx={{ width: "80%", marginBottom: 4 }}>
             Get healthier and energetic everyday with easy exercises tailored
             for home workout enthusiasts and fitness beginners.
           </Typography>
@@ -61,7 +61,7 @@ export function Landing() {
           {/* Feature list */}
           <Box
             sx={{
-              width: "100%",
+              width: "60%",
               display: "grid",
               justifyContent: "center",
               marginBottom: 4,
@@ -76,13 +76,8 @@ export function Landing() {
                 marginBottom: 2,
               }}
             >
-              <img
-                src={thumbnail}
-                alt="Posture Correction"
-                width={40}
-                height={40}
-              />
-              <Typography variant="body2" component="span" sx={{ marginLeft: 2 }}>
+              <img src={CircleCheckIcon} alt="Posture Correction" width={60} height={60} />
+              <Typography variant="body1" component="span" sx={{ marginLeft: 2 }}>
                 Real-time posture corrections while exercising
               </Typography>
             </Box>
@@ -96,8 +91,8 @@ export function Landing() {
                 marginBottom: 2,
               }}
             >
-              <img src={thumbnail} alt="Workout Plan" width={40} height={40} />
-              <Typography variant="body2" component="span" sx={{ marginLeft: 2 }}>
+              <img src={CircleCheckIcon} alt="Workout Plan" width={60} height={60} />
+              <Typography variant="body1" component="span" sx={{ marginLeft: 2 }}>
                 Personalized workout plan based on your goal and fitness level
               </Typography>
             </Box>
@@ -111,8 +106,8 @@ export function Landing() {
                 marginBottom: 2,
               }}
             >
-              <img src={thumbnail} alt="Demo Library" width={40} height={40} />
-              <Typography variant="body2" component="span" sx={{ marginLeft: 2 }}>
+              <img src={CircleCheckIcon} alt="Demo Library" width={60} height={60} />
+              <Typography variant="body1" component="span" sx={{ marginLeft: 2 }}>
                 Exercise Demo Library to gain better exercise knowledge
               </Typography>
             </Box>
@@ -138,8 +133,9 @@ export function Landing() {
               color="primary"
               component={NavLink}
               to="/signin"
+              sx={{ color: "text.primary", fontWeight: 700 }}
             >
-              Sign In
+              Log In
             </Button>
           </Typography>
 
