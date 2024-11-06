@@ -39,7 +39,7 @@ import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
 import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
+import { updateUserAccumulatedStats, addUserAchievement, getUserProgress, updateUserProgress } from "../controllers/UserController.js";
 import { format } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
@@ -369,6 +369,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         await updateRoutineCompletionStatus();
         await updateProgramCompletionStatus();
         await updateUserAccumulatedStat();
+        await updateUserScore();
         earnBadges();  
       }
     };
@@ -814,7 +815,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   }
 
-  // Insert user activity log info to the database
+  // Update user activity log/history
   const updateUserActivity = async () => {
     try {
       if (idType !== "routine") return;
@@ -842,7 +843,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   };
 
-  // Insert user accumulated time info to the database
+  // Update user accumulated stats (minutes, calories)
   const updateUserAccumulatedStat = async () => {
     try {
       const now = new Date();
@@ -857,6 +858,21 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       console.log("User_Accumulated_Workout_Stats has been successfully updaed:", response.data);
     } catch (error) {
       console.error("Failed to update User_Accumulated_Workout_Stats:", error);
+    }
+  };
+
+  // Update user score
+  const updateUserScore = async () => {
+    try {
+      let progress = await getUserProgress(user.id);
+      if (!progress) {
+        progress = { level_progress: 0 }; // Initialize with default values
+      }
+      const updatedProgress = { ...progress, level_progress: progress.level_progress + score };
+      const response = await updateUserProgress(user.id, updatedProgress);
+      console.log("User_Progress has been successfully updaed:", response.data);
+    } catch (error) {
+      console.error("Failed to update User_Progress:", error);
     }
   };
 

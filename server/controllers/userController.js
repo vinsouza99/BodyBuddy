@@ -177,15 +177,19 @@ export const updateUserProgress = async (req, res) => {
     const { user_id } = req.params;
     const updatedData = req.body;
 
-    const userProgress = await UserProgress.findByPk(user_id);
-    if (!userProgress) {
-      return res.status(404).json({
-        status: "404",
-        message: "UserProgress not found",
-      });
-    }
+    // const userProgress = await UserProgress.findByPk(user_id);
+    // if (!userProgress) {
+    //   return res.status(404).json({
+    //     status: "404",
+    //     message: "UserProgress not found",
+    //   });
+    // }
 
-    await userProgress.update(updatedData);
+    // Change "updade" to "upcert" to avoid error when updating non-existing record
+    const userProgress = await UserProgress.upsert({
+      user_id,
+      ...updatedData,
+    });
     res.status(200).json({
       status: "200",
       message: "UserProgress updated successfully",

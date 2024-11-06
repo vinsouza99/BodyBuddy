@@ -1,8 +1,10 @@
 import PropTypes from "prop-types";
+import { useState, useEffect, createContext, useContext } from "react";
+import { getUserProgress, updateUserProgress } from "../controllers/UserController";
 import axios from "axios";
 import axiosClient from "../utils/axiosClient";
-import { useState, useEffect, createContext, useContext } from "react";
 import { supabase } from "./supabaseClient";
+import { parseISO } from 'date-fns';
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
@@ -14,14 +16,35 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Retieve the session information from supabase
   useEffect(() => {
     const fetchSession = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
-        if (error) {
-          throw error;
-        }
+        if (error) { throw error; }
         setUser(data?.session?.user ?? null);
+
+        // Get login points (Once per day)
+        console.log(data.session.user);
+        if (data?.session?.user) {
+          const lastSignInAt = data?.session?.user.last_sign_in_at;
+          const dateInUTC = parseISO(lastSignInAt);
+          const nowInUTC = new Date();
+          const isDifferentDate = !(
+              dateInUTC.getUTCFullYear() === nowInUTC.getUTCFullYear() &&
+              dateInUTC.getUTCMonth() === nowInUTC.getUTCMonth() &&
+              dateInUTC.getUTCDate() === nowInUTC.getUTCDate()
+          );
+          if (isDifferentDate) {
+            let progress = await getUserProgress(user.id);
+            if (!progress) {
+              progress = { level_progress: 0 }; // Initialize with default values
+            }
+            const updatedProgress = { ...progress, level_progress: progress.level_progress + 5 };
+            const response = await updateUserProgress(data.session.user.id, { level_progress: updatedProgress });
+            console.log("User_Progress has been successfully updaed:", response.data);
+          }
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -68,6 +91,7 @@ export function AuthProvider({ children }) {
     };
   }, []);
 
+  // Sign out the user
   const handleSignOut = async () => {
     // Sign out from supabase autehtication
     try {
