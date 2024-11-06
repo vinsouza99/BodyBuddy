@@ -4,7 +4,6 @@ import { calculateLevel } from "../utils/utils";
 
 export const UserProgressBar = ({ levelProgress = 0 }) => {
   const userLevel = calculateLevel(levelProgress);
-  console.log(userLevel);
 
   return (
     <Box
