@@ -1,10 +1,7 @@
 import PropTypes from "prop-types";
-import { Box, Typography, Avatar, LinearProgress } from '@mui/material';
-import { useAuth } from "../utils/AuthProvider.jsx";
+import { Box, Typography, LinearProgress } from '@mui/material';
 
 export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
-  const { user } = useAuth();
-
   return (
     <Box
       sx={{ 
