@@ -1,8 +1,6 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Box, List, ListItem, Typography, Divider } from "@mui/material"
-import AccessibilityIcon from "@mui/icons-material/Accessibility";
-import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import FocusAreaIcon from "../assets/icon-focus-area.svg";
 import GoalIcon from "../assets/icon-goal.svg";
 
