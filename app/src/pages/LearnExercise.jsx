@@ -12,9 +12,9 @@ import {
   Button,
   Typography,
   Backdrop,
-  CircularProgress,
   Paper,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 import { ExerciseDetails } from "../components/ExerciseDetails";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 import { useParams, useLocation } from "react-router-dom";
