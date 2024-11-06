@@ -414,7 +414,7 @@ export const updateUserAccumulatedStats = async (req, res) => {
     console.log(userAccumulatedStats);
     if (userAccumulatedStats) {
       userAccumulatedStats.minutes += minutes;
-      userAccumulatedStats.caloreis += calories;
+      userAccumulatedStats.calories += calories;
       await userAccumulatedStats.save();
 
       res.status(200).json({

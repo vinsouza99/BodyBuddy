@@ -19,14 +19,10 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import {
-  getUser,
-  getUserAccumulatedStats,
+import { getUser, getUserAccumulatedStats,
 } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
-// import { createProgramRoutine } from "../controllers/ProgramController";
-// import { createRoutineExercise } from "../controllers/RoutineController";
 import axiosClient from "../utils/axiosClient";
 import theme from "../theme";
 // Prompts
@@ -40,8 +36,7 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
-    useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();

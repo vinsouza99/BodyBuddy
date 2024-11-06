@@ -465,8 +465,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Handle incrementing Calorie and Score
   const handleIncrementCalorieAndScore = () => {
     const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+    const weight = userInfo.weight ? userInfo.weight * weightFactor : 60;
+
     setCalorie((prevCalorie) => {
-      return Math.round((prevCalorie + userInfo.weight * weightFactor * (exerciseCounter?.getCaloriePerSec() || 0)) * 10) / 10;
+      return Math.round((prevCalorie + weight * (exerciseCounter?.getCaloriePerSec() || 0)) * 10) / 10;
     });
     setScore((prevScore) => {
       return prevScore + (exerciseCounter?.getScorePerSec() || 0)
@@ -667,11 +669,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               // Update calorie
               if (!calorieUpdatedRef.current) {
                 setCalorie((prevCalorie) => {
-                  if (userInfo?.weight) {
-                    const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
-                    return Math.round((prevCalorie + calorie * userInfo.weight * weightFactor) * 10) / 10;
-                  }
-                  return prevCalorie;
+                  const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+                  const weight = userInfo.weight ? userInfo.weight * weightFactor : 60;
+                  return Math.round((prevCalorie + calorie * weight) * 10) / 10;
                 });
 
                 // Update score
@@ -848,12 +848,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       const now = new Date();
       const completedAt = format(now, "yyyy-MM-dd");
       const duration = Math.ceil((now - startedAtRef.current)/ (1000 * 60));
-
       const response = await updateUserAccumulatedStats(
         user.id,
         completedAt,
         duration, // minutes
-        calorie,
+        Math.round(calorie),
       );
       console.log("User_Accumulated_Workout_Stats has been successfully updaed:", response.data);
     } catch (error) {
