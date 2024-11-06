@@ -6,10 +6,10 @@ import {
   Box,
   Typography,
   Backdrop,
-  CircularProgress,
   Grid2,
   useMediaQuery,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";

@@ -18,10 +18,10 @@ import {
   FormControl,
   Select,
   Backdrop,
-  CircularProgress,
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 import LearningCard from "../components/LearningCard";
 
 // Custom tab panel to display content conditionally based on the selected tab

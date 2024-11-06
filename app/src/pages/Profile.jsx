@@ -1,12 +1,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { setPageTitle } from "../utils/utils";
-import { Backdrop, Box, CircularProgress, Typography } from "@mui/material";
+import { Backdrop, Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 
 export const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
