@@ -1,13 +1,10 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, createContext, useContext } from "react";
 import { getUserProgress, updateUserProgress } from "../controllers/UserController";
-// import axios from "axios";
 import axiosClient from "../utils/axiosClient";
 import { sendTokenToServer } from "./authUtils";
 import { supabase } from "./supabaseClient";
 import { parseISO } from 'date-fns';
-
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
 
 // For sharing the user state across the app
 const AuthContext = createContext();
@@ -16,35 +13,13 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Retieve the session information from supabase
+  // Retrieve the session information from supabase
   useEffect(() => {
     const fetchSession = async () => {
       try {
         const { data, error } = await supabase.auth.getSession();
         if (error) { throw error; }
         setUser(data?.session?.user ?? null);
-
-        // Get login points (Once per day)
-        console.log(data.session.user);
-        if (data?.session?.user) {
-          const lastSignInAt = data?.session?.user.last_sign_in_at;
-          const dateInUTC = parseISO(lastSignInAt);
-          const nowInUTC = new Date();
-          const isDifferentDate = !(
-              dateInUTC.getUTCFullYear() === nowInUTC.getUTCFullYear() &&
-              dateInUTC.getUTCMonth() === nowInUTC.getUTCMonth() &&
-              dateInUTC.getUTCDate() === nowInUTC.getUTCDate()
-          );
-          if (isDifferentDate) {
-            let progress = await getUserProgress(user.id);
-            if (!progress) {
-              progress = { level_progress: 0 }; // Initialize with default values
-            }
-            const updatedProgress = { ...progress, level_progress: progress.level_progress + 5 };
-            const response = await updateUserProgress(data.session.user.id, { level_progress: updatedProgress });
-            console.log("User_Progress has been successfully updaed:", response.data);
-          }
-        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -68,7 +43,7 @@ export function AuthProvider({ children }) {
       } else if (event === "SIGNED_IN") {
         // Handle signed in event
         await sendTokenToServer(access_token);
-
+        console.log("User signed in");
         // Note: Code about coping user info to public.user table was replace with a trigger & function in the database
       } else if (event === "SIGNED_OUT") {
         // Handle sign out event
@@ -90,6 +65,31 @@ export function AuthProvider({ children }) {
       if (data) data.subscription.unsubscribe();
     };
   }, []);
+  
+  useEffect(() => {
+    if (user) {
+      const checkDailyLoginPoints = async () => {
+        const lastSignInAt = user.last_sign_in_at;
+        if (lastSignInAt && isDifferentDate(lastSignInAt)) {
+          let progress = await getUserProgress(user.id) ?? { level_progress: 0 };
+          const updatedProgress = { ...progress, level_progress: progress.level_progress + 5 };
+          await updateUserProgress(user.id, { level_progress: updatedProgress });
+          console.log("User progress updated");
+        }
+      };
+      checkDailyLoginPoints();
+    }
+  }, [user]);
+
+  const isDifferentDate = (lastSignInAt) => {
+    const dateInUTC = parseISO(lastSignInAt);
+    const nowInUTC = new Date();
+    return (
+      dateInUTC.getUTCFullYear() !== nowInUTC.getUTCFullYear() ||
+      dateInUTC.getUTCMonth() !== nowInUTC.getUTCMonth() ||
+      dateInUTC.getUTCDate() !== nowInUTC.getUTCDate()
+    );
+  };
 
   // Sign out the user
   const handleSignOut = async () => {
@@ -119,28 +119,6 @@ export function AuthProvider({ children }) {
       console.error("Error clearing HTTP-Only cookie:", error);
     }
   };
-
-  // NOTE: The following code moved to authUtils.js
-  // Send the access token (JWT) to the server
-  // const sendTokenToServer = async (access_token) => {
-  //   if (access_token) {
-  //     try {
-  //       await axios.post(
-  //         `${API_BASE_URL}set-cookie`,
-  //         { access_token: access_token },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //           },
-  //           withCredentials: true,
-  //         }
-  //       );
-  //       console.log("Access token sent to server and cookie set.");
-  //     } catch (error) {
-  //       console.error("Error setting cookie:", error);
-  //     }
-  //   }
-  // };
 
   return (
     <AuthContext.Provider value={{ user, loading, handleSignOut }}>
