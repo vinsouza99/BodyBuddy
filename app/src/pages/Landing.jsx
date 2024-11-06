@@ -1,151 +1,161 @@
-import React, { useEffect } from "react";
-import { Box, Button, Typography, Container } from "@mui/material";
+import React from "react";
+import { useState, useEffect, useRef } from "react";
+import theme from "../theme";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  IconButton,
+  Box,
+  useMediaQuery,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import { NavLink } from "react-router-dom";
-import { Onboarding } from "../components/Onboarding";
-import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
-import thumbnail from "../assets/thumbnail.png";
+import { NavLink, Link } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
+import logo from "../assets/bodybuddy.svg";
+import "./Landing.css";
 
 export function Landing() {
+  const [menuActive, setMenuActive] = useState(false);
+  const [isOnTop, setIsOnTop] = useState(true);
+  const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const homeRef = useRef(null);
+  const aboutRef = useRef(null);
+  const featuresRef = useRef(null);
+  const pricingRef = useRef(null);
+  const teamRef = useRef(null);
+  const contactRef = useRef(null);
+  // Handle menu open and close
+  const handleMenuClick = () => {
+    setMenuActive((currentState) => !currentState);
+  };
+  // Scroll handler
+  const scrollToSection = (ref) => {
+    ref.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
+  // Track scroll position to update isOnTop state
   useEffect(() => {
-    // Log the current URL pathname for debugging
-    console.log("Current pathname:", window.location.pathname);
+    const handleScroll = () => {
+      setIsOnTop(window.scrollY === 0);
+    };
 
-    // Check if the current URL is the root URL
-    if (window.location.pathname === '/') {
-      localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
-    }
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
-
   return (
-    <Grid container>
-      {/* Left section with image slider */}
-      <Grid
-        size={{ sm: 12, md: 6 }}
+    <>
+      <AppBar
+        position="fixed"
+        className="toolbar"
         sx={{
-          display: { xs: "none", md: "block" }, // Hide on extra small and small screens, show on medium and above
+          backgroundColor: isOnTop ? "transparent" : "white",
+          boxShadow: "none",
         }}
       >
-        <Onboarding />
-      </Grid>
-
-      {/* Right section with Welcome content */}
-      <Grid size={{ xs: 12, md: 6 }}>
-        <Container
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            padding: 4,
-          }}
-        >
-          {/* Logo */}
-          <Box sx={{ marginBottom: 1 }}>
-            <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
-          </Box>
-
-          {/* Welcome message */}
-          <Typography variant="h4" sx={{ marginBottom: 2 }}>
-            Welcome to BodyBuddy
-          </Typography>
-
-          {/* Description */}
-          <Typography variant="body1" align="center" sx={{ marginBottom: 4 }}>
-            Get healthier and energetic everyday with easy exercises tailored
-            for home workout enthusiasts and fitness beginners.
-          </Typography>
-
-          {/* Feature list */}
-          <Box
-            sx={{
-              width: "100%",
-              display: "grid",
-              justifyContent: "center",
-              marginBottom: 4,
-            }}
-          >
-            {/* Feature 1 */}
-            <Box
-              sx={{
-                display: "flex",
-                textAlign: "left",
-                alignItems: "center",
-                marginBottom: 2,
-              }}
-            >
-              <img
-                src={thumbnail}
-                alt="Posture Correction"
-                width={40}
-                height={40}
-              />
-              <Typography variant="body2" component="span" sx={{ marginLeft: 2 }}>
-                Real-time posture corrections while exercising
-              </Typography>
+        <Toolbar>
+          <Box component="div" className="toolbar-content-wrapper">
+            <Box component="div">
+              <img src={logo} id="app-logo" />
             </Box>
+            <Box sx={{ flexGrow: "1", justifyContent: { xs: "end" } }}>
+              {/* Desktop Links */}
+              <Box
+                component="nav"
+                id="menu"
+                className={[
+                  isMdUp ? "" : "mobile-menu",
+                  menuActive ? "active" : "",
+                ]}
+              >
+                <NavLink
+                  color="primary"
+                  to="#about"
+                  onClick={() => scrollToSection(aboutRef)}
+                >
+                  About Us
+                </NavLink>
+                <NavLink
+                  color="primary"
+                  to="#features"
+                  onClick={() => scrollToSection(featuresRef)}
+                >
+                  Features
+                </NavLink>
+                <NavLink
+                  color="primary"
+                  to="#pricing"
+                  onClick={() => scrollToSection(pricingRef)}
+                >
+                  Pricing
+                </NavLink>
+                <NavLink
+                  color="primary"
+                  to="#team"
+                  onClick={() => scrollToSection(teamRef)}
+                >
+                  Team
+                </NavLink>
+                <NavLink
+                  color="primary"
+                  onClick={() => scrollToSection(contactRef)}
+                >
+                  Contact
+                </NavLink>
+              </Box>
 
-            {/* Feature 2 */}
-            <Box
-              sx={{
-                display: "flex",
-                textAlign: "left",
-                alignItems: "center",
-                marginBottom: 2,
-              }}
-            >
-              <img src={thumbnail} alt="Workout Plan" width={40} height={40} />
-              <Typography variant="body2" component="span" sx={{ marginLeft: 2 }}>
-                Personalized workout plan based on your goal and fitness level
-              </Typography>
+              {/* Mobile Menu Icon */}
+              <IconButton
+                color="primary"
+                aria-label="menu"
+                aria-controls="menu"
+                aria-haspopup="true"
+                onClick={handleMenuClick}
+                sx={{
+                  display: { xs: "flex", md: "none", justifySelf: "right" },
+                }}
+              >
+                <MenuIcon />
+              </IconButton>
+              {/* Mobile Menu */}
             </Box>
-
-            {/* Feature 3 */}
-            <Box
-              sx={{
-                display: "flex",
-                textAlign: "left",
-                alignItems: "center",
-                marginBottom: 2,
-              }}
-            >
-              <img src={thumbnail} alt="Demo Library" width={40} height={40} />
-              <Typography variant="body2" component="span" sx={{ marginLeft: 2 }}>
-                Exercise Demo Library to gain better exercise knowledge
-              </Typography>
+            <Box component="div">
+              <Link to="/enter">
+                <Button variant="contained">Sign Up</Button>
+              </Link>
             </Box>
           </Box>
-
-          {/* Button linking to CreateProgram.jsx */}
-          <Button
-            variant="contained"
-            color="primary"
-            sx={{ marginBottom: 2 }}
-            component={NavLink}
-            to="/create-program"
-            onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
-          >
-            Create my exercise plan
-          </Button>
-
-          {/* Sign In link */}
-          <Typography variant="body2">
-            Already have an account?{" "}
-            <Button
-              variant="text"
-              color="primary"
-              component={NavLink}
-              to="/signin"
-            >
-              Sign In
-            </Button>
-          </Typography>
-
-        </Container>
-      </Grid>
-    </Grid>
+        </Toolbar>
+      </AppBar>
+      <Box
+        id="home"
+        component="section"
+        ref={homeRef}
+        sx={{ minHeight: "100vh", paddingTop: "80px" }}
+      >
+        <Typography variant="h2">Home</Typography>
+      </Box>
+      <Box component="section" id="about" ref={aboutRef}>
+        <Typography variant="h2">About Us</Typography>
+      </Box>
+      <Box component="section" id="features" ref={featuresRef}>
+        <Typography variant="h2">Features</Typography>
+      </Box>
+      <Box component="section" id="pricing" ref={pricingRef}>
+        <Typography variant="h2">Pricing</Typography>
+      </Box>
+      <Box component="section" id="team" ref={teamRef}>
+        <Typography variant="h2">Team</Typography>
+      </Box>
+      <Box component="section" id="contact" ref={contactRef}>
+        <Typography variant="h2">Contact</Typography>
+      </Box>
+    </>
   );
 }
 

@@ -24,6 +24,7 @@ import { TrainingProgram } from "./pages/TrainingProgram";
 import { Landing } from "./pages/Landing";
 import { PremadeRoutine } from "./pages/PremadeRoutine";
 import CreateProgram from "./pages/CreateProgram";
+import AuthenticationOptions from "./pages/AuthenticationOptions";
 
 function App() {
   const { user, loading } = useAuth();
@@ -37,6 +38,10 @@ function App() {
       <>
         {/* No authentication required */}
         <Route index element={<Landing title="BodyBoddy" />} />
+        <Route
+          path="/enter"
+          element={<AuthenticationOptions title="Sign In or Sign Up" />}
+        />
         <Route path="/signin" element={<SignIn title="Sign In" />} />
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
 
