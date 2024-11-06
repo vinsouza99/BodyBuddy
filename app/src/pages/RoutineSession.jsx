@@ -392,7 +392,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     const supabaseStorageUrl = import.meta.env.VITE_SUPABASE_STORAGE_URL;
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const fileName = `recorded_video_${Date.now()}.webm`;
+      const fileName = `${user.id}/recorded_video_${Date.now()}.webm`;
 
       const { data, error } = await supabase.storage
         .from("Training Videos")
@@ -1300,10 +1300,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         ContentProps={{
           style: {
-            backgroundColor: "#4CAF50",
-            color: "#FFFFFF",
-            fontWeight: "bold",
-            fontSize: "1.2rem",
+            backgroundColor: "#FFFFFF",
+            border: `1px solid theme.palette.primary.main`,
+            color: theme.palette.primary.main,
+            fontSize: "1rem",
             borderRadius: "8px",
           },
         }}
