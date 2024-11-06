@@ -37,7 +37,15 @@ const modalStyle = {
   backgroundPosition: 'center',
 };
 
-export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=null, nextExerciseInfo=null, onComplete, skipExercise }) => {
+export const DemoExercise = ({ 
+  trigger=false, 
+  duration=0, 
+  currentExerciseInfo=null, 
+  nextExerciseInfo=null, 
+  onComplete, 
+  skipExercise,
+  idType,
+}) => {
   const isLandscapeMode = useLandscapeMode();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -241,15 +249,18 @@ export const DemoExercise = ({ trigger=false, duration=0, currentExerciseInfo=nu
             >
               {currentExerciseInfo.name}
             </Typography>
-            <Typography
-              textAlign="center"
-              sx={{
-                fontWeight: "normal",
-                fontSize: isLandscapeMode ? '1rem' : '1.5rem',
-              }}
-            >
-              {currentExerciseInfo.goal}
-            </Typography>
+            
+            { idType === 'routine' && (
+              <Typography
+                textAlign="center"
+                sx={{
+                  fontWeight: "normal",
+                  fontSize: isLandscapeMode ? '1rem' : '1.5rem',
+                }}
+              >
+                {currentExerciseInfo.goal}
+              </Typography>
+            )}
             
           </Box>
         </Box>
@@ -265,5 +276,6 @@ DemoExercise.propTypes = {
   nextExerciseInfo: PropTypes.object,
   onComplete: PropTypes.func.isRequired,
   skipExercise: PropTypes.func.isRequired,
+  idType: PropTypes.string.isRequired,
 };
 
