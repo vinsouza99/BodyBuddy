@@ -39,7 +39,7 @@ import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
 import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedStats, addUserAchievement } from "../controllers/UserController.js";
+import { updateUserAccumulatedStats, addUserAchievement, getUserProgress, updateUserProgress } from "../controllers/UserController.js";
 import { format } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
@@ -369,6 +369,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         await updateRoutineCompletionStatus();
         await updateProgramCompletionStatus();
         await updateUserAccumulatedStat();
+        await updateUserScore();
         earnBadges();  
       }
     };
@@ -388,10 +389,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Upload recording to Supabase Storage
   const handleUploadRecording = async () => {
-    const supabaseStorageUrl = import.meta.env.VITE_SUPABASE_STORAGE_URL;
     if (recordedChunks.length) {
       const blob = new Blob(recordedChunks, { type: "video/webm" });
-      const fileName = `recorded_video_${Date.now()}.webm`;
+      const fileName = `${user.id}/recorded_video_${Date.now()}.webm`;
 
       const { data, error } = await supabase.storage
         .from("Training Videos")
@@ -403,8 +403,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         console.error("Error uploading file:", error);
       } else {
         console.log("File uploaded successfully:", data);
-        console.log("Public URL:", `${supabaseStorageUrl}${fileName}`);
-        setExerciseVideo(`${supabaseStorageUrl}${fileName}`);
+        console.log("fileName:", `${fileName}`);
+        setExerciseVideo(`${fileName}`);
         setRecordedChunks([]);
 
         // Show Snackbar
@@ -465,8 +465,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Handle incrementing Calorie and Score
   const handleIncrementCalorieAndScore = () => {
     const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+    const weight = userInfo.weight ? userInfo.weight * weightFactor : 60;
+
     setCalorie((prevCalorie) => {
-      return Math.round((prevCalorie + userInfo.weight * weightFactor * (exerciseCounter?.getCaloriePerSec() || 0)) * 10) / 10;
+      return Math.round((prevCalorie + weight * (exerciseCounter?.getCaloriePerSec() || 0)) * 10) / 10;
     });
     setScore((prevScore) => {
       return prevScore + (exerciseCounter?.getScorePerSec() || 0)
@@ -667,11 +669,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               // Update calorie
               if (!calorieUpdatedRef.current) {
                 setCalorie((prevCalorie) => {
-                  if (userInfo?.weight) {
-                    const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
-                    return Math.round((prevCalorie + calorie * userInfo.weight * weightFactor) * 10) / 10;
-                  }
-                  return prevCalorie;
+                  const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
+                  const weight = userInfo.weight ? userInfo.weight * weightFactor : 60;
+                  return Math.round((prevCalorie + calorie * weight) * 10) / 10;
                 });
 
                 // Update score
@@ -814,7 +814,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   }
 
-  // Insert user activity log info to the database
+  // Update user activity log/history
   const updateUserActivity = async () => {
     try {
       if (idType !== "routine") return;
@@ -842,22 +842,36 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     }
   };
 
-  // Insert user accumulated time info to the database
+  // Update user accumulated stats (minutes, calories)
   const updateUserAccumulatedStat = async () => {
     try {
       const now = new Date();
       const completedAt = format(now, "yyyy-MM-dd");
       const duration = Math.ceil((now - startedAtRef.current)/ (1000 * 60));
-
       const response = await updateUserAccumulatedStats(
         user.id,
         completedAt,
         duration, // minutes
-        calorie,
+        Math.round(calorie),
       );
       console.log("User_Accumulated_Workout_Stats has been successfully updaed:", response.data);
     } catch (error) {
       console.error("Failed to update User_Accumulated_Workout_Stats:", error);
+    }
+  };
+
+  // Update user score
+  const updateUserScore = async () => {
+    try {
+      let progress = await getUserProgress(user.id);
+      if (!progress) {
+        progress = { level_progress: 0 }; // Initialize with default values
+      }
+      const updatedProgress = { ...progress, level_progress: progress.level_progress + score };
+      const response = await updateUserProgress(user.id, updatedProgress);
+      console.log("User_Progress has been successfully updaed:", response.data);
+    } catch (error) {
+      console.error("Failed to update User_Progress:", error);
     }
   };
 
@@ -1285,11 +1299,15 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         ContentProps={{
           style: {
-            backgroundColor: "#4CAF50",
-            color: "#FFFFFF",
-            fontWeight: "bold",
-            fontSize: "1.2rem",
+            backgroundColor: "#FFFFFF",
+            border: `1px solid theme.palette.primary.main`,
+            color: theme.palette.primary.main,
+            fontSize: "1rem",
             borderRadius: "8px",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center", 
+            alignItems: "center",
           },
         }}
       />
@@ -1301,6 +1319,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         mins={Math.ceil((new Date() - startedAtRef.current)/ (1000 * 60))}
         calorie={calorie}
         score={score}
+        videoURL={exerciseVideo}
       />
     </>
   );

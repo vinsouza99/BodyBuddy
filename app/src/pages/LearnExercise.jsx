@@ -121,7 +121,7 @@ export const LearnExercise = (props) => {
         >
           {/* Back Button */}
           <Button
-            href="/learn"
+            href="/learning"
             sx={{
               alignSelf: "flex-start",
               marginBottom: 2,

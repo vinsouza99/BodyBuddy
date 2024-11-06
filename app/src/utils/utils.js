@@ -18,7 +18,29 @@ export const calculateAngle = (a, b, c) => {
   if (angle > 180.0) angle = 360 - angle;
   return angle;
 };
+export const calculateLevel = (points) => {
+  let level = 1;
+  let pointsToNextLevel = 100 + 50 * level;
+  let totalPointsForPreviousLevel = 0;
 
+  // Check if the user has enough points to level up
+  while (points >= pointsToNextLevel) {
+    level++;
+    totalPointsForPreviousLevel = pointsToNextLevel;
+    pointsToNextLevel += 100 + 50 * level;
+  }
+
+  const pointsInCurrentLevel = points - totalPointsForPreviousLevel;
+  const pointsRequiredForCurrentLevel = pointsToNextLevel - totalPointsForPreviousLevel;
+  const remainingPointsToNextLevel = pointsToNextLevel - points;
+
+  return {
+    currentLevel: level,
+    pointsInCurrentLevel: pointsInCurrentLevel,
+    pointsRequiredForCurrentLevel: pointsRequiredForCurrentLevel,
+    remainingPointsToNextLevel: remainingPointsToNextLevel
+  };
+}
 /**
  *
  * @param {*} notificationObj and object that represents a notification. It should have these fields:

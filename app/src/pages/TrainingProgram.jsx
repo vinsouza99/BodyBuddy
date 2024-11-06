@@ -7,9 +7,9 @@ import {
   Tab,
   Grid2,
   Backdrop,
-  CircularProgress,
   Typography,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 // Gadgets Components
 import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
 import { GadgetSchedule } from "../components/GadgetSchedule.jsx";

@@ -295,4 +295,5 @@ export {
   addUserAchievement,
   getUserAccumulatedStats,
   updateUserAccumulatedStats,
+  updateUserProgress,
 };

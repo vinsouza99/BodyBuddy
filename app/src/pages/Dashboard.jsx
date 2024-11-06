@@ -6,10 +6,11 @@ import {
   Box,
   Typography,
   Backdrop,
-  CircularProgress,
   Grid2,
   useMediaQuery,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
+import ProgramLoading from "../assets/ProgramLoading.gif";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -19,14 +20,10 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import {
-  getUser,
-  getUserAccumulatedStats,
+import { getUser, getUserAccumulatedStats,
 } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
-// import { createProgramRoutine } from "../controllers/ProgramController";
-// import { createRoutineExercise } from "../controllers/RoutineController";
 import axiosClient from "../utils/axiosClient";
 import theme from "../theme";
 // Prompts
@@ -40,8 +37,7 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
-    useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -130,7 +126,18 @@ export const Dashboard = (props) => {
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <Box textAlign="center">
-          <CircularProgress color="inherit" />
+          {generating ? (
+            <Box 
+              component="img" 
+              src={ ProgramLoading }
+              alt="Loading"
+              sx={{
+                width: "450px",
+              }}
+            />
+          ) : (
+            <CircularProgress color="inherit" />
+          )}
           <Typography variant="h6" sx={{ mt: 2 }}>
             {generating ? "Generating personalized program..." : "Loading..."}
           </Typography>

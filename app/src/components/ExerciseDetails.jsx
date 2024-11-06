@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { Box, List, ListItem, Typography, Divider } from "@mui/material"
-import AccessibilityIcon from "@mui/icons-material/Accessibility";
-import TrackChangesIcon from "@mui/icons-material/TrackChanges";
+import FocusAreaIcon from "../assets/icon-focus-area.svg";
+import GoalIcon from "../assets/icon-goal.svg";
 
 export const ExerciseDetails = ({ exercise } = {}) => {
   const [executionSteps, setExecutionSteps] = useState('');
@@ -94,7 +94,7 @@ export const ExerciseDetails = ({ exercise } = {}) => {
             gap: "0.5rem",
           }}
         >
-          <AccessibilityIcon sx={{ color: "primary.main" }} />
+          <img src={FocusAreaIcon} alt="Focus Area Icon" style={{ width: "24px", height: "24px" }} />
           <Box>
             <Box
               component="p"
@@ -131,7 +131,7 @@ export const ExerciseDetails = ({ exercise } = {}) => {
             gap: "0.5rem",
           }}
         >
-          <TrackChangesIcon sx={{ color: "primary.main" }} />
+          <img src={GoalIcon} alt="Goal Icon" style={{ width: "24px", height: "24px" }} />
           <Box>
             <Box
               component="p"

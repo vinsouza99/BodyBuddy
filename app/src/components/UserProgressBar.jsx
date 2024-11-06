@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import { Box, Typography, Avatar, LinearProgress } from '@mui/material';
-import { useAuth } from "../utils/AuthProvider.jsx";
+import { Box, Typography, LinearProgress } from '@mui/material';
+import { calculateLevel } from "../utils/utils";
 
-export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
-  const { user } = useAuth();
+export const UserProgressBar = ({ levelProgress = 0 }) => {
+  const userLevel = calculateLevel(levelProgress);
 
   return (
     <Box
@@ -21,13 +21,13 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
         <Box
           sx={{ display: 'flex', marginBottom: 1, flexDirection: { xs: 'column', lg: 'row' }, justifyContent: 'space-between' }}
         >
-          <Typography textAlign="left" sx={{ fontWeight: "800" }}>Level {level}</Typography>
-          <Typography textAlign="left" >Earn {100-levelProgress} points to level up</Typography>
+          <Typography textAlign="left" sx={{ fontWeight: "800" }}>Level {userLevel.currentLevel}</Typography>
+          <Typography textAlign="left" >Earn {userLevel.remainingPointsToNextLevel} points to level up</Typography>
         </Box>
         <Box sx={{ width: '100%', position: 'relative'}}>
           <LinearProgress
             variant="determinate"
-            value={levelProgress}
+            value={(userLevel.pointsInCurrentLevel / userLevel.pointsRequiredForCurrentLevel) * 100}
             valueBuffer={100}
             sx={{
               '--LinearProgress-radius': '8px',
@@ -56,7 +56,7 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
               color: 'white',
             }}
           >
-            {`${levelProgress} / 100`}
+            {`${userLevel.pointsInCurrentLevel} / ${userLevel.pointsRequiredForCurrentLevel}`}
           </Typography>
         </Box>
       </Box>
@@ -65,6 +65,5 @@ export const UserProgressBar = ({ level = 0, levelProgress = 0 }) => {
 };
 
 UserProgressBar.propTypes = {
-  level: PropTypes.number,
-  levelProgress: PropTypes.number,
+  levelProgress: PropTypes.number.isRequired,
 };
