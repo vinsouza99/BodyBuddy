@@ -244,7 +244,8 @@ router.get("/progress/:id", getUserProgress);
  *       404:
  *         description: User not found
  */
-router.put("/progress/:id", updateUserProgress);
+router.put("/progress/:user_id", updateUserProgress);
+
 /**
  * @swagger
  * /Users/Settings/{id}:
