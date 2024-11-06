@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, createContext, useContext } from "react";
 import { getUserProgress, updateUserProgress } from "../controllers/UserController";
-import axios from "axios";
+// import axios from "axios";
 import axiosClient from "../utils/axiosClient";
+import { sendTokenToServer } from "./authUtils";
 import { supabase } from "./supabaseClient";
 import { parseISO } from 'date-fns';
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
+// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api/";
 
 // For sharing the user state across the app
 const AuthContext = createContext();
@@ -120,26 +120,27 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // NOTE: The following code moved to authUtils.js
   // Send the access token (JWT) to the server
-  const sendTokenToServer = async (access_token) => {
-    if (access_token) {
-      try {
-        await axios.post(
-          `${API_BASE_URL}set-cookie`,
-          { access_token: access_token },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-            withCredentials: true,
-          }
-        );
-        console.log("Access token sent to server and cookie set.");
-      } catch (error) {
-        console.error("Error setting cookie:", error);
-      }
-    }
-  };
+  // const sendTokenToServer = async (access_token) => {
+  //   if (access_token) {
+  //     try {
+  //       await axios.post(
+  //         `${API_BASE_URL}set-cookie`,
+  //         { access_token: access_token },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //           withCredentials: true,
+  //         }
+  //       );
+  //       console.log("Access token sent to server and cookie set.");
+  //     } catch (error) {
+  //       console.error("Error setting cookie:", error);
+  //     }
+  //   }
+  // };
 
   return (
     <AuthContext.Provider value={{ user, loading, handleSignOut }}>
