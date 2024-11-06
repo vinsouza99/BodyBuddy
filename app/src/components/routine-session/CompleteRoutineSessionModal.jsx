@@ -1,8 +1,10 @@
 // React and Material-UI
 import PropTypes from "prop-types";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal, Box, Typography, Button } from "@mui/material"
 // Custom Components for Routine Session
+import { VideoModal } from "../VideoModal";
 import { MetricCard } from "./MetricCard";
 import { useLandscapeMode } from "./useLandscapeMode";
 // Icons & Images
@@ -34,9 +36,12 @@ const modalStyle = {
   backgroundSize: 'cover',
 };
 
-export const CompleteRoutineSessionModal = ( {open = false, onComplete = false, mins = 0, calorie = 0, score = 0 } ) => {
+export const CompleteRoutineSessionModal = ({
+  open = false, onComplete = false, mins = 0, calorie = 0, score = 0, videoURL = "" 
+}) => {
   const isLandscapeMode = useLandscapeMode();
   const navigate = useNavigate();
+  const [isOpenVideoModal, setIsOpenVideoModal] = useState(false);
 
   const handleComplete = () => {
     onComplete();
@@ -44,6 +49,7 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false, 
   }
 
   return (
+    <>
     <Modal 
       open={open}
       
@@ -87,26 +93,39 @@ export const CompleteRoutineSessionModal = ( {open = false, onComplete = false, 
             <MetricCard title="Score" color="black" value={score} />
           </Box>
         </Box>
-        {/* <Button 
-          variant="outlined" 
-          sx={{
-            width: '250px',
-          }} 
-          onClick={() => {navigate("/training")}}
-        >
-          View My Program
-        </Button> */}
-        <Button
-          variant="contained" 
+
+        <Box 
           sx={{ 
-            width: '250px',
-          }} 
-          onClick={handleComplete}
+            display: "flex", 
+            flexDirection: { xs: "column", sm: "row" }, 
+            gap: 4, 
+          }}
         >
-          View My Program 
-        </Button>
+          {videoURL && (
+            <Button 
+              variant="outlined" 
+              sx={{ width: '250px' }} 
+              onClick={() => setIsOpenVideoModal(true)}
+            >
+              View Recording
+            </Button>
+          )}
+          <Button
+            variant="contained" 
+            sx={{ width: '250px' }} 
+            onClick={handleComplete}
+          >
+            View My Program 
+          </Button>
+        </Box>
       </Box>
     </Modal>
+    <VideoModal
+      open={isOpenVideoModal}
+      onclose={() => setIsOpenVideoModal(false)}
+      videoURL={videoURL} 
+    />
+    </>
   )
 }
 
@@ -117,4 +136,5 @@ CompleteRoutineSessionModal.propTypes = {
   mins: PropTypes.number.isRequired,
   calorie: PropTypes.number.isRequired,
   score: PropTypes.number.isRequired,
+  videoURL: PropTypes.string,
 }

@@ -1316,6 +1316,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         mins={Math.ceil((new Date() - startedAtRef.current)/ (1000 * 60))}
         calorie={calorie}
         score={score}
+        videoURL={exerciseVideo}
       />
     </>
   );

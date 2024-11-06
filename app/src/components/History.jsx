@@ -33,6 +33,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 
+import { VideoModal } from "./VideoModal";
+
 
 // import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
 
@@ -267,7 +269,12 @@ function History({ data = [] }) {
       </Card>
 
       {/* Video Dialog */}
-      <Dialog
+      <VideoModal
+        open={videoSwitch}
+        onclose={videoClose}
+        videoURL={videoURL} 
+      />
+      {/* <Dialog
         open={videoSwitch}
         onClose={videoClose}
         fullWidth
@@ -303,7 +310,7 @@ function History({ data = [] }) {
             <source src={videoURL} type="video/webm" />
           </video>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
 
 
       {/* Modal part */}
