@@ -6,11 +6,11 @@ import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { useAuth } from "../utils/AuthProvider.jsx";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import RunCircleIcon from "@mui/icons-material/RunCircle";
+import DashboardIcon from "../assets/icon-dashboard.svg";
+import TrainingIcon from "../assets/icon-training.svg";
+import LearningIcon from "../assets/icon-learning.svg";
+import ProfileIcon from "../assets/icon-profile.svg";
 import Notifications from "../components/Notifications.jsx";
-import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import { getUser } from "../controllers/UserController.js";
 import "./MainLayout.css";
 
@@ -19,22 +19,22 @@ const NavBar = [
   {
     segment: "dashboard",
     title: "Dashboard",
-    icon: <DashboardIcon />,
+    icon: <img src={DashboardIcon} alt="Dashboard Icon" style={{ width: "24px", height: "24px" }} />,
   },
   {
     segment: "training",
     title: "Training",
-    icon: <RunCircleIcon />,
+    icon: <img src={TrainingIcon} alt="Training Icon" style={{ width: "24px", height: "24px" }} />,
   },
   {
     segment: "learning",
     title: "Learning",
-    icon: <LocalLibraryIcon />,
+    icon: <img src={LearningIcon} alt="Learning Icon" style={{ width: "24px", height: "24px" }} />,
   },
   {
     segment: "profile",
     title: "Profile",
-    icon: <AccountCircleIcon />,
+    icon: <img src={ProfileIcon} alt="Profile Icon" style={{ width: "24px", height: "24px" }} />,
   },
 ];
 
@@ -69,9 +69,7 @@ export const MainLayout = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   // Set logo source based on screen size
-  const logoSource = isMobile
-    ? "./src/assets/bodybuddy_logo_color.svg"
-    : "./src/assets/bodybuddy.svg";
+  const logoSource = isMobile ? "./src/assets/bodybuddy_logo_color.svg" : "./src/assets/bodybuddy.svg";
 
   // Authentication logic from Toolpad Core
   const authentication = useMemo(() => {
