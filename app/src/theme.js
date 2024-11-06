@@ -140,7 +140,7 @@ const theme = createTheme({
       },
       styleOverrides: {
         root: {
-          borderRadius: 4, // Default border-radius
+          borderRadius: 10, // Default border-radius
           textTransform: "none", // Prevent uppercase text
         },
         contained: {
