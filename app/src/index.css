@@ -115,3 +115,7 @@ button:focus-visible {
 .MuiButtonBase-root.MuiListItemButton-root.Mui-selected .MuiTypography-root {
   color: #fff;
 }
+
+.MuiButtonBase-root.MuiListItemButton-root.Mui-selected .MuiListItemIcon-root img {
+  filter: invert(100%) brightness(200%);
+}
