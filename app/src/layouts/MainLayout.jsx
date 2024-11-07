@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, useMediaQuery, Backdrop, CircularProgress, Typography } from "@mui/material";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -52,19 +52,30 @@ export const MainLayout = () => {
     },
   });
 
+  // Loading state
+  const [loading, setLoading] = useState(true);  // <-- Loading state for the spinner
+
   useEffect(() => {
     const getUserInfo = async () => {
-      const response = await getUser(user, false);
-      setSession({
-        user: {
-          name: response.name,
-          email: user.email,
-          image: response.picture,
-        },
-      });
+      try {
+        setLoading(true);  // <-- Set loading state to true before fetching data
+        const response = await getUser(user, false);
+        setSession({
+          user: {
+            name: response.name,
+            email: user.email,
+            image: response.picture,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);  // <-- Set loading state to false once data is fetched
+      }
     };
     getUserInfo();
-  }, []);
+  }, [user]);
+
   // Use useMediaQuery to define screen width
   const isMobile = useMediaQuery("(max-width:600px)");
 
@@ -94,18 +105,30 @@ export const MainLayout = () => {
 
   return (
     <>
+      {/* Backdrop for loading */}
+      <Backdrop
+        open={loading} // <-- Control when to show the overlay
+        sx={{
+          color: "#fff",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+      >
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+          <Typography variant="h6" sx={{ mt: 2 }}>
+            Loading...
+          </Typography>
+        </Box>
+      </Backdrop>
+
       <AppProvider
-        // Use theme.js
         theme={theme}
-        // Display branding
         branding={{
           logo: <img src={logoSource} alt="BodyBuddy" />,
           title: "",
         }}
-        // Session and Authentication
         session={session}
         authentication={authentication}
-        // Load NavBar and routing
         navigation={NavBar}
         router={router}
       >
