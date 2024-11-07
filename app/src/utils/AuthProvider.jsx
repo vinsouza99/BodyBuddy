@@ -66,6 +66,8 @@ export function AuthProvider({ children }) {
     };
   }, []);
   
+  // Note:
+  // This function doesn' work because last_sign_in_at is already update when the user is signed in
   useEffect(() => {
     if (user) {
       const checkDailyLoginPoints = async () => {
@@ -73,7 +75,8 @@ export function AuthProvider({ children }) {
         if (lastSignInAt && isDifferentDate(lastSignInAt)) {
           let progress = await getUserProgress(user.id) ?? { level_progress: 0 };
           const updatedProgress = { ...progress, level_progress: progress.level_progress + 5 };
-          await updateUserProgress(user.id, { level_progress: updatedProgress });
+          console.log(updatedProgress);
+          await updateUserProgress(user.id, updatedProgress);
           console.log("User progress updated");
         }
       };
@@ -82,13 +85,15 @@ export function AuthProvider({ children }) {
   }, [user]);
 
   const isDifferentDate = (lastSignInAt) => {
-    const dateInUTC = parseISO(lastSignInAt);
-    const nowInUTC = new Date();
-    return (
-      dateInUTC.getUTCFullYear() !== nowInUTC.getUTCFullYear() ||
-      dateInUTC.getUTCMonth() !== nowInUTC.getUTCMonth() ||
-      dateInUTC.getUTCDate() !== nowInUTC.getUTCDate()
-    );
+    const lastSignInUTC = parseISO(lastSignInAt);
+    const now = new Date();
+  
+    const yesterday = new Date(Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() - 1
+    ));
+    return lastSignInUTC <= yesterday;
   };
 
   // Sign out the user
