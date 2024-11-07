@@ -1166,7 +1166,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               <>
                 {/* Calories */}
                 <Box sx={{minWidth: "85px"}}>
-                  <MetricCard title="kcal" value={calorie}/>
+                  <MetricCard title="Kcal" value={calorie}/>
                 </Box>
 
                 {/* Puase & Play */}
