@@ -232,6 +232,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         console.log(response.data);
         const routineData = [
           {
+            exercise_id: response.data.data.id,
             name: response.data.data.name,
             goal: `1 set of ${reps} reps`,
             sets: 1,
@@ -420,6 +421,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Handle quitting the routine
   const handleQuitRoutine = () => {
+    if (idType === "exercise") {
+      if (webcamRunning) toggleWebCam();
+      handleMoveToLearningPage();
+    }
     // Diablog for confirmation
     setIsConfirmDialogOpen(true);
   };
@@ -455,6 +460,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Handle moving to the training page
   const handleMoveToTrainingPage = () => {
     navigate("/training");
+  };
+
+  // Handle moving to the training page
+  const handleMoveToLearningPage = () => {
+    navigate("/learning");
   };
 
   // Handle toggling the exercise menu
@@ -1009,6 +1019,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             nextExerciseInfo={routine[selectedExerciseIndex + 1]}
             onComplete={() => endRestCountdown("exercise")}
             skipExercise={moveToNextExercise}
+            idType={idType}
           />
 
           {/* Rest screen before transitioning to the next set */}
@@ -1102,18 +1113,22 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             {/* Angle meters are temporarily removed as they are not an effective UI */}
             {/* <AngleMeter2 title={"Angle"} angle={angle} /> */}
 
-            <Counter2
-              title={"Sets"}
-              count={successSetCount}
-              target={routine[selectedExerciseIndex]?.sets || 0}
-              onComplete={moveToNextExercise}
-            />
-            {/* Regarding increment Rep count, refer to "predictPosture" */}
-            <Counter2
-              title={"Reps"}
-              count={successRepCount}
-              target={routine[selectedExerciseIndex]?.reps || 0}
-            />
+            { idType === "routine" && (
+              <>
+                <Counter2
+                  title={"Sets"}
+                  count={successSetCount}
+                  target={routine[selectedExerciseIndex]?.sets || 0}
+                  onComplete={moveToNextExercise}
+                />
+                {/* Regarding increment Rep count, refer to "predictPosture" */}
+                <Counter2
+                  title={"Reps"}
+                  count={successRepCount}
+                  target={routine[selectedExerciseIndex]?.reps || 0}
+                />
+              </>
+            )}
             
           </Box>
 
@@ -1147,145 +1162,150 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               }}
             />
 
-            {/* Calories */}
-            <Box sx={{minWidth: "85px"}}>
-              <MetricCard title="kcal" value={calorie}/>
-            </Box>
+            { idType === "routine" && (
+              <>
+                {/* Calories */}
+                <Box sx={{minWidth: "85px"}}>
+                  <MetricCard title="kcal" value={calorie}/>
+                </Box>
 
-            {/* Puase & Play */}
-            <IconButton
-              onClick={toggleIsResting}
-              onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50, color: "white" }}
-            >
-              {isResting ? (
-                <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
-              ) : (
-                <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
-              )}
-            </IconButton>
-
-            {/* Timer */}
-            <CountdownCircleTimer
-              // key={selectedExerciseIndex} // To reset timer when exercise changes
-              key={`${selectedExerciseIndex}-${successSetCount}`}
-              isPlaying={!isResting}
-              duration={routine[selectedExerciseIndex]?.duration || 0}
-              size={isLandscapeMode ? 80 : 110}
-              strokeWidth={isLandscapeMode ? 6 : 8}
-              colors="white"
-              trailColor="transparent"
-              onComplete={incrementSetsCount}
-              onUpdate={handleIncrementCalorieAndScore}
-            >
-              {({ remainingTime }) => (
-                <Typography
-                  sx={{ 
-                    fontWeight: "bold",
-                    fontSize: isLandscapeMode ? '3rem' : '4rem',
-                    color: "white",
-                  }}
+                {/* Puase & Play */}
+                <IconButton
+                  onClick={toggleIsResting}
+                  onMouseDown={(e) => e.preventDefault()}
+                  style={{ fontSize: 50, color: "white" }}
                 >
-                  {remainingTime >= 0 ? remainingTime : 0}
-                </Typography>
-              )}
-            </CountdownCircleTimer>
+                  {isResting ? (
+                    <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+                  ) : (
+                    <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
+                  )}
+                </IconButton>
 
-            {/* Next Exercise */}
-            <IconButton
-              onClick={moveToNextExercise}
-              onMouseDown={(e) => e.preventDefault()}
-              style={{ fontSize: 50, color: "white" }}
-            >
-              <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
-            </IconButton>
+                {/* Timer */}
+                <CountdownCircleTimer
+                  // key={selectedExerciseIndex} // To reset timer when exercise changes
+                  key={`${selectedExerciseIndex}-${successSetCount}`}
+                  isPlaying={!isResting}
+                  duration={routine[selectedExerciseIndex]?.duration || 0}
+                  size={isLandscapeMode ? 80 : 110}
+                  strokeWidth={isLandscapeMode ? 6 : 8}
+                  colors="white"
+                  trailColor="transparent"
+                  onComplete={incrementSetsCount}
+                  onUpdate={handleIncrementCalorieAndScore}
+                >
+                  {({ remainingTime }) => (
+                    <Typography
+                      sx={{ 
+                        fontWeight: "bold",
+                        fontSize: isLandscapeMode ? '3rem' : '4rem',
+                        color: "white",
+                      }}
+                    >
+                      {remainingTime >= 0 ? remainingTime : 0}
+                    </Typography>
+                  )}
+                </CountdownCircleTimer>
 
-            {/* Score */}
-            <Box sx={{minWidth: "85px"}}>
-              <MetricCard title="Score" value={score}/>
-            </Box>
+                {/* Next Exercise */}
+                <IconButton
+                  onClick={moveToNextExercise}
+                  onMouseDown={(e) => e.preventDefault()}
+                  style={{ fontSize: 50, color: "white" }}
+                >
+                  <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
+                </IconButton>
 
-            {/* Exercise Menu */}
-            <Box
-              sx={{
-                position: "relative",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "flex-end",
-                width: "20%",
-                height: "100%",
-              }}
-            >
-              <Typography
-                gutterBottom
-                onClick={handleToggleExerciseMenu}
-                sx={{
-                  fontSize: isLandscapeMode ? "1rem" : "1.2rem",
-                  fontWeight: "bold",
-                  textAlign: "right",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "flex-end",
-                  color: `white`,
-                  cursor: "pointer",
-                }}
-              >
-                Next{" "}
-                {isExerciseMenuOpen ? (
-                  <KeyboardArrowDownIcon sx={{ fontSize: "2rem" }} />
-                ) : (
-                  <KeyboardArrowUpIcon sx={{ fontSize: "2rem" }} />
-                )}
-              </Typography>
+                {/* Score */}
+                <Box sx={{minWidth: "85px"}}>
+                  <MetricCard title="Score" value={score}/>
+                </Box>
 
-              <Box
-                sx={{
-                  maxHeight: isExerciseMenuOpen ? "200px" : "0",
-                  overflowY: "scroll",
-                  transition: "max-Height 0.5s ease",
-                }}
-              >
-                <List
+                {/* Exercise Menu */}
+                <Box
                   sx={{
-                    margin: 0,
-                    padding: 0,
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-end",
+                    width: "20%",
+                    height: "100%",
                   }}
                 >
-                  {routine
-                    .slice(selectedExerciseIndex)
-                    .map((exercise, index) => (
-                      <ListItem
-                        key={index + selectedExerciseIndex}
-                        sx={{
-                          cursor: "default",
-                          padding: "0.1rem 0.5rem",
-                          margin: "0rem",
-                          marginBottom: "0.5rem",
-                          backgroundColor: "rgba(255, 255, 255, 0.6)",
-                        }}
-                      >
-                        <ListItemText
-                          primary={exercise.name}
-                          secondary={exercise.goal}
-                          primaryTypographyProps={{
-                            sx: {
-                              fontSize: isLandscapeMode ? "0.8rem" : "1rem",
-                              fontWeight: "bold",
-                              color: "black",
-                            },
-                          }}
-                          secondaryTypographyProps={{
-                            sx: {
-                              fontSize: isLandscapeMode ? "0.8rem" : "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      </ListItem>
-                    ))}
-                </List>
-              </Box>
-            </Box>
+                  <Typography
+                    gutterBottom
+                    onClick={handleToggleExerciseMenu}
+                    sx={{
+                      fontSize: isLandscapeMode ? "1rem" : "1.2rem",
+                      fontWeight: "bold",
+                      textAlign: "right",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      color: `white`,
+                      cursor: "pointer",
+                    }}
+                  >
+                    Next{" "}
+                    {isExerciseMenuOpen ? (
+                      <KeyboardArrowDownIcon sx={{ fontSize: "2rem" }} />
+                    ) : (
+                      <KeyboardArrowUpIcon sx={{ fontSize: "2rem" }} />
+                    )}
+                  </Typography>
+
+                  <Box
+                    sx={{
+                      maxHeight: isExerciseMenuOpen ? "200px" : "0",
+                      overflowY: "scroll",
+                      transition: "max-Height 0.5s ease",
+                    }}
+                  >
+                    <List
+                      sx={{
+                        margin: 0,
+                        padding: 0,
+                      }}
+                    >
+                      {routine
+                        .slice(selectedExerciseIndex)
+                        .map((exercise, index) => (
+                          <ListItem
+                            key={index + selectedExerciseIndex}
+                            sx={{
+                              cursor: "default",
+                              padding: "0.1rem 0.5rem",
+                              margin: "0rem",
+                              marginBottom: "0.5rem",
+                              backgroundColor: "rgba(255, 255, 255, 0.6)",
+                            }}
+                          >
+                            <ListItemText
+                              primary={exercise.name}
+                              secondary={exercise.goal}
+                              primaryTypographyProps={{
+                                sx: {
+                                  fontSize: isLandscapeMode ? "0.8rem" : "1rem",
+                                  fontWeight: "bold",
+                                  color: "black",
+                                },
+                              }}
+                              secondaryTypographyProps={{
+                                sx: {
+                                  fontSize: isLandscapeMode ? "0.8rem" : "1rem",
+                                  color: "black",
+                                },
+                              }}
+                            />
+                          </ListItem>
+                        ))}
+                    </List>
+                  </Box>
+                </Box>
+              </>
+            )}
+
           </Box>
         </Box>
       )}
