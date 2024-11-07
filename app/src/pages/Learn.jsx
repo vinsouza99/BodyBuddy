@@ -160,6 +160,7 @@ export const Learn = memo((props) => {
                 <Link
                   to={`/learn/${exercise.id}`}
                   state={{ exerciseInitialData: exercise }}
+                  style={{ textDecoration: "none" }}
                 >
                   <LearningCard exercise={exercise} />
                 </Link>
