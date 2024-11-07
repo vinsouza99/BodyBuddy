@@ -18,6 +18,7 @@ import { CircularProgress } from "../components/CircularProgress.jsx";
 import { ExerciseDetails } from "../components/ExerciseDetails";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 import { useParams, useLocation } from "react-router-dom";
+import { exerciseCounterLoader } from "../utils/motionDetectLogic/exerciseCounterLoader";
 
 export const LearnExercise = (props) => {
   const { exercise_id } = useParams();
@@ -26,6 +27,7 @@ export const LearnExercise = (props) => {
   const [videoLoading, setVideoLoading] = useState(true); // New state for video loading
   const [openSessionModal, setOpenSessionModal] = useState(false);
   const { exerciseInitialData } = useLocation();
+  const isExerciseValid = exercise_id in exerciseCounterLoader;
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -179,126 +181,6 @@ export const LearnExercise = (props) => {
 
               <ExerciseDetails exercise={exercise} />
             </Box>
-
-            {/* NOTE: The following code move to ExerciseDetails.jsx component */}
-            {/* <Divider
-              sx={{
-                backgroundColor: "background.light",
-                height: "2px",
-                marginBottom: "1rem",
-              }}
-            />
-
-            <List>
-              {exercise.execution_steps
-                ? exercise.execution_steps.map((step, index) => (
-                    <ListItem
-                      sx={{ padding: "0", marginBottom: "1rem" }}
-                      key={index}
-                    >
-                      <Box
-                        component="span"
-                        sx={{
-                          display: "inline-flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          width: "24px",
-                          height: "24px",
-                          minWidth: "24px",
-                          minHeight: "24px",
-                          border: "1px solid",
-                          borderRadius: "50%",
-                          marginRight: "0.75rem",
-                        }}
-                      >
-                        {index + 1}
-                      </Box>
-                      <Typography component="span">{step}</Typography>
-                    </ListItem>
-                  ))
-                : ""}
-            </List>
-            
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "1rem",
-                padding: "1rem",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "left",
-                  borderColor: "text.primary",
-                  color: "text.primary",
-                  minWidth: "180px",
-                  border: "1px solid",
-                  borderRadius: "8px",
-                  padding: "0.75rem",
-                  gap: "0.5rem",
-                }}
-              >
-                <AccessibilityIcon sx={{ color: "primary.main" }} />
-                <Box>
-                  <Box
-                    component="p"
-                    sx={{
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      margin: "0",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    Focus Areas
-                  </Box>
-                  <Box
-                    component="p"
-                    sx={{ lineHeight: "1.2", margin: "0", fontSize: "0.9rem" }}
-                  >
-                    {focusAreas}
-                  </Box>
-                </Box>
-              </Box>
-
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "left",
-                  borderColor: "text.primary",
-                  color: "text.primary",
-                  minWidth: "180px",
-                  border: "1px solid",
-                  borderRadius: "8px",
-                  padding: "0.75rem",
-                  gap: "0.5rem",
-                }}
-              >
-                <TrackChangesIcon sx={{ color: "primary.main" }} />
-                <Box>
-                  <Box
-                    component="p"
-                    sx={{
-                      fontWeight: "bold",
-                      whiteSpace: "nowrap",
-                      margin: "0",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    Goals
-                  </Box>
-                  <Box
-                    component="p"
-                    sx={{ lineHeight: "1.2", margin: "0", fontSize: "0.9rem" }}
-                  >
-                    {goals}
-                  </Box>
-                </Box>
-              </Box>
-            </Box> */}
           </Paper>
 
           {/* Practice Button */}
@@ -312,10 +194,15 @@ export const LearnExercise = (props) => {
               height: "120px",
               borderRadius: "50%",
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
-              color: "text.primary",
-              background: `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`,
-              textTransform: "uppercase",
+              color: isExerciseValid
+                ? theme.palette.text.primary
+                : theme.palette.action.disabled,
+              background: isExerciseValid
+                ? `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`
+                : theme.palette.action.disabledBackground,
+                textTransform: "uppercase",
             })}
+            disabled={!isExerciseValid} // Disable if exercise ID is invalid
           >
             Practice
           </Button>
