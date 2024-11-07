@@ -6,7 +6,7 @@ import { WeekPicker } from "./WeekPicker";
 import { RoutinesList } from "./RoutinesList";
 import { isWithinInterval, parseISO, startOfWeek, endOfWeek, addDays } from 'date-fns';
 import axiosClient from '../utils/axiosClient';
-import CircularProgress from '@mui/material/CircularProgress';
+import { CircularProgress } from "../components/CircularProgress.jsx";
 
 export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) => {
   const today = new Date();

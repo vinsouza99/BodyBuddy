@@ -8,8 +8,8 @@ export const CircularProgress = () => {
             src={ GeneralLoading }
             alt="Loading"
             sx={{
-                width: "50%",
-                maxWidth: "450px",
+                width: "450px",
+                maxWidth: "100%",
             }}
         />
     );
