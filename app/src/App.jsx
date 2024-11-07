@@ -16,7 +16,6 @@ import { LearnExercise } from "./pages/LearnExercise";
 import { RoutineSession } from "./pages/RoutineSession";
 import { NotFound } from "./pages/NotFound";
 import { useAuth } from "./utils/AuthProvider";
-import { CircularProgress } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { CssBaseline } from "@mui/material";
@@ -29,7 +28,7 @@ function App() {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return <CircularProgress />;
+    return null;
   }
 
   const router = createBrowserRouter(

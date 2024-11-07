@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box, useMediaQuery, Backdrop, CircularProgress, Typography } from "@mui/material";
+import { Box, useMediaQuery, Backdrop, Typography } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
