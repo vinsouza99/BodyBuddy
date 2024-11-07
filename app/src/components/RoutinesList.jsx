@@ -6,7 +6,7 @@ import { toZonedTime } from 'date-fns-tz';
 import { getExercisesFromRoutine } from "../controllers/RoutineController";
 import { RoutineExercisesList } from "./RoutineExercisesList";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CircularProgress from '@mui/material/CircularProgress';
+import { CircularProgress } from "../components/CircularProgress.jsx";
 
 export const RoutinesList = ({ routines = [] }) => {
   const [updatedRoutines, setUpdatedRoutines] = useState([]);

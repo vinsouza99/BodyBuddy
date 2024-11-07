@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useState, memo, useEffect } from "react";
-import { Button, Typography, Box, CircularProgress } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 import { isSameDay, parseISO } from "date-fns";
 import { GadgetBase } from "./GadgetBase";
 import { RoutineExercisesList } from "./RoutineExercisesList";
