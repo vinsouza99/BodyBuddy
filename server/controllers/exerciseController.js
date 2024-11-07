@@ -6,7 +6,6 @@ import ExerciseMuscleGroup from "../models/ExerciseMuscleGroup.js";
 export const getExercises = async (req, res) => {
   const offset = req.params.offset_num;
   const limit = req.params.limit_num;
-  console.log(offset, limit);
   try {
     if (offset && limit) {
       const { count, rows } = await Exercise.findAndCountAll({
@@ -34,7 +33,28 @@ export const getExercises = async (req, res) => {
     });
   }
 };
-
+export const getExercisesCount = async (req, res) => {
+  try {
+    const quantity = await Exercise.count();
+    if (!quantity) {
+      return res.status(404).json({
+        status: "404",
+        message: "No exercises found",
+      });
+    }
+    res.status(200).json({
+      status: "200",
+      message: "Success",
+      data: quantity,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "500",
+      message: "Internal Server Error",
+    });
+  }
+};
 export const getExercise = async (req, res) => {
   try {
     const exercise = await Exercise.findByPk(req.params.id);
