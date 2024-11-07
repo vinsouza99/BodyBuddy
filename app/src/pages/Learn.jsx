@@ -20,6 +20,7 @@ import {
   Backdrop,
   Typography,
   useMediaQuery,
+  Button,
 } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import LearningCard from "../components/LearningCard";
@@ -169,6 +170,17 @@ export const Learn = memo((props) => {
     );
   }, [filteredExercises, loading]);
 
+  // Pagination handlers
+  const handleNextPage = () => {
+    setOffset(offset + 9);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handlePrevPage = () => {
+    setOffset(offset - 9);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  
   return (
     <>
       {/* Backdrop for loading */}
@@ -254,6 +266,25 @@ export const Learn = memo((props) => {
       </CustomTabPanel>
       {/* Grid to display LearningCard components */}
       {exercisesGrid}
+
+      {/* Pagination Buttons */}
+      <Box display="flex" justifyContent="center" sx={{ marginTop: 3 }}>
+        <Button
+          variant="outlined"
+          onClick={handlePrevPage}
+          disabled={offset === 0}
+          sx={{ marginRight: 2 }}
+        >
+          Prev
+        </Button>
+        <Button
+          variant="outlined"
+          onClick={handleNextPage}
+          disabled={filteredExercises.length < 9}
+        >
+          Next
+        </Button>
+      </Box>    
     </>
   );
 });
@@ -264,3 +295,4 @@ Learn.propTypes = {
 
 // Setting the display name for debugging
 Learn.displayName = "Learn";
+
