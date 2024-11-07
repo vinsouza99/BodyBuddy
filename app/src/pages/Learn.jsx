@@ -103,6 +103,8 @@ export const Learn = memo((props) => {
       console.log(exercisesData);
     } catch (e) {
       console.error(e);
+    } finally {
+      setLoading(false);
     }
   };
   const [value, setValue] = React.useState(0); // State for managing which tab is selected
@@ -173,11 +175,13 @@ export const Learn = memo((props) => {
 
   // Pagination handlers
   const handleNextPage = () => {
+    setLoading(true);
     setOffset(offset + 9);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handlePrevPage = () => {
+    setLoading(true);
     setOffset(offset - 9);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
