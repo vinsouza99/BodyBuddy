@@ -202,14 +202,15 @@ export const TrainingProgram = memo((props) => {
               src={ ProgramLoading }
               alt="Loading"
               sx={{
-                width: "450px",
+                width: "800px",
+                maxWidth: "90%",
               }}
             />
           ) : (
             <CircularProgress color="inherit" />
           )}
           <Typography variant="h6" sx={{ mt: 2, whiteSpace: "pre-line" }}>
-            {generating ? "Generating personalized program...\nThis process may take about 30 seconds to 1 minute." : "Loading..."}
+            {generating ? "" : "Loading..."}
           </Typography>
         </Box>
       </Backdrop>
