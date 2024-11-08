@@ -92,19 +92,20 @@ export const Dashboard = (props) => {
         const response = await axiosClient.get(`programs/user/${user.id}`);
         if (Number(response.status) === 200) {
           const programs = response.data.data || [];
-          const hasIncompleteProgram = programs.rows.some(
-            (program) => !program.completed_at
-          );
+          // const hasIncompleteProgram = programs.rows.some(
+          //   (program) => !program.completed_at
+          // );
+          const hasNoPrograms = programs.rows.length === 0;
 
-          if (!hasIncompleteProgram) {
+          if (hasNoPrograms) {
             console.log(
-              "No active program found for this user. Generating a new personalized program."
+              "No program found for this user. Generating the first personalized program."
             );
             setGenerating(true);
             await generatePersonalizedProgram(user.id, prompt);
             setGenerating(false);
           } else {
-            console.log("User has active program.");
+            console.log("User already has some programs.");
           }
         } else {
           throw new Error("Failed to fetch programs");
@@ -132,14 +133,15 @@ export const Dashboard = (props) => {
               src={ ProgramLoading }
               alt="Loading"
               sx={{
-                width: "450px",
+                width: "800px",
+                maxWidth: "90%",
               }}
             />
           ) : (
             <CircularProgress color="inherit" />
           )}
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            {generating ? "Generating personalized program..." : "Loading..."}
+          <Typography variant="h6" sx={{ mt: 2, whiteSpace: "pre-line" }}>
+            {generating ? "" : "Loading..."}
           </Typography>
         </Box>
       </Backdrop>

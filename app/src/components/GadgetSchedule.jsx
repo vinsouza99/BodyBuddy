@@ -6,9 +6,9 @@ import { WeekPicker } from "./WeekPicker";
 import { RoutinesList } from "./RoutinesList";
 import { isWithinInterval, parseISO, startOfWeek, endOfWeek, addDays } from 'date-fns';
 import axiosClient from '../utils/axiosClient';
-import CircularProgress from '@mui/material/CircularProgress';
+import { CircularProgress } from "../components/CircularProgress.jsx";
 
-export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) => {
+export const GadgetSchedule = memo(({ programRoutines = [] }) => {
   const today = new Date();
   const [selectedWeek, setSelectedWeek] = useState({
     start: startOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),
@@ -16,15 +16,14 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
   });
   const [filteredRoutines, setFilteredRoutines] = useState([]);
   const [weeklyGoal, setWeeklyGoal] = useState('');
-  const [loadingProgramRoutine, setloadingProgramRoutine] = useState(true);
-  const [loadingWeeklyGoal, setloadingWeeklyGoal] = useState(true);
+  const [loadingProgramRoutine, setloadingProgramRoutine] = useState(false);
+  const [loadingWeeklyGoal, setloadingWeeklyGoal] = useState(false);
 
   // Create filtered routines by selected week
   useEffect(() => {
-    if (programRoutines.length === 0) {
-      setloadingProgramRoutine(false);
-      return;
-   }
+    if (programRoutines.length === 0) return;
+    setloadingProgramRoutine(true);
+
     const filtered = programRoutines.filter((routine) => {
       const routineDate = parseISO(routine.scheduled_date);
       return isWithinInterval(routineDate, { start: selectedWeek.start, end: selectedWeek.end });
@@ -35,10 +34,8 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
 
   // Create Weekly Summary
   useEffect(() => {
-    if (filteredRoutines.length === 0) {
-      setloadingWeeklyGoal(false);
-      return;
-    }
+    if (filteredRoutines.length === 0) return;
+    setloadingWeeklyGoal(true);
 
     const summaryDetails = filteredRoutines.map((routine) => {
       const date = routine.scheduled_date;
@@ -58,7 +55,6 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
 
     // Create Weekly Summary by OpenAI
     const createWeeklySummary = async () => {
-      
       const response_openai = await axiosClient.post(`openai/`, {
         prompt: prompt,
       });
@@ -69,6 +65,7 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
     createWeeklySummary();
   }, [filteredRoutines]);
 
+  // Handle click next week
   const handleNextWeek = (newStartDate) => {
     const newEndDate = addDays(newStartDate, 6);
     setSelectedWeek({
@@ -76,10 +73,11 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
       end: newEndDate,
     });
     setWeeklyGoal('');
-    setloadingProgramRoutine(true);
-    setloadingWeeklyGoal(true);
+    // setloadingProgramRoutine(true);
+    // setloadingWeeklyGoal(true);
   };
 
+  // Handle click previous week
   const handlePreviousWeek = (newStartDate) => {
     const newEndDate = addDays(newStartDate, 6);
     setSelectedWeek({
@@ -87,8 +85,8 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
       end: newEndDate,
     });
     setWeeklyGoal('');
-    setloadingProgramRoutine(true);
-    setloadingWeeklyGoal(true);
+    // setloadingProgramRoutine(true);
+    // setloadingWeeklyGoal(true);
   };
 
   // Create array of shceduled dates
@@ -120,21 +118,17 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
             width: "100%",
           }}
         >
-          {program 
-            ? 
-              <>
-                <Typography sx={{ fontWeight: "800"}}>
-                  This Week&apos;s Goal
-                </Typography>
-                {weeklyGoal && (
-                  <Typography sx={{ textAlign: "left" }}>
-                    {weeklyGoal}
-                  </Typography>
-                )}
-                <RoutinesList routines={filteredRoutines} />
-              </>
-            : <Typography>No available program</Typography>
-          }
+          <>
+            <Typography sx={{ fontWeight: "800"}}>
+              This Week&apos;s Goal
+            </Typography>
+            {weeklyGoal && (
+              <Typography sx={{ textAlign: "left" }}>
+                {weeklyGoal}
+              </Typography>
+            )}
+            <RoutinesList routines={filteredRoutines} />
+          </>
         </Box>
   }
     </GadgetBase>
@@ -142,7 +136,6 @@ export const GadgetSchedule = memo(({ program = null, programRoutines = [] }) =>
 });
 
 GadgetSchedule.propTypes = {
-  program: PropTypes.object,
   programRoutines: PropTypes.array,
 };
 

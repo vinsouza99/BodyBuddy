@@ -9,6 +9,7 @@ export const CircularProgress = () => {
             alt="Loading"
             sx={{
                 width: "450px",
+                maxWidth: "100%",
             }}
         />
     );

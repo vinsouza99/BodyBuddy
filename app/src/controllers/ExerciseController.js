@@ -43,6 +43,10 @@ const getAllExercises = async (offset, limit) => {
   }
   return exercises;
 };
+const getExercisesCount = async () => {
+  const response = await axiosClient.get(`${API_ROUTE}/count`);
+  return response;
+};
 const getExercisesThumbnails = async () => {
   const response = await axiosClient.get(`${API_ROUTE}`);
   return await response.data.data.map((item) => {
@@ -136,6 +140,7 @@ const getExerciseMuscleGroups = async (id, allInfo = true) => {
 };
 export {
   getAllExercises,
+  getExercisesCount,
   getExercisesThumbnails,
   getExercise,
   getExerciseTypes,

@@ -114,6 +114,7 @@ export const useGenerateProgramPrompt = ({ userPreferences } = {}) => {
           ### Additional Notes
           - **Today's Date**: ${formattedDate}.
           - **Routine Scheduling**: Schedule routines only on the days specified by the user as available for workouts (e.g., Monday, Wednesday, Friday). Do not assign routines on any other days, and ensure that no routines are scheduled for dates in the past.
+          - **First Routine Schedule**: The first routine should be scheduled on ${formattedDate} for demo purposes.
           - **Program Duration**: The program should span 2 weeks from today's date.
           - **Return Format**: Exclude any backticks when you return the object.
           - **UUID format should be xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx, and it must be a valid UUID containing only hexadecimal characters (0-9 and a-f).**

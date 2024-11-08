@@ -3,7 +3,10 @@ import PropTypes from "prop-types";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
-import { getAllExercises } from "../controllers/ExerciseController.js";
+import {
+  getAllExercises,
+  getExercisesCount,
+} from "../controllers/ExerciseController.js";
 import {
   getAllGoals,
   getAllMuscleGroups,
@@ -20,6 +23,8 @@ import {
   Backdrop,
   Typography,
   useMediaQuery,
+  Button,
+  Pagination,
 } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import LearningCard from "../components/LearningCard";
@@ -51,13 +56,15 @@ export const Learn = memo((props) => {
   const navigate = useNavigate();
   const [exercises, setExercises] = useState([]); // Cocoy: Declare a state variable to hold the list of exercises and a function to update it
   const [filteredExercises, setFilteredExercises] = useState([]);
+  const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const [selectedMuscleGroupID, setSelectedMuscleGroupID] = useState("");
   const [selectedGoalID, setSelectedGoalID] = useState("");
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [offset, setOffset] = useState(0); //when pagination button is clicked, change this offset by 9 (increment by 9 if 'next' page is clicked, decrement by 9 if 'prev' is clicked)
-
+  const [page, setPage] = useState(1);
+  const [pagesCount, setPagesCount] = useState(1);
   // Media query for screen size <= 600px
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
@@ -66,108 +73,109 @@ export const Learn = memo((props) => {
 
     const loadData = async () => {
       try {
-        await loadExerciseData();
+        const exercisesCount = (await getExercisesCount()).data.data;
+        const exercisesData = await getAllExercises(0, 9);
+        // Update the state with the loaded routines
+        setExercises(exercisesData);
+        setFilteredExercises(exercisesData);
         const muscleGroupsData = await getAllMuscleGroups();
         setMuscleGroups([{ id: 0, name: "All" }, ...muscleGroupsData]);
 
         const fitnessGoalsData = await getAllGoals();
         setGoals([{ id: 0, name: "All" }, ...fitnessGoalsData]);
-      } catch (e) {
-        console.log(e);
-      } finally {
         setLoading(false);
+        for (let i = 1; i <= Math.ceil(exercisesCount / 9); i++) {
+          const pageContent = await getAllExercises(9 * i, 9);
+          setExercises((prevExercises) => [...prevExercises, ...pageContent]);
+          setFilteredExercises((prevExercises) => [
+            ...prevExercises,
+            ...pageContent,
+          ]);
+          setPagesCount(i);
+        }
+      } catch (e) {
+        console.error(e);
       }
     };
 
     loadData();
   }, [props.title]);
 
-  const loadExerciseData = async () => {
-    try {
-      // Cocoy: Load exercises
-      const response = await getAllExercises(offset, 9);
-
-      // Log the full response
-      //console.log("Loaded exercises:", response);
-
-      // Access exercises from the response.data property
-      const exercisesData = response;
-
-      // Log the exercises data
-      //console.log("Exercises Data:", exercisesData);
-
-      // Update the state with the loaded routines
-      setExercises(exercisesData);
-      setFilteredExercises(exercisesData);
-      console.log(exercisesData);
-    } catch (e) {
-      console.error(e);
-    }
-  };
-  const [value, setValue] = React.useState(0); // State for managing which tab is selected
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
     setFilteredExercises(exercises);
     setSelectedGoalID(0);
     setSelectedMuscleGroupID(0);
   };
+
   useEffect(() => {
-    loadExerciseData();
-  }, [offset]);
-  useEffect(() => {
-    filterExercisesByMuscleGroup(selectedMuscleGroupID);
+    filterExercisesByMuscleGroup();
   }, [selectedMuscleGroupID]);
 
   useEffect(() => {
-    filterExercisesByGoal(selectedGoalID);
+    filterExercisesByGoal();
   }, [selectedGoalID]);
-  useEffect(() => {});
+
   const handleSelectMuscleGroup = (event) => {
     setSelectedMuscleGroupID(event.target.value);
   };
   const handleSelectGoal = (event) => {
     setSelectedGoalID(event.target.value);
   };
-  const filterExercisesByMuscleGroup = (muscleGroupID) => {
+  const filterExercisesByMuscleGroup = () => {
     const filteredArray =
-      muscleGroupID == 0
+      selectedMuscleGroupID == 0
         ? exercises
         : exercises.filter((exercise) =>
-            exercise.hasMuscleGroup(muscleGroupID)
+            exercise.hasMuscleGroup(selectedMuscleGroupID)
           );
     setFilteredExercises(filteredArray);
+    setPagesCount(Math.floor(filteredArray.length / 9));
+    setPage(1);
   };
-  const filterExercisesByGoal = (goalID) => {
+  const filterExercisesByGoal = () => {
     const filteredArray =
-      goalID == 0
+      selectedGoalID == 0
         ? exercises
-        : exercises.filter((exercise) => exercise.hasGoal(goalID));
+        : exercises.filter((exercise) => exercise.hasGoal(selectedGoalID));
 
     setFilteredExercises(filteredArray);
+    setPagesCount(Math.floor(filteredArray.length / 9));
+    setPage(1);
   };
   // Memoize the exercises grid
   const exercisesGrid = useMemo(() => {
     return (
       <Grid container spacing={3}>
         {filteredExercises.length > 0
-          ? filteredExercises.map((exercise, index) => (
-              <Grid
-                size={{ xs: 12, sm: 6, md: 4 }}
-                key={index}
-                onClick={() => navigate(`/learn/${exercise.id}`)}
-              >
-                <Link
-                  to={`/learn/${exercise.id}`}
-                  state={{ exerciseInitialData: exercise }}
+          ? filteredExercises
+              .slice(page - 1, page + 8)
+              .map((exercise, index) => (
+                <Grid
+                  size={{ xs: 12, sm: 6, md: 4 }}
+                  key={index}
+                  onClick={() => navigate(`/learn/${exercise.id}`)}
                 >
-                  <LearningCard exercise={exercise} />
-                </Link>
-              </Grid>
-            ))
+                  <Link
+                    to={`/learn/${exercise.id}`}
+                    state={{ exerciseInitialData: exercise }}
+                    style={{ textDecoration: "none" }}
+                  >
+                    <LearningCard exercise={exercise} />
+                  </Link>
+                </Grid>
+              ))
           : null}
       </Grid>
     );
   }, [filteredExercises, loading]);
+
+  // Pagination handlers
+  const handlePaginationChange = async (event, value) => {
+    setPage(value);
+    setFilteredExercises(exercises.slice(value - 1, value + 9));
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -254,6 +262,17 @@ export const Learn = memo((props) => {
       </CustomTabPanel>
       {/* Grid to display LearningCard components */}
       {exercisesGrid}
+
+      {/* Pagination Buttons */}
+      <Box display="flex" justifyContent="center" sx={{ marginTop: 3 }}>
+        <Pagination
+          count={pagesCount}
+          page={page}
+          variant="outlined"
+          shape="rounded"
+          onChange={handlePaginationChange}
+        />
+      </Box>
     </>
   );
 });

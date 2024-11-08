@@ -15,7 +15,7 @@ const getRoutine = async (routine_id) => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${routine_id}`);
     const data = await response.data.data;
-    console.log(data);
+    console.log(data + "ESTIMATED CALORIES");
     const routine = new Routine(
       data.id,
       data.duration,
@@ -197,7 +197,8 @@ const getExercisesFromRoutine = async (routine_id) => {
           exercise.duration,
           exercise.rest_time,
           exercise.demo_url, // demo_url unknown yet
-          exercise.types // types unknown yet
+          exercise.types, // types unknown yet
+          exercise.muscleGroups
         )
     );
 
@@ -209,6 +210,7 @@ const getExercisesFromRoutine = async (routine_id) => {
           name: detailedExercise.name,
           description: detailedExercise.description,
           demo_url: detailedExercise.demo_url,
+          muscleGroups: detailedExercise.muscleGroups,
         };
       })
     );
@@ -270,8 +272,8 @@ const getRoutineGoals = async (routine_id) => {
     );
 
     const data = await response.data.data;
-
-    const routineGoals = await data.map((goal) => new Goal(goal.id));
+    console.log(data);
+    const routineGoals = await data.map((goal) => new Goal(goal.goal_id));
 
     return routineGoals;
   } catch (e) {

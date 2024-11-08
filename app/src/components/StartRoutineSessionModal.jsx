@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
-import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button, IconButton, TextField, useMediaQuery } from "@mui/material"
+import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button, IconButton, useMediaQuery } from "@mui/material"
 import theme from "../theme";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
@@ -38,7 +38,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [record, setRecord] = useState(false);
   const [reps, setReps] = useState(''); // when exercise type is specified
-  const [step, setStep] = useState(1); // step 1 for rep setting, step 2 for recording confirmation
+  const [step, setStep] = useState(2); // step 1 for rep setting, step 2 for recording confirmation
   const [openRotateConfirmation, setOpenRotateConfirmation] = useState(true);
   const handleChange = (event) => {
     setRecord(event.target.value === 'true');
@@ -47,13 +47,13 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
   const handleClose = () => {
     setRecord(false);
     setReps(''); // Reset reps on close
-    setStep(1); // Reset step on close
+    setStep(2); // Reset step on close
     onClose();
   }
 
-  const handleNextStep = () => {
-    setStep(2);
-  }
+  // const handleNextStep = () => {
+  //   setStep(2);
+  // }
 
   const handleStartRoutine = () => {
     const stateData = { record, id, idType };
@@ -99,7 +99,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
             </IconButton>
 
             {/* Step 1: If type is exercise, ask for reps */}
-            {idType === 'exercise' && step === 1 && (
+            {/* {idType === 'exercise' && step === 1 && (
               <>
                 <Typography textAlign="center">
                   Please specify the reps for this exercise:
@@ -121,7 +121,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
                   Next
                 </Button>
               </>
-            )}
+            )} */}
 
             {/* Step 2: Recording confirmation for both exercise and routine */}
             {(idType === 'routine' || step === 2) && (
