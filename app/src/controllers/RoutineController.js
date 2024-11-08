@@ -272,8 +272,8 @@ const getRoutineGoals = async (routine_id) => {
     );
 
     const data = await response.data.data;
-
-    const routineGoals = await data.map((goal) => new Goal(goal.id));
+    console.log(data);
+    const routineGoals = await data.map((goal) => new Goal(goal.goal_id));
 
     return routineGoals;
   } catch (e) {
