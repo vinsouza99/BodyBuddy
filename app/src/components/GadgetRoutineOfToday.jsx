@@ -38,7 +38,7 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
       setLoading(false);
     }
     loadRoutineData();
-  }, []);
+  }, [programRoutines]);
 
   // Note: Now just showing the first routine, not considering the schedule. To be updated.
   return (
