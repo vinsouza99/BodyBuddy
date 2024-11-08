@@ -62,7 +62,6 @@ export const Learn = memo((props) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [offset, setOffset] = useState(0); //when pagination button is clicked, change this offset by 9 (increment by 9 if 'next' page is clicked, decrement by 9 if 'prev' is clicked)
   const [page, setPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(1);
   // Media query for screen size <= 600px
@@ -172,8 +171,9 @@ export const Learn = memo((props) => {
 
   // Pagination handlers
   const handlePaginationChange = async (event, value) => {
-    setPage(value);
-    setFilteredExercises(exercises.slice(value - 1, value + 9));
+    const startIndex = (value - 1) * 9;
+    const endIndex = start + 9;
+    setFilteredExercises(exercises.slice(startIndex, endIndex));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
