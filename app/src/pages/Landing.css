@@ -35,7 +35,7 @@ section:not(#home) {
 .mobile-menu {
   position: absolute;
   gap: 1rem;
-  top: 60px;
+  top: 56px;
   right: 0;
   left: 0;
   background-color: white;
