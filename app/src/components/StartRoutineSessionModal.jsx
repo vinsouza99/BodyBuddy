@@ -80,7 +80,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
           slotProps={{
             backdrop: {
               sx: {
-                backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
               },
             },
           }}

@@ -11,9 +11,9 @@ import {
   Button,
   Typography,
   Backdrop,
-  CircularProgress,
   Paper,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useParams } from "react-router-dom";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
@@ -56,7 +56,11 @@ export const PremadeRoutine = (props) => {
       {/* Backdrop for loading */}
       <Backdrop
         open={loading} // Control when to show the overlay
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          color: "#fff",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          zIndex: (theme) => theme.zIndex.drawer + 1 
+        }}
       >
         <Box textAlign="center">
           <CircularProgress color="inherit" />
@@ -130,21 +134,19 @@ export const PremadeRoutine = (props) => {
                 sx={{
                   width: "150px",
                   height: "150px",
-                  color: "text.primary",
-                  backgroundColor: "#4DC53C",
+                  color: "white",
+                  background: "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)",
                   borderRadius: "50%",
                   padding: 0,
                   minWidth: "unset",
                   fontSize: "1.2rem",
+                  fontWeight: "bold",
                   marginTop: "0.8rem",
                   marginBottom: "0.8rem",
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
-                  textTransform: "uppercase",
                 }}
               >
-                Get
-                <br />
-                Started
+                START
               </Button>
             </Box>
           </Paper>

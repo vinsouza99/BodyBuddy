@@ -101,7 +101,11 @@ export const LearnExercise = (props) => {
       {/* Backdrop for loading */}
       <Backdrop
         open={loading} // Control when to show the overlay
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          color: "#fff",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          zIndex: (theme) => theme.zIndex.drawer + 1 
+        }}
       >
         <Box textAlign="center">
           <CircularProgress color="inherit" />
@@ -185,21 +189,21 @@ export const LearnExercise = (props) => {
           {/* Practice Button */}
           <Button
             variant="contained"
-            color="success"
             size="large"
             onClick={() => setOpenSessionModal(true)}
             sx={(theme) => ({
-              width: "120px",
-              height: "120px",
+              width: "150px",
+              height: "150px",
               borderRadius: "50%",
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
               color: isExerciseValid
-                ? theme.palette.text.primary
+                ? "white"
                 : theme.palette.action.disabled,
               background: isExerciseValid
-                ? `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`
+                ? "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)"
                 : theme.palette.action.disabledBackground,
-              textTransform: "uppercase",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
             })}
             disabled={!isExerciseValid} // Disable if exercise ID is invalid
           >
