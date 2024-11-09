@@ -133,8 +133,8 @@ export const MainLayout = () => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading} // <-- Control when to show the overlay
+      {/* <Backdrop
+        open={loading}
         sx={{
           color: "#fff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
@@ -146,7 +146,7 @@ export const MainLayout = () => {
             Loading...
           </Typography>
         </Box>
-      </Backdrop>
+      </Backdrop> */}
 
       <AppProvider
         theme={theme}

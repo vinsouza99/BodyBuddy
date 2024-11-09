@@ -10,8 +10,8 @@ import {
   ListItem,
   ListItemText,
   IconButton,
-  CircularProgress,
 } from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
 // Custom Components for Routine Session
 import {
   PoseLandmarker,
@@ -994,6 +994,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             justifyContent: "center",
             alignItems: "center",
             height: "100vh",
+            color: "white",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
           }}
         >
           <CircularProgress color="inherit" />

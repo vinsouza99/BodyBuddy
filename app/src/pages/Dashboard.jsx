@@ -124,7 +124,11 @@ export const Dashboard = (props) => {
       {/* Backdrop for generating, loading */}
       <Backdrop
         open={generating || loading}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        sx={{
+          color: "#fff",
+          backgroundColor: "rgba(0, 0, 0, 0.8)",
+          zIndex: (theme) => theme.zIndex.drawer + 1 
+        }}
       >
         <Box textAlign="center">
           {generating ? (

@@ -39,7 +39,7 @@ export const RotateConfirmationModal = ( {open = false, onClose = false } ) => {
       slotProps={{
         backdrop: {
           sx: {
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
           },
         },
       }}
