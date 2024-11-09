@@ -172,7 +172,7 @@ export const Learn = memo((props) => {
   // Pagination handlers
   const handlePaginationChange = async (event, value) => {
     const startIndex = (value - 1) * 9;
-    const endIndex = start + 9;
+    const endIndex = startIndex + 9;
     setFilteredExercises(exercises.slice(startIndex, endIndex));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
