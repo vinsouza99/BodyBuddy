@@ -148,7 +148,7 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
         sx={{ 
           width: '50%',
         }}
-        onClick={() => navigate('/learn')}
+        onClick={() => navigate('/learning')}
       >
         Start learning
       </Button>
