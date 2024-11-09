@@ -309,7 +309,9 @@ function History({ data = [] }) {
       </Dialog> */}
 
       {/* Modal part */}
-      <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md">
+      <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md" 
+        PaperProps={{sx: { borderRadius: 3 }}}
+      >
         <DialogContent>
           {/* Close icon*/}
           <DialogTitle
@@ -321,11 +323,11 @@ function History({ data = [] }) {
           </DialogTitle>
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{ display: "flex", gap: "20px" }}>
+            <Box sx={{ display: "flex", marginTop: 2, marginBottom: 5, gap: "20px" }}>
               <Box>
                 <Typography variant="h6">Start</Typography>
                 <DatePicker
-                  label="Start"
+                  label=""
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
                   renderInput={(params) => <TextField {...params} />}
@@ -334,7 +336,7 @@ function History({ data = [] }) {
               <Box>
                 <Typography variant="h6">End</Typography>
                 <DatePicker
-                  label="End"
+                  label=""
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
                   renderInput={(params) => <TextField {...params} />}
@@ -345,14 +347,15 @@ function History({ data = [] }) {
               sx={{
                 marginTop: 2,
                 display: "flex",
-                justifyContent: "space-between",
+                justifyContent: "right",
+                gap: 2,
               }}
             >
+              <Button variant="outlined" onClick={handleCancelClick}>
+                Reset
+              </Button>
               <Button variant="contained" onClick={handleOKClick}>
                 OK
-              </Button>
-              <Button variant="outlined" onClick={handleCancelClick}>
-                Cancel
               </Button>
             </Box>
           </LocalizationProvider>
