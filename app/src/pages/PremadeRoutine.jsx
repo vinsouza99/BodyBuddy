@@ -14,6 +14,7 @@ import {
   CircularProgress,
   Paper,
 } from "@mui/material";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useParams } from "react-router-dom";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 
@@ -81,7 +82,7 @@ export const PremadeRoutine = (props) => {
               fontSize: "1.1rem",
             }}
           >
-            &lt; Back to Training
+            <KeyboardArrowLeftIcon /> Back to Training
           </Button>
 
           {/* Routine Video and Details */}
@@ -134,11 +135,12 @@ export const PremadeRoutine = (props) => {
                   marginTop: "0.8rem",
                   marginBottom: "0.8rem",
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
+                  textTransform: "uppercase",
                 }}
               >
-                GET
+                Get
                 <br />
-                STARTED
+                Started
               </Button>
             </Box>
           </Paper>

@@ -152,6 +152,7 @@ function History({ data = [] }) {
             maxHeight: "80vh", // Set the displayed height
             overflowY: "auto", // Scrolling
           }}
+          className="custom-scrollbar"
         >
           {filteredData.length > 0
             ? filteredData.map((item, index) => (

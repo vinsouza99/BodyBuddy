@@ -7,13 +7,8 @@ import {
   getExerciseMuscleGroups,
   getExerciseTypes,
 } from "../controllers/ExerciseController.js";
-import {
-  Box,
-  Button,
-  Typography,
-  Backdrop,
-  Paper,
-} from "@mui/material";
+import { Box, Button, Typography, Backdrop, Paper } from "@mui/material";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import { ExerciseDetails } from "../components/ExerciseDetails";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
@@ -132,7 +127,7 @@ export const LearnExercise = (props) => {
               fontSize: "1.1rem",
             }}
           >
-            &lt; Back to Exercises
+            <KeyboardArrowLeftIcon /> Back to Exercises
           </Button>
 
           {/* Exercise Video and Details */}
@@ -200,7 +195,7 @@ export const LearnExercise = (props) => {
               background: isExerciseValid
                 ? `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`
                 : theme.palette.action.disabledBackground,
-                textTransform: "uppercase",
+              textTransform: "uppercase",
             })}
             disabled={!isExerciseValid} // Disable if exercise ID is invalid
           >
