@@ -198,7 +198,6 @@ const updateUserSchedule = async (
       //TODO
     });
     Promise.all(promises).then((response) => {
-      console.log(response);
       return response;
     });
   } catch (e) {

@@ -15,7 +15,6 @@ const getRoutine = async (routine_id) => {
   try {
     const response = await axiosClient.get(`${API_ROUTE}/${routine_id}`);
     const data = await response.data.data;
-    console.log(data + "ESTIMATED CALORIES");
     const routine = new Routine(
       data.id,
       data.duration,
@@ -71,7 +70,6 @@ const getUserCompletedRoutines = async (user_id) => {
     );
     if (response.status == 404) return [];
     const data = await response.data.data;
-    console.log(data);
     const routines = [];
     for (let element of data) {
       const routine = await getRoutine(element.routine_id);
@@ -127,7 +125,6 @@ const getAllPresetRoutines = async () => {
         routine.goals = routineGoals;
       }
     }
-    console.log(routines);
     return routines;
   } catch (e) {
     console.error(e);
@@ -276,7 +273,6 @@ const getRoutineGoals = async (routine_id) => {
     );
 
     const data = await response.data.data;
-    console.log(data);
     const routineGoals = await data.map((goal) => new Goal(goal.goal_id));
 
     return routineGoals;

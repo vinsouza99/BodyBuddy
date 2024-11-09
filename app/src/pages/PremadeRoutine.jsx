@@ -31,7 +31,6 @@ export const PremadeRoutine = (props) => {
         const routineData = await getRoutine(routine_id);
         routineData.exercises = await getExercisesFromRoutine(routine_id);
         setRoutine(routineData);
-        console.log(routineData);
       } catch (e) {
         console.log(e);
       } finally {
@@ -100,15 +99,18 @@ export const PremadeRoutine = (props) => {
           >
             <Box
               sx={{
-                padding: "1rem" ,
+                padding: "1rem",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 gap: 2,
                 width: "100%",
-              }
-            }>
-              <Typography variant="h6" sx={{ width: "100%", textAlign: "left" }}>
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{ width: "100%", textAlign: "left" }}
+              >
                 {routine?.name || ""}
               </Typography>
 

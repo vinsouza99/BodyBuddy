@@ -211,7 +211,6 @@ function History({ data = [] }) {
                     >
                       {/* Video icon shows up when there is "recording_url" */}
                       {
-                        /*item.recording_url ? (*/
                         <IconButton sx={{ padding: 0, marginRight: 1 }}>
                           <Box
                             sx={{
@@ -237,31 +236,6 @@ function History({ data = [] }) {
                             />
                           </Box>
                         </IconButton>
-                        /*) : (
-                        <IconButton
-                          sx={{ padding: 0, marginRight: 1 }}
-                          disabled
-                        >
-                          <Box
-                            sx={{
-                              width: 60,
-                              height: 60,
-                              backgroundColor: "grey",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: "50%",
-                            }}
-                          >
-                            <PlayArrowIcon
-                              sx={{
-                                color: "white",
-                                fontSize: 40,
-                              }}
-                            />
-                          </Box>
-                        </IconButton>
-                      )*/
                       }
 
                       {/* description always shows up*/}
