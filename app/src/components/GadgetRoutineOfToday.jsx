@@ -135,23 +135,23 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
             )}
             <Button
               onClick={handleOpen}
+              size="large"
               sx={{
                 width: "150px",
                 height: "150px",
-                color: "text.primary",
-                backgroundColor: "#4DC53C",
+                color: "white",
+                background: "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)",
                 borderRadius: "50%",
                 padding: 0,
                 minWidth: "unset",
                 fontSize: "1.2rem",
+                fontWeight: "bold",
                 marginTop: "0.8rem",
                 marginBottom: "0.8rem",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
               }}
             >
-              GET
-              <br />
-              STARTED
+              START
             </Button>
 
             {/* Transition to session screen */}
