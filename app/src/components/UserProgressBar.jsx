@@ -38,6 +38,7 @@ export const UserProgressBar = ({ levelProgress = 0 }) => {
               borderRadius: '15px',
               '& .MuiLinearProgress-bar': {
                 backgroundImage: 'linear-gradient(to right, #2d90e0, #abd3f3)',
+                clipPath: 'polygon(0 0, calc(100% - 10px) 0, 100% 100%, 10px 100%)', //"Add a diagonal cut."
               },
               backgroundColor: 'grey.300',
             }}
@@ -53,7 +54,7 @@ export const UserProgressBar = ({ levelProgress = 0 }) => {
               width: '100%',
               textAlign: 'center',
               lineHeight: '20px',
-              color: 'white',
+              color: 'black',
             }}
           >
             {`${userLevel.pointsInCurrentLevel} / ${userLevel.pointsRequiredForCurrentLevel}`}
