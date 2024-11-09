@@ -20,22 +20,46 @@ const NavBar = [
   {
     segment: "dashboard",
     title: "Dashboard",
-    icon: <img src={DashboardIcon} alt="Dashboard Icon" style={{ width: "24px", height: "24px" }} />,
+    icon: (
+      <img
+        src={DashboardIcon}
+        alt="Dashboard Icon"
+        style={{ width: "24px", height: "24px" }}
+      />
+    ),
   },
   {
     segment: "training",
     title: "Training",
-    icon: <img src={TrainingIcon} alt="Training Icon" style={{ width: "24px", height: "24px" }} />,
+    icon: (
+      <img
+        src={TrainingIcon}
+        alt="Training Icon"
+        style={{ width: "24px", height: "24px" }}
+      />
+    ),
   },
   {
     segment: "learning",
     title: "Learning",
-    icon: <img src={LearningIcon} alt="Learning Icon" style={{ width: "24px", height: "24px" }} />,
+    icon: (
+      <img
+        src={LearningIcon}
+        alt="Learning Icon"
+        style={{ width: "24px", height: "24px" }}
+      />
+    ),
   },
   {
     segment: "profile",
     title: "Profile",
-    icon: <img src={ProfileIcon} alt="Profile Icon" style={{ width: "24px", height: "24px" }} />,
+    icon: (
+      <img
+        src={ProfileIcon}
+        alt="Profile Icon"
+        style={{ width: "24px", height: "24px" }}
+      />
+    ),
   },
 ];
 
@@ -54,12 +78,12 @@ export const MainLayout = () => {
   });
 
   // Loading state
-  const [loading, setLoading] = useState(true);  // <-- Loading state for the spinner
+  const [loading, setLoading] = useState(true); // <-- Loading state for the spinner
 
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        setLoading(true);  // <-- Set loading state to true before fetching data
+        setLoading(true); // <-- Set loading state to true before fetching data
         const response = await getUser(user, false);
         setSession({
           user: {
@@ -71,7 +95,7 @@ export const MainLayout = () => {
       } catch (error) {
         console.error("Error fetching user data:", error);
       } finally {
-        setLoading(false);  // <-- Set loading state to false once data is fetched
+        setLoading(false); // <-- Set loading state to false once data is fetched
       }
     };
     getUserInfo();
@@ -81,7 +105,9 @@ export const MainLayout = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   // Set logo source based on screen size
-  const logoSource = isMobile ? "./src/assets/bodybuddy_logo_color.svg" : "./src/assets/bodybuddy.svg";
+  const logoSource = isMobile
+    ? "./src/assets/bodybuddy_logo_color.svg"
+    : "./src/assets/bodybuddy.svg";
 
   // Authentication logic from Toolpad Core
   const authentication = useMemo(() => {

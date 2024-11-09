@@ -86,7 +86,11 @@ const getUserCompletedRoutines = async (user_id) => {
           routine.scheduled_date,
           routine.completed,
           element.completed_at,
-          element.recording_url
+          element.recording_url,
+          undefined,
+          undefined,
+          element.calories,
+          element.score
         )
       );
     }
