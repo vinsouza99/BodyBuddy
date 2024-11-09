@@ -2,13 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Box,
-  Typography,
-  Backdrop,
-  Grid2,
-  useMediaQuery,
-} from "@mui/material";
+import { Box, Typography, Backdrop, Grid2, useMediaQuery } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import ProgramLoading from "../assets/ProgramLoading.gif";
 // Gadgets Components
@@ -20,7 +14,9 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getUser, getUserAccumulatedStats,
+import {
+  getUser,
+  getUserAccumulatedStats,
 } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
@@ -37,7 +33,8 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
+    useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,6 +64,10 @@ export const Dashboard = (props) => {
         setUserAccumulatedStatsLoaded(true);
       } catch (error) {
         console.error("Error loading user progress data:", error);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading user's information... try again later.",
+        });
       }
     };
     loadUserdata();
@@ -128,9 +129,9 @@ export const Dashboard = (props) => {
       >
         <Box textAlign="center">
           {generating ? (
-            <Box 
-              component="img" 
-              src={ ProgramLoading }
+            <Box
+              component="img"
+              src={ProgramLoading}
               alt="Loading"
               sx={{
                 width: "800px",

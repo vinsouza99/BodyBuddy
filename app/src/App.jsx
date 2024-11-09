@@ -15,6 +15,7 @@ import { Learn } from "./pages/Learn";
 import { LearnExercise } from "./pages/LearnExercise";
 import { RoutineSession } from "./pages/RoutineSession";
 import { NotFound } from "./pages/NotFound";
+import { ServerError } from "./pages/ServerError";
 import { useAuth } from "./utils/AuthProvider";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
@@ -57,7 +58,11 @@ function App() {
             element={<PremadeRoutine title="Premade Routine" />}
           />
         </Route>
-        <Route path="/create-program" element={<CreateProgram />}></Route>
+        <Route
+          path="/create-program"
+          element={<CreateProgram title="Create Custom Program" />}
+        />
+        <Route path="/error" element={<ServerError title="Server Error" />} />
         <Route path="*" element={<NotFound title="Not found" />} />
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route

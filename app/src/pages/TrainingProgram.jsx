@@ -15,6 +15,7 @@ import {
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import ProgramLoading from "../assets/ProgramLoading.gif";
 import CloseIcon from "@mui/icons-material/Close";
+import { ErrorMessage } from "../components/ErrorMessage.jsx";
 // Gadgets Components
 import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
 import { GadgetSchedule } from "../components/GadgetSchedule.jsx";
@@ -48,12 +49,12 @@ const modalStyle = {
   // Box model
   width: 450,
   padding: 4,
-  borderRadius: '15px',
+  borderRadius: "15px",
   // Flexbox alignment
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  justifyContent: "center",
   gap: 2,
   // Visual effects
   bgcolor: "background.paper",
@@ -66,6 +67,7 @@ export const TrainingProgram = memo((props) => {
   const [activeProgram, setActiveProgram] = useState([]);
   const [programRoutines, setProgramRoutines] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [loadingProgramError, setLoadingProgramError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [openModal, setOpenModal] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -108,7 +110,7 @@ export const TrainingProgram = memo((props) => {
       // Retrieve Preset Routines
       const presetRoutines = await getAllPresetRoutines();
       setPresetRoutines(presetRoutines);
-  
+
       // Retrieve Program
       const programs = await getAllUserPrograms(user.id, true, false);
       // Find the first program without completed_at
@@ -118,7 +120,8 @@ export const TrainingProgram = memo((props) => {
         setProgramRoutines(activeProgram?.routines || []);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      setLoadingProgramError(true);
     } finally {
       setLoading(false);
     }
@@ -133,7 +136,7 @@ export const TrainingProgram = memo((props) => {
         const hasIncompleteProgram = programs.rows.some(
           (program) => !program.completed_at
         );
-  
+
         if (!hasIncompleteProgram) {
           console.log("No active program found. Generate a new one?");
           setOpenModal(true);
@@ -146,6 +149,7 @@ export const TrainingProgram = memo((props) => {
     } catch (error) {
       console.error("Error fetching programs:", error);
       setGenerating(false);
+      setLoadingProgramError(true);
     }
   };
 
@@ -158,7 +162,15 @@ export const TrainingProgram = memo((props) => {
       <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
         <Grid2 size={{ xs: 12, md: 7 }}>
-          <GadgetRoutineOfToday programRoutines={programRoutines} />
+          {loadingProgramError ? (
+            <ErrorMessage
+              message=""
+              callback={loadData}
+              callbackAction="Try Again"
+            />
+          ) : (
+            <GadgetRoutineOfToday programRoutines={programRoutines} />
+          )}
         </Grid2>
         {/* RIGHT COLUMN */}
         <Grid2 size={{ xs: 12, md: 5 }}>
@@ -181,13 +193,13 @@ export const TrainingProgram = memo((props) => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  }
+  };
 
   const handleGenerateProgram = () => {
     setOpenModal(false);
     setGenerating(true);
-  }
-  
+  };
+
   return (
     <>
       {/* Backdrop for loading */}
@@ -197,9 +209,9 @@ export const TrainingProgram = memo((props) => {
       >
         <Box textAlign="center">
           {generating ? (
-            <Box 
-              component="img" 
-              src={ ProgramLoading }
+            <Box
+              component="img"
+              src={ProgramLoading}
               alt="Loading"
               sx={{
                 width: "800px",
@@ -237,49 +249,59 @@ export const TrainingProgram = memo((props) => {
         {activeTab === 1 && premadeRoutinesTabContent}
       </Box>
 
-      <Modal 
-      open={openModal && !loading}
-      onClose={handleCloseModal}
-      slotProps={{
-        backdrop: {
-          sx: {
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
+      <Modal
+        open={openModal && !loading}
+        onClose={handleCloseModal}
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: "rgba(0, 0, 0, 0.9)",
+            },
           },
-        },
-      }}
-    >
-      <Box sx={modalStyle}>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <Typography textAlign="center">
-          No active program found. Generate a new one?
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: 2,
-            width: '100%',
-          }}
-        >
-          <Button variant="outlined" onClick={handleCloseModal} color="primary" fullWidth>
-            Not now
-          </Button>
-          <Button variant="contained" onClick={handleGenerateProgram} color="primary" fullWidth>
-            Yes
-          </Button>
+        }}
+      >
+        <Box sx={modalStyle}>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseModal}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography textAlign="center">
+            No active program found. Generate a new one?
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 2,
+              width: "100%",
+            }}
+          >
+            <Button
+              variant="outlined"
+              onClick={handleCloseModal}
+              color="primary"
+              fullWidth
+            >
+              Not now
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleGenerateProgram}
+              color="primary"
+              fullWidth
+            >
+              Yes
+            </Button>
+          </Box>
         </Box>
-      </Box>
-    </Modal>
+      </Modal>
     </>
   );
 });

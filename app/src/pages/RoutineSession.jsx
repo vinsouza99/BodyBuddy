@@ -39,7 +39,12 @@ import axiosClient from "../utils/axiosClient";
 import { setPageTitle } from "../utils/utils";
 import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
-import { updateUserAccumulatedStats, addUserAchievement, getUserProgress, updateUserProgress } from "../controllers/UserController.js";
+import {
+  updateUserAccumulatedStats,
+  addUserAchievement,
+  getUserProgress,
+  updateUserProgress,
+} from "../controllers/UserController.js";
 import { format } from "date-fns";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
@@ -147,7 +152,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     // Get session start time
     if (!startedAtRef.current) {
       startedAtRef.current = new Date();
-      console.log('Started at:', startedAtRef.current);
+      console.log("Started at:", startedAtRef.current);
     }
 
     // Get user info
@@ -158,6 +163,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         setUserInfo(data);
       } catch (error) {
         console.error("Error fetching user info:", error);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading user's information... try again later.",
+        });
       }
     };
     fetchUserInfo();
@@ -189,17 +198,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       try {
         if (idType === "routine") {
           const response = await axiosClient.get(`programs/routine/${id}`, {
-            validateStatus: (status) => status === 200 || status === 404
+            validateStatus: (status) => status === 200 || status === 404,
           });
 
           if (Number(response.status) === 200) {
             setProgramId(response.data.data.program_id);
-          } else if (Number(response.status) === 404) { 
+          } else if (Number(response.status) === 404) {
             console.log("This is a premade routine.");
             setProgramId(null);
-          }else {
+          } else {
             throw new Error("Failed to fetch program ID");
-          } 
+          }
         }
       } catch (error) {
         console.error("Error fetching program ID:", error);
@@ -258,7 +267,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     } else {
       console.error("Invalid idType:", idType);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Enable webcam when videoRef is available
@@ -285,7 +294,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (webcamRunning) toggleWebCam();
       observer.disconnect();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Enable recoding when webcam is running (ONLY WHEN RECORDING IS APPROVED)
@@ -299,7 +308,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Stop recording
       if (isRecording) stopRecording();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [webcamRunning, record, isRecording]);
 
   // Reset selected exercise index when routine changes
@@ -337,7 +346,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         window.cancelAnimationFrame(animationFrameIdRef.current);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [exerciseCounter, webcamRunning, isResting]);
 
   // Read out the rep count
@@ -371,12 +380,12 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         await updateProgramCompletionStatus();
         await updateUserAccumulatedStat();
         await updateUserScore();
-        earnBadges();  
+        earnBadges();
       }
     };
     updateUserHistory();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished, record, exerciseVideo]);
 
   // Note: This is a workaround to prevent multiple calorie updates
@@ -478,10 +487,15 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     const weight = userInfo.weight ? userInfo.weight * weightFactor : 60;
 
     setCalorie((prevCalorie) => {
-      return Math.round((prevCalorie + weight * (exerciseCounter?.getCaloriePerSec() || 0)) * 10) / 10;
+      return (
+        Math.round(
+          (prevCalorie + weight * (exerciseCounter?.getCaloriePerSec() || 0)) *
+            10
+        ) / 10
+      );
     });
     setScore((prevScore) => {
-      return prevScore + (exerciseCounter?.getScorePerSec() || 0)
+      return prevScore + (exerciseCounter?.getScorePerSec() || 0);
     });
   };
 
@@ -669,8 +683,12 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Process detected landmarks data
       if (results && results.landmarks && results.landmarks.length > 0) {
         // Count exercise using exerciseCounter
-        const { count = 0, alert = "", calorie = 0, score = 0 } =
-          exerciseCounter?.processPose(results.landmarks[0]) || {};
+        const {
+          count = 0,
+          alert = "",
+          calorie = 0,
+          score = 0,
+        } = exerciseCounter?.processPose(results.landmarks[0]) || {};
 
         // Update success count
         if (count !== undefined) {
@@ -679,8 +697,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               // Update calorie
               if (!calorieUpdatedRef.current) {
                 setCalorie((prevCalorie) => {
-                  const weightFactor = userInfo.weight_unit === "lb" ? 0.453592 : 1;
-                  const weight = userInfo.weight ? userInfo.weight * weightFactor : 60;
+                  const weightFactor =
+                    userInfo.weight_unit === "lb" ? 0.453592 : 1;
+                  const weight = userInfo.weight
+                    ? userInfo.weight * weightFactor
+                    : 60;
                   return Math.round((prevCalorie + calorie * weight) * 10) / 10;
                 });
 
@@ -773,31 +794,33 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const updateRoutineCompletionStatus = async () => {
     try {
       if (idType !== "routine") return;
-      const response = await axiosClient.put(
-        `/programs/routines`,
-        { 
-          program_id: programId,
-          routine_id: id,
-          scheduled_date:format(new Date(), 'yyyy-MM-dd'),
-          completed: true
-        }
-      );
+      const response = await axiosClient.put(`/programs/routines`, {
+        program_id: programId,
+        routine_id: id,
+        scheduled_date: format(new Date(), "yyyy-MM-dd"),
+        completed: true,
+      });
       if (Number(response.status) !== 200 && Number(response.status) !== 204) {
         throw new Error("Failed to update Program_Routine");
       }
-      console.log("Program_Routine has been successfully updaed:", response.data);
+      console.log(
+        "Program_Routine has been successfully updaed:",
+        response.data
+      );
     } catch (error) {
       console.error("Failed to update Program_Routine:", error);
     }
-  }
+  };
 
   // Update program completion status
   const updateProgramCompletionStatus = async () => {
     try {
-      if (idType !== "routine" || programId === null ) return;
-      
+      if (idType !== "routine" || programId === null) return;
+
       // Fetch all routines in the program
-      const fetchResponse = await axiosClient.get(`/routines/program/${programId}`);
+      const fetchResponse = await axiosClient.get(
+        `/routines/program/${programId}`
+      );
       if (Number(fetchResponse.status) !== 200) {
         throw new Error("Failed to fetch Program");
       }
@@ -811,10 +834,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       }
 
       // Update program completion status to "completed(true)"
-      const response = await axiosClient.put(
-        `/programs/${programId}`,
-        { completed: true }
-      );
+      const response = await axiosClient.put(`/programs/${programId}`, {
+        completed: true,
+      });
       if (Number(response.status) !== 200 && Number(response.status) !== 204) {
         throw new Error("Failed to update Program");
       }
@@ -822,13 +844,13 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     } catch (error) {
       console.error("Failed to update Program:", error);
     }
-  }
+  };
 
   // Update user activity log/history
   const updateUserActivity = async () => {
     try {
       if (idType !== "routine") return;
-      
+
       const completedAt = new Date().toISOString();
       const newHistoryObj = {
         user_id: user.id,
@@ -846,7 +868,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (Number(response.status) !== 201) {
         throw new Error("Failed to update Routine_History");
       }
-      console.log("Routine_History has been successfully updaed:", response.data);
+      console.log(
+        "Routine_History has been successfully updaed:",
+        response.data
+      );
     } catch (error) {
       console.error("Failed to update Routine_History:", error);
     }
@@ -857,14 +882,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     try {
       const now = new Date();
       const completedAt = format(now, "yyyy-MM-dd");
-      const duration = Math.ceil((now - startedAtRef.current)/ (1000 * 60));
+      const duration = Math.ceil((now - startedAtRef.current) / (1000 * 60));
       const response = await updateUserAccumulatedStats(
         user.id,
         completedAt,
         duration, // minutes
-        Math.round(calorie),
+        Math.round(calorie)
       );
-      console.log("User_Accumulated_Workout_Stats has been successfully updaed:", response.data);
+      console.log(
+        "User_Accumulated_Workout_Stats has been successfully updaed:",
+        response.data
+      );
     } catch (error) {
       console.error("Failed to update User_Accumulated_Workout_Stats:", error);
     }
@@ -877,7 +905,10 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (!progress) {
         progress = { level_progress: 0 }; // Initialize with default values
       }
-      const updatedProgress = { ...progress, level_progress: progress.level_progress + score };
+      const updatedProgress = {
+        ...progress,
+        level_progress: progress.level_progress + score,
+      };
       const response = await updateUserProgress(user.id, updatedProgress);
       console.log("User_Progress has been successfully updaed:", response.data);
     } catch (error) {
@@ -895,7 +926,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       }
 
       if (response.data.data.length === 1) {
-        const response =  await addUserAchievement(user.id, 1, new Date().toISOString());
+        const response = await addUserAchievement(
+          user.id,
+          1,
+          new Date().toISOString()
+        );
         console.log("Starter badge earned!", response);
       } else {
         console.log("Starter badge already earned.");
@@ -903,7 +938,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
       // Badge 2: The first program completion
       // To be implemented.
-
     } catch (error) {
       console.error("Error earning badge:", error);
     }
@@ -968,7 +1002,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     if (now - lastPostureAlertUpdate < 3000) {
       return;
     }
- 
+
     if (timeoutId) clearTimeout(timeoutId);
 
     setPostureAlert(alert);
@@ -1080,16 +1114,16 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
           {/* Cue */}
           <Typography
-          sx={{
-            position: "absolute",
-            top: isLandscapeMode ? "60px" : "100px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
-            zIndex: 1000,
-            fontSize: isLandscapeMode ? "1.5rem" : "2rem",
-            color: "white",
-          }}
+            sx={{
+              position: "absolute",
+              top: isLandscapeMode ? "60px" : "100px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
+              zIndex: 1000,
+              fontSize: isLandscapeMode ? "1.5rem" : "2rem",
+              color: "white",
+            }}
           >
             {postureAlert}
           </Typography>
@@ -1113,7 +1147,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             {/* Angle meters are temporarily removed as they are not an effective UI */}
             {/* <AngleMeter2 title={"Angle"} angle={angle} /> */}
 
-            { idType === "routine" && (
+            {idType === "routine" && (
               <>
                 <Counter2
                   title={"Sets"}
@@ -1129,7 +1163,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 />
               </>
             )}
-            
           </Box>
 
           {/* Bottom Menu */}
@@ -1162,11 +1195,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               }}
             />
 
-            { idType === "routine" && (
+            {idType === "routine" && (
               <>
                 {/* Calories */}
-                <Box sx={{minWidth: "85px"}}>
-                  <MetricCard title="Kcal" value={calorie}/>
+                <Box sx={{ minWidth: "85px" }}>
+                  <MetricCard title="Kcal" value={calorie} />
                 </Box>
 
                 {/* Puase & Play */}
@@ -1197,9 +1230,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 >
                   {({ remainingTime }) => (
                     <Typography
-                      sx={{ 
+                      sx={{
                         fontWeight: "bold",
-                        fontSize: isLandscapeMode ? '3rem' : '4rem',
+                        fontSize: isLandscapeMode ? "3rem" : "4rem",
                         color: "white",
                       }}
                     >
@@ -1218,8 +1251,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 </IconButton>
 
                 {/* Score */}
-                <Box sx={{minWidth: "85px"}}>
-                  <MetricCard title="Score" value={score}/>
+                <Box sx={{ minWidth: "85px" }}>
+                  <MetricCard title="Score" value={score} />
                 </Box>
 
                 {/* Exercise Menu */}
@@ -1305,7 +1338,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 </Box>
               </>
             )}
-
           </Box>
         </Box>
       )}
@@ -1326,7 +1358,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
             borderRadius: "8px",
             textAlign: "center",
             display: "flex",
-            justifyContent: "center", 
+            justifyContent: "center",
             alignItems: "center",
           },
         }}
@@ -1336,7 +1368,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       <CompleteRoutineSessionModal
         open={isFinished}
         onComplete={handleMoveToTrainingPage}
-        mins={Math.ceil((new Date() - startedAtRef.current)/ (1000 * 60))}
+        mins={Math.ceil((new Date() - startedAtRef.current) / (1000 * 60))}
         calorie={calorie}
         score={score}
         videoURL={exerciseVideo}

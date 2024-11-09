@@ -29,6 +29,10 @@ export const Profile = (props) => {
         console.log(userHistoryData);
       } catch (error) {
         console.error(error);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading user's information... try again later.",
+        });
       } finally {
         setLoading(false);
       }

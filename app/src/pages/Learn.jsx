@@ -94,6 +94,10 @@ export const Learn = memo((props) => {
         }
       } catch (e) {
         console.error(e);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading the exercises' information... try again later.",
+        });
       }
     };
 

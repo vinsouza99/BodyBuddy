@@ -33,7 +33,11 @@ export const PremadeRoutine = (props) => {
         routineData.exercises = await getExercisesFromRoutine(routine_id);
         setRoutine(routineData);
       } catch (e) {
-        console.log(e);
+        console.error(e);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading the routines' information... try again later.",
+        });
       } finally {
         setLoading(false);
       }
