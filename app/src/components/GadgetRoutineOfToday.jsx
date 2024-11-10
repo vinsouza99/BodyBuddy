@@ -33,7 +33,6 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
       if (routine) {
         routine.exercises = await getExercisesFromRoutine(routine.id);
       }
-      console.log(routine);
       setTodayRoutine(routine);
       setLoading(false);
     }
