@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import { WallOfFame } from "./WallOfFame";
 import { UserProgressBar } from "./UserProgressBar";
+import pencil from "../assets/icon-pencil.svg";
 
 function UserInfo({ user = {} }) {
 
@@ -21,32 +22,36 @@ function UserInfo({ user = {} }) {
   return (
     <>
       <Card sx={{ padding: 3, borderRadius: 2, width: 1 }}>
-        <Grid sx={{ display: "flex", alignItems: "center" }}>
-          <Box>
-            {user.picture ? (
-              <Avatar
-                alt="Avatar"
-                src={user.picture}
-                sx={{ width: 130, height: 130 }}
-              />
-            ) : (
-              <Avatar alt="Avatar" sx={{ width: 130, height: 130 }}>
-                {user?.name?.charAt(0)}
-              </Avatar>
-            )}
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Grid sx={{ display: "flex", alignItems: "center" }}>
+            <Box>
+              {user.picture ? (
+                <Avatar
+                  alt="Avatar"
+                  src={user.picture}
+                  sx={{ width: 130, height: 130 }}
+                />
+              ) : (
+                <Avatar alt="Avatar" sx={{ width: 130, height: 130 }}>
+                  {user?.name?.charAt(0)}
+                </Avatar>
+              )}
+            </Box>
+            <Box sx={{ marginLeft: 3, textAlign: "left" }}>
+              <Typography
+                variant="h3"
+                component="p"
+                textAlign="left"
+                sx={{ fontWeight: 800 }}
+              >
+                {user?.name}
+              </Typography>
+            </Box>
+          </Grid>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <img src={pencil} alt="pencil Icon" style={{ width: "24px", height: "24px" }} />
           </Box>
-
-          <Box sx={{ marginLeft: 3, textAlign: "left" }}>
-            <Typography
-              variant="h3"
-              component="p"
-              textAlign="left"
-              sx={{ fontWeight: 800 }}
-            >
-              {user?.name}
-            </Typography>
-          </Box>
-        </Grid>
+        </Box>
 
         <UserProgressBar
           level={user?.progress?.level}
