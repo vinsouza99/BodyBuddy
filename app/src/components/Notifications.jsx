@@ -17,7 +17,7 @@ import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import CloseIcon from "@mui/icons-material/Close";
 import filledNotificationIcon from "../assets/NotificationsFilled.png"; // Adjust path based on folder structure
-import NewbieNoMoreIcon from "../assets/Badge_NewbieNoMoreDark.svg";
+import NewbieNoMoreIcon from "../assets/Badge_NewbieNoMoreLight.svg";
 
 // Notifications Icon in Header
 function Notifications() {

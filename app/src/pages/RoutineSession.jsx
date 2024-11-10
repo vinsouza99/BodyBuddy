@@ -20,7 +20,6 @@ import {
 } from "@mediapipe/tasks-vision";
 import {
   Counter2,
-  // AngleMeter2,
   RestTime2,
   MetricCard,
   DemoExercise,
@@ -36,7 +35,7 @@ import { useAuth } from "../utils/AuthProvider.jsx";
 import theme from "../theme";
 import { supabase } from "../utils/supabaseClient.js";
 import axiosClient from "../utils/axiosClient";
-import { setPageTitle } from "../utils/utils";
+import { setPageTitle, sendNotification } from "../utils/utils";
 import { getUser } from "../controllers/UserController.js";
 import { getExercisesFromRoutine } from "../controllers/RoutineController.js";
 import {
@@ -931,9 +930,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
           1,
           new Date().toISOString()
         );
-        console.log("Starter badge earned!", response);
+
+        // Send notification
+        sendNotification({
+          user_id: user.id,
+          title:'Congratulations! You have earned "Newbie No More" badge.',
+          message: 'You complete your first workout Routine and earned "Newbie No More".',
+          icon_id: 1,
+        });
+        console.log('"Newbie No More" badge earned!', response);
       } else {
-        console.log("Starter badge already earned.");
+        console.log('"Newbie No More" badge already earned.');
       }
 
       // Badge 2: The first program completion
