@@ -1,6 +1,6 @@
 // React and Material-UI
 import PropTypes from "prop-types";
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from "react-router-dom";
 import { Modal, Box, Typography, FormControl, RadioGroup, FormControlLabel, Radio, Button, IconButton, useMediaQuery } from "@mui/material"
 import theme from "../theme";
@@ -37,33 +37,27 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [record, setRecord] = useState(false);
-  const [reps, setReps] = useState(''); // when exercise type is specified
-  const [step, setStep] = useState(2); // step 1 for rep setting, step 2 for recording confirmation
   const [openRotateConfirmation, setOpenRotateConfirmation] = useState(true);
+  
+  // Immediately start routine if idType is 'exercise'
+  useEffect(() => {
+    if (idType === 'exercise' && open && (!isMobile || !openRotateConfirmation)) {
+      handleStartRoutine();
+    }
+  }, [idType, open, openRotateConfirmation]);
+  
+  
   const handleChange = (event) => {
     setRecord(event.target.value === 'true');
   };
 
   const handleClose = () => {
     setRecord(false);
-    setReps(''); // Reset reps on close
-    setStep(2); // Reset step on close
     onClose();
   }
 
-  // const handleNextStep = () => {
-  //   setStep(2);
-  // }
-
   const handleStartRoutine = () => {
     const stateData = { record, id, idType };
-
-    // If exercise, add sets and reps to the state
-    if (idType === 'exercise') {
-      stateData.reps = reps;
-      stateData.idType = 'exercise';
-    }
-
     navigate(`/routine`, { state: stateData });
   }
 
@@ -98,33 +92,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
               <CloseIcon />
             </IconButton>
 
-            {/* Step 1: If type is exercise, ask for reps */}
-            {/* {idType === 'exercise' && step === 1 && (
-              <>
-                <Typography textAlign="center">
-                  Please specify the reps for this exercise:
-                </Typography>
-                <TextField
-                  label="Reps"
-                  type="number"
-                  value={reps}
-                  onChange={(e) => setReps(e.target.value)}
-                  fullWidth
-                  margin="normal"
-                />
-                <Button
-                  variant="contained"
-                  type="button"
-                  onClick={handleNextStep}
-                  disabled={!reps}
-                >
-                  Next
-                </Button>
-              </>
-            )} */}
-
-            {/* Step 2: Recording confirmation for both exercise and routine */}
-            {(idType === 'routine' || step === 2) && (
+            {(idType === 'routine') && (
               <>
                 <Box textAlign="center">
                   { record ? <img src={Camera_On} alt="Camera On" /> : <img src={Camera_Off} alt="Camera Off" /> }
