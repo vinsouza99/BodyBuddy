@@ -115,6 +115,11 @@ export const WallOfFame = ({ userInfo = {} }) => {
           earned_at: achievement?.earned_at || null,
         };
       });
+      earnedBadges.sort((a, b) => {
+        if (!a.earned_at) return 1;
+        if (!b.earned_at) return -1;
+        return new Date(a.earned_at) - new Date(b.earned_at);
+      });
       setBadges(earnedBadges);
     }
 
