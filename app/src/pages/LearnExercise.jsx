@@ -7,9 +7,10 @@ import {
   getExerciseMuscleGroups,
   getExerciseTypes,
 } from "../controllers/ExerciseController.js";
-import { Box, Button, Typography, Backdrop, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { CircularProgress } from "../components/CircularProgress.jsx";
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 import { ExerciseDetails } from "../components/ExerciseDetails";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 import { useParams, useLocation } from "react-router-dom";
@@ -99,21 +100,7 @@ export const LearnExercise = (props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          zIndex: (theme) => theme.zIndex.drawer + 1 
-        }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} />
 
       {!loading && (
         <Box

@@ -1,19 +1,20 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { setPageTitle } from "../utils/utils";
-import { Backdrop, Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
-import { CircularProgress } from "../components/CircularProgress.jsx";
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 
 export const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [history, setHistory] = useState([]);
   const { user } = useAuth(); // For session management
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -42,21 +43,7 @@ export const Profile = (props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading}
-        sx={{ 
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          zIndex: (theme) => theme.zIndex.drawer + 1 
-        }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} />
 
       {currentUser && history ? (
         <Grid container spacing={2}>

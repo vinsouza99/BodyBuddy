@@ -10,10 +10,9 @@ import {
   Box,
   Button,
   Typography,
-  Backdrop,
   Paper,
 } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
+import {LoadingBackdrop} from "../components/LoadingBackdrop";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useParams } from "react-router-dom";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
@@ -54,21 +53,7 @@ export const PremadeRoutine = (props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          zIndex: (theme) => theme.zIndex.drawer + 1 
-        }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} />
 
       {!loading && (
         <Box
