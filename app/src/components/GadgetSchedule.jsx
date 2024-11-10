@@ -40,6 +40,7 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
       });
     });
     setFilteredRoutines(filtered);
+    
     setloadingProgramRoutine(false);
   }, [selectedWeek, programRoutines]);
 
@@ -68,9 +69,9 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
       {"summary" : "Your summary sentence here"}
     `;
 
-    try {
-      // Create Weekly Summary by OpenAI
-      const createWeeklySummary = async () => {
+    // Create Weekly Summary by OpenAI
+    const createWeeklySummary = async () => {
+      try {
         const response_openai = await axiosClient.post(`openai/`, {
           prompt: prompt,
         });
@@ -78,14 +79,14 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
           response_openai.data.data.choices[0].message.content
         );
         setWeeklyGoal(parsedContent.summary);
-      };
-      createWeeklySummary();
-    } catch (e) {
-      console.log(e);
-      setLoadingError(true);
-    } finally {
-      setloadingWeeklyGoal(false);
-    }
+      } catch (e) {
+        console.log(e);
+        setLoadingError(true);
+      } finally {
+        setloadingWeeklyGoal(false);
+      }
+    };
+    createWeeklySummary();
   }, [filteredRoutines]);
 
   // Handle click next week
@@ -96,8 +97,6 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
       end: newEndDate,
     });
     setWeeklyGoal("");
-    // setloadingProgramRoutine(true);
-    // setloadingWeeklyGoal(true);
   };
 
   // Handle click previous week
@@ -108,8 +107,6 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
       end: newEndDate,
     });
     setWeeklyGoal("");
-    // setloadingProgramRoutine(true);
-    // setloadingWeeklyGoal(true);
   };
 
   // Create array of shceduled dates

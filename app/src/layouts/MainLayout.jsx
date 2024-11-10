@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
-import { Box, useMediaQuery, Backdrop, Typography } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
+import { Box, useMediaQuery } from "@mui/material";
 import { Footer } from "../components/Footer";
 import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
@@ -132,22 +131,6 @@ export const MainLayout = () => {
 
   return (
     <>
-      {/* Backdrop for loading */}
-      {/* <Backdrop
-        open={loading}
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop> */}
-
       <AppProvider
         theme={theme}
         branding={{

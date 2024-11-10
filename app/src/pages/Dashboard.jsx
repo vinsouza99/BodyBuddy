@@ -2,9 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Typography, Backdrop, Grid2, useMediaQuery } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
-import ProgramLoading from "../assets/ProgramLoading.gif";
+import { Box, Grid2, useMediaQuery } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -14,10 +12,8 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import {
-  getUser,
-  getUserAccumulatedStats,
-} from "../controllers/UserController";
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
+import { getUser, getUserAccumulatedStats } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
 import axiosClient from "../utils/axiosClient";
@@ -122,34 +118,8 @@ export const Dashboard = (props) => {
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   return (
     <>
-      {/* Backdrop for generating, loading */}
-      <Backdrop
-        open={generating || loading}
-        sx={{
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          zIndex: (theme) => theme.zIndex.drawer + 1 
-        }}
-      >
-        <Box textAlign="center">
-          {generating ? (
-            <Box
-              component="img"
-              src={ProgramLoading}
-              alt="Loading"
-              sx={{
-                width: "800px",
-                maxWidth: "90%",
-              }}
-            />
-          ) : (
-            <CircularProgress color="inherit" />
-          )}
-          <Typography variant="h6" sx={{ mt: 2, whiteSpace: "pre-line" }}>
-            {generating ? "" : "Loading..."}
-          </Typography>
-        </Box>
-      </Backdrop>
+      {/* Backdrop for loading */}
+      <LoadingBackdrop loading={loading} generating={generating} />
 
       <Grid2 container spacing={2}>
         {isMdUp ? (

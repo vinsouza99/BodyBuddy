@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
 import {
@@ -20,13 +20,10 @@ import {
   MenuItem,
   FormControl,
   Select,
-  Backdrop,
-  Typography,
   useMediaQuery,
-  Button,
   Pagination,
 } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
+import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import LearningCard from "../components/LearningCard";
 
 // Custom tab panel to display content conditionally based on the selected tab
@@ -184,21 +181,7 @@ export const Learn = memo((props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{ 
-          color: "#fff",
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          zIndex: (theme) => theme.zIndex.drawer + 1 
-        }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} />
 
       <Box display="flex" alignItems="flex-start">
         {/* Tabs for selecting categories (Muscle or Goal) */}
