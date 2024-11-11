@@ -184,7 +184,7 @@ export const SignUp = (props) => {
         </Container>
         <Box sx={{ mx: 4 }}>
           {/* Start Here link */}
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+          <Typography variant="body2" sx={{ whiteSpace: "nowrap", marginBottom: 1 }}>
             Already have an account?{" "}
             <Button
               variant="text"

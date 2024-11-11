@@ -193,7 +193,7 @@ export const SignIn = (props) => {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 1, mb: 1 }}
+                  sx={{ mt: 1, mb: 2 }}
                 >
                   Sign In
                 </Button>
@@ -204,7 +204,7 @@ export const SignIn = (props) => {
 
         <Box sx={{ mx: 4 }}>
           {/* Start Here link */}
-          <Typography variant="body2">
+          <Typography variant="body2" sx={{ marginBottom: 1 }}>
             Don't have an account?{" "}
             <Button
               variant="text"
