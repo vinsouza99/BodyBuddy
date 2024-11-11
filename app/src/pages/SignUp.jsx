@@ -59,7 +59,7 @@ export const SignUp = (props) => {
       const { session } = await supabase.auth.getSession();
       if (session?.access_token) {
         await sendTokenToServer(session.access_token);
-        setIsTokenSet(true); 
+        setIsTokenSet(true);
       }
 
       const newUser = {
@@ -100,14 +100,13 @@ export const SignUp = (props) => {
       </Grid>
 
       {/* Right section with sign-up form */}
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <Container
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: 4,
           }}
         >
           <Box>
@@ -117,11 +116,11 @@ export const SignUp = (props) => {
             </Box>
 
             {/* Welcome message */}
-            <Typography>
-              We have created a perfect exercise plan for you!
+            <Typography variant="h4" sx={{ width: "60%", margin: "0 auto", marginBottom: 2 }}>
+              Sign up to unlock a personalized exercise plan just for you!
             </Typography>
 
-            <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+            <Typography component="h1" variant="h3" sx={{ marginBottom: 1 }}>
               Sign Up
             </Typography>
 
@@ -129,7 +128,7 @@ export const SignUp = (props) => {
               component="form"
               noValidate
               onSubmit={handleSignUp}
-              sx={{ mt: 1 }}
+              sx={{ width: "40%", margin: "0 auto" }}
             >
               <TextField
                 variant="outlined"
@@ -141,6 +140,7 @@ export const SignUp = (props) => {
                 name="name"
                 autoFocus
                 value={name}
+                sx={{ marginTop: 1 }}
                 onChange={(e) => setName(e.target.value)}
               />
               <TextField
@@ -153,6 +153,7 @@ export const SignUp = (props) => {
                 name="email"
                 autoComplete="email"
                 value={email}
+                sx={{ marginTop: 1 }}
                 onChange={(e) => setEmail(e.target.value)}
               />
               <TextField
@@ -166,6 +167,7 @@ export const SignUp = (props) => {
                 id="password"
                 autoComplete="current-password"
                 value={password}
+                sx={{ marginTop: 1 }}
                 onChange={(e) => setPassword(e.target.value)}
               />
               {error && <Typography color="error">{error}</Typography>}
@@ -173,34 +175,43 @@ export const SignUp = (props) => {
                 type="submit"
                 fullWidth
                 variant="contained"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{ mt: 1, mb: 2 }}
               >
                 Sign Up
               </Button>
-
-              {/* Start Here link */}
-              <Typography variant="body2">
-                Already have an account?{" "}
-                <Button
-                  variant="text"
-                  color="primary"
-                  component={NavLink}
-                  to="/signin"
-                >
-                  Sign In
-                </Button>
-              </Typography>
             </Box>
           </Box>
         </Container>
         <Box sx={{ mx: 4 }}>
+          {/* Start Here link */}
+          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            Already have an account?{" "}
+            <Button
+              variant="text"
+              color="primary"
+              component={NavLink}
+              to="/signin"
+              sx={{
+                color: "text.primary",
+                fontWeight: 700,
+                margin: "0",
+                padding: "0",
+              }}
+            >
+              Log In
+            </Button>
+          </Typography>
+
           {/* Disclaimer */}
-          <Typography variant="body2">
-            (*) BodyBuddy provides general fitness guidance and real-time
-            feedback to help improve your workout form. It is not a substitute
-            for professional medical advice, diagnosis, or treatment. Always
-            consult your physician before starting a new exercise program,
-            especially if you have any pre-existing medical conditions.
+          <Typography
+            variant="body2"
+            sx={{ lineHeight: 1.3, marginLeft: 2, marginRight: 2 }}
+          >
+            BodyBuddy provides general fitness guidance and real-time feedback
+            for form improvement. It is not a substitute for professional
+            medical advice, diagnosis, or treatment. Always consult your
+            physician before starting a new exercise program, especially if you
+            have any pre-existing medical conditions.
           </Typography>
         </Box>
       </Grid>

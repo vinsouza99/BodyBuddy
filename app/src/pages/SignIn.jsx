@@ -37,7 +37,7 @@ export const SignIn = (props) => {
       navigate("/dashboard");
     }
   }, [user, navigate]);
-  
+
   const handleSignIn = async (e) => {
     e.preventDefault();
     localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
@@ -73,7 +73,7 @@ export const SignIn = (props) => {
       if (error) {
         throw error;
       }
-      
+
       console.log("User signed in with Google", data);
     } catch (error) {
       setError(error.message);
@@ -95,79 +95,91 @@ export const SignIn = (props) => {
       </Grid>
 
       {/* Right section with sign-in form */}
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <Container
           sx={{
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            paddingTop: 4,
           }}
         >
-          <Box>
+          <Box sx={{ margin: "0 auto", textAlign: "center" }}>
             {/* Logo */}
             <Box sx={{ mb: 1 }}>
               <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
             </Box>
 
             {/* Welcome message */}
-            <Typography>Welcome back!</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                width: "60%",
+                lineHeight: 1.2,
+                margin: "0 auto",
+                marginBottom: 2,
+              }}
+            >
+              Welcome back!
+            </Typography>
 
-            <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
+            <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
               Sign In
             </Typography>
 
-            {/* Google Sign In Button */}
-            <Button
-              variant="contained"
-              fullWidth
-              type="button"
-              startIcon={<GoogleIcon />}
-              onClick={handleGoogleSignIn}
-            >
-              Sign in with Google
-            </Button>
-
-            {/* Divider */}
-            <Divider sx={{ width: "100%", mt: 2 }}>or</Divider>
-
-            {/* Email & Password Sign In Form */}
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSignIn}
-              sx={{ mt: 1 }}
-            >
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
+            <Box sx={{ width: "60%", margin: "0 auto" }}>
+              {/* Google Sign In Button */}
+              <Button
+                variant="contained"
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                // autoFocus
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {error && <Typography color="error">{error}</Typography>}
+                type="button"
+                startIcon={<GoogleIcon />}
+                onClick={handleGoogleSignIn}
+              >
+                Sign in with Google
+              </Button>
 
-              {/* <FormControlLabel
+              {/* Divider */}
+              <Divider sx={{ width: "100%", mt: 2 }}>or</Divider>
+
+              {/* Email & Password Sign In Form */}
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSignIn}
+                sx={{ mt: 1 }}
+              >
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  // autoFocus
+                  value={email}
+                  sx={{ marginTop: 1 }}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={password}
+                  sx={{ marginTop: 1 }}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {error && <Typography color="error">{error}</Typography>}
+
+                {/* <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
               sx={{
@@ -177,40 +189,50 @@ export const SignIn = (props) => {
               }}
             /> */}
 
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-              >
-                Sign In
-              </Button>
-
-              {/* Start Here link */}
-              <Typography variant="body2">
-                Don&apos;t have an account?{" "}
                 <Button
-                  variant="text"
-                  color="primary"
-                  component={NavLink}
-                  to="/create-program"
-                  onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 1, mb: 1 }}
                 >
-                  Start here
+                  Sign In
                 </Button>
-              </Typography>
+              </Box>
             </Box>
           </Box>
         </Container>
 
         <Box sx={{ mx: 4 }}>
-          {/* Disclaimer */}
+          {/* Start Here link */}
           <Typography variant="body2">
-            (*) BodyBuddy provides general fitness guidance and real-time
-            feedback to help improve your workout form. It is not a substitute
-            for professional medical advice, diagnosis, or treatment. Always
-            consult your physician before starting a new exercise program,
-            especially if you have any pre-existing medical conditions.
+            Don't have an account?{" "}
+            <Button
+              variant="text"
+              color="primary"
+              component={NavLink}
+              to="/create-program"
+              sx={{
+                color: "text.primary",
+                fontWeight: 700,
+                margin: "0",
+                padding: "0",
+              }}
+              onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
+            >
+              Start here
+            </Button>
+          </Typography>
+
+          {/* Disclaimer */}
+          <Typography
+            variant="body2"
+            sx={{ lineHeight: 1.3, marginLeft: 2, marginRight: 2 }}
+          >
+            BodyBuddy provides general fitness guidance and real-time feedback
+            for form improvement. It is not a substitute for professional
+            medical advice, diagnosis, or treatment. Always consult your
+            physician before starting a new exercise program, especially if you
+            have any pre-existing medical conditions.
           </Typography>
         </Box>
       </Grid>
