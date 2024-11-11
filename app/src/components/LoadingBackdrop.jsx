@@ -1,9 +1,30 @@
 import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
 import { Box, Backdrop, Typography } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import ProgramLoading from "../assets/ProgramLoading.gif";
 
 export const LoadingBackdrop = ({ loading = false, generating = false }) => {
+  const [messageIndex, setMessageIndex] = useState(0);
+  const programGenerationMessages = [
+    "Message1...",
+    "Message2...",
+    "Message3...",
+    "Message4...",
+    "Message5...",
+  ];
+
+  useEffect(() => {
+    if (!generating) return;
+
+    const interval = setInterval(() => {
+      setMessageIndex((prevIndex) => (prevIndex + 1) % programGenerationMessages.length);
+    }, 5000);
+
+    // Cleanup interval on component unmount or when generating becomes false
+    return () => clearInterval(interval);
+  }, [generating]);
+
   return (
     <Backdrop
       open={loading || generating}
@@ -28,7 +49,7 @@ export const LoadingBackdrop = ({ loading = false, generating = false }) => {
           <CircularProgress color="inherit" />
         )}
         <Typography variant="h6" sx={{ mt: 2, whiteSpace: "pre-line" }}>
-          {generating ? "" : "Loading..."}
+          {generating ? programGenerationMessages[messageIndex] : "Loading..."}
         </Typography>
       </Box>
     </Backdrop>
