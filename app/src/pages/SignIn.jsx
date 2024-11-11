@@ -131,7 +131,6 @@ export const SignIn = (props) => {
               {/* Google Sign In Button */}
               <Button
                 variant="contained"
-                fullWidth
                 type="button"
                 startIcon={<GoogleIcon />}
                 onClick={handleGoogleSignIn}
@@ -191,7 +190,6 @@ export const SignIn = (props) => {
 
                 <Button
                   type="submit"
-                  fullWidth
                   variant="contained"
                   sx={{ mt: 1, mb: 2 }}
                 >

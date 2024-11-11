@@ -110,9 +110,9 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
       <Button
         variant="contained"
         onClick={() => navigate('/training')}
-        sx={{ 
-          width: '50%',
-        }} 
+        // sx={{ 
+        //   width: '50%',
+        // }} 
       >
         Today&apos;s Routine
       </Button>

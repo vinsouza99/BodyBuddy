@@ -389,12 +389,12 @@ export const GadgetHistory = ({ history = [] }) => {
       </Typography>
       <Button
         variant="contained"
-        sx={{
-          width: "50%",
-        }}
+        // sx={{
+        //   width: "50%",
+        // }}
         onClick={() => navigate("/profile")}
       >
-        My history
+        My History
       </Button>
     </GadgetBase>
   );
