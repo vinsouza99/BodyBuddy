@@ -64,16 +64,16 @@ export const TrainingCard = ({ routine }) => {
               <Typography
                 variant="h3"
                 textAlign="left"
-                sx={{ marginBottom: 2 }}
+                sx={{ marginBottom: 1 }}
               >
                 {routine.name ? routine.name : "Name is undefined"}
               </Typography>
 
-              {/* <Typography textAlign="left" sx={{ marginBottom: 1 }}>
+              <Typography textAlign="left" sx={{ marginBottom: 1, color: "text.secondary" }}>
             {routine.description
               ? routine.description
               : "Description is undefined"}
-          </Typography> */}
+          </Typography>
 
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {/* Display routine duration chip */}
