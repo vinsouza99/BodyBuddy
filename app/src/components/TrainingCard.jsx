@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -13,6 +13,7 @@ import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const TrainingCard = ({ routine }) => {
   const [open, setOpen] = useState(false);
+  const [firstExerciseImage, setFirstExerciseImage] = useState("");
 
   // Open StartRoutineSessionModal
   const handleOpen = () => {
@@ -23,6 +24,21 @@ export const TrainingCard = ({ routine }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  // Fetch the routine's first exercise gif
+  useEffect(() => {
+    if (routine.exercises && routine.exercises.length > 0) {
+      const firstExercise = routine.exercises[0];
+      // Fetch demo_url from first exercise
+      const demoUrl = firstExercise.demo_url;
+      if (demoUrl) {
+        setFirstExerciseImage(demoUrl);
+      } else {
+        // Fallback image
+        setFirstExerciseImage("https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif");
+      }
+    }
+  }, [routine]);
 
   return (
     <>
@@ -40,7 +56,7 @@ export const TrainingCard = ({ routine }) => {
           >
             {/* Video will be displayed here */}
             <img
-              src="https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif" // Temporary image
+              src={firstExerciseImage}
               alt="Exercise Name"
               style={{
                 maxWidth: "100%", // Responsive image
