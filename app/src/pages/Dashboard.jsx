@@ -2,7 +2,16 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Box, Grid2, useMediaQuery } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Backdrop,
+  Grid2,
+  useMediaQuery,
+  Skeleton,
+} from "@mui/material";
+import { CircularProgress } from "../components/CircularProgress.jsx";
+import ProgramLoading from "../assets/ProgramLoading.gif";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -13,7 +22,10 @@ import { GadgetHistory } from "../components/GadgetHistory";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
-import { getUser, getUserAccumulatedStats } from "../controllers/UserController";
+import {
+  getUser,
+  getUserAccumulatedStats,
+} from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
 import axiosClient from "../utils/axiosClient";
@@ -128,20 +140,89 @@ export const Dashboard = (props) => {
             <Grid2 size={{ xs: 12, md: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* ADD GADGETS HERE */}
-                <GadgetUserProfile userInfo={userInfo} />
-                <GadgetStreaks
-                  userInfo={userInfo}
-                  history={userAccumulatedStats?.data || []}
-                />
-                <GadgetFavourite exerciseInfo={exerciseInfo || []} />
+                {loading ? (
+                  <>
+                    <Box display="flex" gap={2} padding={2}>
+                      <Skeleton
+                        animation="wave"
+                        variant="circular"
+                        width={80}
+                        height={80}
+                      />
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent={"space-between"}
+                        gap={2}
+                        flexGrow={1}
+                      >
+                        <Skeleton
+                          animation="wave"
+                          variant="rectangular"
+                          width={100}
+                          sx={{ marginTop: "10px" }}
+                        />
+                        <Skeleton animation="wave" variant="rectangular" />
+                      </Box>
+                    </Box>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="300px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="300px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <GadgetUserProfile userInfo={userInfo} />
+                    <GadgetStreaks
+                      userInfo={userInfo}
+                      history={userAccumulatedStats?.data || []}
+                    />{" "}
+                    <GadgetFavourite exerciseInfo={exerciseInfo || []} />
+                  </>
+                )}
               </Box>
             </Grid2>
             {/* RIGHT COLUMN */}
             <Grid2 size={{ xs: 12, md: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* ADD GADGETS HERE*/}
-                <GadgetAchievement userInfo={userInfo} />
-                <GadgetHistory history={userAccumulatedStats?.data || []} />
+                {loading ? (
+                  <>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="300px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="500px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <GadgetAchievement userInfo={userInfo} />
+                    <GadgetHistory history={userAccumulatedStats?.data || []} />
+                  </>
+                )}
               </Box>
             </Grid2>
           </>

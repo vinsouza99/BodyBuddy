@@ -6,6 +6,12 @@ import {
   Tabs,
   Tab,
   Grid2,
+  Backdrop,
+  Typography,
+  Modal,
+  IconButton,
+  Button,
+  Skeleton,
 } from "@mui/material";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 import { ErrorMessage } from "../components/ErrorMessage.jsx";
@@ -82,7 +88,7 @@ export const TrainingProgram = memo((props) => {
 
       // Retrieve Program
       const programs = await getAllUserPrograms(user.id, true, false);
-      
+
       // Find the first program without completed_at
       const activeProgram = programs.find((program) => !program.completed_at);
       if (activeProgram) {
@@ -123,14 +129,14 @@ export const TrainingProgram = memo((props) => {
           ) : activeProgram ? (
             <GadgetRoutineOfToday programRoutines={programRoutines} />
           ) : (
-            <GadgetRegenerateProgram handleGenerateProgram={handleGenerateProgram} />
+            <GadgetRegenerateProgram
+              handleGenerateProgram={handleGenerateProgram}
+            />
           )}
         </Grid2>
         {/* RIGHT COLUMN */}
         <Grid2 size={{ xs: 12, md: 5 }}>
-          <GadgetSchedule
-            programRoutines={programRoutines}
-          />
+          <GadgetSchedule programRoutines={programRoutines} />
         </Grid2>
       </Grid2>
     );
@@ -160,7 +166,32 @@ export const TrainingProgram = memo((props) => {
       </Tabs>
       <Box sx={{ marginTop: 2 }}>
         {/* MY PROGRAM TAB */}
-        {activeTab === 0 && myProgramTabContent}
+        {activeTab === 0 ? (
+          loading ? (
+            <>
+              <Grid2 container gap={2} columns={{ sm: 1, md: 2 }}>
+                <Box flexGrow={2}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={250}
+                  />
+                </Box>
+                <Box flexGrow={1}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={450}
+                  />
+                </Box>
+              </Grid2>
+            </>
+          ) : activeProgram ? (
+            myProgramTabContent
+          ) : (
+            <Typography>No available program</Typography>
+          )
+        ) : null}
         {/* PREMADE ROUTINES TAB */}
         {activeTab === 1 && premadeRoutinesTabContent}
       </Box>

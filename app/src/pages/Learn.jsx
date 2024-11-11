@@ -22,6 +22,7 @@ import {
   Select,
   useMediaQuery,
   Pagination,
+  Skeleton,
 } from "@mui/material";
 import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import LearningCard from "../components/LearningCard";
@@ -252,7 +253,34 @@ export const Learn = memo((props) => {
         </Box>
       </CustomTabPanel>
       {/* Grid to display LearningCard components */}
-      {exercisesGrid}
+      {loading ? (
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          {Array.from(Array(9)).map((_, index) => (
+            <Grid
+              key={index}
+              size={{ xs: 2, sm: 4, md: 4 }}
+              gap={2}
+              spacing={5}
+            >
+              <Box display="flex" flexDirection="column" gap={1}>
+                <Skeleton variant="rectangular" height={245} />
+                <Skeleton variant="rectangular" height={20} width={250} />
+                <Box display="flex" gap={1}>
+                  <Skeleton variant="rectangular" height={15} width={50} />
+                  <Skeleton variant="rectangular" height={15} width={50} />
+                  <Skeleton variant="rectangular" height={15} width={50} />
+                </Box>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        exercisesGrid
+      )}
 
       {/* Pagination Buttons */}
       <Box display="flex" justifyContent="center" sx={{ marginTop: 3 }}>

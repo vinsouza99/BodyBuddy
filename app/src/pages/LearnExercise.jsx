@@ -7,7 +7,7 @@ import {
   getExerciseMuscleGroups,
   getExerciseTypes,
 } from "../controllers/ExerciseController.js";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper, Skeleton } from "@mui/material";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
@@ -102,7 +102,24 @@ export const LearnExercise = (props) => {
       {/* Backdrop for loading */}
       <LoadingBackdrop loading={loading} />
 
-      {!loading && (
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "1rem",
+          }}
+        >
+          <Skeleton
+            animation="wave"
+            variant="rectangular"
+            height={400}
+            display="flex"
+            flexGrow={1}
+          />
+        </Box>
+      ) : (
         <Box
           sx={{
             display: "flex",
@@ -183,9 +200,7 @@ export const LearnExercise = (props) => {
               height: "150px",
               borderRadius: "50%",
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
-              color: isExerciseValid
-                ? "white"
-                : theme.palette.action.disabled,
+              color: isExerciseValid ? "white" : theme.palette.action.disabled,
               background: isExerciseValid
                 ? "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)"
                 : theme.palette.action.disabledBackground,
