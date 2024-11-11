@@ -145,12 +145,12 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
       </Typography>
       <Button
         variant="contained" 
-        sx={{ 
-          width: '50%',
-        }}
+        // sx={{ 
+        //   width: '50%',
+        // }}
         onClick={() => navigate('/learning')}
       >
-        Start learning
+        Start Learning
       </Button>
     </GadgetBase>
   );

@@ -173,7 +173,6 @@ export const SignUp = (props) => {
               {error && <Typography color="error">{error}</Typography>}
               <Button
                 type="submit"
-                fullWidth
                 variant="contained"
                 sx={{ mt: 1, mb: 2 }}
               >

@@ -253,7 +253,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
         </Typography>
         <Button
           variant="contained"
-          sx={{ width: "50%" }}
+          // sx={{ width: "50%" }}
           onClick={() => {
             setshowAllBadges(true);
           }}

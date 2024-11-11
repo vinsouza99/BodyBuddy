@@ -136,12 +136,15 @@ const theme = createTheme({
 
     MuiButton: {
       defaultProps: {
-        disableElevation: true, // Disable shadow for contained buttons
+        disableElevation: false, // Disable shadow for contained buttons
       },
       styleOverrides: {
         root: {
           borderRadius: 10, // Default border-radius
           textTransform: "none", // Prevent uppercase text
+          minHeight: "42px", // Default minimum height
+          paddingLeft: "20px", // Default padding left
+          paddingRight: "20px", // Default padding right
         },
         contained: {
           backgroundColor: "#000000", // Primary background color
