@@ -62,6 +62,9 @@ export const Learn = memo((props) => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(9);
+
   // Media query for screen size <= 600px
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
@@ -105,8 +108,8 @@ export const Learn = memo((props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
     setFilteredExercises(exercises);
-    setSelectedGoalID(0);
-    setSelectedMuscleGroupID(0);
+    setSelectedGoalID("");
+    setSelectedMuscleGroupID("");
   };
 
   useEffect(() => {
@@ -131,7 +134,7 @@ export const Learn = memo((props) => {
             exercise.hasMuscleGroup(selectedMuscleGroupID)
           );
     setFilteredExercises(filteredArray);
-    setPagesCount(Math.floor(filteredArray.length / 9));
+    setPagesCount(Math.ceil(filteredArray.length / 9));
     setPage(1);
   };
   const filterExercisesByGoal = () => {
@@ -141,7 +144,7 @@ export const Learn = memo((props) => {
         : exercises.filter((exercise) => exercise.hasGoal(selectedGoalID));
 
     setFilteredExercises(filteredArray);
-    setPagesCount(Math.floor(filteredArray.length / 9));
+    setPagesCount(Math.ceil(filteredArray.length / 9));
     setPage(1);
   };
   // Memoize the exercises grid
@@ -150,7 +153,7 @@ export const Learn = memo((props) => {
       <Grid container spacing={3}>
         {filteredExercises.length > 0
           ? filteredExercises
-              .slice(page - 1, page + 8)
+              .slice(startIndex, endIndex)
               .map((exercise, index) => (
                 <Grid
                   size={{ xs: 12, sm: 6, md: 4 }}
@@ -169,13 +172,21 @@ export const Learn = memo((props) => {
           : null}
       </Grid>
     );
-  }, [filteredExercises, loading]);
-
+  }, [
+    filteredExercises,
+    startIndex,
+    endIndex,
+    selectedGoalID,
+    selectedMuscleGroupID,
+    loading,
+  ]);
   // Pagination handlers
   const handlePaginationChange = async (event, value) => {
-    const startIndex = (value - 1) * 9;
-    const endIndex = startIndex + 9;
-    setFilteredExercises(exercises.slice(startIndex, endIndex));
+    setPage(value);
+    let start = (value - 1) * 9;
+    let end = start + 9;
+    setStartIndex(start);
+    setEndIndex(end);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
