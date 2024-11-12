@@ -185,10 +185,10 @@ const CreateProgram = () => {
           ))}
         </RadioGroup>
 
-        <Typography variant="body1">
+        {/* <Typography variant="body1">
           Click <ExpandMoreIcon /> to learn how this goal determines your
           exercise plan.
-        </Typography>
+        </Typography> */}
       </FormControl>
     );
   }
