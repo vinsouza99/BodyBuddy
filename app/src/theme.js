@@ -185,6 +185,22 @@ const theme = createTheme({
     },
 
     /****************************************/
+    /*         ACCORDION COMPONENT          */
+    /****************************************/
+
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent", // Transparent background
+          boxShadow: "none", // No shadow
+          "&:before": {
+            display: "none", // Remove default divider line
+          },
+        },
+      },
+    },
+
+    /****************************************/
     /*         FOCUS                        */
     /****************************************/
     // MuiOutlinedInput: {
