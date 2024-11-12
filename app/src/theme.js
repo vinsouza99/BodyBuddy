@@ -153,6 +153,7 @@ const theme = createTheme({
           "&:hover": {
             backgroundColor: "primary.dark", // Dark background on hover
           },
+          minWidth: "110px", // Default minimum width
         },
         outlined: {
           borderColor: "primary.main", // Border color
@@ -161,6 +162,7 @@ const theme = createTheme({
             backgroundColor: "primary.light", // Light background on hover
             borderColor: "primary.dark", // Dark border on hover
           },
+          minWidth: "110px", // Default minimum width
         },
         text: {
           color: "primary.main", // Text color for text buttons
