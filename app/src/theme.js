@@ -143,6 +143,7 @@ const theme = createTheme({
           borderRadius: 10, // Default border-radius
           textTransform: "none", // Prevent uppercase text
           minHeight: "42px", // Default minimum height
+          minWidth: "110px", // Default minimum width
           paddingLeft: "20px", // Default padding left
           paddingRight: "20px", // Default padding right
         },
