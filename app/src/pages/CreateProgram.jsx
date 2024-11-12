@@ -111,6 +111,7 @@ const CreateProgram = () => {
             defaultValue="F"
             name="radio-buttons-group"
             value={gender}
+            sx={{ margin: "0 auto" }}
           >
             <FormControlLabel
               value="F"
