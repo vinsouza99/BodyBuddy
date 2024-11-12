@@ -38,8 +38,10 @@ export function Landing() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            height: "100vh",
+            minHeight: "100vh",
             padding: 4,
+            boxSizing: "border-box",
+            overflow: "auto",
           }}
         >
           {/* Logo */}
@@ -48,12 +50,12 @@ export function Landing() {
           </Box>
 
           {/* Welcome message */}
-          <Typography variant="h2" sx={{ marginBottom: 2 }}>
+          <Typography variant="h2" sx={{ marginBottom: 1 }}>
             Welcome to BodyBuddy
           </Typography>
 
           {/* Description */}
-          <Typography variant="body1" align="center" sx={{ width: "80%", marginBottom: 4 }}>
+          <Typography variant="body1" align="center" sx={{ width: "80%", marginBottom: 3 }}>
             Get healthier and energetic everyday with easy exercises tailored
             for home workout enthusiasts and fitness beginners.
           </Typography>
@@ -64,7 +66,7 @@ export function Landing() {
               width: "60%",
               display: "grid",
               justifyContent: "center",
-              marginBottom: 4,
+              marginBottom: 1,
             }}
           >
             {/* Feature 1 */}
@@ -117,7 +119,7 @@ export function Landing() {
           <Button
             variant="contained"
             color="primary"
-            sx={{ marginBottom: 2 }}
+            sx={{ marginBottom: 1 }}
             component={NavLink}
             to="/create-program"
             onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
@@ -133,7 +135,7 @@ export function Landing() {
               color="primary"
               component={NavLink}
               to="/signin"
-              sx={{ color: "text.primary", fontWeight: 700 }}
+              sx={{ color: "text.primary", fontWeight: 700, paddingLeft: 0, paddingRight: 0 }}
             >
               Log In
             </Button>
