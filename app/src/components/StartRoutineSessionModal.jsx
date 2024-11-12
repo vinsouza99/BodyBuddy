@@ -44,7 +44,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
     if (idType === 'exercise' && open && (!isMobile || !openRotateConfirmation)) {
       handleStartRoutine();
     }
-  }, [idType, open, openRotateConfirmation]);
+  }, [idType, open, isMobile, openRotateConfirmation]);
   
   
   const handleChange = (event) => {
@@ -67,7 +67,7 @@ export const StartRoutineSessionModal = ( {open = false, id = null, idType = "ro
         <RotateConfirmationModal open={isMobile} onClose={() => {setOpenRotateConfirmation(false)}} />
       )}
 
-      {open && (!isMobile || !openRotateConfirmation) && (
+      {idType === 'routine' && open && (!isMobile || !openRotateConfirmation) && (
         <Modal 
           open={open}
           onClose={handleClose}
