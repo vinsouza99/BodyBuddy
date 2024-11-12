@@ -7,11 +7,12 @@ import ProgramLoading from "../assets/ProgramLoading.gif";
 export const LoadingBackdrop = ({ loading = false, generating = false }) => {
   const [messageIndex, setMessageIndex] = useState(0);
   const programGenerationMessages = [
-    "Message1...",
-    "Message2...",
-    "Message3...",
-    "Message4...",
-    "Message5...",
+    "Analyzing your profile...",
+    "Setting up your fitness plan...",
+    "Generating your program...",
+    "Putting it all together...",
+    "Putting it all together...",
+    "Putting it all together...",
   ];
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export const LoadingBackdrop = ({ loading = false, generating = false }) => {
 
     const interval = setInterval(() => {
       setMessageIndex((prevIndex) => (prevIndex + 1) % programGenerationMessages.length);
-    }, 5000);
+    }, 10000);
 
     // Cleanup interval on component unmount or when generating becomes false
     return () => clearInterval(interval);
