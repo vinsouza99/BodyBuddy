@@ -4,19 +4,9 @@ import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
 import { Onboarding } from "../components/Onboarding";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
-import thumbnail from "../assets/thumbnail.png";
+import CircleCheckIcon from "../assets/icon-circle-check.svg";
 
 export function AuthenticationOptions() {
-  useEffect(() => {
-    // Log the current URL pathname for debugging
-    console.log("Current pathname:", window.location.pathname);
-
-    // Check if the current URL is the root URL
-    if (window.location.pathname === "/") {
-      localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
-    }
-  }, []);
-
   return (
     <Grid container>
       {/* Left section with image slider */}
@@ -37,8 +27,10 @@ export function AuthenticationOptions() {
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "center",
-            height: "100vh",
+            minHeight: "100vh",
             padding: 4,
+            boxSizing: "border-box",
+            overflow: "auto",
           }}
         >
           {/* Logo */}
@@ -47,12 +39,16 @@ export function AuthenticationOptions() {
           </Box>
 
           {/* Welcome message */}
-          <Typography variant="h4" sx={{ marginBottom: 2 }}>
+          <Typography variant="h2" sx={{ marginBottom: 1 }}>
             Welcome to BodyBuddy
           </Typography>
 
           {/* Description */}
-          <Typography variant="body1" align="center" sx={{ marginBottom: 4 }}>
+          <Typography
+            variant="body1"
+            align="center"
+            sx={{ width: "80%", marginBottom: 3 }}
+          >
             Get healthier and energetic everyday with easy exercises tailored
             for home workout enthusiasts and fitness beginners.
           </Typography>
@@ -60,10 +56,10 @@ export function AuthenticationOptions() {
           {/* Feature list */}
           <Box
             sx={{
-              width: "100%",
+              width: "60%",
               display: "grid",
               justifyContent: "center",
-              marginBottom: 4,
+              marginBottom: 1,
             }}
           >
             {/* Feature 1 */}
@@ -76,13 +72,13 @@ export function AuthenticationOptions() {
               }}
             >
               <img
-                src={thumbnail}
+                src={CircleCheckIcon}
                 alt="Posture Correction"
-                width={40}
-                height={40}
+                width={60}
+                height={60}
               />
               <Typography
-                variant="body2"
+                variant="body1"
                 component="span"
                 sx={{ marginLeft: 2 }}
               >
@@ -99,9 +95,14 @@ export function AuthenticationOptions() {
                 marginBottom: 2,
               }}
             >
-              <img src={thumbnail} alt="Workout Plan" width={40} height={40} />
+              <img
+                src={CircleCheckIcon}
+                alt="Workout Plan"
+                width={60}
+                height={60}
+              />
               <Typography
-                variant="body2"
+                variant="body1"
                 component="span"
                 sx={{ marginLeft: 2 }}
               >
@@ -118,9 +119,14 @@ export function AuthenticationOptions() {
                 marginBottom: 2,
               }}
             >
-              <img src={thumbnail} alt="Demo Library" width={40} height={40} />
+              <img
+                src={CircleCheckIcon}
+                alt="Demo Library"
+                width={60}
+                height={60}
+              />
               <Typography
-                variant="body2"
+                variant="body1"
                 component="span"
                 sx={{ marginLeft: 2 }}
               >
@@ -133,7 +139,7 @@ export function AuthenticationOptions() {
           <Button
             variant="contained"
             color="primary"
-            sx={{ marginBottom: 2 }}
+            sx={{ marginBottom: 1 }}
             component={NavLink}
             to="/create-program"
             onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
@@ -149,8 +155,14 @@ export function AuthenticationOptions() {
               color="primary"
               component={NavLink}
               to="/signin"
+              sx={{
+                color: "text.primary",
+                fontWeight: 700,
+                paddingLeft: 0,
+                paddingRight: 0,
+              }}
             >
-              Sign In
+              Log In
             </Button>
           </Typography>
         </Container>
