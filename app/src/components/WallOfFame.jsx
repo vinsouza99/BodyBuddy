@@ -1,58 +1,43 @@
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from 'react';
-import { Box, Typography, IconButton, Modal, Button, Popover } from '@mui/material';
-import { getAllAchievements } from '../controllers/LocalTablesController';
-import { format } from 'date-fns';
+import { useState, useEffect, useRef } from "react";
+import {
+  Box,
+  Typography,
+  IconButton,
+  Modal,
+  Button,
+  Popover,
+} from "@mui/material";
+import { getAllAchievements } from "../controllers/LocalTablesController";
+import { format } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import Badge1_Placeholder from '../assets/Badge_NewbieNoMoreDark.svg';
-import Badge2_Placeholder from '../assets/Badge_ConsistencyChampDark.svg';
-import Badge3_Placeholder from '../assets/Badge_CalorieCrusherDark.svg';
-import Badge4_Placeholder from '../assets/Badge_StreakStarDark.svg';
-import Badge1 from '../assets/Badge_NewbieNoMoreLight.svg';
-import Badge2 from '../assets/Badge_ConsistencyChampLight.svg';
-import Badge3 from '../assets/Badge_CalorieCrusherLight.svg';
-import Badge4 from '../assets/Badge_StreakStarLight.svg';
-
-const badgeMap = {
-  1: Badge1,
-  2: Badge2,
-  3: Badge3,
-  4: Badge4,
-};
-
-const badgeMap_Placeholder = {
-  1: Badge1_Placeholder,
-  2: Badge2_Placeholder,
-  3: Badge3_Placeholder,
-  4: Badge4_Placeholder,
-  placeholder: Badge1_Placeholder
-};
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { badgeMap, badgeMap_Placeholder } from "../utils/badgeMap.js";
 
 const modalStyle = {
   // Layout and positioning
   position: "absolute",
-  top: '50%',
-  left: '50%',
+  top: "50%",
+  left: "50%",
   transform: "translate(-50%, -50%)",
   // Box model
-  width: '85%',
-  maxWidth: '920px',
-  height: '90%',
+  width: "85%",
+  maxWidth: "920px",
+  height: "90%",
   padding: 2,
-  borderRadius: '15px',
-  overflowY: 'auto',
+  borderRadius: "15px",
+  overflowY: "auto",
   // Flexbox alignment
-  display: 'flex',
-  flexDirection: 'row',
-  flexWrap: 'wrap',
-  alignItems: 'start',
-  justifyContent: 'center',
+  display: "flex",
+  flexDirection: "row",
+  flexWrap: "wrap",
+  alignItems: "start",
+  justifyContent: "center",
   columnGap: 1,
   rowGap: 0,
   // Visual effects
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   boxShadow: 24,
 };
 
@@ -78,33 +63,43 @@ export const WallOfFame = ({ userInfo = {} }) => {
       setAllBadges(allBadgeData);
     };
     fetchAllBadges();
-
   }, []);
 
   useEffect(() => {
-    // Add badge user already earned to badges array    
+    // Add badge user already earned to badges array
     if (userInfo?.achievements) {
       // Create a map of earned badges
       const earnedBadgesMap = new Map(
-        userInfo?.achievements?.map((achievement) => [achievement.achievement_id, achievement])
+        userInfo?.achievements?.map((achievement) => [
+          achievement.achievement_id,
+          achievement,
+        ])
       );
 
       // Create an array of 16 badges
-      const earnedBadges = Array.from({ length: 16 }, (_, index) => {
-        const badgeId = index + 1;
-        const achievement = earnedBadgesMap.get(badgeId);
-        const badgeInfo = allBadges.find((badge) => badge.id === badgeId) || {};
+      const earnedBadges = Array.from(
+        { length: allBadges.length },
+        (_, index) => {
+          const badgeId = index + 1;
+          const achievement = earnedBadgesMap.get(badgeId);
+          const badgeInfo =
+            allBadges.find((badge) => badge.id === badgeId) || {};
 
-        return {
-          id: badgeId,
-          name: achievement?.name || badgeInfo.name || "",
-          description: achievement?.description || badgeInfo.description || "",
-          src: achievement 
-            ? badgeMap[badgeId] || badgeMap_Placeholder.placeholder
-            : badgeMap_Placeholder[badgeId] || badgeMap_Placeholder.placeholder,
-          alt: achievement?.name || 'Placeholder',
-          earned_at: achievement?.earned_at || null,
-        };
+          return {
+            id: badgeId,
+            name: achievement?.name || badgeInfo.name || "",
+            description:
+              achievement?.description || badgeInfo.description || "",
+            src: badgeInfo.badge_url,
+            alt: achievement?.name || "Placeholder",
+            earned_at: achievement?.earned_at || null,
+          };
+        }
+      );
+      earnedBadges.sort((a, b) => {
+        if (!a.earned_at) return 1;
+        if (!b.earned_at) return -1;
+        return new Date(a.earned_at) - new Date(b.earned_at);
       });
       setBadges(earnedBadges);
     }
@@ -132,7 +127,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
         observer.unobserve(boxRef.current);
       }
     };
-  }, [userInfo, allBadges, itemsToShow ]);
+  }, [userInfo, allBadges, itemsToShow]);
 
   // Check if the user can navigate to the next set of badges
   useEffect(() => {
@@ -149,7 +144,9 @@ export const WallOfFame = ({ userInfo = {} }) => {
   // Click to navigate to the previous set of badges
   const handlePrevious = () => {
     if (canNavigate) {
-      setCurrentIndex((prevIndex) => (prevIndex - itemsToShow + badges.length) % badges.length);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - itemsToShow + badges.length) % badges.length
+      );
     }
   };
 
@@ -161,7 +158,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
   // Popover for Badge Description
   const handleBadgeClick = (event, name, description, earned_at) => {
     setAnchorEl(event.currentTarget);
-    setPopoverContent({name, description, earned_at});
+    setPopoverContent({ name, description, earned_at });
   };
 
   // Popover for Badge Description
@@ -170,41 +167,49 @@ export const WallOfFame = ({ userInfo = {} }) => {
   };
 
   const displayBadges = badges
-  .slice(currentIndex, currentIndex + itemsToShow)
-  .concat(
-    Array(Math.max(0, itemsToShow - badges.slice(currentIndex, currentIndex + itemsToShow).length))
-      .fill({ id: '', name: '', src: badgeMap_Placeholder.placeholder, alt: 'Placeholder' })
-  );
+    .slice(currentIndex, currentIndex + itemsToShow)
+    .concat(
+      Array(
+        Math.max(
+          0,
+          itemsToShow -
+            badges.slice(currentIndex, currentIndex + itemsToShow).length
+        )
+      ).fill({
+        id: "",
+        name: "",
+        src: badgeMap_Placeholder.placeholder,
+        alt: "Placeholder",
+      })
+    );
 
   return (
     <>
       <Box
         ref={boxRef}
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          width: '100%',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          width: "100%",
           gap: 4,
         }}
       >
-        <Typography variant="h6">
-          Wall of Fame
-        </Typography>
+        <Typography variant="h6">Wall of Fame</Typography>
         <Box
           sx={{
-            display: 'flex',
-            direction: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            width: '100%',
+            display: "flex",
+            direction: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%",
           }}
         >
           <IconButton
             sx={{
               padding: 0,
-              "&:focus": { outline: 'none' },
-              "&:hover": { backgroundColor: 'transparent' },
+              "&:focus": { outline: "none" },
+              "&:hover": { backgroundColor: "transparent" },
             }}
             onClick={handlePrevious}
             disabled={!canNavigate || currentIndex === 0}
@@ -213,58 +218,62 @@ export const WallOfFame = ({ userInfo = {} }) => {
           </IconButton>
 
           {displayBadges.map((badge, index) => (
-            <Box key={index} sx={{flex: '1 1 auto',}}>
+            <Box key={index} sx={{ flex: "1 1 auto" }}>
               <Box
                 component="img"
-                src={badge.src || Badge1_Placeholder}
+                src={badge.src}
                 alt={badge.alt}
-                sx={{ 
-                  width: '100%',
-                  maxWidth: '70px',
-                  height: 'auto',
-                  objectFit: 'contain',
-                  transition: 'transform 0.2s ease-in-out',
-                  '&:hover': {
-                    transform: 'scale(1.1)',
+                sx={{
+                  width: "100%",
+                  maxWidth: "70px",
+                  height: "auto",
+                  objectFit: "contain",
+                  transition: "transform 0.2s ease-in-out",
+                  "&:hover": {
+                    transform: "scale(1.1)",
                   },
-                }} 
+                }}
+                className={badge.earned_at ? "" : "muted-icon"}
               />
             </Box>
           ))}
 
-          <IconButton 
+          <IconButton
             sx={{
               padding: 0,
-              "&:focus": { outline: 'none' },
-              "&:hover": { backgroundColor: 'transparent' },
+              "&:focus": { outline: "none" },
+              "&:hover": { backgroundColor: "transparent" },
             }}
             onClick={handleNext}
-            disabled={!canNavigate || currentIndex + itemsToShow >= badges.length}
+            disabled={
+              !canNavigate || currentIndex + itemsToShow >= badges.length
+            }
           >
             <ArrowForwardIosIcon />
           </IconButton>
-
         </Box>
         <Typography>
           Keep up with your exercise plan to earn new surprises
         </Typography>
         <Button
-          variant="contained" 
-          sx={{ width: '50%' }}
-          onClick={() => {setshowAllBadges(true)}}
+          variant="contained"
+          // sx={{ width: "50%" }}
+          onClick={() => {
+            setshowAllBadges(true);
+          }}
         >
           View All
-        </Button>        
+        </Button>
       </Box>
 
       {/* Show all badges model */}
-      <Modal 
+      <Modal
         open={showAllBadges}
         onClose={handleCloseAllBadges}
         slotProps={{
           backdrop: {
             sx: {
-              backgroundColor: 'rgba(0, 0, 0, 0.9)',
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
             },
           },
         }}
@@ -274,15 +283,15 @@ export const WallOfFame = ({ userInfo = {} }) => {
             aria-label="close"
             onClick={handleCloseAllBadges}
             sx={{
-              position: 'absolute',
+              position: "absolute",
               right: 8,
               top: 8,
             }}
           >
             <CloseIcon />
           </IconButton>
-          
-          <Box sx={{width: "100%", textAlign: "center"}}>
+
+          <Box sx={{ width: "100%", textAlign: "center" }}>
             <Typography variant="h6" gutterBottom>
               Wall of Fame
             </Typography>
@@ -290,40 +299,60 @@ export const WallOfFame = ({ userInfo = {} }) => {
               Achieved: {badges.filter((badge) => badge.earned_at).length}
             </Typography>
           </Box>
-
-          {/* Listed All Badges */}
-          {badges.map((badge, index) => (
-            <Box 
-              key={index}
-              sx={{
-                cursor: 'pointer',
-                display: 'flex',
-                gap: 1,
-                flexDirection: 'column',
-                justifyContent: 'start',
-                alignItems: 'center',
-                textAlign: 'center',
-                width: 200,
-                height: 150,
-              }}
-              onClick={(e) => handleBadgeClick(e, badge.name, badge.description, badge.earned_at)}
-            >
+          <Box
+            className="custom-scrollbar"
+            sx={{
+              display: "flex",
+              flexWrap: "wrap",
+              width: "100%",
+              maxHeight: "85%",
+              overflowY: "scroll",
+            }}
+          >
+            {/* Listed All Badges */}
+            {badges.map((badge, index) => (
               <Box
-                component="img"
-                src={badge.src || Badge1_Placeholder}
-                alt={badge.alt}
-                sx={{ 
-                  transition: 'transform 0.2s ease-in-out',
-                  '&:hover': {
-                    transform: 'scale(1.2)',
-                  },
-                }} 
-              />
-              <Typography sx={{textAlign: "center"}}>
-                {badge.name}
-              </Typography>
-            </Box>
-          ))}
+                key={index}
+                sx={{
+                  cursor: "pointer",
+                  display: "flex",
+                  gap: 1,
+                  flexDirection: "column",
+                  flexGrow: 1,
+                  flexShrink: 1,
+                  justifyContent: "start",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: 200,
+                  height: 150,
+                }}
+                onClick={(e) =>
+                  handleBadgeClick(
+                    e,
+                    badge.name,
+                    badge.description,
+                    badge.earned_at
+                  )
+                }
+              >
+                <Box
+                  component="img"
+                  src={badge.src}
+                  alt={badge.alt}
+                  sx={{
+                    transition: "transform 0.2s ease-in-out",
+                    "&:hover": {
+                      transform: "scale(1.2)",
+                    },
+                  }}
+                  className={badge.earned_at ? "" : "muted-icon"}
+                />
+                <Typography sx={{ textAlign: "center" }}>
+                  {badge.name}
+                </Typography>
+              </Box>
+            ))}
+          </Box>
 
           {/* Popover for Badge Description */}
           <Popover
@@ -331,48 +360,48 @@ export const WallOfFame = ({ userInfo = {} }) => {
             anchorEl={anchorEl}
             onClose={handlePopoverClose}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
+              vertical: "top",
+              horizontal: "center",
             }}
             disableRestoreFocus
             slotProps={{
               paper: {
                 sx: {
-                  overflow: 'visible',
+                  overflow: "visible",
                   border: "1px solid #94DC8A",
-                  borderRadius: '15px',
+                  borderRadius: "15px",
                   width: { xs: "50vw", sm: "30vw" },
                   maxWidth: "250px",
                   textAlign: "center",
-                  position: 'relative',
+                  position: "relative",
                   display: "flex",
                   flexDirection: "column",
                   gap: "1rem",
                   padding: "1rem",
-                  '&::before': {
+                  "&::before": {
                     content: '""',
-                    position: 'absolute',
+                    position: "absolute",
                     top: -15,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    borderWidth: '8px',
-                    borderStyle: 'solid',
-                    borderColor: 'transparent transparent white transparent',
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    borderWidth: "8px",
+                    borderStyle: "solid",
+                    borderColor: "transparent transparent white transparent",
                     zIndex: 1,
                   },
-                  '&::after': {
+                  "&::after": {
                     content: '""',
-                    position: 'absolute',
+                    position: "absolute",
                     top: -17,
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    borderWidth: '8px',
-                    borderStyle: 'solid',
-                    borderColor: 'transparent transparent #94DC8A transparent',
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    borderWidth: "8px",
+                    borderStyle: "solid",
+                    borderColor: "transparent transparent #94DC8A transparent",
                     zIndex: 0,
                   },
                 },
@@ -389,11 +418,12 @@ export const WallOfFame = ({ userInfo = {} }) => {
               <Typography sx={{ fontWeight: "bold" }}>
                 {popoverContent?.name || "Coming Soon!"}
               </Typography>
-              <Typography>
-                {popoverContent?.description || ""}  
-              </Typography>
+              <Typography>{popoverContent?.description || ""}</Typography>
               {popoverContent?.earned_at && (
-                <Typography>Unlocked on {format(new Date(popoverContent.earned_at), 'dd MMM yyyy')}</Typography>
+                <Typography>
+                  Unlocked on{" "}
+                  {format(new Date(popoverContent.earned_at), "dd MMM yyyy")}
+                </Typography>
               )}
             </Box>
           </Popover>

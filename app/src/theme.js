@@ -26,7 +26,7 @@ const theme = createTheme({
     },
     success: {
       // Accent Green
-      main: "#4DC53C", // Main accent color
+      main: "#64CC54", // Main accent color
       light: "#6BCE5B", // Lighter shade for hover/outlines (1 shade lighter)
       dark: "#3CB534", // Darker shade for hover effects (1 shade darker)
       contrastText: "#FFFFFF", // Text color for accent buttons
@@ -136,12 +136,15 @@ const theme = createTheme({
 
     MuiButton: {
       defaultProps: {
-        disableElevation: true, // Disable shadow for contained buttons
+        disableElevation: false, // Disable shadow for contained buttons
       },
       styleOverrides: {
         root: {
           borderRadius: 10, // Default border-radius
           textTransform: "none", // Prevent uppercase text
+          minHeight: "42px", // Default minimum height
+          paddingLeft: "20px", // Default padding left
+          paddingRight: "20px", // Default padding right
         },
         contained: {
           backgroundColor: "#000000", // Primary background color
@@ -149,6 +152,15 @@ const theme = createTheme({
           "&:hover": {
             backgroundColor: "primary.dark", // Dark background on hover
           },
+          minWidth: "110px", // Default minimum width
+        },
+        containedWhite: {
+          backgroundColor: "#FFFFFF", // Primary background color
+          color: "rgba(0, 0, 0, 0.5)", // Text color for readability
+          "&:hover": {
+            backgroundColor: "primary.dark", // Dark background on hover
+          },
+          minWidth: "110px", // Default minimum width
         },
         outlined: {
           borderColor: "primary.main", // Border color
@@ -157,6 +169,7 @@ const theme = createTheme({
             backgroundColor: "primary.light", // Light background on hover
             borderColor: "primary.dark", // Dark border on hover
           },
+          minWidth: "110px", // Default minimum width
         },
         text: {
           color: "primary.main", // Text color for text buttons
@@ -176,6 +189,39 @@ const theme = createTheme({
         root: {
           "&:focus": {
             outline: "none", // Remove focus outline
+          },
+        },
+      },
+    },
+
+    /****************************************/
+    /*         ACCORDION COMPONENT          */
+    /****************************************/
+
+    MuiAccordion: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "transparent", // Transparent background
+          boxShadow: "none", // No shadow
+          "&:before": {
+            display: "none", // Remove default divider line
+          },
+        },
+      },
+    },
+
+    /****************************************/
+    /*            CARD COMPONENT            */
+    /****************************************/
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
+          borderRadius: "10px", // Add border radius to card component
+          border: "2px solid white",
+          transition: "border 0.3s ease", // Add transition for smooth fade
+          "&:hover": {
+            border: "2px solid #64CC54", // Green stroke on hover
           },
         },
       },

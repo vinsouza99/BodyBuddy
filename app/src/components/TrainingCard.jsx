@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -9,10 +9,15 @@ import {
   Chip,
   Box,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const TrainingCard = ({ routine }) => {
   const [open, setOpen] = useState(false);
+  const [firstExerciseImage, setFirstExerciseImage] = useState("");
+
+  // Access the theme for styling
+  const theme = useTheme();
 
   // Open StartRoutineSessionModal
   const handleOpen = () => {
@@ -23,6 +28,21 @@ export const TrainingCard = ({ routine }) => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  // Fetch the routine's first exercise gif
+  useEffect(() => {
+    if (routine.exercises && routine.exercises.length > 0) {
+      const firstExercise = routine.exercises[0];
+      // Fetch demo_url from first exercise
+      const demoUrl = firstExercise.demo_url;
+      if (demoUrl) {
+        setFirstExerciseImage(demoUrl);
+      } else {
+        // Fallback image
+        setFirstExerciseImage("https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif");
+      }
+    }
+  }, [routine]);
 
   return (
     <>
@@ -36,11 +56,12 @@ export const TrainingCard = ({ routine }) => {
               padding: "10px",
               backgroundSize: "cover",
               height: "240px",
+              borderBottom: `1px solid ${theme.palette.background.light}`,
             }}
           >
             {/* Video will be displayed here */}
             <img
-              src="https://i.pinimg.com/originals/57/cc/e0/57cce0afa73a4b4c9c8c139d08aec588.gif" // Temporary image
+              src={firstExerciseImage}
               alt="Exercise Name"
               style={{
                 maxWidth: "100%", // Responsive image
@@ -64,16 +85,16 @@ export const TrainingCard = ({ routine }) => {
               <Typography
                 variant="h3"
                 textAlign="left"
-                sx={{ marginBottom: 2 }}
+                sx={{ marginBottom: 1 }}
               >
                 {routine.name ? routine.name : "Name is undefined"}
               </Typography>
 
-              {/* <Typography textAlign="left" sx={{ marginBottom: 1 }}>
+              <Typography textAlign="left" sx={{ marginBottom: 1, color: "text.secondary" }}>
             {routine.description
               ? routine.description
               : "Description is undefined"}
-          </Typography> */}
+          </Typography>
 
               <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
                 {/* Display routine duration chip */}

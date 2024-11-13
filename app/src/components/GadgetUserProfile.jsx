@@ -4,7 +4,7 @@ import { UserProfile } from "../components/UserProfile.jsx";
 
 export const GadgetUserProfile = ({ userInfo = {} }) => {
   return (
-    <GadgetBase frame={false}>
+    <GadgetBase frame={false} sx={{ border: 0 }}>
       <UserProfile
         username={userInfo ? userInfo.name : ""}
         profilePicture={userInfo ? userInfo.picture : ""}

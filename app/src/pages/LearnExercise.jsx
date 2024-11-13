@@ -7,14 +7,10 @@ import {
   getExerciseMuscleGroups,
   getExerciseTypes,
 } from "../controllers/ExerciseController.js";
-import {
-  Box,
-  Button,
-  Typography,
-  Backdrop,
-  Paper,
-} from "@mui/material";
+import { Box, Button, Typography, Paper, Skeleton } from "@mui/material";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { CircularProgress } from "../components/CircularProgress.jsx";
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 import { ExerciseDetails } from "../components/ExerciseDetails";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
 import { useParams, useLocation } from "react-router-dom";
@@ -55,6 +51,10 @@ export const LearnExercise = (props) => {
         }
       } catch (e) {
         console.error(e);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading  the exercises' information... try again later.",
+        });
       }
     };
     loadData();
@@ -100,19 +100,26 @@ export const LearnExercise = (props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} />
 
-      {!loading && (
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: "1rem",
+          }}
+        >
+          <Skeleton
+            animation="wave"
+            variant="rectangular"
+            height={400}
+            display="flex"
+            flexGrow={1}
+          />
+        </Box>
+      ) : (
         <Box
           sx={{
             display: "flex",
@@ -132,7 +139,7 @@ export const LearnExercise = (props) => {
               fontSize: "1.1rem",
             }}
           >
-            &lt; Back to Exercises
+            <KeyboardArrowLeftIcon /> Back to Exercises
           </Button>
 
           {/* Exercise Video and Details */}
@@ -145,7 +152,9 @@ export const LearnExercise = (props) => {
               overflow: "hidden",
               marginBottom: "1rem",
               position: "relative", // Add position relative for absolute children
-              backgroundColor: "background.paper",
+              // backgroundColor: "background.paper",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              border: "2px solid white",
             }}
           >
             {/* Show spinner while video is loading */}
@@ -186,21 +195,19 @@ export const LearnExercise = (props) => {
           {/* Practice Button */}
           <Button
             variant="contained"
-            color="success"
             size="large"
             onClick={() => setOpenSessionModal(true)}
             sx={(theme) => ({
-              width: "120px",
-              height: "120px",
+              width: "150px",
+              height: "150px",
               borderRadius: "50%",
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
-              color: isExerciseValid
-                ? theme.palette.text.primary
-                : theme.palette.action.disabled,
+              color: isExerciseValid ? "white" : theme.palette.action.disabled,
               background: isExerciseValid
-                ? `linear-gradient(${theme.palette.success.light} 30%, ${theme.palette.success.dark} 90%)`
+                ? "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)"
                 : theme.palette.action.disabledBackground,
-                textTransform: "uppercase",
+              fontSize: "1.2rem",
+              fontWeight: "bold",
             })}
             disabled={!isExerciseValid} // Disable if exercise ID is invalid
           >

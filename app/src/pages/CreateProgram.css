@@ -20,3 +20,7 @@
   min-width: 30px;
   max-width: 60px;
 }
+
+.MuiAccordionSummary-content.MuiAccordionSummary-content {
+  margin: 0;
+}

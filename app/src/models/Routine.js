@@ -20,6 +20,8 @@ export default class Routine {
    * exercises that are part of this routine
    * @param {Date} compare_date - will have the same value as completed_at but will be use for sorting in history
    * @param {Array} goals
+   * @param {number} burned_calories - the amount of calories the user burned in this routine
+   * @param {number} score - the final score of the user after completing this routine
    */
   constructor(
     id,
@@ -33,7 +35,9 @@ export default class Routine {
     completed_at,
     recording_url,
     exercises = new Array(),
-    goals = new Array()
+    goals = new Array(),
+    burned_calories = 0,
+    score = 0
   ) {
     this.id = id;
     this.duration = duration;
@@ -49,6 +53,8 @@ export default class Routine {
     this.compare_date = completed_at; // will have the same value as completed_at but will be use for sorting in history
     this.record_type = "routine"; //used to differentiate records on the user history
     this.goals = goals;
+    this.burned_calories = burned_calories;
+    this.score = score;
   }
   /**
    * Adds an exercise to the routine and sorts the array according to the order of the exercise

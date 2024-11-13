@@ -8,6 +8,7 @@ import {
   Backdrop,
   Grid2,
   useMediaQuery,
+  Skeleton,
 } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
 import ProgramLoading from "../assets/ProgramLoading.gif";
@@ -20,7 +21,10 @@ import { GadgetHistory } from "../components/GadgetHistory";
 // Common Components
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { setPageTitle } from "../utils/utils";
-import { getUser, getUserAccumulatedStats,
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
+import {
+  getUser,
+  getUserAccumulatedStats,
 } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
@@ -37,7 +41,8 @@ export const Dashboard = (props) => {
   const [generating, setGenerating] = useState(false);
   const [loading, setLoading] = useState(true);
   const [userInfoLoaded, setUserInfoLoaded] = useState(false);
-  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] = useState(false);
+  const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
+    useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
@@ -67,6 +72,10 @@ export const Dashboard = (props) => {
         setUserAccumulatedStatsLoaded(true);
       } catch (error) {
         console.error("Error loading user progress data:", error);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading user's information... try again later.",
+        });
       }
     };
     loadUserdata();
@@ -121,30 +130,8 @@ export const Dashboard = (props) => {
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   return (
     <>
-      {/* Backdrop for generating, loading */}
-      <Backdrop
-        open={generating || loading}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          {generating ? (
-            <Box 
-              component="img" 
-              src={ ProgramLoading }
-              alt="Loading"
-              sx={{
-                width: "800px",
-                maxWidth: "90%",
-              }}
-            />
-          ) : (
-            <CircularProgress color="inherit" />
-          )}
-          <Typography variant="h6" sx={{ mt: 2, whiteSpace: "pre-line" }}>
-            {generating ? "" : "Loading..."}
-          </Typography>
-        </Box>
-      </Backdrop>
+      {/* Backdrop for loading */}
+      <LoadingBackdrop loading={loading} generating={generating} />
 
       <Grid2 container spacing={2}>
         {isMdUp ? (
@@ -153,20 +140,89 @@ export const Dashboard = (props) => {
             <Grid2 size={{ xs: 12, md: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* ADD GADGETS HERE */}
-                <GadgetUserProfile userInfo={userInfo} />
-                <GadgetStreaks
-                  userInfo={userInfo}
-                  history={userAccumulatedStats?.data || []}
-                />
-                <GadgetFavourite exerciseInfo={exerciseInfo || []} />
+                {loading ? (
+                  <>
+                    <Box display="flex" gap={2} padding={2}>
+                      <Skeleton
+                        animation="wave"
+                        variant="circular"
+                        width={80}
+                        height={80}
+                      />
+                      <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent={"space-between"}
+                        gap={2}
+                        flexGrow={1}
+                      >
+                        <Skeleton
+                          animation="wave"
+                          variant="rectangular"
+                          width={100}
+                          sx={{ marginTop: "10px" }}
+                        />
+                        <Skeleton animation="wave" variant="rectangular" />
+                      </Box>
+                    </Box>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="300px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="300px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <GadgetUserProfile userInfo={userInfo} />
+                    <GadgetStreaks
+                      userInfo={userInfo}
+                      history={userAccumulatedStats?.data || []}
+                    />{" "}
+                    <GadgetFavourite exerciseInfo={exerciseInfo || []} />
+                  </>
+                )}
               </Box>
             </Grid2>
             {/* RIGHT COLUMN */}
             <Grid2 size={{ xs: 12, md: 6 }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                 {/* ADD GADGETS HERE*/}
-                <GadgetAchievement userInfo={userInfo} />
-                <GadgetHistory history={userAccumulatedStats?.data || []} />
+                {loading ? (
+                  <>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="300px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                    <Box>
+                      <Skeleton
+                        animation="wave"
+                        width="100%"
+                        height="500px"
+                        variant="rectangular"
+                      />
+                    </Box>
+                  </>
+                ) : (
+                  <>
+                    <GadgetAchievement userInfo={userInfo} />
+                    <GadgetHistory history={userAccumulatedStats?.data || []} />
+                  </>
+                )}
               </Box>
             </Grid2>
           </>

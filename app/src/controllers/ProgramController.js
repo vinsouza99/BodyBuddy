@@ -84,7 +84,6 @@ const getUserCompletedPrograms = async (
     const response = await axiosClient.get(
       `${API_ROUTE}/user/${user_id}/completed`
     );
-    console.log(response);
     if (response.status == 404) return [];
 
     const data = await response.data.data;
@@ -136,9 +135,6 @@ const createProgram = async (user_id, generatedProgramObj) => {
       description: generatedProgramObj.description,
     };
     await axiosClient.post(`${API_ROUTE}`, program);
-    // generatedProgramObj.routines.forEach(async (routine) => {
-    //   await createRoutine(routine);
-    // });
   } catch (e) {
     console.error(e);
   }

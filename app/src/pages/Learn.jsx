@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect, useMemo, memo } from "react";
 import { setPageTitle } from "../utils/utils";
 import {
@@ -20,13 +20,11 @@ import {
   MenuItem,
   FormControl,
   Select,
-  Backdrop,
-  Typography,
   useMediaQuery,
-  Button,
   Pagination,
+  Skeleton,
 } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
+import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import LearningCard from "../components/LearningCard";
 
 // Custom tab panel to display content conditionally based on the selected tab
@@ -62,9 +60,11 @@ export const Learn = memo((props) => {
   const [muscleGroups, setMuscleGroups] = useState([]);
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [offset, setOffset] = useState(0); //when pagination button is clicked, change this offset by 9 (increment by 9 if 'next' page is clicked, decrement by 9 if 'prev' is clicked)
   const [page, setPage] = useState(1);
   const [pagesCount, setPagesCount] = useState(1);
+  const [startIndex, setStartIndex] = useState(0);
+  const [endIndex, setEndIndex] = useState(9);
+
   // Media query for screen size <= 600px
   const isSmallScreen = useMediaQuery("(max-width:600px)");
 
@@ -95,6 +95,10 @@ export const Learn = memo((props) => {
         }
       } catch (e) {
         console.error(e);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading the exercises' information... try again later.",
+        });
       }
     };
 
@@ -104,8 +108,8 @@ export const Learn = memo((props) => {
   const handleChange = (event, newValue) => {
     setValue(newValue); // Update selected tab
     setFilteredExercises(exercises);
-    setSelectedGoalID(0);
-    setSelectedMuscleGroupID(0);
+    setSelectedGoalID("");
+    setSelectedMuscleGroupID("");
   };
 
   useEffect(() => {
@@ -130,7 +134,7 @@ export const Learn = memo((props) => {
             exercise.hasMuscleGroup(selectedMuscleGroupID)
           );
     setFilteredExercises(filteredArray);
-    setPagesCount(Math.floor(filteredArray.length / 9));
+    setPagesCount(Math.ceil(filteredArray.length / 9));
     setPage(1);
   };
   const filterExercisesByGoal = () => {
@@ -140,7 +144,7 @@ export const Learn = memo((props) => {
         : exercises.filter((exercise) => exercise.hasGoal(selectedGoalID));
 
     setFilteredExercises(filteredArray);
-    setPagesCount(Math.floor(filteredArray.length / 9));
+    setPagesCount(Math.ceil(filteredArray.length / 9));
     setPage(1);
   };
   // Memoize the exercises grid
@@ -149,7 +153,7 @@ export const Learn = memo((props) => {
       <Grid container spacing={3}>
         {filteredExercises.length > 0
           ? filteredExercises
-              .slice(page - 1, page + 8)
+              .slice(startIndex, endIndex)
               .map((exercise, index) => (
                 <Grid
                   size={{ xs: 12, sm: 6, md: 4 }}
@@ -168,29 +172,28 @@ export const Learn = memo((props) => {
           : null}
       </Grid>
     );
-  }, [filteredExercises, loading]);
-
+  }, [
+    filteredExercises,
+    startIndex,
+    endIndex,
+    selectedGoalID,
+    selectedMuscleGroupID,
+    loading,
+  ]);
   // Pagination handlers
   const handlePaginationChange = async (event, value) => {
     setPage(value);
-    setFilteredExercises(exercises.slice(value - 1, value + 9));
+    let start = (value - 1) * 9;
+    let end = start + 9;
+    setStartIndex(start);
+    setEndIndex(end);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading} // Control when to show the overlay
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} />
 
       <Box display="flex" alignItems="flex-start">
         {/* Tabs for selecting categories (Muscle or Goal) */}
@@ -261,7 +264,34 @@ export const Learn = memo((props) => {
         </Box>
       </CustomTabPanel>
       {/* Grid to display LearningCard components */}
-      {exercisesGrid}
+      {loading ? (
+        <Grid
+          container
+          spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}
+        >
+          {Array.from(Array(9)).map((_, index) => (
+            <Grid
+              key={index}
+              size={{ xs: 2, sm: 4, md: 4 }}
+              gap={2}
+              spacing={5}
+            >
+              <Box display="flex" flexDirection="column" gap={1}>
+                <Skeleton variant="rectangular" height={245} />
+                <Skeleton variant="rectangular" height={20} width={250} />
+                <Box display="flex" gap={1}>
+                  <Skeleton variant="rectangular" height={15} width={50} />
+                  <Skeleton variant="rectangular" height={15} width={50} />
+                  <Skeleton variant="rectangular" height={15} width={50} />
+                </Box>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        exercisesGrid
+      )}
 
       {/* Pagination Buttons */}
       <Box display="flex" justifyContent="center" sx={{ marginTop: 3 }}>

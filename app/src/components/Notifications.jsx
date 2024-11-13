@@ -17,7 +17,7 @@ import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import CloseIcon from "@mui/icons-material/Close";
 import filledNotificationIcon from "../assets/NotificationsFilled.png"; // Adjust path based on folder structure
-import NewbieNoMoreIcon from "../assets/Badge_NewbieNoMoreDark.svg";
+import NewbieNoMoreIcon from "../assets/Badge_NewbieNoMoreLight.svg";
 
 // Notifications Icon in Header
 function Notifications() {
@@ -97,7 +97,6 @@ function Notifications() {
       console.error("Error marking notification as read:", error);
       return;
     }
-    console.log(data);
     if (data && data.length > 0) {
       const updatedNotification = data[0];
 
@@ -179,7 +178,7 @@ function Notifications() {
             </Button>
           </Grid>
           <Divider />
-          <List sx={{ minWidth: "320px" }}>
+          <List sx={{ width: "380px", maxWidth: "100vw" }}>
             {notifications.length > 0 ? (
               notifications.map((notification, index) => (
                 <React.Fragment key={index}>
@@ -189,36 +188,54 @@ function Notifications() {
                     alignItems="flex-start"
                     className={notification.read ? "" : "unread-notification"}
                   >
-                    <ListItemButton onClick={() => markAsRead(notification.id)}>
+                    <ListItemButton
+                      onClick={() => markAsRead(notification.id)}
+                      sx={{ display: "flex", gap: "1rem" }}
+                    >
                       <ListItemAvatar>
                         <img
-                          width="45px"
+                          width="50px"
                           alt="Notification Icon"
                           src={getNotificationIcon(notification.icon_id)}
                         />
                       </ListItemAvatar>
                       <ListItemText
                         primary={
-                          <React.Fragment>
+                          <Box
+                            display="flex"
+                            flexDirection="column"
+                            gap={1}
+                            justifyContent="start"
+                          >
                             <Typography
                               component="span"
                               variant="h5"
                               sx={{
                                 color: "text.primary",
-                                display: "inline",
+                                display: "block",
                                 fontWeight: 700,
                               }}
                             >
                               {notification.title}
                             </Typography>
-                          </React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="body1"
+                              sx={{
+                                color: "text.primary",
+                                display: "block",
+                              }}
+                            >
+                              {notification.message}
+                            </Typography>
+                          </Box>
                         }
                         secondary={
                           <React.Fragment>
                             <Typography
                               component="span"
                               variant="body3"
-                              sx={{ color: "text.primary", display: "inline" }}
+                              sx={{ color: "text.primary", display: "block" }}
                             >
                               {`${new Date(notification.created_at).toDateString().toLocaleUpperCase()} - ${new Date(notification.created_at).toLocaleTimeString()}`}
                             </Typography>

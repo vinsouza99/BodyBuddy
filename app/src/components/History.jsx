@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -24,7 +24,7 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 
 import { format, parseISO, isWithinInterval } from "date-fns";
-import { toZonedTime } from 'date-fns-tz';
+import { toZonedTime } from "date-fns-tz";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
@@ -32,11 +32,11 @@ import timezone from "dayjs/plugin/timezone";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
-
 import { VideoModal } from "./VideoModal";
+import duration from "../assets/icon-duration.svg";
 
 
-// import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx 
+// import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx
 
 // dayjs plugins for timezone support
 dayjs.extend(utc);
@@ -49,7 +49,7 @@ function History({ data = [] }) {
   const [startDate, setStartDate] = useState(dayjs()); // State the picked start dates
   const [endDate, setEndDate] = useState(dayjs()); // State the picked end dates
   const [filteredData, setFilteredData] = useState(data); // Save filtered Data from Duration
-  const [videoURL, setVideoURL] = useState(null); 
+  const [videoURL, setVideoURL] = useState(null);
 
   useEffect(() => {
     // Default to display all data without filtering
@@ -57,8 +57,6 @@ function History({ data = [] }) {
     setIsDateSelected(false); // Optional: if you want to indicate that no date is selected
   }, [data]);
 
-
-  
   // Open StartRoutineSessionModal
   const videoOpen = (url) => {
     setVideoURL(url);
@@ -83,14 +81,17 @@ function History({ data = [] }) {
 
   const handleOKClick = () => {
     const timeZone = "America/Vancouver";
-    const startOfStartDate = startDate.startOf('day');
-    const endOfEndDate = endDate.endOf('day');
+    const startOfStartDate = startDate.startOf("day");
+    const endOfEndDate = endDate.endOf("day");
 
-    const filtered = data.filter(item => {
+    const filtered = data.filter((item) => {
       const itemDate = toZonedTime(parseISO(item.compare_date), timeZone);
-      return isWithinInterval(itemDate, { start: startOfStartDate, end: endOfEndDate });
+      return isWithinInterval(itemDate, {
+        start: startOfStartDate,
+        end: endOfEndDate,
+      });
     });
-    
+
     setFilteredData(filtered);
     setIsDateSelected(true);
     setSwitch(false);
@@ -101,10 +102,10 @@ function History({ data = [] }) {
     setStartDate(dayjs()); // Initializa
     setEndDate(dayjs()); // Initializa
   };
-  
+
   return (
     <>
-      <Card sx={{ padding: 3, borderRadius: 2, width: 1 }}>
+      <Card sx={{ padding: 3, borderRadius: 2, width: 1, display: "flex", flexDirection: "column", "&:hover": { border: "2px solid white" }}}>
         <Box
           sx={{
             display: "flex",
@@ -127,29 +128,33 @@ function History({ data = [] }) {
               cursor: "pointer",
               border: 1,
               borderRadius: 10,
+              padding: 1,
+              gap: 1
             }}
           >
-            <IconButton>
-              <CalendarMonthIcon
-                sx={{ fontSize: 20 }}
-              />
-            </IconButton>
-            <Typography 
+              <img src={duration} alt="pencil Icon" style={{ width: "24px", height: "24px" }} />
+            <Typography
               variant="body2"
               component="p"
-              sx={{ marginRight: 1, fontWeight: 600 }}
+              sx={{
+                marginRight: 1,
+                fontWeight: 600,
+                textTransform: "uppercase",
+              }}
               onClick={handleClickOpen}
             >
-              DURATION
+              Duration
             </Typography>
           </Box>
         </Box>
 
-        <div 
+        <div
           style={{
-            maxHeight: '80vh', // Set the displayed height
-            overflowY: 'auto', // Scrolling
-          }}>
+            flexGrow: 1, // Set the displayed height
+            overflowY: "auto", // Scrolling
+          }}
+          className="custom-scrollbar"
+        >
           {filteredData.length > 0
             ? filteredData.map((item, index) => (
                 <Accordion
@@ -158,33 +163,46 @@ function History({ data = [] }) {
                   key={index}
                   sx={{
                     marginTop: 1,
-                    borderLeft: item.record_type === "routine"
-                    ? "3px solid #4cc13c"
-                    : "3px solid #2d90e0",                    
-                    borderTop: "none",                   
+                    borderLeft:
+                      item.record_type === "routine"
+                        ? "3px solid #4cc13c"
+                        : "3px solid #2d90e0",
+                    borderTop: "none",
                   }}
                 >
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
                     // aria-controls="panel2-content"
                     // id="panel2-header"
-                    sx={{ 
-                      height: '80px',
+                    sx={{
+                      height: "80px",
                     }}
                   >
                     <Typography sx={{ textAlign: "left" }}>
                       <span style={{ fontWeight: 600 }}>
-                        {dayjs(item.compare_date).isSame(dayjs(), 'day') 
-                         ? "Today" 
-                         : format(toZonedTime(parseISO(item.compare_date), "America/Vancouver"), "MMM dd yyyy")} :
-                      </span> {item.name}
-                    </Typography>                  
+                        {dayjs(item.compare_date).isSame(dayjs(), "day")
+                          ? "Today"
+                          : format(
+                              toZonedTime(
+                                parseISO(item.compare_date),
+                                "America/Vancouver"
+                              ),
+                              "MMM dd yyyy"
+                            )}{" "}
+                        :
+                      </span>{" "}
+                      {item.name}
+                    </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Box
-                      onClick={item.recording_url ? () => videoOpen(item.recording_url) : null}
+                      onClick={
+                        item.recording_url
+                          ? () => videoOpen(item.recording_url)
+                          : null
+                      }
                       sx={{
-                        cursor: item.recording_url ? 'pointer' : 'default',                        
+                        cursor: item.recording_url ? "pointer" : "default",
                         display: "flex",
                         alignItems: "center",
                         marginBottom: 2,
@@ -193,75 +211,58 @@ function History({ data = [] }) {
                         boxShadow: 3,
                       }}
                     >
-
                       {/* Video icon shows up when there is "recording_url" */}
-                      {item.recording_url ? (
+                      {
                         <IconButton sx={{ padding: 0, marginRight: 1 }}>
                           <Box
                             sx={{
                               width: 60,
                               height: 60,
-                              backgroundImage: item.record_type === "routine"
-                              ? 'linear-gradient(to right, #4cc13c, #b4f5ab)' 
-                              : 'linear-gradient(to right, #2d90e0, #abd3f3)',                              
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              borderRadius: '50%'
+                              backgroundColor: item.recording_url ? "" : "grey",
+                              backgroundImage: item.recording_url
+                                ? item.record_type === "routine"
+                                  ? "linear-gradient(to right, #4cc13c, #b4f5ab)"
+                                  : "linear-gradient(to right, #2d90e0, #abd3f3)"
+                                : "unset",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "50%",
                             }}
                           >
                             <PlayArrowIcon
                               sx={{
-                                color: 'white',
+                                color: "white",
                                 fontSize: 40,
                               }}
                             />
                           </Box>
                         </IconButton>
-                      ) : (
-                        <IconButton sx={{ padding: 0, marginRight: 1 }} disabled>
-                          <Box
-                            sx={{
-                              width: 60,
-                              height: 60,
-                              backgroundColor: 'grey', 
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              borderRadius: '50%'
-                            }}
-                          >
-                            <PlayArrowIcon
-                              sx={{
-                                color: 'white',
-                                fontSize: 40,
-                              }}
-                            />
-                          </Box>
-                        </IconButton>
-                      )}  
-
+                      }
 
                       {/* description always shows up*/}
-                      <Typography variant="body1" sx={{margin: 2}}>
-                        {item.record_type === "routine" ? `Routine` : `Program`} 
+                      <Typography variant="body1" sx={{ margin: 2 }}>
+                        {item.record_type === "routine" ? `Routine` : `Program`}
                       </Typography>
                     </Box>
                     <Stack direction="row" spacing={1}>
-
                       <Chip
-                        label={`${item.duration/60000} min`}
+                        label={`${item.duration / 60000} min`}
                         variant="outlined"
                         sx={{ borderRadius: 2 }}
                       />
                       <Chip
-                        label={`${item.estimated_calories} cal`}
+                        label={`${item.burned_calories ? item.burned_calories : 0} kcal`}
+                        variant="outlined"
+                        sx={{ borderRadius: 2 }}
+                      />
+                      <Chip
+                        label={`scored ${item.score ? item.score : 0}`}
                         variant="outlined"
                         sx={{ borderRadius: 2 }}
                       />
                     </Stack>
                   </AccordionDetails>
-
                 </Accordion>
               ))
             : isDateSelected && "No history to show..."}
@@ -269,11 +270,7 @@ function History({ data = [] }) {
       </Card>
 
       {/* Video Dialog */}
-      <VideoModal
-        open={videoSwitch}
-        onclose={videoClose}
-        videoURL={videoURL} 
-      />
+      <VideoModal open={videoSwitch} onclose={videoClose} videoURL={videoURL} />
       {/* <Dialog
         open={videoSwitch}
         onClose={videoClose}
@@ -312,23 +309,26 @@ function History({ data = [] }) {
         </DialogContent>
       </Dialog> */}
 
-
       {/* Modal part */}
-      <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md">
+      <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md" 
+        PaperProps={{sx: { borderRadius: 3 }}}
+      >
         <DialogContent>
           {/* Close icon*/}
-          <DialogTitle sx={{ display: "flex", padding: 0, justifyContent: "flex-end" }}>
+          <DialogTitle
+            sx={{ display: "flex", padding: 0, justifyContent: "flex-end" }}
+          >
             <IconButton onClick={handleClickClose}>
               <CloseIcon />
             </IconButton>
           </DialogTitle>
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{ display: "flex", gap: "20px" }}>
+            <Box sx={{ display: "flex", marginTop: 2, marginBottom: 5, gap: "20px" }}>
               <Box>
                 <Typography variant="h6">Start</Typography>
                 <DatePicker
-                  label="Start"
+                  label=""
                   value={startDate}
                   onChange={(newValue) => setStartDate(newValue)}
                   renderInput={(params) => <TextField {...params} />}
@@ -337,18 +337,29 @@ function History({ data = [] }) {
               <Box>
                 <Typography variant="h6">End</Typography>
                 <DatePicker
-                  label="End"
+                  label=""
                   value={endDate}
                   onChange={(newValue) => setEndDate(newValue)}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </Box>
             </Box>
-            <Box sx={{ marginTop: 2, display: "flex", justifyContent: "space-between" }}>
-              <Button variant="contained" onClick={handleOKClick}>OK</Button>
-              <Button variant="outlined" onClick={handleCancelClick}>Cancel</Button>
+            <Box
+              sx={{
+                marginTop: 2,
+                display: "flex",
+                justifyContent: "right",
+                gap: 2,
+              }}
+            >
+              <Button variant="outlined" onClick={handleCancelClick}>
+                Reset
+              </Button>
+              <Button variant="contained" onClick={handleOKClick}>
+                OK
+              </Button>
             </Box>
-          </LocalizationProvider>        
+          </LocalizationProvider>
         </DialogContent>
       </Dialog>
     </>

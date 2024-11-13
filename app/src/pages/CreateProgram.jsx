@@ -102,8 +102,8 @@ const CreateProgram = () => {
       <>
         <FormControl>
           <FormLabel id="genderLabel">
-            <Typography variant="h3" sx={{ marginBottom: "20px" }}>
-              What is your gender?
+            <Typography variant="h4" sx={{ marginBottom: "20px" }}>
+              What sex were you assigned at birth?
             </Typography>
           </FormLabel>
           <RadioGroup
@@ -111,6 +111,7 @@ const CreateProgram = () => {
             defaultValue="F"
             name="radio-buttons-group"
             value={gender}
+            sx={{ margin: "0 auto" }}
           >
             <FormControlLabel
               value="F"
@@ -148,7 +149,7 @@ const CreateProgram = () => {
     return (
       <FormControl>
         <FormLabel id="primaryGoalLabel">
-          <Typography variant="h3" sx={{ marginBottom: "20px" }}>
+          <Typography variant="h4" sx={{ marginBottom: "20px" }}>
             What is your primary goal?
           </Typography>
         </FormLabel>
@@ -185,10 +186,10 @@ const CreateProgram = () => {
           ))}
         </RadioGroup>
 
-        <Typography variant="body1">
+        {/* <Typography variant="body1">
           Click <ExpandMoreIcon /> to learn how this goal determines your
           exercise plan.
-        </Typography>
+        </Typography> */}
       </FormControl>
     );
   }
@@ -197,7 +198,7 @@ const CreateProgram = () => {
     return (
       <FormControl>
         <FormLabel id="pastExerciseFrequencyLabel">
-          <Typography variant="h3">
+          <Typography variant="h4">
             How often do you exercise in the past?
           </Typography>
         </FormLabel>
@@ -299,7 +300,7 @@ const CreateProgram = () => {
     return (
       <FormControl>
         <FormLabel id="intensityLabel">
-          <Typography variant="h3">
+          <Typography variant="h4">
             How intensely do you want to exercise?
           </Typography>
         </FormLabel>
@@ -402,7 +403,7 @@ const CreateProgram = () => {
     return (
       <FormControl>
         <FormLabel id="scheduleLabel">
-          <Typography variant="h3">When can you exercise?</Typography>
+          <Typography variant="h4">When can you exercise?</Typography>
         </FormLabel>
         <FormGroup
           row
@@ -530,9 +531,10 @@ const CreateProgram = () => {
         <Container
           maxWidth="sm"
           sx={{
-            backgroundColor: "rgba(255, 255, 255, .9)",
-            backdropFilter: "blur(2px)",
-            borderRadius: 3,
+            backgroundColor: "rgba(255, 255, 255, .8)",
+            backdropFilter: "blur(10px)",
+            border: "2px solid white",
+            borderRadius: 4,
           }}
           className="formWrapper"
         >
@@ -573,47 +575,38 @@ const CreateProgram = () => {
               <Box component={"div"} display={step == 6 ? "block" : "none"}>
                 <FormControl>
                   <FormLabel id="personalInfoLabel">
-                    <Typography variant="h3">Last but not least!</Typography>
+                    <Typography variant="h4">Last but not least! Please input your date of birth and weight</Typography>
                   </FormLabel>
 
                   <Grid
                     sx={{
                       display: "grid",
-                      gridTemplateColumns: "3fr 1fr",
-                      gap: ".5rem",
-                      marginLeft: "90px",
+                      gridTemplateColumns: "1fr 1fr 1fr", // Define the grid with 3 equal columns
+                      gap: ".5rem", // Add space between the columns
+                      margin: "0 auto",
+                      marginTop: "20px", // Add margin to the top for spacing
+                      width: "60%",
+                      minWidth: "240px",
                     }}
                   >
-                    <Grid>
-                      {/* Birthday Input with DatePicker */}
+                    {/* Birthday Input with DatePicker */}
+                    <Grid item xs={12} sx={{ gridColumn: "span 3" }}>
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
-                          sx={{ marginTop: "30px" }}
-                          label="Birthday"
+                          sx={{ width: "100%", marginBottom: "0.5rem" }} // Ensure full width
+                          label="Date of Birth"
                           value={birthday ? dayjs(birthday) : null} // Pass a dayjs object or null
                           fullWidth
                           onChange={(newValue) => {
                             setBirthday(dayjs(newValue).format("YYYY-MM-DD")); // Format the date only when saving to state
                           }}
-                          // autoFocus (enable if preferred)
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>
                     </Grid>
-                    <Grid></Grid>
-                  </Grid>
 
-                  {/* Weight input */}
-                  <Grid
-                    sx={{
-                      display: "grid",
-                      gridTemplateColumns: "3fr 1fr",
-                      gap: ".5rem",
-                      marginTop: "10px",
-                      marginLeft: "90px",
-                    }}
-                  >
-                    <Grid>
+                    {/* Weight input */}
+                    <Grid item xs={12} sm={8} sx={{ gridColumn: "span 2" }}>
                       <TextField
                         type="number"
                         value={weight}
@@ -625,7 +618,7 @@ const CreateProgram = () => {
                     </Grid>
 
                     {/* Weight Unit Selector */}
-                    <Grid>
+                    <Grid item xs={12} sm={4}>
                       <FormControl variant="outlined" fullWidth>
                         <InputLabel id="weight-unit-label">Unit</InputLabel>
                         <Select
@@ -640,22 +633,21 @@ const CreateProgram = () => {
                       </FormControl>
                     </Grid>
                   </Grid>
-                  <Grid container sx={{}}>
+
+                  <Grid container sx={{ margin: "0 auto" }}>
                     <Typography
                       variant="body2"
                       sx={{
                         textAlign: "left",
                         margin: "1rem 0",
-                        width: "400px",
                       }}
                     >
-                      These factors influence the starting point, caloric needs,
-                      and the intensity of the plan to ensure it's realistic and
-                      sustainable.
+                      These factors influence the starting point, caloric needs, and the intensity of the plan to ensure it's realistic and sustainable.
                     </Typography>
                   </Grid>
                 </FormControl>
               </Box>
+
               <Grid
                 container
                 width="100%"
@@ -667,7 +659,7 @@ const CreateProgram = () => {
                 }}
               >
                 <Button
-                  variant="outlined"
+                  variant="containedWhite"
                   onClick={() => previousStep()}
                   disabled={step == 1}
                 >

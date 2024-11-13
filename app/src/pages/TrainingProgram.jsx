@@ -6,17 +6,14 @@ import {
   Tabs,
   Tab,
   Grid2,
-  Backdrop,
   Typography,
-  Modal,
-  IconButton,
-  Button,
+  Skeleton,
 } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
-import ProgramLoading from "../assets/ProgramLoading.gif";
-import CloseIcon from "@mui/icons-material/Close";
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
+import { ErrorMessage } from "../components/ErrorMessage.jsx";
 // Gadgets Components
 import { GadgetRoutineOfToday } from "../components/GadgetRoutineOfToday.jsx";
+import { GadgetRegenerateProgram } from "../components/GadgetRegenerateProgram.jsx";
 import { GadgetSchedule } from "../components/GadgetSchedule.jsx";
 import { GadgetPremadeRoutineList } from "../components/GadgetPremadeRoutineList.jsx";
 // Common Components
@@ -25,7 +22,6 @@ import { setPageTitle } from "../utils/utils";
 import { getAllPresetRoutines } from "../controllers/RoutineController";
 import { getAllUserPrograms } from "../controllers/ProgramController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
-import axiosClient from "../utils/axiosClient";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
 
@@ -39,35 +35,14 @@ const tabStyles = {
   },
 };
 
-const modalStyle = {
-  // Layout and positioning
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  // Box model
-  width: 450,
-  padding: 4,
-  borderRadius: '15px',
-  // Flexbox alignment
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: 2,
-  // Visual effects
-  bgcolor: "background.paper",
-  boxShadow: 24,
-};
-
 export const TrainingProgram = memo((props) => {
   const { user } = useAuth();
   const [presetRoutines, setPresetRoutines] = useState([]);
-  const [activeProgram, setActiveProgram] = useState([]);
+  const [activeProgram, setActiveProgram] = useState(null);
   const [programRoutines, setProgramRoutines] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [loadingProgramError, setLoadingProgramError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [openModal, setOpenModal] = useState(false);
   const [generating, setGenerating] = useState(false);
   const prompt = useGenerateProgramPrompt({});
 
@@ -79,7 +54,6 @@ export const TrainingProgram = memo((props) => {
   useEffect(() => {
     setPageTitle(props.title);
     loadData();
-    fetchPrograms();
   }, []);
 
   // Generate a new personalized program for the user
@@ -97,7 +71,6 @@ export const TrainingProgram = memo((props) => {
   useEffect(() => {
     if (!generating) {
       setLoading(true);
-      fetchPrograms();
       loadData();
     }
   }, [generating]);
@@ -108,45 +81,30 @@ export const TrainingProgram = memo((props) => {
       // Retrieve Preset Routines
       const presetRoutines = await getAllPresetRoutines();
       setPresetRoutines(presetRoutines);
-  
+
       // Retrieve Program
       const programs = await getAllUserPrograms(user.id, true, false);
+
       // Find the first program without completed_at
       const activeProgram = programs.find((program) => !program.completed_at);
       if (activeProgram) {
+        console.log("User has active program.");
         setActiveProgram(activeProgram);
         setProgramRoutines(activeProgram?.routines || []);
+      } else {
+        console.log("No active program found.");
+        setActiveProgram(null);
       }
     } catch (e) {
-      console.log(e);
+      console.error(e);
+      setLoadingProgramError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch programs and check if the user has an active program or not
-  const fetchPrograms = async () => {
-    try {
-      const response = await axiosClient.get(`programs/user/${user.id}`);
-      if (Number(response.status) === 200) {
-        const programs = response.data.data || [];
-        const hasIncompleteProgram = programs.rows.some(
-          (program) => !program.completed_at
-        );
-  
-        if (!hasIncompleteProgram) {
-          console.log("No active program found. Generate a new one?");
-          setOpenModal(true);
-        } else {
-          console.log("User has active program.");
-        }
-      } else {
-        throw new Error("Failed to fetch programs");
-      }
-    } catch (error) {
-      console.error("Error fetching programs:", error);
-      setGenerating(false);
-    }
+  const handleGenerateProgram = () => {
+    setGenerating(true);
   };
 
   // Memoize the "My Program" tab content
@@ -158,14 +116,23 @@ export const TrainingProgram = memo((props) => {
       <Grid2 container spacing={2}>
         {/* LEFT COLUMN */}
         <Grid2 size={{ xs: 12, md: 7 }}>
-          <GadgetRoutineOfToday programRoutines={programRoutines} />
+          {loadingProgramError ? (
+            <ErrorMessage
+              message=""
+              callback={loadData}
+              callbackAction="Try Again"
+            />
+          ) : activeProgram ? (
+            <GadgetRoutineOfToday programRoutines={programRoutines} />
+          ) : (
+            <GadgetRegenerateProgram
+              handleGenerateProgram={handleGenerateProgram}
+            />
+          )}
         </Grid2>
         {/* RIGHT COLUMN */}
         <Grid2 size={{ xs: 12, md: 5 }}>
-          <GadgetSchedule
-            program={activeProgram}
-            programRoutines={programRoutines}
-          />
+          <GadgetSchedule programRoutines={programRoutines} />
         </Grid2>
       </Grid2>
     );
@@ -179,41 +146,10 @@ export const TrainingProgram = memo((props) => {
     return <GadgetPremadeRoutineList presetRoutines={presetRoutines} />;
   }, [presetRoutines, loading]);
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  }
-
-  const handleGenerateProgram = () => {
-    setOpenModal(false);
-    setGenerating(true);
-  }
-  
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={generating || loading}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          {generating ? (
-            <Box 
-              component="img" 
-              src={ ProgramLoading }
-              alt="Loading"
-              sx={{
-                width: "800px",
-                maxWidth: "90%",
-              }}
-            />
-          ) : (
-            <CircularProgress color="inherit" />
-          )}
-          <Typography variant="h6" sx={{ mt: 2, whiteSpace: "pre-line" }}>
-            {generating ? "" : "Loading..."}
-          </Typography>
-        </Box>
-      </Backdrop>
+      <LoadingBackdrop loading={loading} generating={generating} />
 
       {/* Tab Navigation */}
       <Tabs
@@ -224,62 +160,37 @@ export const TrainingProgram = memo((props) => {
         <Tab label="My Program" sx={tabStyles} />
         <Tab label="Premade Routines" sx={tabStyles} />
       </Tabs>
-
       <Box sx={{ marginTop: 2 }}>
         {/* MY PROGRAM TAB */}
-        {activeTab === 0 &&
-          (activeProgram ? (
+        {activeTab === 0 ? (
+          loading ? (
+            <>
+              <Grid2 container gap={2} columns={{ sm: 1, md: 2 }}>
+                <Box flexGrow={2}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={250}
+                  />
+                </Box>
+                <Box flexGrow={1}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={450}
+                  />
+                </Box>
+              </Grid2>
+            </>
+          ) : activeProgram ? (
             myProgramTabContent
           ) : (
             <Typography>No available program</Typography>
-          ))}
+          )
+        ) : null}
         {/* PREMADE ROUTINES TAB */}
         {activeTab === 1 && premadeRoutinesTabContent}
       </Box>
-
-      <Modal 
-      open={openModal && !loading}
-      onClose={handleCloseModal}
-      slotProps={{
-        backdrop: {
-          sx: {
-            backgroundColor: 'rgba(0, 0, 0, 0.9)',
-          },
-        },
-      }}
-    >
-      <Box sx={modalStyle}>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseModal}
-          sx={{
-            position: 'absolute',
-            right: 8,
-            top: 8,
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <Typography textAlign="center">
-          No active program found. Generate a new one?
-        </Typography>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            gap: 2,
-            width: '100%',
-          }}
-        >
-          <Button variant="outlined" onClick={handleCloseModal} color="primary" fullWidth>
-            Not now
-          </Button>
-          <Button variant="contained" onClick={handleGenerateProgram} color="primary" fullWidth>
-            Yes
-          </Button>
-        </Box>
-      </Box>
-    </Modal>
     </>
   );
 });

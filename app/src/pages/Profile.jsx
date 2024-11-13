@@ -1,19 +1,21 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { setPageTitle } from "../utils/utils";
-import { Backdrop, Box, Typography } from "@mui/material";
+import { Backdrop, Box, Typography, Skeleton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
-import { CircularProgress } from "../components/CircularProgress.jsx";
+import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 
 export const Profile = (props) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [history, setHistory] = useState([]);
   const { user } = useAuth(); // For session management
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setPageTitle(props.title);
@@ -29,6 +31,10 @@ export const Profile = (props) => {
         console.log(userHistoryData);
       } catch (error) {
         console.error(error);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading user's information... try again later.",
+        });
       } finally {
         setLoading(false);
       }
@@ -38,28 +44,64 @@ export const Profile = (props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      <Backdrop
-        open={loading}
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Box textAlign="center">
-          <CircularProgress color="inherit" />
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Loading...
-          </Typography>
-        </Box>
-      </Backdrop>
-
-      {currentUser && history ? (
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
-            <UserInfo user={currentUser} />
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
-            <History data={history} />
-          </Grid>
-        </Grid>
-      ) : null}
+      <LoadingBackdrop loading={loading} />
+      <Grid container spacing={2}>
+        {loading ? (
+          <>
+            <Box flex={1} display={"flex"} gap={1} flexDirection="column">
+              <Box display="flex" gap={2} padding={2}>
+                <Skeleton
+                  animation="wave"
+                  variant="circular"
+                  width={140}
+                  height={140}
+                />
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  gap={3}
+                  flexGrow={1}
+                  justifyContent={"center"}
+                >
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={250}
+                    height={30}
+                  />
+                  <Skeleton
+                    animation="wave"
+                    variant="rectangular"
+                    width={150}
+                    height={30}
+                  />
+                </Box>
+              </Box>
+              <Skeleton animation="wave" variant="rectangular" height={30} />
+              <Skeleton animation="wave" variant="rectangular" height="300px" />
+            </Box>
+            <Box display="flex" padding={2} flex={1}>
+              <Skeleton
+                animation="wave"
+                variant="rectangular"
+                width={"100%"}
+                height={"500px"}
+                display="flex"
+                flexGrow={1}
+              />
+            </Box>
+          </>
+        ) : currentUser && history ? (
+          <>
+            <Grid size={{ xs: 12, md: 6 }} display={"flex"} style={{ height: "850px" }}>
+              <UserInfo user={currentUser} />
+            </Grid>
+            <Grid size={{ xs: 12, md: 6 }} display={"flex"} style={{ height: "850px" }}>
+              <History data={history} />
+            </Grid>
+          </>
+        ) : null}
+      </Grid>
     </>
   );
 };

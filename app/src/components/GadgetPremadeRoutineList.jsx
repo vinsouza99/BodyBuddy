@@ -6,7 +6,7 @@ import { TrainingCard } from "./TrainingCard";
 
 export const GadgetPremadeRoutineList = ({ presetRoutines = null }) => {
   return (
-    <GadgetBase frame={false}>
+    <GadgetBase frame={false} sx={{ border: 0 }}>
       <Box
         sx={{
           display: "flex",

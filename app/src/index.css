@@ -116,6 +116,16 @@ button:focus-visible {
   color: #fff;
 }
 
-.MuiButtonBase-root.MuiListItemButton-root.Mui-selected .MuiListItemIcon-root img {
+.MuiButtonBase-root.MuiListItemButton-root.Mui-selected
+  .MuiListItemIcon-root
+  img {
   filter: invert(100%) brightness(200%);
+}
+
+.custom-scrollbar {
+  scrollbar-color: lightgrey whitesmoke !important;
+  scrollbar-width: thin !important;
+}
+.muted-icon {
+  filter: grayscale(0.5) opacity(0.5);
 }
