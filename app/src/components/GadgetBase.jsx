@@ -14,7 +14,8 @@ export const GadgetBase = ({ title = null, frame = true, children }) => {
         gap: 4,
         padding: frame ? 2 : 0, 
         borderRadius: '15px',
-        backgroundColor: frame ? 'white' : 'transparent',
+        backgroundColor: frame ? 'rgba(255, 255, 255, .8)' : 'transparent',
+        border: "2px solid white",
       }}
     >
       {title && (
