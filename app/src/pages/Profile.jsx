@@ -93,10 +93,10 @@ export const Profile = (props) => {
           </>
         ) : currentUser && history ? (
           <>
-            <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
+            <Grid size={{ xs: 12, md: 6 }} display={"flex"} style={{ height: "850px" }}>
               <UserInfo user={currentUser} />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }} display={"flex"}>
+            <Grid size={{ xs: 12, md: 6 }} display={"flex"} style={{ height: "850px" }}>
               <History data={history} />
             </Grid>
           </>
