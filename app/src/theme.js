@@ -26,7 +26,7 @@ const theme = createTheme({
     },
     success: {
       // Accent Green
-      main: "#4DC53C", // Main accent color
+      main: "#64CC54", // Main accent color
       light: "#6BCE5B", // Lighter shade for hover/outlines (1 shade lighter)
       dark: "#3CB534", // Darker shade for hover effects (1 shade darker)
       contrastText: "#FFFFFF", // Text color for accent buttons
@@ -205,6 +205,22 @@ const theme = createTheme({
           boxShadow: "none", // No shadow
           "&:before": {
             display: "none", // Remove default divider line
+          },
+        },
+      },
+    },
+
+    /****************************************/
+    /*            CARD COMPONENT            */
+    /****************************************/
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: "10px", // Add border radius to card component
+          border: "2px solid white",
+          transition: "border 0.3s ease", // Add transition for smooth fade
+          "&:hover": {
+            border: "2px solid #64CC54", // Green stroke on hover
           },
         },
       },

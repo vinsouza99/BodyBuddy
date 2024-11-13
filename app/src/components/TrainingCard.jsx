@@ -9,11 +9,15 @@ import {
   Chip,
   Box,
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { StartRoutineSessionModal } from "./StartRoutineSessionModal";
 
 export const TrainingCard = ({ routine }) => {
   const [open, setOpen] = useState(false);
   const [firstExerciseImage, setFirstExerciseImage] = useState("");
+
+  // Access the theme for styling
+  const theme = useTheme();
 
   // Open StartRoutineSessionModal
   const handleOpen = () => {
@@ -52,6 +56,7 @@ export const TrainingCard = ({ routine }) => {
               padding: "10px",
               backgroundSize: "cover",
               height: "240px",
+              borderBottom: `1px solid ${theme.palette.background.light}`,
             }}
           >
             {/* Video will be displayed here */}
