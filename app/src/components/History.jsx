@@ -105,7 +105,7 @@ function History({ data = [] }) {
 
   return (
     <>
-      <Card sx={{ padding: 3, borderRadius: 2, width: 1, display: "flex", flexDirection: "column" }}>
+      <Card sx={{ padding: 3, borderRadius: 2, width: 1, display: "flex", flexDirection: "column", "&:hover": { border: "2px solid white" }}}>
         <Box
           sx={{
             display: "flex",
