@@ -659,7 +659,7 @@ const CreateProgram = () => {
                 }}
               >
                 <Button
-                  variant="outlined"
+                  variant="containedWhite"
                   onClick={() => previousStep()}
                   disabled={step == 1}
                 >

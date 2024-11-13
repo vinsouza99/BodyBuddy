@@ -154,6 +154,14 @@ const theme = createTheme({
           },
           minWidth: "110px", // Default minimum width
         },
+        containedWhite: {
+          backgroundColor: "#FFFFFF", // Primary background color
+          color: "rgba(0, 0, 0, 0.5)", // Text color for readability
+          "&:hover": {
+            backgroundColor: "primary.dark", // Dark background on hover
+          },
+          minWidth: "110px", // Default minimum width
+        },
         outlined: {
           borderColor: "primary.main", // Border color
           color: "primary.main", // Text color
