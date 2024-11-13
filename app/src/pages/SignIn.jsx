@@ -13,7 +13,7 @@ import {
   Divider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import GoogleIcon from "@mui/icons-material/Google";
+// import GoogleIcon from "@mui/icons-material/Google";
 import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
 
@@ -57,30 +57,30 @@ export const SignIn = (props) => {
     }
   };
 
-  const handleGoogleSignIn = async (e) => {
-    e.preventDefault();
-    localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
+  // const handleGoogleSignIn = async (e) => {
+  //   e.preventDefault();
+  //   localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
 
-    try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          prompt: "select_account", // For testing, always display consent page
-          redirectTo: `${BASE_URL}dashboard`,
-        },
-      });
+  //   try {
+  //     const { data, error } = await supabase.auth.signInWithOAuth({
+  //       provider: "google",
+  //       options: {
+  //         prompt: "select_account", // For testing, always display consent page
+  //         redirectTo: `${BASE_URL}dashboard`,
+  //       },
+  //     });
 
-      if (error) {
-        throw error;
-      }
+  //     if (error) {
+  //       throw error;
+  //     }
 
-      console.log("User signed in with Google", data);
-    } catch (error) {
-      setError(error.message);
-      console.error("User signed in with Google", error);
-      navigate("/signin");
-    }
-  };
+  //     console.log("User signed in with Google", data);
+  //   } catch (error) {
+  //     setError(error.message);
+  //     console.error("User signed in with Google", error);
+  //     navigate("/signin");
+  //   }
+  // };
 
   return (
     <Grid container>
@@ -129,17 +129,17 @@ export const SignIn = (props) => {
 
             <Box sx={{ width: "60%", margin: "0 auto" }}>
               {/* Google Sign In Button */}
-              <Button
+              {/* <Button
                 variant="contained"
                 type="button"
                 startIcon={<GoogleIcon />}
                 onClick={handleGoogleSignIn}
               >
                 Sign in with Google
-              </Button>
+              </Button> */}
 
               {/* Divider */}
-              <Divider sx={{ width: "100%", mt: 2 }}>or</Divider>
+              {/* <Divider sx={{ width: "100%", mt: 2 }}>or</Divider> */}
 
               {/* Email & Password Sign In Form */}
               <Box

@@ -152,7 +152,9 @@ export const LearnExercise = (props) => {
               overflow: "hidden",
               marginBottom: "1rem",
               position: "relative", // Add position relative for absolute children
-              backgroundColor: "background.paper",
+              // backgroundColor: "background.paper",
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              border: "2px solid white",
             }}
           >
             {/* Show spinner while video is loading */}
