@@ -216,6 +216,7 @@ const theme = createTheme({
     MuiCard: {
       styleOverrides: {
         root: {
+          backgroundColor: "rgba(255, 255, 255, 0.8)",
           borderRadius: "10px", // Add border radius to card component
           border: "2px solid white",
           transition: "border 0.3s ease", // Add transition for smooth fade
