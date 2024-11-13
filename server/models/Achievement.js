@@ -18,6 +18,10 @@ const Achievement = sequelize.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    badge_url: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   },
   {
     tableName: "local_achievement",

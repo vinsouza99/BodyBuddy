@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import {badgeMap, badgeMap_Placeholder } from "../utils/badgeMap.js";
+import { badgeMap, badgeMap_Placeholder } from "../utils/badgeMap.js";
 
 const modalStyle = {
   // Layout and positioning
@@ -77,22 +77,25 @@ export const WallOfFame = ({ userInfo = {} }) => {
       );
 
       // Create an array of 16 badges
-      const earnedBadges = Array.from({ length: 16 }, (_, index) => {
-        const badgeId = index + 1;
-        const achievement = earnedBadgesMap.get(badgeId);
-        const badgeInfo = allBadges.find((badge) => badge.id === badgeId) || {};
+      const earnedBadges = Array.from(
+        { length: allBadges.length },
+        (_, index) => {
+          const badgeId = index + 1;
+          const achievement = earnedBadgesMap.get(badgeId);
+          const badgeInfo =
+            allBadges.find((badge) => badge.id === badgeId) || {};
 
-        return {
-          id: badgeId,
-          name: achievement?.name || badgeInfo.name || "",
-          description: achievement?.description || badgeInfo.description || "",
-          src: achievement
-            ? badgeMap[badgeId] || badgeMap_Placeholder.placeholder
-            : badgeMap_Placeholder[badgeId] || badgeMap_Placeholder.placeholder,
-          alt: achievement?.name || "Placeholder",
-          earned_at: achievement?.earned_at || null,
-        };
-      });
+          return {
+            id: badgeId,
+            name: achievement?.name || badgeInfo.name || "",
+            description:
+              achievement?.description || badgeInfo.description || "",
+            src: badgeInfo.badge_url,
+            alt: achievement?.name || "Placeholder",
+            earned_at: achievement?.earned_at || null,
+          };
+        }
+      );
       earnedBadges.sort((a, b) => {
         if (!a.earned_at) return 1;
         if (!b.earned_at) return -1;
@@ -218,7 +221,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
             <Box key={index} sx={{ flex: "1 1 auto" }}>
               <Box
                 component="img"
-                src={badge.src || Badge1_Placeholder}
+                src={badge.src}
                 alt={badge.alt}
                 sx={{
                   width: "100%",
@@ -230,6 +233,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                     transform: "scale(1.1)",
                   },
                 }}
+                className={badge.earned_at ? "" : "muted-icon"}
               />
             </Box>
           ))}
@@ -333,7 +337,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
               >
                 <Box
                   component="img"
-                  src={badge.src || Badge1_Placeholder}
+                  src={badge.src}
                   alt={badge.alt}
                   sx={{
                     transition: "transform 0.2s ease-in-out",
@@ -341,6 +345,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
                       transform: "scale(1.2)",
                     },
                   }}
+                  className={badge.earned_at ? "" : "muted-icon"}
                 />
                 <Typography sx={{ textAlign: "center" }}>
                   {badge.name}

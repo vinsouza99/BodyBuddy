@@ -126,3 +126,6 @@ button:focus-visible {
   scrollbar-color: lightgrey whitesmoke !important;
   scrollbar-width: thin !important;
 }
+.muted-icon {
+  filter: grayscale(0.5) opacity(0.5);
+}

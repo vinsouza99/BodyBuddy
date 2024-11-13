@@ -66,7 +66,8 @@ const getAllAchievements = async () => {
         new Achievement(
           achievement.id,
           achievement.name,
-          achievement.description
+          achievement.description,
+          achievement.badge_url
         )
     );
   } catch (e) {
