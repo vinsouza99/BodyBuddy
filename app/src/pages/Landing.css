@@ -8,14 +8,14 @@
   display: grid;
   gap: 2rem;
 }
-section {
-  min-height: 50vh;
-}
 section:not(#home) {
   scroll-margin-top: 80px;
 }
 section {
   max-width: 1200px;
+  min-height: 50vh;
+  padding: 1rem 0;
+  width: 100%;
   margin: auto;
 }
 .toolbar-content-wrapper {
