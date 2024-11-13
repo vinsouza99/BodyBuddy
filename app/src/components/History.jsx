@@ -32,8 +32,9 @@ import timezone from "dayjs/plugin/timezone";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
-
 import { VideoModal } from "./VideoModal";
+import duration from "../assets/icon-duration.svg";
+
 
 // import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx
 
@@ -104,7 +105,7 @@ function History({ data = [] }) {
 
   return (
     <>
-      <Card sx={{ padding: 3, borderRadius: 2, width: 1 }}>
+      <Card sx={{ padding: 3, borderRadius: 2, width: 1, display: "flex", flexDirection: "column" }}>
         <Box
           sx={{
             display: "flex",
@@ -127,11 +128,11 @@ function History({ data = [] }) {
               cursor: "pointer",
               border: 1,
               borderRadius: 10,
+              padding: 1,
+              gap: 1
             }}
           >
-            <IconButton>
-              <CalendarMonthIcon sx={{ fontSize: 20 }} />
-            </IconButton>
+              <img src={duration} alt="pencil Icon" style={{ width: "24px", height: "24px" }} />
             <Typography
               variant="body2"
               component="p"
@@ -149,7 +150,7 @@ function History({ data = [] }) {
 
         <div
           style={{
-            maxHeight: "80vh", // Set the displayed height
+            flexGrow: 1, // Set the displayed height
             overflowY: "auto", // Scrolling
           }}
           className="custom-scrollbar"
