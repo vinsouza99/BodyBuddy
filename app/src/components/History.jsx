@@ -33,8 +33,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import { VideoModal } from "./VideoModal";
-import duration from "../assets/icon-duration.svg";
-
+import duration from "/assets/icon-duration.svg";
 
 // import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx
 
@@ -105,7 +104,16 @@ function History({ data = [] }) {
 
   return (
     <>
-      <Card sx={{ padding: 3, borderRadius: 2, width: 1, display: "flex", flexDirection: "column", "&:hover": { border: "2px solid white" }}}>
+      <Card
+        sx={{
+          padding: 3,
+          borderRadius: 2,
+          width: 1,
+          display: "flex",
+          flexDirection: "column",
+          "&:hover": { border: "2px solid white" },
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -129,10 +137,14 @@ function History({ data = [] }) {
               border: 1,
               borderRadius: 10,
               padding: 1,
-              gap: 1
+              gap: 1,
             }}
           >
-              <img src={duration} alt="pencil Icon" style={{ width: "24px", height: "24px" }} />
+            <img
+              src={duration}
+              alt="pencil Icon"
+              style={{ width: "24px", height: "24px" }}
+            />
             <Typography
               variant="body2"
               component="p"
@@ -310,8 +322,11 @@ function History({ data = [] }) {
       </Dialog> */}
 
       {/* Modal part */}
-      <Dialog open={modalSwitch} onClose={handleClickClose} maxWidth="md" 
-        PaperProps={{sx: { borderRadius: 3 }}}
+      <Dialog
+        open={modalSwitch}
+        onClose={handleClickClose}
+        maxWidth="md"
+        PaperProps={{ sx: { borderRadius: 3 } }}
       >
         <DialogContent>
           {/* Close icon*/}
@@ -324,7 +339,14 @@ function History({ data = [] }) {
           </DialogTitle>
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <Box sx={{ display: "flex", marginTop: 2, marginBottom: 5, gap: "20px" }}>
+            <Box
+              sx={{
+                display: "flex",
+                marginTop: 2,
+                marginBottom: 5,
+                gap: "20px",
+              }}
+            >
               <Box>
                 <Typography variant="h6">Start</Typography>
                 <DatePicker

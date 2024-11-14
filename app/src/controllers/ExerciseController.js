@@ -79,6 +79,7 @@ const getExercise = async (id, allInfo = true) => {
     return exercise;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getExerciseTypes = async (id, allInfo = true) => {
@@ -98,6 +99,7 @@ const getExerciseTypes = async (id, allInfo = true) => {
     return typeArray;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getExerciseGoals = async (id, allInfo = true) => {
@@ -117,6 +119,7 @@ const getExerciseGoals = async (id, allInfo = true) => {
     return goalsArray;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getExerciseMuscleGroups = async (id, allInfo = true) => {
@@ -136,6 +139,7 @@ const getExerciseMuscleGroups = async (id, allInfo = true) => {
     return muscleGroupsArray;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 export {

@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { Box, Backdrop, Typography } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
-import ProgramLoading from "../assets/ProgramLoading.gif";
+import ProgramLoading from "/assets/ProgramLoading.gif";
 
 export const LoadingBackdrop = ({ loading = false, generating = false }) => {
   const [messageIndex, setMessageIndex] = useState(0);
@@ -19,7 +19,9 @@ export const LoadingBackdrop = ({ loading = false, generating = false }) => {
     if (!generating) return;
 
     const interval = setInterval(() => {
-      setMessageIndex((prevIndex) => (prevIndex + 1) % programGenerationMessages.length);
+      setMessageIndex(
+        (prevIndex) => (prevIndex + 1) % programGenerationMessages.length
+      );
     }, 10000);
 
     // Cleanup interval on component unmount or when generating becomes false
@@ -32,7 +34,7 @@ export const LoadingBackdrop = ({ loading = false, generating = false }) => {
       sx={{
         color: "#fff",
         backgroundColor: "rgba(0, 0, 0, 0.8)",
-        zIndex: (theme) => theme.zIndex.drawer + 1 
+        zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
     >
       <Box textAlign="center">

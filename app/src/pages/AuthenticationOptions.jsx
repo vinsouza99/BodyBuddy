@@ -3,8 +3,8 @@ import { Box, Button, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
 import { Onboarding } from "../components/Onboarding";
-import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
-import CircleCheckIcon from "../assets/icon-circle-check.svg";
+import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
+import CircleCheckIcon from "/assets/icon-circle-check.svg";
 
 export function AuthenticationOptions() {
   return (

@@ -1,12 +1,18 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button } from '@mui/material';
-import { GadgetBase } from './GadgetBase';
-import { MetricCard } from './routine-session/MetricCard';
+import { Box, Typography, Button } from "@mui/material";
+import { GadgetBase } from "./GadgetBase";
+import { MetricCard } from "./routine-session/MetricCard";
 import { WeekPicker } from "./WeekPicker";
-import { parseISO, startOfWeek, addWeeks, isBefore, isSameWeek } from 'date-fns';
-import flame1 from '../assets/flame-solid_1.png';
-import flame2 from '../assets/flame-solid_2.png';
+import {
+  parseISO,
+  startOfWeek,
+  addWeeks,
+  isBefore,
+  isSameWeek,
+} from "date-fns";
+import flame1 from "/assets/flame-solid_1.png";
+import flame2 from "/assets/flame-solid_2.png";
 
 export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
   const navigate = useNavigate();
@@ -18,20 +24,22 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
     // console.log(history);
 
     // Sort history by date in ascending order
-    const sortedHistory = history.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const sortedHistory = history.sort(
+      (a, b) => new Date(a.date) - new Date(b.date)
+    );
 
     let currentStreak = 0;
     let maxStreak = 0;
     let ongoingStreak = 0;
     let currentStreakActive = true;
     let weekRecords = [];
-  
+
     // Group revords by week
     sortedHistory.forEach((entry) => {
       const date = parseISO(entry.date);
       const weekStart = startOfWeek(date, { weekStartsOn: 1 });
-      const weekKey = weekStart.toISOString(); 
-  
+      const weekKey = weekStart.toISOString();
+
       // Initialize the set if it doesn't exist
       if (!weekRecords[weekKey]) {
         weekRecords[weekKey] = new Set();
@@ -42,10 +50,15 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
     });
 
     // Fill in missing weeks
-    const oldestWeek = startOfWeek(parseISO(Object.keys(weekRecords)[0]), { weekStartsOn: 1 });
+    const oldestWeek = startOfWeek(parseISO(Object.keys(weekRecords)[0]), {
+      weekStartsOn: 1,
+    });
     const currentWeek = startOfWeek(new Date(), { weekStartsOn: 1 });
     let weekPointer = oldestWeek;
-    while (isBefore(weekPointer, currentWeek) || isSameWeek(weekPointer, currentWeek, { weekStartsOn: 1 })) {
+    while (
+      isBefore(weekPointer, currentWeek) ||
+      isSameWeek(weekPointer, currentWeek, { weekStartsOn: 1 })
+    ) {
       const weekKey = weekPointer.toISOString();
       if (!weekRecords[weekKey]) {
         weekRecords[weekKey] = new Set();
@@ -54,8 +67,9 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
     }
 
     // Calculate streaks
-    const weeks = Object.keys(weekRecords)
-    .sort((a, b) => new Date(b) - new Date(a));
+    const weeks = Object.keys(weekRecords).sort(
+      (a, b) => new Date(b) - new Date(a)
+    );
 
     for (let i = 0; i < weeks.length; i++) {
       if (weekRecords[weeks[i]].size >= 3) {
@@ -72,7 +86,7 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
       }
     }
     return { currentStreak, maxStreak };
-  }
+  };
   const streak = calculateCurrentAndMaxStreak(history);
   // console.log(`Current Streak: ${streak.currentStreak}`);
   // console.log(`Best Streak: ${streak.maxStreak}`);
@@ -82,9 +96,9 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
     <GadgetBase>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
           gap: 10,
         }}
       >
@@ -93,26 +107,32 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
           <MetricCard
             title="Week Streaks"
             value={userInfo ? streak.currentStreak : 0}
-            color="black"/>
+            color="black"
+          />
         </Box>
         <Box>
           <img src={flame2} alt="Flame 2"></img>
           <MetricCard
             title="Best Streaks"
             value={userInfo ? streak.maxStreak : 0}
-            color="black" />
+            color="black"
+          />
         </Box>
       </Box>
-      <WeekPicker scheduledDates={scheduledDates} scheduledDatesBorderColor={"transparent"} scheduledDatesBgColor={"#B8E8B1"}/>
+      <WeekPicker
+        scheduledDates={scheduledDates}
+        scheduledDatesBorderColor={"transparent"}
+        scheduledDatesBgColor={"#B8E8B1"}
+      />
       <Typography>
         Exercise at least 3 times a week to keep your streak not reset
       </Typography>
       <Button
         variant="contained"
-        onClick={() => navigate('/training')}
-        // sx={{ 
+        onClick={() => navigate("/training")}
+        // sx={{
         //   width: '50%',
-        // }} 
+        // }}
       >
         Today&apos;s Routine
       </Button>
