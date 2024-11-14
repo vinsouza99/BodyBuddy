@@ -29,6 +29,7 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
     if (Number(response_program.status) !== 201) {
       throw new Error("Failed to insert program info");
     }
+    console.log("Program created successfully");
 
     // Insert routine data into the database
     for (const routine_item of parsedContent.routine) {
@@ -40,6 +41,7 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
         throw new Error("Failed to insert routine info");
       }
     }
+    console.log("Routine created successfully");
 
     // Insert program_routine data into the database
     await Promise.all(
