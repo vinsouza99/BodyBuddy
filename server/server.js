@@ -4,9 +4,8 @@ import dotenv from "dotenv";
 import swaggerSetup from "./swagger.js";
 import routes from "./routes/index.js";
 import cookieParser from "cookie-parser";
-import { Buffer } from "buffer";
-
-global.Buffer = Buffer;
+// import { Buffer } from "buffer";
+// global.Buffer = Buffer;
 
 dotenv.config();
 
@@ -17,11 +16,14 @@ swaggerSetup(app);
 
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:3000", "https://bodybuddy-umber.vercel.app"];
+// const allowedOrigins = ["http://localhost:3000", "https://bodybuddy-umber.vercel.app"];
+const allowedOrigins = ["http://localhost:3000", /^https:\/\/bodybuddy.*\.vercel\.app$/];
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.some((allowed) =>
+        typeof allowed === "string" ? allowed === origin : allowed.test(origin)
+      )) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
