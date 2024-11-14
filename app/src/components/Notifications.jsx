@@ -17,7 +17,6 @@ import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import CloseIcon from "@mui/icons-material/Close";
 import filledNotificationIcon from "../assets/NotificationsFilled.png"; // Adjust path based on folder structure
-import NewbieNoMoreIcon from "../assets/Badge_NewbieNoMoreLight.svg";
 
 // Notifications Icon in Header
 function Notifications() {
@@ -113,15 +112,7 @@ function Notifications() {
       }
     }
   };
-  const getNotificationIcon = (icon_id) => {
-    switch (icon_id) {
-      case 0: {
-        return NewbieNoMoreIcon;
-      }
-      default:
-        return NewbieNoMoreIcon;
-    }
-  };
+
   return (
     <>
       <Box role="presentation" onClick={() => toggleDrawer()}>
@@ -196,7 +187,7 @@ function Notifications() {
                         <img
                           width="50px"
                           alt="Notification Icon"
-                          src={getNotificationIcon(notification.icon_id)}
+                          src={notification.icon_url}
                         />
                       </ListItemAvatar>
                       <ListItemText

@@ -80,7 +80,12 @@ const getAchievement = async (achievement_id) => {
       `${API_ROUTE}/${API_ACHIEVEMENT_ROUTE}/${achievement_id}`
     );
     const data = await response.data;
-    return new Achievement(data.id, data.name, data.description);
+    return new Achievement(
+      data.id,
+      data.name,
+      data.description,
+      data.badge_url
+    );
   } catch (e) {
     console.error(e);
   }

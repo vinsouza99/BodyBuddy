@@ -3,6 +3,6 @@ export default class Achievement {
     this.id = id;
     this.name = name;
     this.description = description;
-    this.badge_url = badge_url;
+    this.badge_url = badge_url ? badge_url : "";
   }
 }

@@ -52,6 +52,7 @@ import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
 import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { getAchievement } from "../controllers/LocalTablesController.js";
 // Style Object (for sx prop)
 const videoStyles = {
   width: "100%",
@@ -930,13 +931,14 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
           1,
           new Date().toISOString()
         );
-
+        const achievement = await getAchievement(1);
         // Send notification
         sendNotification({
           user_id: user.id,
-          title:'Congratulations! You have earned "Newbie No More" badge.',
-          message: 'You complete your first workout Routine and earned "Newbie No More".',
-          icon_id: 1,
+          title: 'Congratulations! You have earned "Newbie No More" badge.',
+          message:
+            'You complete your first workout Routine and earned "Newbie No More".',
+          icon_url: achievement.badge_url,
         });
         console.log('"Newbie No More" badge earned!', response);
       } else {
