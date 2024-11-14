@@ -20,8 +20,14 @@ app.use(express.json());
 const allowedOrigins = ["http://localhost:3000", "https://bodybuddy-umber.vercel.app/"];
 app.use(
   cors({
-    origin: allowedOrigins, // Clarify client URL (origin)
-    credentials: true, // Allow cookies
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   })
 );
 app.use(express.urlencoded({ extended: true }));
