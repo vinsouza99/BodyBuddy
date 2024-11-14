@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 // import GoogleIcon from "@mui/icons-material/Google";
-import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
+import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
@@ -95,7 +95,14 @@ export const SignIn = (props) => {
       </Grid>
 
       {/* Right section with sign-in form */}
-      <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <Grid
+        size={{ xs: 12, md: 6 }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <Container
           sx={{
             display: "flex",
@@ -188,11 +195,7 @@ export const SignIn = (props) => {
               }}
             /> */}
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  sx={{ mt: 1, mb: 2 }}
-                >
+                <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
                   Sign In
                 </Button>
               </Box>

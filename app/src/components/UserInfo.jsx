@@ -4,24 +4,30 @@ import Box from "@mui/material/Box";
 import PropTypes from "prop-types";
 import { WallOfFame } from "./WallOfFame";
 import { UserProgressBar } from "./UserProgressBar";
-import pencil from "../assets/icon-pencil.svg";
+import pencil from "/assets/icon-pencil.svg";
 
 function UserInfo({ user = {} }) {
-
   // Format user birthday
   const formattedBirthday = user?.birthday
-  ? new Date(user.birthday).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  })
-  : "No birthday set";
+    ? new Date(user.birthday).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "No birthday set";
 
   console.log(user);
   console.log(user.name);
   return (
     <>
-      <Card sx={{ padding: 3, borderRadius: 2, width: 1, "&:hover": { border: "2px solid white" }}}>
+      <Card
+        sx={{
+          padding: 3,
+          borderRadius: 2,
+          width: 1,
+          "&:hover": { border: "2px solid white" },
+        }}
+      >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid sx={{ display: "flex", alignItems: "center" }}>
             <Box>
@@ -49,7 +55,11 @@ function UserInfo({ user = {} }) {
             </Box>
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <img src={pencil} alt="pencil Icon" style={{ width: "24px", height: "24px" }} />
+            <img
+              src={pencil}
+              alt="pencil Icon"
+              style={{ width: "24px", height: "24px" }}
+            />
           </Box>
         </Box>
 
@@ -68,10 +78,8 @@ function UserInfo({ user = {} }) {
               flexDirection: "column",
             }}
           >
-            <Typography sx={{ fontWeight: "800" }}>
-              Birthday
-            </Typography>
-            <Typography>{formattedBirthday}</Typography>         
+            <Typography sx={{ fontWeight: "800" }}>Birthday</Typography>
+            <Typography>{formattedBirthday}</Typography>
           </Grid>
           <Grid
             size={{ md: 6 }}
@@ -82,9 +90,7 @@ function UserInfo({ user = {} }) {
               flexDirection: "column",
             }}
           >
-            <Typography sx={{ fontWeight: "800" }}>
-              Weight
-            </Typography>
+            <Typography sx={{ fontWeight: "800" }}>Weight</Typography>
             <Typography>{user?.weight} lbs</Typography>
           </Grid>
         </Grid>
@@ -113,8 +119,8 @@ function UserInfo({ user = {} }) {
           <Typography>
             {Array.isArray(user?.schedule)
               ? user.schedule.join(", ")
-              : user?.schedule || "No availability set"}      
-          </Typography>  
+              : user?.schedule || "No availability set"}
+          </Typography>
         </Box>
 
         <Grid sx={{ marginTop: 2, paddingTop: 2, borderTop: 1 }}>

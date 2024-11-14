@@ -11,7 +11,7 @@ import {
   Skeleton,
 } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
-import ProgramLoading from "../assets/ProgramLoading.gif";
+import ProgramLoading from "/assets/ProgramLoading.gif";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";

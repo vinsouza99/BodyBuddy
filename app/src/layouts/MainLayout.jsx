@@ -6,11 +6,13 @@ import theme from "../theme";
 import { DashboardLayout } from "@toolpad/core/DashboardLayout";
 import { AppProvider } from "@toolpad/core/AppProvider";
 import { useAuth } from "../utils/AuthProvider.jsx";
-import DashboardIcon from "../assets/icon-dashboard.svg";
-import TrainingIcon from "../assets/icon-training.svg";
-import LearningIcon from "../assets/icon-learning.svg";
-import ProfileIcon from "../assets/icon-profile.svg";
+import DashboardIcon from "/assets/icon-dashboard.svg";
+import TrainingIcon from "/assets/icon-training.svg";
+import LearningIcon from "/assets/icon-learning.svg";
+import ProfileIcon from "/assets/icon-profile.svg";
 import Notifications from "../components/Notifications.jsx";
+import bodybuddyLogoDesktop from "/assets/bodybuddy.svg";
+import bodybuddyLogoMobile from "/assets/bodybuddy_logo_color.svg";
 import { getUser } from "../controllers/UserController.js";
 import "./MainLayout.css";
 
@@ -104,9 +106,7 @@ export const MainLayout = () => {
   const isMobile = useMediaQuery("(max-width:600px)");
 
   // Set logo source based on screen size
-  const logoSource = isMobile
-    ? "./src/assets/bodybuddy_logo_color.svg"
-    : "./src/assets/bodybuddy.svg";
+  const logoSource = isMobile ? bodybuddyLogoMobile : bodybuddyLogoDesktop;
 
   // Authentication logic from Toolpad Core
   const authentication = useMemo(() => {
