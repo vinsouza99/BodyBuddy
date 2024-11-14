@@ -16,7 +16,7 @@ import "./Notifications.css";
 import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import CloseIcon from "@mui/icons-material/Close";
-import filledNotificationIcon from "../assets/NotificationsFilled.png"; // Adjust path based on folder structure
+import filledNotificationIcon from "/assets/NotificationsFilled.png"; // Adjust path based on folder structure
 
 // Notifications Icon in Header
 function Notifications() {

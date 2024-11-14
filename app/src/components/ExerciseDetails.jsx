@@ -1,20 +1,22 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
-import { Box, List, ListItem, Typography, Divider } from "@mui/material"
-import FocusAreaIcon from "../assets/icon-focus-area.svg";
-import GoalIcon from "../assets/icon-goal.svg";
+import { Box, List, ListItem, Typography, Divider } from "@mui/material";
+import FocusAreaIcon from "/assets/icon-focus-area.svg";
+import GoalIcon from "/assets/icon-goal.svg";
 
 export const ExerciseDetails = ({ exercise } = {}) => {
-  const [executionSteps, setExecutionSteps] = useState('');
-  const [focusAreas, setFocusAreas] = useState('');
-  const [goals, setGoals] = useState('');
+  const [executionSteps, setExecutionSteps] = useState("");
+  const [focusAreas, setFocusAreas] = useState("");
+  const [goals, setGoals] = useState("");
 
-  useEffect (() => {
+  useEffect(() => {
     if (!exercise || Object.keys(exercise).length === 0) return;
     console.log(exercise);
-    const focusAreas = exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
+    const focusAreas =
+      exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
     setFocusAreas(focusAreas);
-    const goals = exercise?.goals?.map((goal) => goal.name).join(", ") || "None";
+    const goals =
+      exercise?.goals?.map((goal) => goal.name).join(", ") || "None";
     setGoals(goals);
     const executionSteps = exercise?.execution_steps || [];
     setExecutionSteps(executionSteps);
@@ -24,12 +26,12 @@ export const ExerciseDetails = ({ exercise } = {}) => {
   return (
     <Box
       sx={{
-        display: "flex", 
-        flexDirection: "column", 
-        gap: 2, 
-        width: "100%"}}
-    > 
-
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+        width: "100%",
+      }}
+    >
       <Divider
         sx={{
           backgroundColor: "background.light",
@@ -41,10 +43,7 @@ export const ExerciseDetails = ({ exercise } = {}) => {
       <List>
         {executionSteps.length > 0
           ? executionSteps.map((step, index) => (
-              <ListItem
-                sx={{ padding: "0", marginBottom: "1rem" }}
-                key={index}
-              >
+              <ListItem sx={{ padding: "0", marginBottom: "1rem" }} key={index}>
                 <Box
                   component="span"
                   sx={{
@@ -65,8 +64,7 @@ export const ExerciseDetails = ({ exercise } = {}) => {
                 <Typography component="span">{step}</Typography>
               </ListItem>
             ))
-          : ""
-        }
+          : ""}
       </List>
 
       <Box
@@ -94,7 +92,11 @@ export const ExerciseDetails = ({ exercise } = {}) => {
             gap: "0.5rem",
           }}
         >
-          <img src={FocusAreaIcon} alt="Focus Area Icon" style={{ width: "24px", height: "24px" }} />
+          <img
+            src={FocusAreaIcon}
+            alt="Focus Area Icon"
+            style={{ width: "24px", height: "24px" }}
+          />
           <Box>
             <Box
               component="p"
@@ -131,7 +133,11 @@ export const ExerciseDetails = ({ exercise } = {}) => {
             gap: "0.5rem",
           }}
         >
-          <img src={GoalIcon} alt="Goal Icon" style={{ width: "24px", height: "24px" }} />
+          <img
+            src={GoalIcon}
+            alt="Goal Icon"
+            style={{ width: "24px", height: "24px" }}
+          />
           <Box>
             <Box
               component="p"
@@ -154,8 +160,8 @@ export const ExerciseDetails = ({ exercise } = {}) => {
         </Box>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
 ExerciseDetails.propTypes = {
   exercise: PropTypes.object,
