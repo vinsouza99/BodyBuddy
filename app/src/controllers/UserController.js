@@ -43,6 +43,7 @@ const getUser = async (authUser, allInfo = true) => {
     return user;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 

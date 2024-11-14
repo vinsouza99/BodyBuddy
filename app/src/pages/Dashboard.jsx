@@ -81,9 +81,17 @@ export const Dashboard = (props) => {
     loadUserdata();
 
     const loadExerciseData = async () => {
-      const response = await getExercisesThumbnails();
-      setExerciseInfo(response);
-      setExerciseInfoLoaded(true);
+      try {
+        const response = await getExercisesThumbnails();
+        setExerciseInfo(response);
+        setExerciseInfoLoaded(true);
+      } catch (e) {
+        console.error(e);
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading exercises' information... try again later.",
+        });
+      }
     };
     loadExerciseData();
   }, []);
