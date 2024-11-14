@@ -52,8 +52,15 @@ const CreateProgram = () => {
 
   useEffect(() => {
     async function getData() {
-      setPrimaryGoalsOptions(await getAllGoals()); //uncomment this line when database configuration is done
-      setIntensityOptions(await getAllIntensities());
+      try {
+        setPrimaryGoalsOptions(await getAllGoals()); //uncomment this line when database configuration is done
+        setIntensityOptions(await getAllIntensities());
+      } catch (e) {
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading form information... try again later.",
+        });
+      }
     }
     getData();
   }, []);
@@ -499,7 +506,7 @@ const CreateProgram = () => {
       weight_unit: weightUnit,
     };
     if (user) {
-      navigate("/dashboard", {state : formResponse});
+      navigate("/dashboard", { state: formResponse });
       // navigate("/training", {
       //   state: { userResponses: formResponse },
       // });
@@ -575,7 +582,10 @@ const CreateProgram = () => {
               <Box component={"div"} display={step == 6 ? "block" : "none"}>
                 <FormControl>
                   <FormLabel id="personalInfoLabel">
-                    <Typography variant="h4">Last but not least! Please input your date of birth and weight</Typography>
+                    <Typography variant="h4">
+                      Last but not least! Please input your date of birth and
+                      weight
+                    </Typography>
                   </FormLabel>
 
                   <Grid
@@ -642,7 +652,9 @@ const CreateProgram = () => {
                         margin: "1rem 0",
                       }}
                     >
-                      These factors influence the starting point, caloric needs, and the intensity of the plan to ensure it's realistic and sustainable.
+                      These factors influence the starting point, caloric needs,
+                      and the intensity of the plan to ensure it's realistic and
+                      sustainable.
                     </Typography>
                   </Grid>
                 </FormControl>

@@ -58,6 +58,7 @@ const getUserSettings = async (id) => {
     return new UserSettings(goal, intensity);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getUserProgress = async (id) => {
@@ -75,6 +76,7 @@ const getUserProgress = async (id) => {
     return progress;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -98,6 +100,7 @@ const createUser = async (userObj) => {
     return user;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -132,6 +135,7 @@ const updateUser = async (user_id, updatedUserObj) => {
     return response;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const updateUserSettings = async (user_id, updatedSettingsObj) => {
@@ -147,6 +151,7 @@ const updateUserSettings = async (user_id, updatedSettingsObj) => {
     return response;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const updateUserProgress = async (user_id, updatedProgressObj) => {
@@ -158,6 +163,7 @@ const updateUserProgress = async (user_id, updatedProgressObj) => {
     return response;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getUserSchedule = async (user_id) => {
@@ -168,6 +174,7 @@ const getUserSchedule = async (user_id) => {
     return response.data.data.map((info) => info.day);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const createUserSchedule = async (user_id, scheduleArray) => {
@@ -185,6 +192,7 @@ const createUserSchedule = async (user_id, scheduleArray) => {
     });
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -203,6 +211,7 @@ const updateUserSchedule = async (
     });
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getUserHistory = async (user_id) => {
@@ -219,6 +228,7 @@ const getUserHistory = async (user_id) => {
     return history;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -247,6 +257,7 @@ const getUserAchievements = async (user_id) => {
     return userAchievements;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const addUserAchievement = async (user_id, achievement_id, earned_at) => {
@@ -258,6 +269,7 @@ const addUserAchievement = async (user_id, achievement_id, earned_at) => {
     return response;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getUserAccumulatedStats = async (user_id) => {
@@ -269,6 +281,7 @@ const getUserAccumulatedStats = async (user_id) => {
     return response.data;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const updateUserAccumulatedStats = async (user_id, date, minutes, calories) => {
@@ -280,6 +293,7 @@ const updateUserAccumulatedStats = async (user_id, date, minutes, calories) => {
     return response.data;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 export {

@@ -32,6 +32,7 @@ import axiosClient from "../utils/axiosClient";
 import theme from "../theme";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
+import { getAllUserPrograms } from "../controllers/ProgramController.js";
 
 export const Dashboard = (props) => {
   const { user } = useAuth();
@@ -86,7 +87,6 @@ export const Dashboard = (props) => {
         setExerciseInfo(response);
         setExerciseInfoLoaded(true);
       } catch (e) {
-        console.error(e);
         navigate("/error", {
           errorDetails:
             "There was an error while loading exercises' information... try again later.",
@@ -106,7 +106,7 @@ export const Dashboard = (props) => {
     // Check if the user has an acive program
     const fetchPrograms = async () => {
       try {
-        const response = await axiosClient.get(`programs/user/${user.id}`);
+        const response = await getAllUserPrograms(user.id);
         if (Number(response.status) === 200) {
           const programs = response.data.data || [];
           // const hasIncompleteProgram = programs.rows.some(

@@ -19,6 +19,7 @@ const getAllGoals = async () => {
     return data.map((goal) => new Goal(goal.id, goal.name, goal.description));
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getGoal = async (goal_id) => {
@@ -30,6 +31,7 @@ const getGoal = async (goal_id) => {
     return new Goal(data.id, data.name, data.description);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -42,6 +44,7 @@ const getAllIntensities = async () => {
     return data.map((intensity) => new Intensity(intensity.id, intensity.name));
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getIntensity = async (intensity_id) => {
@@ -53,6 +56,7 @@ const getIntensity = async (intensity_id) => {
     return new Intensity(data.id, data.name);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getAllAchievements = async () => {
@@ -72,6 +76,7 @@ const getAllAchievements = async () => {
     );
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getAchievement = async (achievement_id) => {
@@ -88,6 +93,7 @@ const getAchievement = async (achievement_id) => {
     );
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -100,6 +106,7 @@ const getAllExerciseTypes = async () => {
     );
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -112,6 +119,7 @@ const getExerciseType = async (type_id) => {
     return new ExerciseType(type.id, type.name, type.default_duration);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -126,6 +134,7 @@ const getAllMuscleGroups = async () => {
     );
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getMuscleGroup = async (muscle_group_id) => {
@@ -137,6 +146,7 @@ const getMuscleGroup = async (muscle_group_id) => {
     return new MuscleGroup(muscleGroup.id, muscleGroup.name);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
