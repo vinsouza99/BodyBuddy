@@ -39,6 +39,7 @@ import calvinPicture from "../assets/teammembers/calvin.png";
 import jasonPicture from "../assets/teammembers/jason.png";
 import violaPicture from "../assets/teammembers/viola.png";
 import liezelPicture from "../assets/teammembers/liezel.png";
+import normalCheck from "../assets/icon-normal-check.svg";
 
 import "./Landing.css";
 
@@ -84,13 +85,13 @@ export function Landing() {
       name: "Yosuke Hanaoka",
       picture: yosukePicture,
       linkedin: "",
-      role: "Project Manager / Full Stack Developer",
+      role: "Project Manager / / Full Stack Developer",
     },
     {
       name: "Vinicius Souza",
       picture: vinPicture,
       linkedin: "",
-      role: "Lead Developer / Full Stack Developer",
+      role: "Lead Developer / / Full Stack Developer",
     },
     ,
     {
@@ -100,7 +101,7 @@ export function Landing() {
       role: "Frontend Developer",
     },
     {
-      name: "Teru Mori",
+      name: "Terumasa Mori",
       picture: teruPicture,
       linkedin: "",
       role: "Frontend Developer",
@@ -109,13 +110,13 @@ export function Landing() {
       name: "Trang Nguyen",
       picture: taraPicture,
       linkedin: "",
-      role: "Co-PM / UI/UX Designer",
+      role: "Co-PM / / UI/UX Designer",
     },
     {
       name: "Calvin Tsai",
       picture: calvinPicture,
       linkedin: "",
-      role: "Lead Designer / UI/UX Designer",
+      role: "Lead Designer / / UI/UX Designer",
     },
     {
       name: "Jason Yang",
@@ -227,7 +228,7 @@ export function Landing() {
             </Box>
             <Box>
               <Link to="/enter">
-                <Button variant="contained">Sign Up</Button>
+                <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up</Button>
               </Link>
             </Box>
           </Box>
@@ -271,7 +272,7 @@ export function Landing() {
                 </Typography>
                 <Box display="block">
                   <Link to="/enter">
-                    <Button variant="contained">Sign Up For Free</Button>
+                    <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up For Free</Button>
                   </Link>
                 </Box>
               </Box>
@@ -298,32 +299,36 @@ export function Landing() {
                   xs={12} // 1 column on extra-small and small screens
                   md={4} // 3 columns on medium and larger screens
                 >
-                  <Card className="feature-card">
-                    <CardContent>
-                      <Box sx={{ width: "100%" }}>
-                        <img
-                          src={feature1IconSrc}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            objectFit: "contain",
-                          }}
-                        />
-                      </Box>
-                      <Typography variant="h5">Motion tracking</Typography>
-                      <Typography variant="body2">
-                        AI analysis checks your form in real-time, ensuring
-                        correct posture for a safe and effective workout{" "}
-                      </Typography>
-                    </CardContent>
-                  </Card>
+                  {/* <Box className="card-background"> */}
+                    <Card className="feature-card"
+                      >                    
+                      <CardContent>
+                        <Box sx={{ width: "100%" }}>
+                          <img
+                            src={feature1IconSrc}
+                            sx={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "contain",
+                            }}
+                          />
+                        </Box>
+                        <Typography variant="h5">Motion tracking</Typography>
+                        <Typography variant="body2" padding={1} paddingBottom={0} textAlign="left">
+                          AI analysis checks your form in real-time, ensuring
+                          correct posture for a safe and effective workout{" "}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  {/* </Box> */}
                 </Grid>
                 <Grid
                   item
                   xs={12} // 1 column on extra-small and small screens
                   md={4} // 3 columns on medium and larger screens
                 >
-                  <Card className="feature-card">
+                  <Card className="feature-card"
+                        >
                     <CardContent>
                       <Box sx={{ width: "100%" }}>
                         <img
@@ -338,7 +343,7 @@ export function Landing() {
                       <Typography variant="h5">
                         Personalized workout plan
                       </Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2" padding={1} paddingBottom={0} textAlign="left">
                         AI analysis helps you create personalized workout plans
                         based on your fitness level and goals
                       </Typography>
@@ -350,7 +355,8 @@ export function Landing() {
                   xs={12} // 1 column on extra-small and small screens
                   md={4} // 3 columns on medium and larger screens
                 >
-                  <Card className="feature-card">
+                  <Card className="feature-card"
+                        >
                     <CardContent>
                       <Box sx={{ width: "100%" }}>
                         <img
@@ -363,7 +369,7 @@ export function Landing() {
                         />
                       </Box>
                       <Typography variant="h5">Progress tracking</Typography>
-                      <Typography variant="body2">
+                      <Typography variant="body2" padding={1} paddingBottom={0} textAlign="left">
                         Progress dashboard keeps you motivated, making it easier
                         to stay on track and maintain a regular workout routine,
                         even when exercising alone!
@@ -396,165 +402,215 @@ export function Landing() {
           </Grid>
         </Box>
         <Box component="section" id="pricing" ref={pricingRef}>
-          <Grid container gap={5}>
+          <Grid container spacing={5} alignItems="stretch">
             <Container>
-              <Typography variant="h2">Our Offers</Typography>
+              <Typography variant="h2" textAlign="center" marginBottom={4}>
+                Our Offers
+              </Typography>
             </Container>
             <Container>
-              <Grid container spacing={2} justifyContent={"center"}>
-                <Grid
-                  item
-                  xs={12} // 1 column on extra-small and small screens
-                  md={4} // 3 columns on medium and larger screens
-                >
-                  <Card className="feature-card">
-                    <CardContent>
-                      <Typography
-                        variant="h4"
-                        fontSize="1.2rem"
-                        fontWeight="700"
-                      >
+              <Grid container spacing={3} justifyContent="center" alignItems="stretch">
+                {/* Starter Card */}
+                <Grid item xs={12} md={4}>
+                  <Card
+                    className="feature-card"
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography variant="h4" fontSize="1.2rem" fontWeight="700" margin={1}>
                         Starter
                       </Typography>
-                      <Typography variant="h5" fontSize="1.8rem">
+                      <Typography variant="h5" fontSize="1.8rem" margin={2}>
                         Free
                       </Typography>
-                      <Typography variant="body3">
+                      <Typography variant="body3" marginTop={1}>
                         Everything you need to get started
                       </Typography>
-                      <List dense="true">
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                      <List dense>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="2 months exercise plan generation" />
                         </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="20 exercises unlocked" />
                         </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="2GB storage for recording videos" />
                         </ListItem>
                       </List>
-                      <Box>
+                      <Box sx={{ marginTop: "auto" }}>
                         <Link to="/enter">
-                          <Button variant="contained">Sign Up</Button>
+                          <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up</Button>
                         </Link>
                       </Box>
-                      <Typography variant="body3">Unlimited Trial</Typography>
+                      <Typography variant="body3" marginTop={1}>
+                        Unlimited Trial
+                      </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid
-                  item
-                  xs={12} // 1 column on extra-small and small screens
-                  md={4} // 3 columns on medium and larger screens
-                >
-                  <Card className="feature-card">
-                    <CardContent>
-                      <Typography
-                        variant="h4"
-                        fontSize="1.2rem"
-                        fontWeight="700"
-                      >
+
+                {/* Pro Card */}
+                <Grid item xs={12} md={4}>
+                  <Card
+                    className="feature-card"
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography variant="h4" fontSize="1.2rem" fontWeight="700" margin={1}>
                         Pro
                       </Typography>
                       <Box>
-                        <Typography variant="h5" fontSize="1.8rem">
+                        <Typography variant="h5" fontSize="1.8rem" marginTop={1}>
                           CAD$4.99
                         </Typography>
                         <Typography variant="body3">/user/month</Typography>
                       </Box>
-                      <Typography variant="body3">
+                      <Typography variant="body3" marginTop={1}>
                         Explore all features without limit
                       </Typography>
-                      <List dense="true">
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                      <List dense>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="Unlimited exercise plan generation" />
                         </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="Unlimited exercises unlocked" />
                         </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="Unlimited storage for recording videos" />
                         </ListItem>
                       </List>
-                      <Box>
+                      <Box sx={{ marginTop: "auto" }}>
                         <Link to="/enter">
-                          <Button variant="contained">Sign Up</Button>
+                          <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up</Button>
                         </Link>
                       </Box>
-                      <Typography variant="body3">
+                      <Typography variant="body3" marginTop={1}>
                         Comes with 21-day trial
                       </Typography>
                     </CardContent>
                   </Card>
                 </Grid>
-                <Grid
-                  item
-                  xs={12} // 1 column on extra-small and small screens
-                  md={4} // 3 columns on medium and larger screens
-                >
-                  <Card className="feature-card">
-                    <CardContent>
-                      <Typography
-                        variant="h4"
-                        fontSize="1.2rem"
-                        fontWeight="700"
-                      >
+
+                {/* Enterprise Card */}
+                <Grid item xs={12} md={4}>
+                  <Card
+                    className="feature-card"
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    <CardContent
+                      sx={{
+                        flex: 1,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        textAlign: "center",
+                      }}
+                    >
+                      <Typography variant="h4" fontSize="1.2rem" fontWeight="700" margin={1}>
                         Enterprise
                       </Typography>
-                      <Typography variant="h5" fontSize="1.8rem">
-                        Custom Needs
-                      </Typography>
-                      <Typography variant="body3">
+                      <Box>
+                        <Typography variant="h5" fontSize="1.8rem" margin={2}>
+                          Custom Needs
+                        </Typography>
+                        <Typography variant="body3"></Typography>
+                      </Box>
+                      <Typography variant="body3" marginTop={1}>
                         Valuable custom package for organization
                       </Typography>
-                      <List dense="true">
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                      <List dense>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="Custom group exercise plan" />
                         </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="Progress tracking and report for organization" />
                         </ListItem>
-                        <ListItem>
-                          <ListItemIcon>
-                            <CheckIcon />
-                          </ListItemIcon>
+                        <ListItem sx={{ paddingLeft: 1, paddingRight: 1 }}>
+                          <img
+                            src={normalCheck}
+                            alt="normal check"
+                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                          />
                           <ListItemText primary="Stay motivated and healthy together!" />
                         </ListItem>
                       </List>
-                      <Box>
-                        <Link
-                          color="primary"
-                          to="#contact"
-                          onClick={() => scrollToSection(contactRef)}
-                        >
-                          <Button variant="contained">Contact us</Button>
+                      <Box sx={{ marginTop: "auto" }}>
+                        <Link to="#contact" onClick={() => scrollToSection(contactRef)}>
+                          <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Contact us</Button>
                         </Link>
                       </Box>
-                      <Typography variant="body3">
+                      <Typography variant="body3" marginTop={1}>
                         Always happy to chat!
                       </Typography>
                     </CardContent>
@@ -570,13 +626,21 @@ export function Landing() {
             <Grid container spacing={2} justifyContent={"center"}>
               {teamMembers.slice(0, 5).map((member, index) => (
                 <Grid item xs={6} md={3} key={index}>
-                  <Container>
+                  <Container
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center",
+                      marginBottom: 3,
+                    }}>
                     <Box
                       sx={{
                         width: "120px",
                         aspectRatio: "1/1",
-                        borderRadius: "10px",
+                        borderRadius: "20px",
                         overflow: "hidden",
+                        boxShadow: 3,
                       }}
                     >
                       <img
@@ -589,17 +653,22 @@ export function Landing() {
                         }}
                       />
                     </Box>
-                    <Box display={"block"}>
-                      <Link to={member.linkedin}>
-                        <Box sx={{ display: "flex", alignItem: "center" }}>
-                          <LinkedInIcon />
+                    <Box display={"block"} sx={{ marginTop: 1.5, typography: 'body3', fontWeight: "700"}}>
+                      <Link to={member.linkedin} style={{ textDecoration: "none", color: "inherit"}}>
+                        <Box sx={{ display: "flex", alignItem: "center", marginBottom: .4, "&:hover": { color: "primary.dark" }}}>
+                          <LinkedInIcon sx={{width: "18px", height: "18px", marginRight: .7}} />
                           &nbsp;{member.name}
                         </Box>
                       </Link>
                     </Box>
-                    <Box display={"block"}>
-                      <Typography variant="body3">{member.role}</Typography>
-                    </Box>
+                    <Box display={"block"} sx={{ typography: 'body3' }}>
+                      {member.role.split(" / ").map((line, index) => (
+                        <React.Fragment key={index}>
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))}
+                    </Box>                  
                   </Container>
                 </Grid>
               ))}
@@ -607,13 +676,21 @@ export function Landing() {
             <Grid container spacing={2} justifyContent={"center"}>
               {teamMembers.slice(5, 10).map((member, index) => (
                 <Grid item xs={6} md={3} key={index}>
-                  <Container>
+                  <Container
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center",
+                      marginBottom: 3,
+                    }}>
                     <Box
                       sx={{
                         width: "120px",
                         aspectRatio: "1/1",
-                        borderRadius: "10px",
+                        borderRadius: "20px",
                         overflow: "hidden",
+                        boxShadow: 3,
                       }}
                     >
                       <img
@@ -626,17 +703,22 @@ export function Landing() {
                         }}
                       />
                     </Box>
-                    <Box display={"block"}>
-                      <Link to={member.linkedin}>
-                        <Box sx={{ display: "flex", alignItem: "center" }}>
-                          <LinkedInIcon />
+                    <Box display={"block"} sx={{ marginTop: 1.5, typography: 'body3', fontWeight: "700"}}>
+                      <Link to={member.linkedin} style={{ textDecoration: "none", color: "inherit" }}>
+                        <Box sx={{ display: "flex", alignItem: "center", marginBottom: .4, "&:hover": { color: "primary.dark" }}}>
+                          <LinkedInIcon sx={{width: "18px", height: "18px", marginRight: .7}} />
                           &nbsp;{member.name}
                         </Box>
                       </Link>
                     </Box>
-                    <Box display={"block"}>
-                      <Typography variant="body3">{member.role}</Typography>
-                    </Box>
+                    <Box display={"block"} sx={{ typography: 'body3' }}>
+                      {member.role.split(" / ").map((line, index) => (
+                        <React.Fragment key={index}>
+                          {line}
+                          <br />
+                        </React.Fragment>
+                      ))}
+                    </Box>                  
                   </Container>
                 </Grid>
               ))}
@@ -716,6 +798,7 @@ export function Landing() {
                   variant="contained"
                   color="primary"
                   fullWidth
+                  sx={{"&:hover": { backgroundColor: "primary.dark" }}}
                 >
                   Submit
                 </Button>

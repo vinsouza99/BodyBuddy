@@ -65,11 +65,21 @@ section {
   object-fit: cover;
 }
 .feature-card {
-  width: 300px;
-  display: "flex";
-  flex-direction: "column";
-  height: "100%";
+  width: 340px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 }
 .feature-card h5 {
   font-weight: 700;
 }
+
+
+/* Teru tried to make for changeing border color to gredient when hovering */
+/* .card-background:hover {
+  background: linear-gradient(to bottom, #2d90e0, #ff118c);  
+  border-radius: 10px;
+  padding: 2px;
+  transition: "all 0.3s ease";
+} */
