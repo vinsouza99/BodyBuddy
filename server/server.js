@@ -17,7 +17,7 @@ swaggerSetup(app);
 
 app.use(express.json());
 
-const allowedOrigins = ["http://localhost:3000", "https://bodybuddy-umber.vercel.app/"];
+const allowedOrigins = ["http://localhost:3000", "https://bodybuddy-umber.vercel.app"];
 app.use(
   cors({
     origin: (origin, callback) => {
