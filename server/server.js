@@ -16,9 +16,11 @@ const app = express();
 swaggerSetup(app);
 
 app.use(express.json());
+
+const allowedOrigins = ["http://localhost:3000", "https://bodybuddy-umber.vercel.app/"];
 app.use(
   cors({
-    origin: "http://localhost:3000", // Clarify client URL (origin)
+    origin: allowedOrigins, // Clarify client URL (origin)
     credentials: true, // Allow cookies
   })
 );
@@ -37,3 +39,5 @@ app.use("*", (req, res) => {
     message: "Route not found",
   });
 });
+
+export default app;
