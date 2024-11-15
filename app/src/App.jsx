@@ -46,7 +46,7 @@ function App() {
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
 
         {/* Authentication required (MainLayout is applied) */}
-        <Route path="/" element={user ? <MainLayout /> : <Navigate to="/" />}>
+        <Route path="/" element={user ? <MainLayout /> : loading ? null : <Navigate to="/" />}>
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
           <Route path="/learning" element={<Learn title="Learn" />} />
@@ -72,12 +72,8 @@ function App() {
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
           path="/routine"
-          element={
-            user ? (
-              <RoutineSession title="RoutineSession" />
-            ) : (
-              <Navigate to="/signin" />
-            )
+          element={ 
+            user ? <RoutineSession title="RoutineSession" /> : loading ? null : <Navigate to="/signin" />
           }
         />
       </>
