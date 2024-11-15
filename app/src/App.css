@@ -2,7 +2,7 @@
   width: 100%;
   margin: 0 auto;
   text-align: center;
-  background-image: url(./assets/bg_light.png);
+  background-image: url("../public/assets/bg_light.png");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
