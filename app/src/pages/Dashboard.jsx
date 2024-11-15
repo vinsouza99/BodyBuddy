@@ -4,14 +4,10 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
-  Typography,
-  Backdrop,
   Grid2,
   useMediaQuery,
   Skeleton,
 } from "@mui/material";
-import { CircularProgress } from "../components/CircularProgress.jsx";
-import ProgramLoading from "/assets/ProgramLoading.gif";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -28,7 +24,7 @@ import {
 } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
-import axiosClient from "../utils/axiosClient";
+// import axiosClient from "../utils/axiosClient";
 import theme from "../theme";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
@@ -45,6 +41,7 @@ export const Dashboard = (props) => {
   const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
     useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
+  const [checkingProgram, setCheckingProgram] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const userPreferences = location.state || {};
@@ -87,6 +84,7 @@ export const Dashboard = (props) => {
         setExerciseInfo(response);
         setExerciseInfoLoaded(true);
       } catch (e) {
+        console.error("Error loading exercises' information:", e);
         navigate("/error", {
           errorDetails:
             "There was an error while loading exercises' information... try again later.",
@@ -94,38 +92,35 @@ export const Dashboard = (props) => {
       }
     };
     loadExerciseData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded) {
+    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded && !checkingProgram) {
       setLoading(false);
     }
-  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
+  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded, checkingProgram]);
+
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
+    // Check if the user is authenticated and prompt is available
+    if (!user || !prompt) return;
+
     // Check if the user has an acive program
     const fetchPrograms = async () => {
       try {
-        const response = await getAllUserPrograms(user.id);
-        if (Number(response.status) === 200) {
-          const programs = response.data.data || [];
-          // const hasIncompleteProgram = programs.rows.some(
-          //   (program) => !program.completed_at
-          // );
-          const hasNoPrograms = programs.rows.length === 0;
-
-          if (hasNoPrograms) {
-            console.log(
-              "No program found for this user. Generating the first personalized program."
-            );
-            setGenerating(true);
-            await generatePersonalizedProgram(user.id, prompt);
-            setGenerating(false);
-          } else {
-            console.log("User already has some programs.");
-          }
+        const programs = await getAllUserPrograms(user.id);
+        if (programs.length === 0) {
+          console.log(
+            "No program found for this user. Generating the first personalized program."
+          );
+          setGenerating(true);
+          await generatePersonalizedProgram(user.id, prompt);
+          setCheckingProgram(false);
+          setGenerating(false);
+          console.log("Personalized program is generated successfully.");
         } else {
-          throw new Error("Failed to fetch programs");
+          setCheckingProgram(false);
+          console.log("User already has some programs.");
         }
       } catch (error) {
         console.error("Error fetching programs:", error);
