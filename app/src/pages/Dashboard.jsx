@@ -41,7 +41,6 @@ export const Dashboard = (props) => {
   const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
     useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
-  const [checkingProgram, setCheckingProgram] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const userPreferences = location.state || {};
@@ -95,15 +94,15 @@ export const Dashboard = (props) => {
   }, [user]);
 
   useEffect(() => {
-    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded && !checkingProgram) {
+    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded) {
       setLoading(false);
     }
-  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded, checkingProgram]);
+  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
     // Check if the user is authenticated and prompt is available
-    if (!user || !prompt) return;
+    if (!user || !prompt || Object.keys(userPreferences).length === 0) return;
 
     // Check if the user has an acive program
     const fetchPrograms = async () => {
@@ -115,11 +114,9 @@ export const Dashboard = (props) => {
           );
           setGenerating(true);
           await generatePersonalizedProgram(user.id, prompt);
-          setCheckingProgram(false);
           setGenerating(false);
           console.log("Personalized program is generated successfully.");
         } else {
-          setCheckingProgram(false);
           console.log("User already has some programs.");
         }
       } catch (error) {
