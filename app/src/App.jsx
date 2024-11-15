@@ -25,6 +25,7 @@ import { Landing } from "./pages/Landing";
 import { PremadeRoutine } from "./pages/PremadeRoutine";
 import CreateProgram from "./pages/CreateProgram";
 import AuthenticationOptions from "./pages/AuthenticationOptions";
+import { BrowserProvider } from "./BrowserProvider";
 
 function App() {
   const { user, loading } = useAuth();
@@ -46,7 +47,10 @@ function App() {
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
 
         {/* Authentication required (MainLayout is applied) */}
-        <Route path="/" element={user ? <MainLayout /> : loading ? null : <Navigate to="/" />}>
+        <Route
+          path="/"
+          element={user ? <MainLayout /> : loading ? null : <Navigate to="/" />}
+        >
           <Route path="/dashboard" element={<Dashboard title="Dashboard" />} />
           <Route path="/profile" element={<Profile title="Profile" />} />
           <Route path="/learning" element={<Learn title="Learn" />} />
@@ -72,8 +76,12 @@ function App() {
         {/* Authentication required (MainLayout is NOT applied) */}
         <Route
           path="/routine"
-          element={ 
-            user ? <RoutineSession title="RoutineSession" /> : loading ? null : <Navigate to="/signin" />
+          element={
+            user ? (
+              <RoutineSession title="RoutineSession" />
+            ) : loading ? null : (
+              <Navigate to="/signin" />
+            )
           }
         />
       </>
@@ -84,7 +92,9 @@ function App() {
     // Wrapped with ThemeProvider to apply theme.js styles
     <ThemeProvider theme={theme}>
       <CssBaseline>
-        <RouterProvider router={router} />
+        <BrowserProvider>
+          <RouterProvider router={router} />
+        </BrowserProvider>
       </CssBaseline>
     </ThemeProvider>
   );
