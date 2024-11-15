@@ -47,7 +47,7 @@ export const TrainingCard = ({ routine }) => {
   return (
     <>
       <Link to={`/training/${routine.id}`} style={{ textDecoration: "none" }}>
-        <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Card className="cardBorderHover" sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
           <Box
             sx={{
               display: "flex",

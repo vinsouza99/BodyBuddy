@@ -111,7 +111,6 @@ function History({ data = [] }) {
           width: 1,
           display: "flex",
           flexDirection: "column",
-          "&:hover": { border: "2px solid white" },
         }}
       >
         <Box
