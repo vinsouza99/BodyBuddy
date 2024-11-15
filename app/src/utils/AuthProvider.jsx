@@ -13,15 +13,28 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Retrieve the session information from supabase
+  // Retrieve the session information
   useEffect(() => {
     const fetchSession = async () => {
+      setLoading(true);
       try {
-        const { data, error } = await supabase.auth.getSession();
-        if (error) { throw error; }
-        setUser(data?.session?.user ?? null);
+        // const { data, error } = await supabase.auth.getSession();
+        // if (error) { throw error; }
+        // setUser(data?.session?.user ?? null);
+        const response = await axiosClient.get("/auth/session");
+        console.log(response);
+        if (response.status === 200) {
+          const userData = {
+            ...response.data.user,
+            id: response.data.user.sub,
+          };
+          setUser(userData);
+        } else {
+          setUser(null);
+        }
       } catch (error) {
-        console.error(error);
+        console.log("No valid session found", error);
+        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -32,18 +45,18 @@ export function AuthProvider({ children }) {
 
     // Listener for changes on auth state
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
 
       // JWT token provided by supabase
       const access_token = session?.access_token;
 
       if (event === "INITIAL_SESSION") {
         // Handle initial session event
-      } else if (event === "SIGNED_IN") {
+      } else if (event === "SIGNED_IN" && access_token) {
         // Handle signed in event
         await sendTokenToServer(access_token);
         console.log("User signed in");
+        setUser(session?.user ?? null);
+        setLoading(false);
         // Note: Code about coping user info to public.user table was replace with a trigger & function in the database
       } else if (event === "SIGNED_OUT") {
         // Handle sign out event

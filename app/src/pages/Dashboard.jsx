@@ -41,6 +41,7 @@ export const Dashboard = (props) => {
   const [userAccumulatedStatsLoaded, setUserAccumulatedStatsLoaded] =
     useState(false);
   const [exerciseInfoLoaded, setExerciseInfoLoaded] = useState(false);
+  const [checkingProgram, setCheckingProgram] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const userPreferences = location.state || {};
@@ -91,13 +92,13 @@ export const Dashboard = (props) => {
       }
     };
     loadExerciseData();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded) {
+    if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded && !checkingProgram) {
       setLoading(false);
     }
-  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded]);
+  }, [userInfoLoaded, userAccumulatedStatsLoaded, exerciseInfoLoaded, checkingProgram]);
 
   // Generated personalized program for the user (IF THE USER DON'T HAVE ONE)
   useEffect(() => {
@@ -114,8 +115,11 @@ export const Dashboard = (props) => {
           );
           setGenerating(true);
           await generatePersonalizedProgram(user.id, prompt);
+          setCheckingProgram(false);
           setGenerating(false);
+          console.log("Personalized program is generated successfully.");
         } else {
+          setCheckingProgram(false);
           console.log("User already has some programs.");
         }
       } catch (error) {

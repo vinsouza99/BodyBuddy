@@ -7,6 +7,7 @@ import routineRoutes from "./routineRoutes.js";
 import historyRoutes from "./historyRoutes.js";
 import authenticateToken from "../authenticateToken.js";
 import openaiapiRoutes from "./openaiapiRoutes.js";
+import authRoutes from "./authRoutes.js";
 
 const router = express.Router();
 
@@ -17,6 +18,7 @@ router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);
 router.use("/log", authenticateToken, historyRoutes);
 router.use("/openai", authenticateToken, openaiapiRoutes);
+router.use("/auth", authenticateToken, authRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
 router.post("/set-cookie", (req, res) => {
