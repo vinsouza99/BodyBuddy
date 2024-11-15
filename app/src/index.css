@@ -4,6 +4,10 @@
 /* Load Montserrat font using @import declarations */
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
+html {
+  min-width: fit-content !important;
+}
+
 /* Use loaded fonts */
 :root {
   font-family: "Montserrat", "Urbanist", system-ui, Avenir, Helvetica, Arial,
