@@ -1,14 +1,7 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, memo } from "react";
-import {
-  Box,
-  Tabs,
-  Tab,
-  Grid2,
-  Typography,
-  Skeleton,
-} from "@mui/material";
+import { Box, Tabs, Tab, Grid2, Typography, Skeleton } from "@mui/material";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 import { ErrorMessage } from "../components/ErrorMessage.jsx";
 // Gadgets Components
@@ -61,8 +54,15 @@ export const TrainingProgram = memo((props) => {
     if (!generating) return;
 
     const generateProgram = async () => {
-      await generatePersonalizedProgram(user.id, prompt);
-      setGenerating(false);
+      try {
+        await generatePersonalizedProgram(user.id, prompt);
+        setGenerating(false);
+      } catch (e) {
+        navigate("/error", {
+          errorDetails:
+            "There was an error while generating program... try again later.",
+        });
+      }
     };
     generateProgram();
   }, [generating]);

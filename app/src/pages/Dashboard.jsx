@@ -11,7 +11,7 @@ import {
   Skeleton,
 } from "@mui/material";
 import { CircularProgress } from "../components/CircularProgress.jsx";
-import ProgramLoading from "../assets/ProgramLoading.gif";
+import ProgramLoading from "/assets/ProgramLoading.gif";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -32,6 +32,7 @@ import axiosClient from "../utils/axiosClient";
 import theme from "../theme";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
+import { getAllUserPrograms } from "../controllers/ProgramController.js";
 
 export const Dashboard = (props) => {
   const { user } = useAuth();
@@ -81,9 +82,16 @@ export const Dashboard = (props) => {
     loadUserdata();
 
     const loadExerciseData = async () => {
-      const response = await getExercisesThumbnails();
-      setExerciseInfo(response);
-      setExerciseInfoLoaded(true);
+      try {
+        const response = await getExercisesThumbnails();
+        setExerciseInfo(response);
+        setExerciseInfoLoaded(true);
+      } catch (e) {
+        navigate("/error", {
+          errorDetails:
+            "There was an error while loading exercises' information... try again later.",
+        });
+      }
     };
     loadExerciseData();
   }, []);
@@ -98,7 +106,7 @@ export const Dashboard = (props) => {
     // Check if the user has an acive program
     const fetchPrograms = async () => {
       try {
-        const response = await axiosClient.get(`programs/user/${user.id}`);
+        const response = await getAllUserPrograms(user.id);
         if (Number(response.status) === 200) {
           const programs = response.data.data || [];
           // const hasIncompleteProgram = programs.rows.some(

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Box } from "@mui/material";
-// import onboarding1 from "../assets/onboarding1.png";
-// import onboarding2 from "../assets/onboarding2.png";
-// import onboarding3 from "../assets/onboarding3.png";
-import onboardingVideo from "../assets/onboarding.webm";
+// import onboarding1 from "/assets/onboarding1.png";
+// import onboarding2 from "/assets/onboarding2.png";
+// import onboarding3 from "/assets/onboarding3.png";
+import onboardingVideo from "/assets/onboarding.webm";
 
 // export function Onboarding() {
 //   const images = [onboarding1, onboarding2, onboarding3];

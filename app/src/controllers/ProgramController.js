@@ -33,6 +33,7 @@ const getProgram = async (
     return program;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getAllUserPrograms = async (
@@ -72,6 +73,7 @@ const getAllUserPrograms = async (
     return programs;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 const getUserCompletedPrograms = async (
@@ -121,6 +123,7 @@ const getUserCompletedPrograms = async (
     return programs;
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -137,6 +140,7 @@ const createProgram = async (user_id, generatedProgramObj) => {
     await axiosClient.post(`${API_ROUTE}`, program);
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 
@@ -159,6 +163,7 @@ const createProgramRoutine = async (
     );
   } catch (e) {
     console.error(e);
+    throw e;
   }
 };
 

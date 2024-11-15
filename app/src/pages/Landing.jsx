@@ -22,13 +22,13 @@ import {
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import { NavLink, Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-import logo from "../assets/bodybuddy.svg";
-import AppPreview from "../assets/main-app-preview.png";
-import FeaturesImg1 from "../assets/landingpage_features_image_1.png";
-import FeaturesImg2 from "../assets/landingpage_features_image_2.png";
-import feature1IconSrc from "../assets/feature1Icon.svg";
-import feature2IconSrc from "../assets/feature2Icon.svg";
-import feature3IconSrc from "../assets/feature3Icon.svg";
+import logo from "/assets/bodybuddy.svg";
+import AppPreview from "/assets/main-app-preview.png";
+import FeaturesImg1 from "/assets/landingpage_features_image_1.png";
+import FeaturesImg2 from "/assets/landingpage_features_image_2.png";
+import feature1IconSrc from "/assets/feature1Icon.svg";
+import feature2IconSrc from "/assets/feature2Icon.svg";
+import feature3IconSrc from "/assets/feature3Icon.svg";
 import CheckIcon from "@mui/icons-material/Check";
 import yosukePicture from "../assets/teammembers/yosuke.png";
 import vinPicture from "../assets/teammembers/vin.png";
@@ -39,7 +39,6 @@ import calvinPicture from "../assets/teammembers/calvin.png";
 import jasonPicture from "../assets/teammembers/jason.png";
 import violaPicture from "../assets/teammembers/viola.png";
 import liezelPicture from "../assets/teammembers/liezel.png";
-import normalCheck from "../assets/icon-normal-check.svg";
 
 import "./Landing.css";
 

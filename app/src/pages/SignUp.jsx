@@ -5,7 +5,7 @@ import { supabase } from "../utils/supabaseClient";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-import bodybuddyLogo from "../assets/bodybuddy_logo_color.svg";
+import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
 import { updateUser } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
@@ -100,7 +100,14 @@ export const SignUp = (props) => {
       </Grid>
 
       {/* Right section with sign-up form */}
-      <Grid size={{ xs: 12, md: 6 }} sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <Grid
+        size={{ xs: 12, md: 6 }}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <Container
           sx={{
             display: "flex",
@@ -116,7 +123,10 @@ export const SignUp = (props) => {
             </Box>
 
             {/* Welcome message */}
-            <Typography variant="h4" sx={{ width: "60%", margin: "0 auto", marginBottom: 2 }}>
+            <Typography
+              variant="h4"
+              sx={{ width: "60%", margin: "0 auto", marginBottom: 2 }}
+            >
               Sign up to unlock a personalized exercise plan just for you!
             </Typography>
 
@@ -171,11 +181,7 @@ export const SignUp = (props) => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               {error && <Typography color="error">{error}</Typography>}
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ mt: 1, mb: 2 }}
-              >
+              <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
                 Sign Up
               </Button>
             </Box>
@@ -183,7 +189,10 @@ export const SignUp = (props) => {
         </Container>
         <Box sx={{ mx: 4 }}>
           {/* Start Here link */}
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap", marginBottom: 1 }}>
+          <Typography
+            variant="body2"
+            sx={{ whiteSpace: "nowrap", marginBottom: 1 }}
+          >
             Already have an account?{" "}
             <Button
               variant="text"

@@ -30,7 +30,6 @@ export const Profile = (props) => {
         setHistory(userHistoryData);
         console.log(userHistoryData);
       } catch (error) {
-        console.error(error);
         navigate("/error", {
           errorDetails:
             "There was an error while loading user's information... try again later.",
@@ -93,10 +92,18 @@ export const Profile = (props) => {
           </>
         ) : currentUser && history ? (
           <>
-            <Grid size={{ xs: 12, md: 6 }} display={"flex"} style={{ height: "850px" }}>
+            <Grid
+              size={{ xs: 12, md: 6 }}
+              display={"flex"}
+              style={{ height: "850px" }}
+            >
               <UserInfo user={currentUser} />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }} display={"flex"} style={{ height: "850px" }}>
+            <Grid
+              size={{ xs: 12, md: 6 }}
+              display={"flex"}
+              style={{ height: "850px" }}
+            >
               <History data={history} />
             </Grid>
           </>

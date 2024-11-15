@@ -6,13 +6,8 @@ import {
   getRoutine,
 } from "../controllers/RoutineController.js";
 import { RoutineExercisesList } from "../components/RoutineExercisesList";
-import {
-  Box,
-  Button,
-  Typography,
-  Paper,
-} from "@mui/material";
-import {LoadingBackdrop} from "../components/LoadingBackdrop";
+import { Box, Button, Typography, Paper } from "@mui/material";
+import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useParams } from "react-router-dom";
 import { StartRoutineSessionModal } from "../components/StartRoutineSessionModal";
@@ -32,7 +27,6 @@ export const PremadeRoutine = (props) => {
         routineData.exercises = await getExercisesFromRoutine(routine_id);
         setRoutine(routineData);
       } catch (e) {
-        console.error(e);
         navigate("/error", {
           errorDetails:
             "There was an error while loading the routines' information... try again later.",
@@ -120,7 +114,8 @@ export const PremadeRoutine = (props) => {
                   width: "150px",
                   height: "150px",
                   color: "white",
-                  background: "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)",
+                  background:
+                    "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)",
                   borderRadius: "50%",
                   padding: 0,
                   minWidth: "unset",
