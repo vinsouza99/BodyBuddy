@@ -37,6 +37,7 @@ export const TrainingProgram = memo((props) => {
   const [loadingProgramError, setLoadingProgramError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [generatingComplete, setGeneratingComplete] = useState(false);
   const prompt = useGenerateProgramPrompt({});
 
   const handleTabChange = (event, value) => {
@@ -57,6 +58,7 @@ export const TrainingProgram = memo((props) => {
       try {
         await generatePersonalizedProgram(user.id, prompt);
         setGenerating(false);
+        setGeneratingComplete(true);
       } catch (e) {
         navigate("/error", {
           errorDetails:
@@ -69,21 +71,28 @@ export const TrainingProgram = memo((props) => {
 
   // Load a new program
   useEffect(() => {
-    if (!generating) {
+    if (generatingComplete) {
       setLoading(true);
       loadData();
+      setGeneratingComplete(false);
     }
-  }, [generating]);
+  }, [generatingComplete]);
 
   // Load program routines data
   const loadData = async () => {
     try {
       // Retrieve Preset Routines
+      const start1 = new Date();
+      console.log("Loading preset routines...");
       const presetRoutines = await getAllPresetRoutines();
+      console.log("Preset routines loaded.", new Date() - start1, "ms");
       setPresetRoutines(presetRoutines);
 
       // Retrieve Program
+      const start2 = new Date();
+      console.log("Loading user programs...");
       const programs = await getAllUserPrograms(user.id, true, false);
+      console.log("User programs loaded.", new Date() - start2, "ms");
 
       // Find the first program without completed_at
       const activeProgram = programs.find((program) => !program.completed_at);
