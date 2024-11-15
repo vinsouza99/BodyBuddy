@@ -309,12 +309,12 @@ export function Landing() {
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
                   {/* <Box className="card-background"> */}
-                    <Card className="feature-card"
+                    <Card className="cardBorderHover feature-card"
                       sx={{
                         height: "100%",
                         display: "flex",
                         flexDirection: "column",
-                        "&:hover": { border: "2px solid #2d90e0" },
+                        // "&:hover": { border: "2px solid #2d90e0" },
                       }}
                     >            
                       <CardContent sx={{ flexGrow: 1 }}>
@@ -343,12 +343,12 @@ export function Landing() {
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
-                  <Card className="feature-card"
+                  <Card className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      "&:hover": { border: "2px solid #2d90e0" },
+                      // "&:hover": { border: "2px solid #2d90e0" },
                     }}
                   >                    
                     <CardContent sx={{ flexGrow: 1 }}>
@@ -378,12 +378,12 @@ export function Landing() {
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
-                  <Card className="feature-card"
+                  <Card className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      "&:hover": { border: "2px solid #2d90e0" },
+                      // "&:hover": { border: "2px solid #2d90e0" },
                     }}
                   >                    
                     <CardContent sx={{ flexGrow: 1 }}>
@@ -442,12 +442,12 @@ export function Landing() {
                 {/* Starter Card */}
                 <Grid item xs={12} md={4}>
                   <Card
-                    className="feature-card"
+                    className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      "&:hover": {border: "2px solid #ff118c"}
+                      // "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
@@ -510,12 +510,12 @@ export function Landing() {
                 {/* Pro Card */}
                 <Grid item xs={12} md={4}>
                   <Card
-                    className="feature-card"
+                    className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      "&:hover": {border: "2px solid #ff118c"}
+                      // "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
@@ -581,12 +581,12 @@ export function Landing() {
                 {/* Enterprise Card */}
                 <Grid item xs={12} md={4}>
                   <Card
-                    className="feature-card"
+                    className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      "&:hover": {border: "2px solid #ff118c"}
+                      // "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
