@@ -30,16 +30,16 @@ import feature1IconSrc from "/assets/feature1Icon.svg";
 import feature2IconSrc from "/assets/feature2Icon.svg";
 import feature3IconSrc from "/assets/feature3Icon.svg";
 import CheckIcon from "@mui/icons-material/Check";
-import yosukePicture from "../assets/teammembers/yosuke.png";
-import vinPicture from "../assets/teammembers/vin.png";
-import cocoyPicture from "../assets/teammembers/cocoy.png";
-import teruPicture from "../assets/teammembers/teru.png";
-import taraPicture from "../assets/teammembers/tara.png";
-import calvinPicture from "../assets/teammembers/calvin.png";
-import jasonPicture from "../assets/teammembers/jason.png";
-import violaPicture from "../assets/teammembers/viola.png";
-import liezelPicture from "../assets/teammembers/liezel.png";
-import normalCheck from "../assets/icon-normal-check.svg";
+import yosukePicture from "/assets/teammembers/yosuke.png";
+import vinPicture from "/assets/teammembers/vin.png";
+import cocoyPicture from "/assets/teammembers/cocoy.png";
+import teruPicture from "/assets/teammembers/teru.png";
+import taraPicture from "/assets/teammembers/tara.png";
+import calvinPicture from "/assets/teammembers/calvin.png";
+import jasonPicture from "/assets/teammembers/jason.png";
+import violaPicture from "/assets/teammembers/viola.png";
+import liezelPicture from "/assets/teammembers/liezel.png";
+import normalCheck from "/assets/icon-normal-check.svg";
 
 import "./Landing.css";
 
