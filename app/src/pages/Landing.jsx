@@ -30,15 +30,16 @@ import feature1IconSrc from "/assets/feature1Icon.svg";
 import feature2IconSrc from "/assets/feature2Icon.svg";
 import feature3IconSrc from "/assets/feature3Icon.svg";
 import CheckIcon from "@mui/icons-material/Check";
-import yosukePicture from "../assets/teammembers/yosuke.png";
-import vinPicture from "../assets/teammembers/vin.png";
-import cocoyPicture from "../assets/teammembers/cocoy.png";
-import teruPicture from "../assets/teammembers/teru.png";
-import taraPicture from "../assets/teammembers/tara.png";
-import calvinPicture from "../assets/teammembers/calvin.png";
-import jasonPicture from "../assets/teammembers/jason.png";
-import violaPicture from "../assets/teammembers/viola.png";
-import liezelPicture from "../assets/teammembers/liezel.png";
+import yosukePicture from "/assets/teammembers/yosuke.png";
+import vinPicture from "/assets/teammembers/vin.png";
+import cocoyPicture from "/assets/teammembers/cocoy.png";
+import teruPicture from "/assets/teammembers/teru.png";
+import taraPicture from "/assets/teammembers/tara.png";
+import calvinPicture from "/assets/teammembers/calvin.png";
+import jasonPicture from "/assets/teammembers/jason.png";
+import violaPicture from "/assets/teammembers/viola.png";
+import liezelPicture from "/assets/teammembers/liezel.png";
+import normalCheck from "/assets/icon-normal-check.svg";
 
 import "./Landing.css";
 
@@ -176,7 +177,15 @@ export function Landing() {
                   isMdUp ? "" : "mobile-menu",
                   menuActive ? "active" : "",
                 ]}
-              >
+                sx={{
+                  fontWeight: 600,
+                  "& a": {
+                    color: "text.primary",
+                    "&:hover": {
+                      color: "primary.dark",
+                    },
+                  },
+                }}              >
                 <Link to="#about" onClick={() => scrollToSection(aboutRef)}>
                   About Us
                 </Link>
@@ -300,7 +309,8 @@ export function Landing() {
                 >
                   {/* <Box className="card-background"> */}
                     <Card className="feature-card"
-                      >                    
+                      sx={{"&:hover": {border: "2px solid #2d90e0"
+                    }}}>                    
                       <CardContent>
                         <Box sx={{ width: "100%" }}>
                           <img
@@ -327,7 +337,8 @@ export function Landing() {
                   md={4} // 3 columns on medium and larger screens
                 >
                   <Card className="feature-card"
-                        >
+                    sx={{"&:hover": {border: "2px solid #2d90e0"
+                  }}}>                    
                     <CardContent>
                       <Box sx={{ width: "100%" }}>
                         <img
@@ -355,7 +366,8 @@ export function Landing() {
                   md={4} // 3 columns on medium and larger screens
                 >
                   <Card className="feature-card"
-                        >
+                    sx={{"&:hover": {border: "2px solid #2d90e0"
+                  }}}>                    
                     <CardContent>
                       <Box sx={{ width: "100%" }}>
                         <img
@@ -393,8 +405,8 @@ export function Landing() {
                 justifyContent: "center",
               }}
             >
-              <Typography variant="body1" display="block">
-                BodyBuddy offers an effective fitness experience without the
+              <Typography variant="body1" display="block" textAlign={"left"}>
+                BodyBuddy offers an <span style={{ fontSize: "2rem" }}>effective fitness experience</span> without the
                 worry of time and location constraints
               </Typography>
             </Grid>
@@ -403,7 +415,7 @@ export function Landing() {
         <Box component="section" id="pricing" ref={pricingRef}>
           <Grid container spacing={5} alignItems="stretch">
             <Container>
-              <Typography variant="h2" textAlign="center" marginBottom={4}>
+              <Typography variant="h2" textAlign="center">
                 Our Offers
               </Typography>
             </Container>
@@ -417,6 +429,7 @@ export function Landing() {
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
+                      "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
@@ -484,6 +497,7 @@ export function Landing() {
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
+                      "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
@@ -501,7 +515,7 @@ export function Landing() {
                       </Typography>
                       <Box>
                         <Typography variant="h5" fontSize="1.8rem" marginTop={1}>
-                          CAD$4.99
+                        <span style={{ fontSize: "1rem" }}>CAD$</span>4.99
                         </Typography>
                         <Typography variant="body3">/user/month</Typography>
                       </Box>
@@ -554,6 +568,7 @@ export function Landing() {
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
+                      "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
@@ -724,10 +739,10 @@ export function Landing() {
             </Grid>
           </Grid>
         </Box>
-        <Box component="section" id="contact" ref={contactRef}>
+        <Box component="section" id="contact" ref={contactRef} sx={{mb:6}}>
           <Grid container>
             <Grid size={{ sm: 12, md: 5 }}>
-              <Box textAlign="left">
+              <Box textAlign="center">
                 <img src={logo} sx={{ width: "100%", maxWidth: "450px" }} />
               </Box>
             </Grid>
@@ -747,10 +762,11 @@ export function Landing() {
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
+                  alignItems: "center",
                   gap: "1rem",
                 }}
               >
-                <Typography variant="h3" display="block">
+                <Typography variant="h3" display="block" sx={{fontWeight:700, textAlign: "center", width: "100%"}}>
                   Contact Us
                 </Typography>
                 <Box>
@@ -761,8 +777,9 @@ export function Landing() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    fullWidth
+                    fullWidth={false}                    
                     required
+                    sx={{width: "500px", backgroundColor: "#ffffff"}}
                   />
                 </Box>
                 <Box>
@@ -773,9 +790,10 @@ export function Landing() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    fullWidth
+                    fullWidth={false}                    
                     required
                     type="email"
+                    sx={{width: "500px", backgroundColor: "#ffffff"}}
                   />
                 </Box>
                 <Box>
@@ -786,10 +804,11 @@ export function Landing() {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    fullWidth
+                    fullWidth={false}                    
                     required
                     multiline
                     rows={4}
+                    sx={{width: "500px", backgroundColor: "#ffffff"}}
                   />
                 </Box>
                 <Button
@@ -797,9 +816,9 @@ export function Landing() {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  sx={{"&:hover": { backgroundColor: "primary.dark" }}}
+                  sx={{ width: "110px", "&:hover": { backgroundColor: "primary.dark" }}}
                 >
-                  Submit
+                  SUBMIT
                 </Button>
               </Box>
             </Grid>
