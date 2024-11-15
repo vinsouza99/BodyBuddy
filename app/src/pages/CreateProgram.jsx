@@ -5,6 +5,8 @@ import ProgressBar from "../components/ProgressBar";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
+import logo from "/assets/bodybuddy_logo_color.svg";
+import bgImage from "/assets/create-program.png";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -523,18 +525,14 @@ const CreateProgram = () => {
         rowGap={5}
         sx={{
           backgroundColor: "lightgray",
-          backgroundImage: "url(./src/assets/create-program.png)",
+          backgroundImage: `url(${bgImage})`,
           backgroundPosition: "top right",
           backgroundSize: "cover",
           minHeight: "100vh",
           padding: "2rem 1rem",
         }}
       >
-        <img
-          src="./src/assets/bodybuddy_logo_color.svg"
-          alt="BodyBuddy"
-          width={70}
-        />
+        <img src={logo} alt="BodyBuddy" width={70} />
         <Container
           maxWidth="sm"
           sx={{
