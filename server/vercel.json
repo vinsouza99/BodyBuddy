@@ -11,5 +11,10 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
-  ]
+  ],
+  "functions": {
+    "controllers/openaiController.js": {
+      "maxDuration": 60
+    }
+  }
 }
