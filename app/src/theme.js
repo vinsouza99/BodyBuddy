@@ -217,11 +217,34 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "rgba(255, 255, 255, 0.8)",
-          borderRadius: "10px", // Add border radius to card component
-          border: "2px solid white",
-          transition: "border 0.3s ease", // Add transition for smooth fade
-          "&:hover": {
-            border: "2px solid #64CC54", // Green stroke on hover
+          borderRadius: "10px",
+          border: "1px solid transparent",
+          transition: "border 0.3s ease",
+          position: "relative",
+    
+          "&.cardBorderHover": { // Use as className "cardBorderHover"
+            position: "relative",
+            border: "1px solid white",
+            borderRadius: "10px",
+    
+            // Using ::before pseudo-element for styling
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              borderRadius: "inherit",
+              background: "linear-gradient(0deg, #FF118C, #2D90E0)", // Gradient colors
+              padding: "2px",
+              mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+              maskComposite: "exclude",
+              transition: "opacity 0.3s ease", // Add transition here for hover effect
+              opacity: 0, // Hide effect until hover
+            },
+    
+            // Reveal hover effect for the card
+            "&:hover::before": {
+              opacity: 1,
+            },
           },
         },
       },

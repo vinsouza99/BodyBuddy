@@ -53,7 +53,7 @@ const LearningCard = ({ exercise, exercise_type }) => {
     : null;
 
   return (
-    <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Card className="cardBorderHover" sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <Box>
         <img
           src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
