@@ -25,7 +25,6 @@ function UserInfo({ user = {} }) {
           padding: 3,
           borderRadius: 2,
           width: 1,
-          "&:hover": { border: "2px solid white" },
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
