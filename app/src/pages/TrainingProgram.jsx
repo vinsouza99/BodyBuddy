@@ -1,6 +1,7 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, memo } from "react";
+import { useNavigate } from "react-router-dom";
 import { Box, Tabs, Tab, Grid2, Typography, Skeleton } from "@mui/material";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 import { ErrorMessage } from "../components/ErrorMessage.jsx";
@@ -35,10 +36,12 @@ export const TrainingProgram = memo((props) => {
   const [programRoutines, setProgramRoutines] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [loadingProgramError, setLoadingProgramError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loadingProgram, setLoadingProgram] = useState(true);
+  const [loadingPremadeRoutines, setLoadingPremadeRoutines] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [generatingComplete, setGeneratingComplete] = useState(false);
   const prompt = useGenerateProgramPrompt({});
+  const navigate = useNavigate();
 
   const handleTabChange = (event, value) => {
     setActiveTab(value);
@@ -59,7 +62,7 @@ export const TrainingProgram = memo((props) => {
         await generatePersonalizedProgram(user.id, prompt);
         setGenerating(false);
         setGeneratingComplete(true);
-      } catch (e) {
+      } catch {
         navigate("/error", {
           errorDetails:
             "There was an error while generating program... try again later.",
@@ -72,7 +75,7 @@ export const TrainingProgram = memo((props) => {
   // Load a new program
   useEffect(() => {
     if (generatingComplete) {
-      setLoading(true);
+      setLoadingProgram(true);
       loadData();
       setGeneratingComplete(false);
     }
@@ -81,13 +84,6 @@ export const TrainingProgram = memo((props) => {
   // Load program routines data
   const loadData = async () => {
     try {
-      // Retrieve Preset Routines
-      const start1 = new Date();
-      console.log("Loading preset routines...");
-      const presetRoutines = await getAllPresetRoutines();
-      console.log("Preset routines loaded.", new Date() - start1, "ms");
-      setPresetRoutines(presetRoutines);
-
       // Retrieve Program
       const start2 = new Date();
       console.log("Loading user programs...");
@@ -104,11 +100,21 @@ export const TrainingProgram = memo((props) => {
         console.log("No active program found.");
         setActiveProgram(null);
       }
+      setLoadingProgram(false);
+
+      // Retrieve Preset Routines
+      const start1 = new Date();
+      console.log("Loading preset routines...");
+      const presetRoutines = await getAllPresetRoutines();
+      console.log("Preset routines loaded.", new Date() - start1, "ms");
+      setPresetRoutines(presetRoutines);
+      setLoadingPremadeRoutines(false);
     } catch (e) {
       console.error(e);
       setLoadingProgramError(true);
     } finally {
-      setLoading(false);
+      setLoadingProgram(false);
+      setLoadingPremadeRoutines(false);
     }
   };
 
@@ -118,47 +124,50 @@ export const TrainingProgram = memo((props) => {
 
   // Memoize the "My Program" tab content
   const myProgramTabContent = useMemo(() => {
-    if (loading) {
+    if (loadingProgram) {
       return;
     }
     return (
-      <Grid2 container spacing={2}>
-        {/* LEFT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 7 }}>
-          {loadingProgramError ? (
-            <ErrorMessage
-              message=""
-              callback={loadData}
-              callbackAction="Try Again"
-            />
-          ) : activeProgram ? (
-            <GadgetRoutineOfToday programRoutines={programRoutines} />
-          ) : (
-            <GadgetRegenerateProgram
-              handleGenerateProgram={handleGenerateProgram}
-            />
-          )}
+      <>
+        <Grid2 container spacing={2}>
+          {/* LEFT COLUMN */}
+          <Grid2 size={{ xs: 12, md: 7 }}>
+            {loadingProgramError ? (
+              <ErrorMessage
+                message=""
+                callback={loadData}
+                callbackAction="Try Again"
+              />
+            ) : activeProgram ? (
+              <GadgetRoutineOfToday programRoutines={programRoutines} />
+            ) : (
+              <GadgetRegenerateProgram
+                handleGenerateProgram={handleGenerateProgram}
+              />
+            )}
+          </Grid2>
+          {/* RIGHT COLUMN */}
+          <Grid2 size={{ xs: 12, md: 5 }}>
+            <GadgetSchedule programRoutines={programRoutines} />
+          </Grid2>
         </Grid2>
-        {/* RIGHT COLUMN */}
-        <Grid2 size={{ xs: 12, md: 5 }}>
-          <GadgetSchedule programRoutines={programRoutines} />
-        </Grid2>
-      </Grid2>
+      </>
     );
-  }, [activeProgram, programRoutines, loading, generating]);
+  }, [activeProgram, programRoutines, loadingProgram, generating]);
 
   // Memoize the "Premade Routines" tab content
   const premadeRoutinesTabContent = useMemo(() => {
-    if (loading) {
+    if (loadingProgram) {
       return;
     }
     return <GadgetPremadeRoutineList presetRoutines={presetRoutines} />;
-  }, [presetRoutines, loading]);
+  }, [presetRoutines, loadingProgram]);
 
   return (
     <>
       {/* Backdrop for loading */}
-      <LoadingBackdrop loading={loading} generating={generating} />
+      {activeTab === 0 && <LoadingBackdrop loading={loadingProgram} generating={generating} />}
+      {activeTab === 1 && <LoadingBackdrop loading={loadingPremadeRoutines} />}
 
       {/* Tab Navigation */}
       <Tabs
@@ -172,7 +181,7 @@ export const TrainingProgram = memo((props) => {
       <Box sx={{ marginTop: 2 }}>
         {/* MY PROGRAM TAB */}
         {activeTab === 0 ? (
-          loading ? (
+          loadingProgram ? (
             <>
               <Grid2 container gap={2} columns={{ sm: 1, md: 2 }}>
                 <Box flexGrow={2}>
