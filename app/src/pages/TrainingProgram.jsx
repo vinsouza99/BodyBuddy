@@ -207,7 +207,37 @@ export const TrainingProgram = memo((props) => {
           )
         ) : null}
         {/* PREMADE ROUTINES TAB */}
-        {activeTab === 1 && premadeRoutinesTabContent}
+        {activeTab === 1 ? (
+          loadingPremadeRoutines ? (
+            <>
+              <Grid2 container spacing={3} sx={{width: "100%"}}>
+                <Box flexGrow={1}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={489}
+                  />
+                </Box>
+                <Box flexGrow={1}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={489}
+                  />
+                </Box>
+                <Box flexGrow={1}>
+                  <Skeleton
+                    variant="rectangular"
+                    animation="wave"
+                    height={489}
+                  />
+                </Box>
+              </Grid2>
+            </>
+          ) : (
+            premadeRoutinesTabContent
+          )
+        ) : null}
       </Box>
     </>
   );
