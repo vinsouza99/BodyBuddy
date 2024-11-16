@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
+import emailjs from "emailjs-com";
 import theme from "../theme";
 import {
   AppBar,
@@ -16,11 +17,16 @@ import {
   TextField,
   List,
   ListItem,
-  ListItemIcon,
   ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import { NavLink, Link } from "react-router-dom";
+import CloseIcon from "@mui/icons-material/Close"; // Close Icon
+
+import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "/assets/bodybuddy.svg";
 import AppPreview from "/assets/main-app-preview.png";
@@ -29,7 +35,6 @@ import FeaturesImg2 from "/assets/landingpage_features_image_2.png";
 import feature1IconSrc from "/assets/feature1Icon.svg";
 import feature2IconSrc from "/assets/feature2Icon.svg";
 import feature3IconSrc from "/assets/feature3Icon.svg";
-import CheckIcon from "@mui/icons-material/Check";
 import yosukePicture from "/assets/teammembers/yosuke.png";
 import vinPicture from "/assets/teammembers/vin.png";
 import cocoyPicture from "/assets/teammembers/cocoy.png";
@@ -40,19 +45,20 @@ import jasonPicture from "/assets/teammembers/jason.png";
 import violaPicture from "/assets/teammembers/viola.png";
 import liezelPicture from "/assets/teammembers/liezel.png";
 import normalCheck from "/assets/icon-normal-check.svg";
-
 import "./Landing.css";
 
 export function Landing() {
+  const [emailSendingError, setEmailSendingError] = useState(false);
+  const [modalSwitch, setSwitch] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
   const [isOnTop, setIsOnTop] = useState(true);
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
+  const form = useRef();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
-  const homeRef = useRef(null);
   const aboutRef = useRef(null);
   const featuresRef = useRef(null);
   const pricingRef = useRef(null);
@@ -74,7 +80,7 @@ export function Landing() {
     };
 
     window.addEventListener("scroll", handleScroll);
-
+    emailjs.init("mrnROunOxqqqm6Bsf");
     // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -148,10 +154,37 @@ export function Landing() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const sendEmail = (e) => {
     e.preventDefault();
-    // Handle form submission (e.g., send to API or display a success message)
-    console.log("Form Data:", formData);
+    emailjs
+      .sendForm(
+        "service_aj3y2o3", // Replace with your EmailJS Service ID
+        "template_fi6kvjw", // Replace with your EmailJS Template ID
+        form.current,
+        "mrnROunOxqqqm6Bsf"
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+          setFormData({
+            name: "",
+            email: "",
+            message: "",
+          });
+          setSwitch(true);
+        },
+        (error) => {
+          console.log("FAILED...", error);
+          setEmailSendingError(true);
+          setSwitch(true);
+        }
+      );
+    setSwitch(true);
+  };
+
+  // Close Modal
+  const handleClickClose = () => {
+    setSwitch(false);
   };
   return (
     <>
@@ -185,7 +218,8 @@ export function Landing() {
                       color: "primary.dark",
                     },
                   },
-                }}              >
+                }}
+              >
                 <Link to="#about" onClick={() => scrollToSection(aboutRef)}>
                   About Us
                 </Link>
@@ -236,7 +270,12 @@ export function Landing() {
             </Box>
             <Box>
               <Link to="/enter">
-                <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up</Button>
+                <Button
+                  variant="contained"
+                  sx={{ "&:hover": { backgroundColor: "primary.dark" } }}
+                >
+                  Sign Up
+                </Button>
               </Link>
             </Box>
           </Box>
@@ -280,7 +319,12 @@ export function Landing() {
                 </Typography>
                 <Box display="block">
                   <Link to="/enter">
-                    <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up For Free</Button>
+                    <Button
+                      variant="contained"
+                      sx={{ "&:hover": { backgroundColor: "primary.dark" } }}
+                    >
+                      Sign Up For Free
+                    </Button>
                   </Link>
                 </Box>
               </Box>
@@ -309,32 +353,38 @@ export function Landing() {
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
                   {/* <Box className="card-background"> */}
-                    <Card className="cardBorderHover feature-card"
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        // "&:hover": { border: "2px solid #2d90e0" },
-                      }}
-                    >            
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Box sx={{ width: "100%" }}>
-                          <img
-                            src={feature1IconSrc}
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "contain",
-                            }}
-                          />
-                        </Box>
-                        <Typography variant="h5">Motion tracking</Typography>
-                        <Typography variant="body2" padding={1} paddingBottom={0} textAlign="left">
-                          AI analysis checks your form in real-time, ensuring
-                          correct posture for a safe and effective workout{" "}
-                        </Typography>
-                      </CardContent>
-                    </Card>
+                  <Card
+                    className="cardBorderHover feature-card"
+                    sx={{
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      // "&:hover": { border: "2px solid #2d90e0" },
+                    }}
+                  >
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Box sx={{ width: "100%" }}>
+                        <img
+                          src={feature1IconSrc}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "contain",
+                          }}
+                        />
+                      </Box>
+                      <Typography variant="h5">Motion tracking</Typography>
+                      <Typography
+                        variant="body2"
+                        padding={1}
+                        paddingBottom={0}
+                        textAlign="left"
+                      >
+                        AI analysis checks your form in real-time, ensuring
+                        correct posture for a safe and effective workout{" "}
+                      </Typography>
+                    </CardContent>
+                  </Card>
                   {/* </Box> */}
                 </Grid>
                 <Grid
@@ -343,14 +393,15 @@ export function Landing() {
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
-                  <Card className="cardBorderHover feature-card"
+                  <Card
+                    className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
                       // "&:hover": { border: "2px solid #2d90e0" },
                     }}
-                  >                    
+                  >
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Box sx={{ width: "100%" }}>
                         <img
@@ -365,7 +416,12 @@ export function Landing() {
                       <Typography variant="h5">
                         Personalized workout plan
                       </Typography>
-                      <Typography variant="body2" padding={1} paddingBottom={0} textAlign="left">
+                      <Typography
+                        variant="body2"
+                        padding={1}
+                        paddingBottom={0}
+                        textAlign="left"
+                      >
                         AI analysis helps you create personalized workout plans
                         based on your fitness level and goals
                       </Typography>
@@ -378,14 +434,15 @@ export function Landing() {
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
                 >
-                  <Card className="cardBorderHover feature-card"
+                  <Card
+                    className="cardBorderHover feature-card"
                     sx={{
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
                       // "&:hover": { border: "2px solid #2d90e0" },
                     }}
-                  >                    
+                  >
                     <CardContent sx={{ flexGrow: 1 }}>
                       <Box sx={{ width: "100%" }}>
                         <img
@@ -398,7 +455,12 @@ export function Landing() {
                         />
                       </Box>
                       <Typography variant="h5">Progress tracking</Typography>
-                      <Typography variant="body2" padding={1} paddingBottom={0} textAlign="left">
+                      <Typography
+                        variant="body2"
+                        padding={1}
+                        paddingBottom={0}
+                        textAlign="left"
+                      >
                         Progress dashboard keeps you motivated, making it easier
                         to stay on track and maintain a regular workout routine,
                         even when exercising alone!
@@ -424,8 +486,11 @@ export function Landing() {
               }}
             >
               <Typography variant="body1" display="block" textAlign={"left"}>
-                BodyBuddy offers an <span style={{ fontSize: "2rem" }}>effective fitness experience</span> without the
-                worry of time and location constraints
+                BodyBuddy offers an{" "}
+                <span style={{ fontSize: "2rem" }}>
+                  effective fitness experience
+                </span>{" "}
+                without the worry of time and location constraints
               </Typography>
             </Grid>
           </Grid>
@@ -438,7 +503,12 @@ export function Landing() {
               </Typography>
             </Container>
             <Container>
-              <Grid container spacing={4} justifyContent="center" alignItems="stretch">
+              <Grid
+                container
+                spacing={4}
+                justifyContent="center"
+                alignItems="stretch"
+              >
                 {/* Starter Card */}
                 <Grid item xs={12} md={4}>
                   <Card
@@ -460,7 +530,12 @@ export function Landing() {
                         textAlign: "center",
                       }}
                     >
-                      <Typography variant="h4" fontSize="1.2rem" fontWeight="700" margin={1}>
+                      <Typography
+                        variant="h4"
+                        fontSize="1.2rem"
+                        fontWeight="700"
+                        margin={1}
+                      >
                         Starter
                       </Typography>
                       <Typography variant="h5" fontSize="1.8rem" margin={2}>
@@ -474,7 +549,11 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="2 months exercise plan generation" />
                         </ListItem>
@@ -482,7 +561,11 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="20 exercises unlocked" />
                         </ListItem>
@@ -490,14 +573,25 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="2GB storage for recording videos" />
                         </ListItem>
                       </List>
                       <Box sx={{ marginTop: "auto" }}>
                         <Link to="/enter">
-                          <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up</Button>
+                          <Button
+                            variant="contained"
+                            sx={{
+                              "&:hover": { backgroundColor: "primary.dark" },
+                            }}
+                          >
+                            Sign Up
+                          </Button>
                         </Link>
                       </Box>
                       <Typography variant="body3" marginTop={1}>
@@ -528,12 +622,21 @@ export function Landing() {
                         textAlign: "center",
                       }}
                     >
-                      <Typography variant="h4" fontSize="1.2rem" fontWeight="700" margin={1}>
+                      <Typography
+                        variant="h4"
+                        fontSize="1.2rem"
+                        fontWeight="700"
+                        margin={1}
+                      >
                         Pro
                       </Typography>
                       <Box>
-                        <Typography variant="h5" fontSize="1.8rem" marginTop={1}>
-                        <span style={{ fontSize: "1rem" }}>CAD$</span>4.99
+                        <Typography
+                          variant="h5"
+                          fontSize="1.8rem"
+                          marginTop={1}
+                        >
+                          <span style={{ fontSize: "1rem" }}>CAD$</span>4.99
                         </Typography>
                         <Typography variant="body3">/user/month</Typography>
                       </Box>
@@ -545,7 +648,11 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="Unlimited exercise plan generation" />
                         </ListItem>
@@ -553,7 +660,11 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="Unlimited exercises unlocked" />
                         </ListItem>
@@ -561,14 +672,25 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="Unlimited storage for recording videos" />
                         </ListItem>
                       </List>
                       <Box sx={{ marginTop: "auto" }}>
                         <Link to="/enter">
-                          <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Sign Up</Button>
+                          <Button
+                            variant="contained"
+                            sx={{
+                              "&:hover": { backgroundColor: "primary.dark" },
+                            }}
+                          >
+                            Sign Up
+                          </Button>
                         </Link>
                       </Box>
                       <Typography variant="body3" marginTop={1}>
@@ -599,7 +721,12 @@ export function Landing() {
                         textAlign: "center",
                       }}
                     >
-                      <Typography variant="h4" fontSize="1.2rem" fontWeight="700" margin={1}>
+                      <Typography
+                        variant="h4"
+                        fontSize="1.2rem"
+                        fontWeight="700"
+                        margin={1}
+                      >
                         Enterprise
                       </Typography>
                       <Box>
@@ -616,7 +743,11 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="Custom group exercise plan" />
                         </ListItem>
@@ -624,7 +755,11 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="Progress tracking and report for organization" />
                         </ListItem>
@@ -632,14 +767,28 @@ export function Landing() {
                           <img
                             src={normalCheck}
                             alt="normal check"
-                            style={{ width: "18px", height: "18px", marginRight: "10px" }}
+                            style={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: "10px",
+                            }}
                           />
                           <ListItemText primary="Stay motivated and healthy together!" />
                         </ListItem>
                       </List>
                       <Box sx={{ marginTop: "auto" }}>
-                        <Link to="#contact" onClick={() => scrollToSection(contactRef)}>
-                          <Button variant="contained" sx={{"&:hover": { backgroundColor: "primary.dark" }}}>Contact us</Button>
+                        <Link
+                          to="#contact"
+                          onClick={() => scrollToSection(contactRef)}
+                        >
+                          <Button
+                            variant="contained"
+                            sx={{
+                              "&:hover": { backgroundColor: "primary.dark" },
+                            }}
+                          >
+                            Contact us
+                          </Button>
                         </Link>
                       </Box>
                       <Typography variant="body3" marginTop={1}>
@@ -665,7 +814,8 @@ export function Landing() {
                       alignItems: "center",
                       textAlign: "center",
                       marginBottom: 3,
-                    }}>
+                    }}
+                  >
                     <Box
                       sx={{
                         width: "120px",
@@ -685,22 +835,45 @@ export function Landing() {
                         }}
                       />
                     </Box>
-                    <Box display={"block"} sx={{ marginTop: 1.5, typography: 'body3', fontWeight: "700"}}>
-                      <Link to={member.linkedin} style={{ textDecoration: "none", color: "inherit"}}>
-                        <Box sx={{ display: "flex", alignItem: "center", marginBottom: .4, "&:hover": { color: "primary.dark" }}}>
-                          <LinkedInIcon sx={{width: "18px", height: "18px", marginRight: .7}} />
+                    <Box
+                      display={"block"}
+                      sx={{
+                        marginTop: 1.5,
+                        typography: "body3",
+                        fontWeight: "700",
+                      }}
+                    >
+                      <Link
+                        to={member.linkedin}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItem: "center",
+                            marginBottom: 0.4,
+                            "&:hover": { color: "primary.dark" },
+                          }}
+                        >
+                          <LinkedInIcon
+                            sx={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: 0.7,
+                            }}
+                          />
                           &nbsp;{member.name}
                         </Box>
                       </Link>
                     </Box>
-                    <Box display={"block"} sx={{ typography: 'body3' }}>
+                    <Box display={"block"} sx={{ typography: "body3" }}>
                       {member.role.split(" / ").map((line, index) => (
                         <React.Fragment key={index}>
                           {line}
                           <br />
                         </React.Fragment>
                       ))}
-                    </Box>                  
+                    </Box>
                   </Container>
                 </Grid>
               ))}
@@ -715,7 +888,8 @@ export function Landing() {
                       alignItems: "center",
                       textAlign: "center",
                       marginBottom: 3,
-                    }}>
+                    }}
+                  >
                     <Box
                       sx={{
                         width: "120px",
@@ -735,29 +909,52 @@ export function Landing() {
                         }}
                       />
                     </Box>
-                    <Box display={"block"} sx={{ marginTop: 1.5, typography: 'body3', fontWeight: "700"}}>
-                      <Link to={member.linkedin} style={{ textDecoration: "none", color: "inherit" }}>
-                        <Box sx={{ display: "flex", alignItem: "center", marginBottom: .4, "&:hover": { color: "primary.dark" }}}>
-                          <LinkedInIcon sx={{width: "18px", height: "18px", marginRight: .7}} />
+                    <Box
+                      display={"block"}
+                      sx={{
+                        marginTop: 1.5,
+                        typography: "body3",
+                        fontWeight: "700",
+                      }}
+                    >
+                      <Link
+                        to={member.linkedin}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItem: "center",
+                            marginBottom: 0.4,
+                            "&:hover": { color: "primary.dark" },
+                          }}
+                        >
+                          <LinkedInIcon
+                            sx={{
+                              width: "18px",
+                              height: "18px",
+                              marginRight: 0.7,
+                            }}
+                          />
                           &nbsp;{member.name}
                         </Box>
                       </Link>
                     </Box>
-                    <Box display={"block"} sx={{ typography: 'body3' }}>
+                    <Box display={"block"} sx={{ typography: "body3" }}>
                       {member.role.split(" / ").map((line, index) => (
                         <React.Fragment key={index}>
                           {line}
                           <br />
                         </React.Fragment>
                       ))}
-                    </Box>                  
+                    </Box>
                   </Container>
                 </Grid>
               ))}
             </Grid>
           </Grid>
         </Box>
-        <Box component="section" id="contact" ref={contactRef} sx={{mb:6}}>
+        <Box component="section" id="contact" ref={contactRef} sx={{ mb: 6 }}>
           <Grid container>
             <Grid size={{ sm: 12, md: 5 }}>
               <Box textAlign="center">
@@ -773,6 +970,7 @@ export function Landing() {
             >
               <Box
                 component="form"
+                ref={form}
                 noValidate
                 textAlign="left"
                 sx={{
@@ -783,8 +981,13 @@ export function Landing() {
                   alignItems: "center",
                   gap: "1rem",
                 }}
+                onSubmit={sendEmail}
               >
-                <Typography variant="h3" display="block" sx={{fontWeight:700, textAlign: "center", width: "100%"}}>
+                <Typography
+                  variant="h3"
+                  display="block"
+                  sx={{ fontWeight: 700, textAlign: "center", width: "100%" }}
+                >
                   Contact Us
                 </Typography>
                 <Box>
@@ -795,9 +998,9 @@ export function Landing() {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    fullWidth={false}                    
+                    fullWidth={false}
                     required
-                    sx={{width: "500px", backgroundColor: "#ffffff"}}
+                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
                   />
                 </Box>
                 <Box>
@@ -808,10 +1011,10 @@ export function Landing() {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    fullWidth={false}                    
+                    fullWidth={false}
                     required
                     type="email"
-                    sx={{width: "500px", backgroundColor: "#ffffff"}}
+                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
                   />
                 </Box>
                 <Box>
@@ -822,11 +1025,11 @@ export function Landing() {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    fullWidth={false}                    
+                    fullWidth={false}
                     required
                     multiline
                     rows={4}
-                    sx={{width: "500px", backgroundColor: "#ffffff"}}
+                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
                   />
                 </Box>
                 <Button
@@ -834,9 +1037,13 @@ export function Landing() {
                   variant="contained"
                   color="primary"
                   fullWidth
-                  sx={{ width: "110px", "&:hover": { backgroundColor: "primary.dark" }}}
+                  sx={{
+                    width: "110px",
+                    "&:hover": { backgroundColor: "primary.dark" },
+                    textTransform: "uppercase",
+                  }}
                 >
-                  SUBMIT
+                  Submit
                 </Button>
               </Box>
             </Grid>
@@ -853,6 +1060,37 @@ export function Landing() {
           </Typography>
         </Container>
       </Box>
+      <Dialog
+        open={modalSwitch}
+        onClose={handleClickClose}
+        maxWidth="md"
+        PaperProps={{ sx: { borderRadius: 3 } }}
+      >
+        <DialogContent>
+          {/* Close icon*/}
+          <DialogTitle
+            sx={{ display: "flex", padding: 0, justifyContent: "flex-end" }}
+          >
+            <Box flex={1} textAlign={"center"}>
+              <Typography variant="4">
+                {emailSendingError ? "Email not sent" : "Email sent!"}
+              </Typography>
+            </Box>
+            <IconButton onClick={handleClickClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <Box width="80%" margin="1rem auto">
+            <DialogContentText>
+              <Typography variant="body1">
+                {emailSendingError
+                  ? "There was an error sending the email... try again later."
+                  : "Thank you for sending a message. We will get in touch soon!"}
+              </Typography>
+            </DialogContentText>
+          </Box>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
