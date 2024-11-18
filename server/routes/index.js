@@ -32,6 +32,7 @@ router.post("/set-cookie", (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
     maxAge: 60 * 60 * 1000, // 60 minutes
+    domain: 'bodybuddy.me'
   });
   res.status(200).json({ message: "Accesstoken set in HttpOnly cookie" });
 });
