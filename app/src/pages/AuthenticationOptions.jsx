@@ -1,12 +1,20 @@
 import React, { useEffect } from "react";
-import { Box, Button, Typography, Container } from "@mui/material";
+import { Box, Button, Typography, Container, useMediaQuery } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
 import { Onboarding } from "../components/Onboarding";
 import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import CircleCheckIcon from "/assets/icon-circle-check.svg";
+import theme from "../theme";
 
 export function AuthenticationOptions() {
+
+  // Use useMediaQuery to define screen width
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  // Set the width based on screen size
+  const setWidth = isMobile ? "100%" : "60%";
+
   return (
     <Grid container>
       {/* Left section with image slider */}
@@ -47,7 +55,7 @@ export function AuthenticationOptions() {
           <Typography
             variant="body1"
             align="center"
-            sx={{ width: "80%", marginBottom: 3 }}
+            sx={{ width: setWidth, marginBottom: 3 }}
           >
             Get healthier and energetic everyday with easy exercises tailored
             for home workout enthusiasts and fitness beginners.
@@ -56,7 +64,7 @@ export function AuthenticationOptions() {
           {/* Feature list */}
           <Box
             sx={{
-              width: "60%",
+              width: setWidth,
               display: "grid",
               justifyContent: "center",
               marginBottom: 1,
@@ -134,6 +142,7 @@ export function AuthenticationOptions() {
               </Typography>
             </Box>
           </Box>
+          
 
           {/* Button linking to CreateProgram.jsx */}
           <Button
