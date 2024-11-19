@@ -24,6 +24,7 @@ import {
   DialogContentText,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import GitHubIcon from '@mui/icons-material/GitHub';
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
 import emailErrorIcon from "/assets/emailErrorIcon.svg";
 import emailSentIcon from "/assets/emailSentIcon.svg";
@@ -91,12 +92,14 @@ export function Landing() {
     {
       name: "Yosuke Hanaoka",
       picture: yosukePicture,
+      github: "https://github.com/yoshan0921",
       linkedin: "https://www.linkedin.com/in/yosuke-hatnaoka",
       role: "Project Manager / / Full Stack Developer",
     },
     {
       name: "Vinicius Souza",
       picture: vinPicture,
+      github: "https://github.com/vinsouza99",
       linkedin: "https://www.linkedin.com/in/vinicius-abner",
       role: "Lead Developer / / Full Stack Developer",
     },
@@ -104,12 +107,14 @@ export function Landing() {
     {
       name: "Cocoy Suguitan",
       picture: cocoyPicture,
+      github: "https://github.com/cocoysg",
       linkedin: "https://www.linkedin.com/in/cocoysg",
       role: "Frontend Developer",
     },
     {
       name: "Terumasa Mori",
       picture: teruPicture,
+      github: "https://github.com/terumori1206",
       linkedin: "https://www.linkedin.com/in/terumori",
       role: "Frontend Developer",
     },
@@ -181,7 +186,7 @@ export function Landing() {
         }
       );
   };
-  const TeamMember = ({ member }) => {
+  const TeamMember = ({ member, showGitHubIcon = true }) => {
     return (
       <Grid item={"true"} xs={6} md={2}>
         <Container
@@ -191,10 +196,12 @@ export function Landing() {
             alignItems: "center",
             textAlign: "center",
             marginBottom: 3,
+            width:"190px",
           }}
         >
           <Box
             sx={{
+              position: "relative",
               width: "120px",
               aspectRatio: "1/1",
               borderRadius: "20px",
@@ -205,12 +212,32 @@ export function Landing() {
             <img
               src={member.picture}
               alt={member.name}
-              sx={{
+              style={{
                 width: "100%",
                 height: "100%",
                 objectFit: "cover",
               }}
             />
+            <Link
+              to={member.github}
+              // style={{ textDecoration: "none", color: "inherit" }}
+            >
+              {showGitHubIcon && (
+              <GitHubIcon
+                sx={{
+                  position: "absolute",
+                  bottom: 8,
+                  right: 8,
+                  width: "20px",
+                  height: "20px",
+                  color: "white",
+                  backgroundColor: "black",
+                  borderRadius: "6px",
+                  padding: "2px",
+                }}
+              />
+              )}
+            </Link>
           </Box>
           <Box
             display={"block"}
@@ -883,14 +910,14 @@ export function Landing() {
             spacing={2}
             justifyContent={"center"}
           >
-            <Grid container spacing={2} justifyContent={"center"}>
+            <Grid container spacing={1} justifyContent={"center"}>
               {teamMembers.slice(0, 5).map((member, index) => (
                 <TeamMember key={index} member={member} />
               ))}
             </Grid>
-            <Grid container spacing={2} justifyContent={"center"}>
+            <Grid container spacing={1} justifyContent={"center"}>
               {teamMembers.slice(5, 10).map((member, index) => (
-                <TeamMember member={member} key={index} />
+                <TeamMember member={member} key={index} showGitHubIcon={false} />
               ))}
             </Grid>
           </Grid>
