@@ -25,7 +25,8 @@ import {
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
-
+import emailErrorIcon from "/assets/emailErrorIcon.svg";
+import emailSentIcon from "/assets/emailSentIcon.svg";
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "/assets/bodybuddy.svg";
@@ -90,56 +91,56 @@ export function Landing() {
     {
       name: "Yosuke Hanaoka",
       picture: yosukePicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/yosuke-hatnaoka",
       role: "Project Manager / / Full Stack Developer",
     },
     {
       name: "Vinicius Souza",
       picture: vinPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/vinicius-abner",
       role: "Lead Developer / / Full Stack Developer",
     },
     ,
     {
       name: "Cocoy Suguitan",
       picture: cocoyPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/cocoysg",
       role: "Frontend Developer",
     },
     {
       name: "Terumasa Mori",
       picture: teruPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/terumori",
       role: "Frontend Developer",
     },
     {
       name: "Trang Nguyen",
       picture: taraPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/trang-tara",
       role: "Co-PM / / UI/UX Designer",
     },
     {
       name: "Calvin Tsai",
       picture: calvinPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/tsai-calvin",
       role: "Lead Designer / / UI/UX Designer",
     },
     {
       name: "Jason Yang",
       picture: jasonPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/jasonyang21656",
       role: "UI/UX Designer",
     },
     {
       name: "Viola Sun",
       picture: violaPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/viola-sun-catlady",
       role: "UI/UX Designer",
     },
     {
       name: "Liezel Sagayadoro",
       picture: liezelPicture,
-      linkedin: "",
+      linkedin: "https://www.linkedin.com/in/liezel-sagayadoro",
       role: "UI/UX Designer",
     },
   ];
@@ -179,7 +180,80 @@ export function Landing() {
           setSwitch(true);
         }
       );
-    setSwitch(true);
+  };
+  const TeamMember = ({ member }) => {
+    return (
+      <Grid item={"true"} xs={6} md={2}>
+        <Container
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
+            marginBottom: 3,
+          }}
+        >
+          <Box
+            sx={{
+              width: "120px",
+              aspectRatio: "1/1",
+              borderRadius: "20px",
+              overflow: "hidden",
+              boxShadow: 3,
+            }}
+          >
+            <img
+              src={member.picture}
+              alt={member.name}
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
+          </Box>
+          <Box
+            display={"block"}
+            sx={{
+              marginTop: 1.5,
+              typography: "body3",
+              fontWeight: "700",
+            }}
+          >
+            <Link
+              to={member.linkedin}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItem: "center",
+                  marginBottom: 0.4,
+                  "&:hover": { color: "primary.dark" },
+                }}
+              >
+                <LinkedInIcon
+                  sx={{
+                    width: "18px",
+                    height: "18px",
+                    marginRight: 0.7,
+                  }}
+                />
+                &nbsp;{member.name}
+              </Box>
+            </Link>
+          </Box>
+          <Box display={"block"} sx={{ typography: "body3" }}>
+            {member.role.split(" / ").map((line, index) => (
+              <React.Fragment key={index}>
+                {line}
+                <br />
+              </React.Fragment>
+            ))}
+          </Box>
+        </Container>
+      </Grid>
+    );
   };
 
   // Close Modal
@@ -281,7 +355,7 @@ export function Landing() {
           </Box>
         </Toolbar>
       </AppBar>
-      <Box id="page-content">
+      <Box id="landing-page-content">
         <Box
           id="home"
           component="section"
@@ -347,7 +421,7 @@ export function Landing() {
             <Container>
               <Grid container spacing={4} justifyContent={"center"}>
                 <Grid
-                  item
+                  item={"true"}
                   xs={12} // 1 column on extra-small and small screens
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
@@ -388,7 +462,7 @@ export function Landing() {
                   {/* </Box> */}
                 </Grid>
                 <Grid
-                  item
+                  item={"true"}
                   xs={12} // 1 column on extra-small and small screens
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
@@ -429,7 +503,7 @@ export function Landing() {
                   </Card>
                 </Grid>
                 <Grid
-                  item
+                  item={"true"}
                   xs={12} // 1 column on extra-small and small screens
                   md={4} // 3 columns on medium and larger screens
                   sx={{ display: "flex", flexDirection: "column" }}
@@ -510,7 +584,7 @@ export function Landing() {
                 alignItems="stretch"
               >
                 {/* Starter Card */}
-                <Grid item xs={12} md={4}>
+                <Grid item={"true"} xs={12} md={4}>
                   <Card
                     className="cardBorderHover feature-card"
                     sx={{
@@ -602,7 +676,7 @@ export function Landing() {
                 </Grid>
 
                 {/* Pro Card */}
-                <Grid item xs={12} md={4}>
+                <Grid item={"true"} xs={12} md={4}>
                   <Card
                     className="cardBorderHover feature-card"
                     sx={{
@@ -701,7 +775,7 @@ export function Landing() {
                 </Grid>
 
                 {/* Enterprise Card */}
-                <Grid item xs={12} md={4}>
+                <Grid item={"true"} xs={12} md={4}>
                   <Card
                     className="cardBorderHover feature-card"
                     sx={{
@@ -803,153 +877,20 @@ export function Landing() {
         </Box>
         <Box component="section" id="team" ref={teamRef}>
           <Typography variant="h2">Meet the Team</Typography>
-          <Grid padding={"1.5rem"} spacing={2}>
+          <Grid
+            container
+            padding={"1.5rem 0"}
+            spacing={2}
+            justifyContent={"center"}
+          >
             <Grid container spacing={2} justifyContent={"center"}>
               {teamMembers.slice(0, 5).map((member, index) => (
-                <Grid item xs={6} md={3} key={index}>
-                  <Container
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      textAlign: "center",
-                      marginBottom: 3,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: "120px",
-                        aspectRatio: "1/1",
-                        borderRadius: "20px",
-                        overflow: "hidden",
-                        boxShadow: 3,
-                      }}
-                    >
-                      <img
-                        src={member.picture}
-                        alt={member.name}
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    </Box>
-                    <Box
-                      display={"block"}
-                      sx={{
-                        marginTop: 1.5,
-                        typography: "body3",
-                        fontWeight: "700",
-                      }}
-                    >
-                      <Link
-                        to={member.linkedin}
-                        style={{ textDecoration: "none", color: "inherit" }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItem: "center",
-                            marginBottom: 0.4,
-                            "&:hover": { color: "primary.dark" },
-                          }}
-                        >
-                          <LinkedInIcon
-                            sx={{
-                              width: "18px",
-                              height: "18px",
-                              marginRight: 0.7,
-                            }}
-                          />
-                          &nbsp;{member.name}
-                        </Box>
-                      </Link>
-                    </Box>
-                    <Box display={"block"} sx={{ typography: "body3" }}>
-                      {member.role.split(" / ").map((line, index) => (
-                        <React.Fragment key={index}>
-                          {line}
-                          <br />
-                        </React.Fragment>
-                      ))}
-                    </Box>
-                  </Container>
-                </Grid>
+                <TeamMember key={index} member={member} />
               ))}
             </Grid>
             <Grid container spacing={2} justifyContent={"center"}>
               {teamMembers.slice(5, 10).map((member, index) => (
-                <Grid item xs={6} md={3} key={index}>
-                  <Container
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      textAlign: "center",
-                      marginBottom: 3,
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: "120px",
-                        aspectRatio: "1/1",
-                        borderRadius: "20px",
-                        overflow: "hidden",
-                        boxShadow: 3,
-                      }}
-                    >
-                      <img
-                        src={member.picture}
-                        alt={member.name}
-                        sx={{
-                          width: "100%",
-                          height: "100%",
-                          objectFit: "cover",
-                        }}
-                      />
-                    </Box>
-                    <Box
-                      display={"block"}
-                      sx={{
-                        marginTop: 1.5,
-                        typography: "body3",
-                        fontWeight: "700",
-                      }}
-                    >
-                      <Link
-                        to={member.linkedin}
-                        style={{ textDecoration: "none", color: "inherit" }}
-                      >
-                        <Box
-                          sx={{
-                            display: "flex",
-                            alignItem: "center",
-                            marginBottom: 0.4,
-                            "&:hover": { color: "primary.dark" },
-                          }}
-                        >
-                          <LinkedInIcon
-                            sx={{
-                              width: "18px",
-                              height: "18px",
-                              marginRight: 0.7,
-                            }}
-                          />
-                          &nbsp;{member.name}
-                        </Box>
-                      </Link>
-                    </Box>
-                    <Box display={"block"} sx={{ typography: "body3" }}>
-                      {member.role.split(" / ").map((line, index) => (
-                        <React.Fragment key={index}>
-                          {line}
-                          <br />
-                        </React.Fragment>
-                      ))}
-                    </Box>
-                  </Container>
-                </Grid>
+                <TeamMember member={member} key={index} />
               ))}
             </Grid>
           </Grid>
@@ -1040,7 +981,6 @@ export function Landing() {
                   sx={{
                     width: "110px",
                     "&:hover": { backgroundColor: "primary.dark" },
-                    textTransform: "uppercase",
                   }}
                 >
                   Submit
@@ -1063,30 +1003,47 @@ export function Landing() {
       <Dialog
         open={modalSwitch}
         onClose={handleClickClose}
-        maxWidth="md"
+        maxWidth="xs"
         PaperProps={{ sx: { borderRadius: 3 } }}
       >
         <DialogContent>
           {/* Close icon*/}
-          <DialogTitle
-            sx={{ display: "flex", padding: 0, justifyContent: "flex-end" }}
-          >
-            <Box flex={1} textAlign={"center"}>
-              <Typography variant="4">
-                {emailSendingError ? "Email not sent" : "Email sent!"}
-              </Typography>
+          <DialogTitle sx={{ display: "flex", padding: 0 }}>
+            <Box
+              flex={1}
+              display={"flex"}
+              justifyContent={"center"}
+              paddingLeft={"40px"}
+            >
+              <img
+                sx={{ margin: "auto", width: "80px" }}
+                src={emailSendingError ? emailErrorIcon : emailSentIcon}
+                alt="Email Icon"
+              />
             </Box>
-            <IconButton onClick={handleClickClose}>
+            <IconButton
+              onClick={handleClickClose}
+              sx={{ alignSelf: "baseline" }}
+            >
               <CloseIcon />
             </IconButton>
           </DialogTitle>
           <Box width="80%" margin="1rem auto">
-            <DialogContentText>
-              <Typography variant="body1">
-                {emailSendingError
-                  ? "There was an error sending the email... try again later."
-                  : "Thank you for sending a message. We will get in touch soon!"}
-              </Typography>
+            <DialogContentText textAlign={"center"} display="grid" gap={2}>
+              <Box>
+                <Typography variant="h5">
+                  {emailSendingError
+                    ? "Oh no! We failed to send your email"
+                    : "Your message has been sent!"}
+                </Typography>
+              </Box>
+              <Box>
+                <Typography variant="body2">
+                  {emailSendingError
+                    ? "Please check your connection and try again, we would love to hear from you!"
+                    : "We will be in touch very soon, stay strong and healthy!"}
+                </Typography>
+              </Box>
             </DialogContentText>
           </Box>
         </DialogContent>

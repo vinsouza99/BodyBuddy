@@ -130,6 +130,25 @@ const theme = createTheme({
   },
 
   components: {
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "rgba(255, 255, 255, 0.5)", // 50% opacity white background
+            borderRadius: 4, // Slightly rounded corners
+            "& fieldset": {
+              borderColor: "lightgray", // Default border color
+            },
+            "&:hover fieldset": {
+              borderColor: "lightgray", // Border remains lightgray on hover
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#FF118C", // Pink border when focused
+            },
+          },
+        },
+      },
+    },
     /****************************************/
     /*           BUTTON COMPONENT           */
     /****************************************/
@@ -179,7 +198,7 @@ const theme = createTheme({
         },
       },
     },
-    
+
     /****************************************/
     /*         TAB / TABS COMPONENT         */
     /****************************************/
@@ -221,12 +240,13 @@ const theme = createTheme({
           border: "1px solid transparent",
           transition: "border 0.3s ease",
           position: "relative",
-    
-          "&.cardBorderHover": { // Use as className "cardBorderHover"
+
+          "&.cardBorderHover": {
+            // Use as className "cardBorderHover"
             position: "relative",
             border: "1px solid white",
             borderRadius: "10px",
-    
+
             // Using ::before pseudo-element for styling
             "&::before": {
               content: '""',
@@ -240,7 +260,7 @@ const theme = createTheme({
               transition: "opacity 0.3s ease", // Add transition here for hover effect
               opacity: 0, // Hide effect until hover
             },
-    
+
             // Reveal hover effect for the card
             "&:hover::before": {
               opacity: 1,

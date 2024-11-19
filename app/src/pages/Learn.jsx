@@ -297,9 +297,8 @@ export const Learn = memo((props) => {
         <Pagination
           count={pagesCount}
           page={page}
-          variant="outlined"
-          shape="rounded"
           onChange={handlePaginationChange}
+          color="primary"
         />
       </Box>
     </>

@@ -6,7 +6,6 @@ import illustrationImg from "/assets/landingpage_features_image_2.png";
 // Use video or image for onboarding
 export function Onboarding() {
   const { isSafari } = useBrowser();
-  console.log(isSafari);
   return (
     <Box
       sx={{

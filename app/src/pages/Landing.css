@@ -4,7 +4,7 @@
   height: 100%;
   object-fit: "cover";
 }
-#page-content {
+#landing-page-content {
   display: grid;
   gap: 2rem;
 }
@@ -14,7 +14,7 @@ section:not(#home) {
 section {
   max-width: 1200px;
   min-height: 50vh;
-  padding: 1rem 0;
+  padding: 1.2rem;
   width: 100%;
   margin: auto;
 }
@@ -76,4 +76,11 @@ section {
 }
 .feature-card h5 {
   font-weight: 700;
+}
+#landing-page-content .MuiCard-root {
+  transition: all 0.1s ease-out;
+}
+#landing-page-content .MuiCard-root:hover {
+  transition: all 0.1s ease-in-out;
+  transform: scale(1.1) !important;
 }
