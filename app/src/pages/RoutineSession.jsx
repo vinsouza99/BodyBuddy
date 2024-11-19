@@ -1106,7 +1106,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               // borderRadius: "50%",
               // Visual effects
               fontSize: "2.5rem",
-              color: restForNextExercise? "black" : "white",
+              color: restForNextExercise ? "black" : "white",
               // backgroundColor: "#333333",
               "&:hover": {
                 backgroundColor: restForNextExercise ? "white" : "#4F4F4F",
@@ -1277,74 +1277,90 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                     height: "100%",
                   }}
                 >
-                  <Typography
-                    gutterBottom
-                    onClick={handleToggleExerciseMenu}
-                    sx={{
-                      fontSize: isLandscapeMode ? "1rem" : "1.2rem",
-                      fontWeight: "bold",
-                      textAlign: "right",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "flex-end",
-                      color: `white`,
-                      cursor: "pointer",
-                    }}
-                  >
-                    Next{" "}
-                    {isExerciseMenuOpen ? (
-                      <KeyboardArrowDownIcon sx={{ fontSize: "2rem" }} />
-                    ) : (
-                      <KeyboardArrowUpIcon sx={{ fontSize: "2rem" }} />
-                    )}
-                  </Typography>
-
                   <Box
                     sx={{
-                      maxHeight: isExerciseMenuOpen ? "200px" : "0",
-                      overflowY: "scroll",
-                      transition: "max-Height 0.5s ease",
+                      position: isExerciseMenuOpen ? "absolute" : "static",
+                      width: "280px",
                     }}
                   >
-                    <List
+                    <Typography
+                      gutterBottom
+                      onClick={handleToggleExerciseMenu}
                       sx={{
-                        margin: 0,
-                        padding: 0,
+                        fontSize: isLandscapeMode ? "1rem" : "1.2rem",
+                        fontWeight: "bold",
+                        textAlign: "right",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "flex-end",
+                        color: `white`,
+                        cursor: "pointer",
                       }}
                     >
-                      {routine
-                        .slice(selectedExerciseIndex)
-                        .map((exercise, index) => (
-                          <ListItem
-                            key={index + selectedExerciseIndex}
-                            sx={{
-                              cursor: "default",
-                              padding: "0.1rem 0.5rem",
-                              margin: "0rem",
-                              marginBottom: "0.5rem",
-                              backgroundColor: "rgba(255, 255, 255, 0.6)",
-                            }}
-                          >
-                            <ListItemText
-                              primary={exercise.name}
-                              secondary={exercise.goal}
-                              primaryTypographyProps={{
-                                sx: {
-                                  fontSize: isLandscapeMode ? "0.8rem" : "1rem",
-                                  fontWeight: "bold",
-                                  color: "black",
-                                },
+                      Next{" "}
+                      {isExerciseMenuOpen ? (
+                        <KeyboardArrowDownIcon sx={{ fontSize: "2rem" }} />
+                      ) : (
+                        <KeyboardArrowUpIcon sx={{ fontSize: "2rem" }} />
+                      )}
+                    </Typography>
+
+                    <Box
+                      className={"custom-scrollbar dark"}
+                      sx={{
+                        maxHeight: isExerciseMenuOpen ? "50vh" : "100px",
+                        overflowY: "scroll",
+                        transition: "max-Height 0.5s ease",
+                        paddingRight: "0.5rem",
+                      }}
+                    >
+                      <List
+                        sx={{
+                          margin: 0,
+                          padding: 0,
+                        }}
+                      >
+                        {routine
+                          .slice(selectedExerciseIndex)
+                          .map((exercise, index) => (
+                            <ListItem
+                              key={index + selectedExerciseIndex}
+                              sx={{
+                                cursor: "default",
+                                padding: "1rem 1.5rem",
+                                margin: "0rem",
+                                marginBottom: "0.5rem",
+                                backgroundColor: "rgba(255, 255, 255, 0.6)",
+                                borderRadius: "5px",
                               }}
-                              secondaryTypographyProps={{
-                                sx: {
-                                  fontSize: isLandscapeMode ? "0.8rem" : "1rem",
-                                  color: "black",
-                                },
-                              }}
-                            />
-                          </ListItem>
-                        ))}
-                    </List>
+                            >
+                              <ListItemText
+                                primary={exercise.name}
+                                secondary={exercise.goal}
+                                primaryTypographyProps={{
+                                  sx: {
+                                    fontSize: isLandscapeMode
+                                      ? "0.8rem"
+                                      : "1rem",
+                                    fontWeight: "bold",
+                                    color: "black",
+                                    textShadow: "none",
+                                  },
+                                }}
+                                secondaryTypographyProps={{
+                                  sx: {
+                                    fontSize: isLandscapeMode
+                                      ? "0.8rem"
+                                      : "1rem",
+                                    color: "black",
+                                    textShadow: "none",
+                                  },
+                                }}
+                              />
+                            </ListItem>
+                          ))}
+                      </List>
+                    </Box>
                   </Box>
                 </Box>
               </>

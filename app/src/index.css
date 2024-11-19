@@ -130,6 +130,9 @@ button:focus-visible {
   scrollbar-color: lightgrey whitesmoke !important;
   scrollbar-width: thin !important;
 }
+.custom-scrollbar.dark {
+  scrollbar-color: whitesmoke rgba(0, 0, 0, 0.1) !important;
+}
 .muted-icon {
   filter: grayscale(0.5) opacity(0.5);
 }
