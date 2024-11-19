@@ -65,8 +65,11 @@ export const ExitRoutineSessionModal = ({
         </IconButton>
         <img src={ExitConfirm} alt="Exit confirmation" />
         <Typography textAlign="center">
-          You haven&apos;t completed the routine yet. Save progress and continue
-          later?
+          You haven&apos;t completed the routine yet.<br/>
+          Do you want to continue finishing today&apos;s goal?
+        </Typography>
+        <Typography textAlign="center" sx={{fontSize: "0.8rem"}}>
+          Your progress will not be saved if you stop exercising now.
         </Typography>
         <Box
           sx={{
