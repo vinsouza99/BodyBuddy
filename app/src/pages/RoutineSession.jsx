@@ -1100,16 +1100,16 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               position: "absolute",
               top: "10px",
               right: "10px",
-              zIndex: 1000,
+              zIndex: 9000,
               // Box model
               padding: "0.5rem",
-              borderRadius: "50%",
+              // borderRadius: "50%",
               // Visual effects
               fontSize: "2.5rem",
-              color: "white",
-              backgroundColor: "#333333",
+              color: restForNextExercise? "black" : "white",
+              // backgroundColor: "#333333",
               "&:hover": {
-                backgroundColor: "#4F4F4F",
+                backgroundColor: restForNextExercise ? "white" : "#4F4F4F",
               },
             }}
           >
