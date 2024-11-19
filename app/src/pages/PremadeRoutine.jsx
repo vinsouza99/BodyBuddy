@@ -6,7 +6,7 @@ import {
   getRoutine,
 } from "../controllers/RoutineController.js";
 import { RoutineExercisesList } from "../components/RoutineExercisesList";
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper, Chip } from "@mui/material";
 import { LoadingBackdrop } from "../components/LoadingBackdrop";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { useParams } from "react-router-dom";
@@ -26,6 +26,7 @@ export const PremadeRoutine = (props) => {
         const routineData = await getRoutine(routine_id);
         routineData.exercises = await getExercisesFromRoutine(routine_id);
         setRoutine(routineData);
+        setPageTitle(routine.name);
       } catch (e) {
         navigate("/error", {
           errorDetails:
@@ -91,17 +92,81 @@ export const PremadeRoutine = (props) => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                gap: 2,
+                gap: 3,
                 width: "100%",
               }}
             >
-              <Typography
-                variant="h6"
-                sx={{ width: "100%", textAlign: "left" }}
+              <Box
+                sx={{
+                  width: "100%",
+                  textAlign: "left",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1,
+                }}
               >
-                {routine?.name || ""}
-              </Typography>
+                <Typography variant="h6">{routine?.name || ""}</Typography>
+                <Typography variant="body1">
+                  {routine?.description || ""}
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 1,
+                  justifyContent: "flex-start",
+                  width: "100%",
+                }}
+              >
+                {/* Display routine duration chip */}
+                {routine.duration ? (
+                  <Chip
+                    label={
+                      routine.duration < 60000
+                        ? `${Math.floor(routine.duration / 1000)} secs` // Display in seconds if less than 1 minute
+                        : `${Math.floor(routine.duration / 60000)} mins` +
+                          (Math.floor((routine.duration % 60000) / 1000) > 0
+                            ? ` ${Math.floor((routine.duration % 60000) / 1000)} secs`
+                            : "") // Only show seconds if > 0
+                    }
+                    variant="outlined"
+                  />
+                ) : (
+                  <Chip label="No duration found" variant="outlined" /> // Display message if no duration
+                )}
 
+                {/* Display calories chip */}
+                {routine.estimated_calories !== undefined &&
+                routine.estimated_calories !== null ? (
+                  <Chip
+                    label={`${routine.estimated_calories} kCal`} // Display calories
+                    variant="outlined"
+                  />
+                ) : (
+                  <Chip label="No calories found" variant="outlined" /> // Display message if no calories
+                )}
+
+                {/* Display muscleGroups as chips */}
+                {routine.exercises && routine.exercises.length > 0 ? (
+                  // Collect all unique muscle group names from exercises
+                  [
+                    ...new Set(
+                      routine.exercises.flatMap((exercise) =>
+                        exercise.muscleGroups.map((mg) => mg.name)
+                      )
+                    ),
+                  ].map((muscleGroup, index) => (
+                    <Chip
+                      key={index}
+                      label={muscleGroup} // Display muscle group
+                      variant="outlined"
+                    />
+                  ))
+                ) : (
+                  <Chip label="No muscle groups found" variant="outlined" /> // Display message if no muscleGroups
+                )}
+              </Box>
               <RoutineExercisesList
                 routineExercises={routine.exercises}
                 color="primary.main"
@@ -124,9 +189,10 @@ export const PremadeRoutine = (props) => {
                   marginTop: "0.8rem",
                   marginBottom: "0.8rem",
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
+                  textTransform: "uppercase",
                 }}
               >
-                START
+                Start
               </Button>
             </Box>
           </Paper>

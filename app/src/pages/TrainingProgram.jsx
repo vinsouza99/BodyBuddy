@@ -85,10 +85,8 @@ export const TrainingProgram = memo((props) => {
   const loadData = async () => {
     try {
       // Retrieve Program
-      const start2 = new Date();
       console.log("Loading user programs...");
       const programs = await getAllUserPrograms(user.id, true, false);
-      console.log("User programs loaded.", new Date() - start2, "ms");
 
       // Find the first program without completed_at
       const activeProgram = programs.find((program) => !program.completed_at);
@@ -96,6 +94,7 @@ export const TrainingProgram = memo((props) => {
         console.log("User has active program.");
         setActiveProgram(activeProgram);
         setProgramRoutines(activeProgram?.routines || []);
+        if (activeProgram.name) setPageTitle(activeProgram.name);
       } else {
         console.log("No active program found.");
         setActiveProgram(null);
@@ -103,10 +102,8 @@ export const TrainingProgram = memo((props) => {
       setLoadingProgram(false);
 
       // Retrieve Preset Routines
-      const start1 = new Date();
       console.log("Loading preset routines...");
       const presetRoutines = await getAllPresetRoutines();
-      console.log("Preset routines loaded.", new Date() - start1, "ms");
       setPresetRoutines(presetRoutines);
       setLoadingPremadeRoutines(false);
     } catch (e) {
@@ -166,7 +163,9 @@ export const TrainingProgram = memo((props) => {
   return (
     <>
       {/* Backdrop for loading */}
-      {activeTab === 0 && <LoadingBackdrop loading={loadingProgram} generating={generating} />}
+      {activeTab === 0 && (
+        <LoadingBackdrop loading={loadingProgram} generating={generating} />
+      )}
       {activeTab === 1 && <LoadingBackdrop loading={loadingPremadeRoutines} />}
 
       {/* Tab Navigation */}
@@ -210,28 +209,41 @@ export const TrainingProgram = memo((props) => {
         {activeTab === 1 ? (
           loadingPremadeRoutines ? (
             <>
-              <Grid2 container spacing={3} sx={{width: "100%"}}>
-                <Box flexGrow={1}>
-                  <Skeleton
-                    variant="rectangular"
-                    animation="wave"
-                    height={489}
-                  />
-                </Box>
-                <Box flexGrow={1}>
-                  <Skeleton
-                    variant="rectangular"
-                    animation="wave"
-                    height={489}
-                  />
-                </Box>
-                <Box flexGrow={1}>
-                  <Skeleton
-                    variant="rectangular"
-                    animation="wave"
-                    height={489}
-                  />
-                </Box>
+              <Grid2
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 4, sm: 8, md: 12 }}
+              >
+                {Array.from(Array(9)).map((_, index) => (
+                  <Grid2
+                    key={index}
+                    size={{ xs: 2, sm: 4, md: 4 }}
+                    gap={2}
+                    spacing={5}
+                  >
+                    <Box display="flex" flexDirection="column" gap={1}>
+                      <Skeleton variant="rectangular" height={245} />
+                      <Skeleton variant="rectangular" height={20} width={250} />
+                      <Box display="flex" gap={1}>
+                        <Skeleton
+                          variant="rectangular"
+                          height={15}
+                          width={50}
+                        />
+                        <Skeleton
+                          variant="rectangular"
+                          height={15}
+                          width={50}
+                        />
+                        <Skeleton
+                          variant="rectangular"
+                          height={15}
+                          width={50}
+                        />
+                      </Box>
+                    </Box>
+                  </Grid2>
+                ))}
               </Grid2>
             </>
           ) : (

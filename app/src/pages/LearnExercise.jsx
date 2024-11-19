@@ -46,7 +46,7 @@ export const LearnExercise = (props) => {
         } else {
           const exerciseData = await getExercise(exercise_id, true);
           setExercise(exerciseData);
-          setPageTitle("Learn | " + exerciseData.name);
+          setPageTitle(exerciseData.name);
           setLoading(false);
         }
       } catch (e) {
