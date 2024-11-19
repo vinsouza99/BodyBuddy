@@ -11,8 +11,8 @@ import {
   isBefore,
   isSameWeek,
 } from "date-fns";
-import flame1 from "/assets/flame-solid_1.png";
-import flame2 from "/assets/flame-solid_2.png";
+import flame1 from "/assets/flame-solid_1.svg";
+import flame2 from "/assets/flame-solid_2.svg";
 
 export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
   const navigate = useNavigate();

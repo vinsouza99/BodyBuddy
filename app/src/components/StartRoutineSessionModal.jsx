@@ -17,8 +17,8 @@ import {
 import theme from "../theme";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
-import Camera_On from "/assets/camera_on.png";
-import Camera_Off from "/assets/camera_off.png";
+import Camera_On from "/assets/camera_on.svg";
+import Camera_Off from "/assets/camera_off.svg";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import { RotateConfirmationModal } from "./routine-session/RotateConfirmationModal";
 

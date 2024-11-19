@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Modal, Box, Typography, Button, IconButton } from "@mui/material";
 // Icons & Images
 import CloseIcon from "@mui/icons-material/Close";
-import RotateConfirm from "/assets/rotate_confirm.png";
+import RotateConfirm from "/assets/rotate_confirm.svg";
 
 const modalStyle = {
   // Layout and positioning

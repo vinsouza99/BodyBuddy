@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import CloseIcon from "@mui/icons-material/Close";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import { badgeMap, badgeMap_Placeholder } from "../utils/badgeMap.js";
+import badgePlaceholder from "/assets/badge_placeholder.png";
 
 const modalStyle = {
   // Layout and positioning
@@ -178,7 +178,7 @@ export const WallOfFame = ({ userInfo = {} }) => {
       ).fill({
         id: "",
         name: "",
-        src: badgeMap_Placeholder.placeholder,
+        src: badgePlaceholder,
         alt: "Placeholder",
       })
     );

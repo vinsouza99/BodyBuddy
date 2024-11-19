@@ -2,16 +2,16 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Modal, Box, Typography, Button } from "@mui/material";
+import { Modal, Box, Typography, Button, Grid2 as Grid } from "@mui/material";
 // Custom Components for Routine Session
 import { VideoModal } from "../VideoModal";
 import { MetricCard } from "./MetricCard";
 import { useLandscapeMode } from "./useLandscapeMode";
 // Icons & Images
-import Completed from "/assets/completed.png";
-import Mins from "/assets/mins.png";
-import Calories from "/assets/calories.png";
-import Score from "/assets/score.png";
+import Completed from "/assets/completed.svg";
+import Mins from "/assets/mins.svg";
+import Calories from "/assets/calories.svg";
+import Score from "/assets/score.svg";
 import BG from "/assets/bg_light.png";
 
 const modalStyle = {
@@ -38,6 +38,7 @@ const modalStyle = {
 
 export const CompleteRoutineSessionModal = ({
   open = false,
+  sessionType = "routine",
   onComplete = false,
   mins = 0,
   calorie = 0,
@@ -56,27 +57,42 @@ export const CompleteRoutineSessionModal = ({
   return (
     <>
       <Modal open={open}>
-        <Box sx={{ ...modalStyle, gap: isLandscapeMode ? 2 : 8 }}>
-          <Box
-            component="img"
-            src={Completed}
-            alt="Completed Exercise"
-            sx={{
-              maxHeight: isLandscapeMode ? "80px" : "250px",
-              objectFit: "contain",
-            }}
-          />
-          <Typography
-            sx={{
-              fontWeight: "normal",
-              fontSize: isLandscapeMode ? "1rem" : "1.2rem",
-              textAlign: "center",
-              width: "450px",
-            }}
+        <Box sx={{ ...modalStyle, gap: isLandscapeMode ? 2 : 5 }}>
+          <Grid
+            container
+            justifyContent={"center"}
+            flexDirection={"column"}
+            gap={3}
           >
-            Awesome! You&apos;e nailed the basics—now you&apos;re ready to take
-            on more with confidence!
-          </Typography>
+            <Box
+              component="img"
+              src={Completed}
+              alt="Completed Exercise"
+              sx={{
+                maxHeight: isLandscapeMode ? "80px" : "100px",
+                objectFit: "contain",
+              }}
+            />
+            <Typography
+              sx={{
+                fontWeight: "normal",
+                fontSize: isLandscapeMode ? ".9rem" : "1.1rem",
+                textAlign: "center",
+                width: "450px",
+              }}
+            >
+              {sessionType == "routine" ? (
+                <>
+                  {"Yay! You’ve completed exercising"}
+                  <br />
+                  {" Let’s see what you’ve achieved today!"}
+                </>
+              ) : (
+                "Awesome! You’ve nailed the basics — now you’re ready to take on more with confidence!"
+              )}
+            </Typography>
+          </Grid>
+
           <Box
             sx={{
               display: "flex",
@@ -111,7 +127,7 @@ export const CompleteRoutineSessionModal = ({
               <img
                 src={Calories}
                 alt="calories"
-                style={{ width: "37px", height: "45px", marginBottom: "4px" }}
+                style={{ width: "37px", height: "44px", marginBottom: "4px" }}
               />
               <MetricCard title="Calories" color="black" value={calorie} />
             </Box>
