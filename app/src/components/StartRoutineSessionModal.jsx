@@ -151,7 +151,7 @@ export const StartRoutineSessionModal = ({
                       />
                     </RadioGroup>
                   </FormControl>
-                  <Typography textAlign="center">
+                  <Typography textAlign="center" sx={{fontSize: "0.8rem"}}>
                     The recordings will be saved in your history for your
                     personal progress tracking.
                   </Typography>
