@@ -1383,6 +1383,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         calorie={calorie}
         score={score}
         videoURL={exerciseVideo}
+        sessionType={idType}
       />
     </>
   );
