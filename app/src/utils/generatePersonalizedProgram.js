@@ -1,26 +1,32 @@
 import axiosClient from "../utils/axiosClient";
 import { createProgramRoutine } from "../controllers/ProgramController";
 import { createRoutineExercise } from "../controllers/RoutineController";
+import { getPreGeneratedPersonalizedProgram } from "../utils/getPreGeneratedPersonalizedProgram";
 
 export const generatePersonalizedProgram = async (userId, prompt) => {
   if (!prompt) return;
 
   try {
-    // TODO: Create and Use the font-end controller.
     // OpenAI will generate the program data
     console.log(prompt);
-    const response_openai = await axiosClient.post(`openai/`, {
-      prompt: prompt,
-    });
-    if (Number(response_openai.status) !== 200) {
-      throw new Error("Failed to get OpenAI response");
-    }
-    const parsedContent = JSON.parse(
-      response_openai.data.data.choices[0].message.content
-    );
-    console.log("AI generated data:", parsedContent);
+    let parsedContent;
 
-    // TODO: Create and Use the font-end controller.
+    if (import.meta.env.VITE_PROGRAM_GENERATION_MODE === "DEMO") {
+      parsedContent = await getPreGeneratedPersonalizedProgram();
+      console.log("Demo data:", parsedContent);
+    } else {
+      const response_openai = await axiosClient.post(`openai/`, {
+        prompt: prompt,
+      });
+      if (Number(response_openai.status) !== 200) {
+        throw new Error("Failed to get OpenAI response");
+      }
+      parsedContent = JSON.parse(
+        response_openai.data.data.choices[0].message.content
+      );
+      console.log("AI generated data:", parsedContent);
+    }
+
     // Insert program data into the database
     const response_program = await axiosClient.post("programs/", {
       ...parsedContent.program,
