@@ -43,7 +43,7 @@ export const GadgetHistory = ({ history = [] }) => {
   const chartRef = useRef(null);
   const [totalDuration, setTotalDuration] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(0);
   const [mode, setMode] = useState("week-simple"); 
   const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(startOfMonth(new Date()));
@@ -145,6 +145,11 @@ export const GadgetHistory = ({ history = [] }) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  useEffect(() => {
+    chartRef.current.resize();
+    console.log(chartRef.current);
+  }, [windowWidth]);
 
   // When the mode is changed, reset the start date of the week or month
   useEffect(() => {
@@ -379,7 +384,6 @@ export const GadgetHistory = ({ history = [] }) => {
               options={options} 
               key={windowWidth} 
               ref={chartRef}
-              // onClick={handleChartClick}  
             />
           ) : (
             <Typography>No data available</Typography>
@@ -392,9 +396,6 @@ export const GadgetHistory = ({ history = [] }) => {
       </Typography>
       <Button
         variant="contained"
-        // sx={{
-        //   width: "50%",
-        // }}
         onClick={() => navigate("/profile")}
       >
         My History
