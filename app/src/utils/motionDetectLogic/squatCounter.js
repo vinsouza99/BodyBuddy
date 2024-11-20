@@ -38,7 +38,7 @@ export class SquatCounter extends BaseCounter {
     this.hipKneeAnkleAngle = calculateAngle(leftHip, leftKnee, leftAnkle);
 
     // Check if knee bends too much
-    if (this.hipKneeAnkleAngle < 85) {
+    if (this.hipKneeAnkleAngle < 80) {
       this.alertCount += 1;
     }
 

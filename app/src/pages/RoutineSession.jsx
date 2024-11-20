@@ -124,6 +124,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [restForSetIncrement, setRestForSetIncrement] = useState(false);
   const [restForNextExercise, setRestForNextExercise] = useState(true);
+  const [voice, setVoice] = useState(null);
 
   // --- Refs ---
   const videoRef = useRef(null);
@@ -154,6 +155,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       startedAtRef.current = new Date();
       console.log("Started at:", startedAtRef.current);
     }
+
+    // Load voices for text-to-speech
+    const loadVoices = () => {
+      const voices = speechSynthesis.getVoices();
+      const selectedVoice = voices.find((v) => v.name.includes("Google US English")) || voices[0];
+      setVoice(selectedVoice || null);
+    };
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    loadVoices();
 
     // Get user info
     const fetchUserInfo = async () => {
@@ -1001,6 +1013,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Text to Speech
   const readoutText = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.voice = voice;
     window.speechSynthesis.speak(utterance);
   };
 
