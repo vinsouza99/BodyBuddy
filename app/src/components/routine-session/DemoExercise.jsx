@@ -48,15 +48,75 @@ export const DemoExercise = ({
 }) => {
   const isLandscapeMode = useLandscapeMode();
   const [isVisible, setIsVisible] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [timerKey, setTimerKey] = useState(0); // to reset the timer
+  const message = "Make sure your whole body is captured by the camera";
+  const [voice, setVoice] = useState(null);
 
   useEffect(() => {
     if (trigger) {
       setIsVisible(true);
-      setIsPlaying(true);
+      setIsPlaying(false);
     }
   }, [trigger]);
+
+  useEffect(() => {
+    const loadVoices = () => {
+      const voices = speechSynthesis.getVoices();
+      const selectedVoice = voices.find((v) => v.name.includes("Google US English")) || voices[0];
+      setVoice(selectedVoice || null);
+    };
+
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+
+    loadVoices();
+  }, []);
+
+  useEffect(() => {
+    if (!voice || !trigger) return;
+  
+    const handleSpeech = async () => {
+      try {
+        await speakMessage(message);
+        setIsPlaying(true);
+      } catch (error) {
+        console.error("Speech synthesis error in useEffect:", error);
+      }
+    };
+    handleSpeech();
+  
+    return () => {
+      speechSynthesis.cancel();
+    };
+  }, [message, voice, trigger]);
+
+  const speakMessage = (text) => {
+    if ("speechSynthesis" in window) {
+      return new Promise((resolve, reject) => {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.voice = voice;
+        utterance.lang = "en-US";
+        utterance.rate = 1.0;
+  
+        utterance.onend = () => {
+          console.log("Speech has ended");
+          resolve("Speech completed");
+        };
+
+        utterance.onerror = (error) => {
+          console.error("Speech synthesis error: ", error);
+          reject("Speech synthesis error: " + error.error);
+        };
+
+        speechSynthesis.speak(utterance);
+      });
+    } else {
+      console.warn("Speech synthesis is not supported in this browser.");
+      return Promise.reject("Speech synthesis not supported");
+    }
+  };
 
   const togglePlayPause = () => {
     setIsPlaying((prev) => !prev);
@@ -72,7 +132,13 @@ export const DemoExercise = ({
     skipExercise();
   };
 
-  if (!isVisible || currentExerciseInfo == null) return null;
+  const handleUpdate = (remainingTime) => {
+    if (remainingTime !== 0) {
+      speakMessage(remainingTime);
+    }
+  }
+
+  if (!isVisible || currentExerciseInfo == null || !voice) return null;
 
   return (
     <Modal open={trigger}>
@@ -195,6 +261,7 @@ export const DemoExercise = ({
               strokeWidth={isLandscapeMode ? 6 : 8}
               colors="#353E45"
               trailColor="transparent"
+              onUpdate={handleUpdate}
               onComplete={handleTimerComplete}
             >
               {({ remainingTime }) => (
