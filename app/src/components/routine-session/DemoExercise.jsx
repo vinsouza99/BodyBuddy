@@ -49,6 +49,7 @@ export const DemoExercise = ({
   const isLandscapeMode = useLandscapeMode();
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
   const [timerKey, setTimerKey] = useState(0); // to reset the timer
   const message = "Make sure your whole body is captured by the camera";
   const [voice, setVoice] = useState(null);
@@ -57,6 +58,7 @@ export const DemoExercise = ({
     if (trigger) {
       setIsVisible(true);
       setIsPlaying(false);
+      setIsDisabled(true);
     }
   }, [trigger]);
 
@@ -81,6 +83,7 @@ export const DemoExercise = ({
       try {
         await speakMessage(message);
         setIsPlaying(true);
+        setIsDisabled(false);
       } catch (error) {
         console.error("Speech synthesis error in useEffect:", error);
       }
@@ -289,6 +292,7 @@ export const DemoExercise = ({
                 onClick={togglePlayPause}
                 onMouseDown={(e) => e.preventDefault()}
                 style={{ fontSize: 50, color: "#353E45" }}
+                disabled={isDisabled}
               >
                 {isPlaying ? (
                   <PauseCircleOutlineIcon style={{ fontSize: 50 }} />

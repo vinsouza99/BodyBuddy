@@ -124,6 +124,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const [restForSetIncrement, setRestForSetIncrement] = useState(false);
   const [restForNextExercise, setRestForNextExercise] = useState(true);
+  const [voice, setVoice] = useState(null);
 
   // --- Refs ---
   const videoRef = useRef(null);
@@ -154,6 +155,17 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       startedAtRef.current = new Date();
       console.log("Started at:", startedAtRef.current);
     }
+
+    // Load voices for text-to-speech
+    const loadVoices = () => {
+      const voices = speechSynthesis.getVoices();
+      const selectedVoice = voices.find((v) => v.name.includes("Google US English")) || voices[0];
+      setVoice(selectedVoice || null);
+    };
+    if (speechSynthesis.onvoiceschanged !== undefined) {
+      speechSynthesis.onvoiceschanged = loadVoices;
+    }
+    loadVoices();
 
     // Get user info
     const fetchUserInfo = async () => {
@@ -1001,6 +1013,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   // Text to Speech
   const readoutText = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.voice = voice;
     window.speechSynthesis.speak(utterance);
   };
 
@@ -1213,53 +1226,55 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                   <MetricCard title="Kcal" value={calorie} />
                 </Box>
 
-                {/* Puase & Play */}
-                <IconButton
-                  onClick={toggleIsResting}
-                  onMouseDown={(e) => e.preventDefault()}
-                  style={{ fontSize: 50, color: "white" }}
-                >
-                  {isResting ? (
-                    <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
-                  ) : (
-                    <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
-                  )}
-                </IconButton>
+                <Box sx={{display: "flex", flexDirection: "row", gap: 2}}>
+                  {/* Puase & Play */}
+                  <IconButton
+                    onClick={toggleIsResting}
+                    onMouseDown={(e) => e.preventDefault()}
+                    style={{ fontSize: 50, color: "white" }}
+                  >
+                    {isResting ? (
+                      <PlayCircleOutlineIcon style={{ fontSize: 50 }} />
+                    ) : (
+                      <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
+                    )}
+                  </IconButton>
 
-                {/* Timer */}
-                <CountdownCircleTimer
-                  // key={selectedExerciseIndex} // To reset timer when exercise changes
-                  key={`${selectedExerciseIndex}-${successSetCount}`}
-                  isPlaying={!isResting}
-                  duration={routine[selectedExerciseIndex]?.duration || 0}
-                  size={isLandscapeMode ? 80 : 110}
-                  strokeWidth={isLandscapeMode ? 6 : 8}
-                  colors="white"
-                  trailColor="transparent"
-                  onComplete={incrementSetsCount}
-                  onUpdate={handleIncrementCalorieAndScore}
-                >
-                  {({ remainingTime }) => (
-                    <Typography
-                      sx={{
-                        fontWeight: "bold",
-                        fontSize: isLandscapeMode ? "3rem" : "4rem",
-                        color: "white",
-                      }}
-                    >
-                      {remainingTime >= 0 ? remainingTime : 0}
-                    </Typography>
-                  )}
-                </CountdownCircleTimer>
+                  {/* Timer */}
+                  <CountdownCircleTimer
+                    // key={selectedExerciseIndex} // To reset timer when exercise changes
+                    key={`${selectedExerciseIndex}-${successSetCount}`}
+                    isPlaying={!isResting}
+                    duration={routine[selectedExerciseIndex]?.duration || 0}
+                    size={isLandscapeMode ? 80 : 110}
+                    strokeWidth={isLandscapeMode ? 6 : 8}
+                    colors="white"
+                    trailColor="transparent"
+                    onComplete={incrementSetsCount}
+                    onUpdate={handleIncrementCalorieAndScore}
+                  >
+                    {({ remainingTime }) => (
+                      <Typography
+                        sx={{
+                          fontWeight: "bold",
+                          fontSize: isLandscapeMode ? "3rem" : "4rem",
+                          color: "white",
+                        }}
+                      >
+                        {remainingTime >= 0 ? remainingTime : 0}
+                      </Typography>
+                    )}
+                  </CountdownCircleTimer>
 
-                {/* Next Exercise */}
-                <IconButton
-                  onClick={moveToNextExercise}
-                  onMouseDown={(e) => e.preventDefault()}
-                  style={{ fontSize: 50, color: "white" }}
-                >
-                  <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
-                </IconButton>
+                  {/* Next Exercise */}
+                  <IconButton
+                    onClick={moveToNextExercise}
+                    onMouseDown={(e) => e.preventDefault()}
+                    style={{ fontSize: 50, color: "white" }}
+                  >
+                    <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
+                  </IconButton>
+                </Box>
 
                 {/* Score */}
                 <Box sx={{ minWidth: "85px" }}>
@@ -1280,7 +1295,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                   <Box
                     sx={{
                       position: isExerciseMenuOpen ? "absolute" : "static",
-                      width: "280px",
+                      width: "100%",
                     }}
                   >
                     <Typography
