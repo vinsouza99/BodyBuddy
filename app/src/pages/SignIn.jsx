@@ -10,14 +10,13 @@ import {
   Box,
   Typography,
   Container,
-  Divider,
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 // import GoogleIcon from "@mui/icons-material/Google";
 import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
 
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
+// const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
 export const SignIn = (props) => {
   const { user } = useAuth();
@@ -206,7 +205,7 @@ export const SignIn = (props) => {
         <Box sx={{ mx: 4 }}>
           {/* Start Here link */}
           <Typography variant="body2" sx={{ marginBottom: 1 }}>
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Button
               variant="text"
               color="primary"

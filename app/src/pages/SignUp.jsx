@@ -9,7 +9,6 @@ import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
 import { updateUser } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
-import { sendTokenToServer } from "../utils/authUtils";
 
 export const SignUp = (props) => {
   const { user } = useAuth();
@@ -20,7 +19,6 @@ export const SignUp = (props) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [userResponses, setUserResponses] = useState({});
-  const [isTokenSet, setIsTokenSet] = useState(false);
 
   // Initialization
   useEffect(() => {
@@ -32,10 +30,9 @@ export const SignUp = (props) => {
   // Transition to Dashboard when user authentication is successful
   useEffect(() => {
     if (user) {
-      // navigate("/dashboard");
       navigate("/dashboard", { state: userResponses });
     }
-  }, [user, navigate, isTokenSet]);
+  }, [user, navigate]);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -56,12 +53,6 @@ export const SignUp = (props) => {
       }
       console.log(userResponses);
 
-      const { session } = await supabase.auth.getSession();
-      if (session?.access_token) {
-        await sendTokenToServer(session.access_token);
-        setIsTokenSet(true);
-      }
-
       const newUser = {
         id: data.user.id,
         name: name,
@@ -76,7 +67,6 @@ export const SignUp = (props) => {
       updateUser(newUser.id, newUser)
         .then((response) => {
           console.log("SUCCESS: User signed up", data, response);
-          // navigate("/dashboard", {state : userResponses});
         })
         .catch((error) => {
           throw error;

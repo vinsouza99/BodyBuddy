@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
 
 const authenticateToken = (req, res, next) => {
-  const access_token = req.cookies.access_token;
-  if (!access_token) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Unauthorized: Token missing or expired' });
   }
+  const access_token = authHeader.split(' ')[1];
 
   jwt.verify(access_token, process.env.JWT_SECRET, (err, user) => {
     if (err) {
