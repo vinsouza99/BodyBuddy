@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const getPreGeneratedPersonalizedProgram = async () => {
+const generateDemoData = async () => {
   const uuidMap = {};
   const today = new Date();
   let scheduleDate = new Date(today);
@@ -27,7 +27,7 @@ export const getPreGeneratedPersonalizedProgram = async () => {
   }));
   data.program_routine = data.program_routine.map((routine) => {
     const updatedRoutine = { ...routine };
-    updatedRoutine.scheduled_date = scheduleDate.toISOString().split('T')[0]; // ISO形式で日付を設定 (YYYY-MM-DD)
+    updatedRoutine.scheduled_date = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
     scheduleDate.setDate(scheduleDate.getDate() + 2);
     return updatedRoutine;
   });
@@ -284,3 +284,5 @@ const data = {
         }
     ]
   }
+
+  export default generateDemoData;
