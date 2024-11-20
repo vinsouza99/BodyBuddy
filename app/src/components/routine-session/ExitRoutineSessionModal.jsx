@@ -77,21 +77,22 @@ export const ExitRoutineSessionModal = ({
             flexDirection: "row",
             gap: 2,
             width: "100%",
+            justifyContent: "center",
           }}
         >
           <Button
-            variant="outlined"
+            className="containedWhite"
             onClick={handleComplete}
-            color="primary"
-            fullWidth
+            // color="primary"
+            // fullWidth
           >
             Exit
           </Button>
           <Button
             variant="contained"
             onClick={handleClose}
-            color="primary"
-            fullWidth
+            // color="primary"
+            // fullWidth
           >
             Continue
           </Button>

@@ -164,18 +164,33 @@ const theme = createTheme({
           minHeight: "42px", // Default minimum height
           paddingLeft: "20px", // Default padding left
           paddingRight: "20px", // Default padding right
+          outline: "none", // Remove the default outline
+
+          "&:focus": {
+            outline: "none", // Remove the focus outline
+            boxShadow: "none", // Remove any box shadow on focus
+          },
+
+          "&.containedWhite": {
+            backgroundColor: "#FFFFFF", // Primary background color
+            color: "rgba(0, 0, 0, 0.5)", // Text color for readability
+            boxShadow: "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
+            "&:hover": {
+              backgroundColor: "primary.dark", // Dark background on hover
+              boxShadow: "0px 4px 5px -2px rgba(0,0,0,0.2), 0px 4px 4px 0px rgba(0,0,0,0.10), 0px 1px 8px 0px rgba(0,0,0,0.10)",
+            },
+            minWidth: "110px", // Default minimum width
+          },
+
+          "&.Mui-disabled": {
+            opacity: 0.2, // Set opacity to 50% when disabled
+            pointerEvents: "none", // Disable pointer events for better UX
+          },
+          
         },
         contained: {
           backgroundColor: "#000000", // Primary background color
           color: "primary.contrastText", // Text color for readability
-          "&:hover": {
-            backgroundColor: "primary.dark", // Dark background on hover
-          },
-          minWidth: "110px", // Default minimum width
-        },
-        containedWhite: {
-          backgroundColor: "#FFFFFF", // Primary background color
-          color: "rgba(0, 0, 0, 0.5)", // Text color for readability
           "&:hover": {
             backgroundColor: "primary.dark", // Dark background on hover
           },
