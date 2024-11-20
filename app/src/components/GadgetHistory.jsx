@@ -138,6 +138,9 @@ export const GadgetHistory = ({ history = [] }) => {
     };
     window.addEventListener("resize", handleResize);
 
+    // Initial resize
+    handleResize();
+
     return () => {
       window.removeEventListener("resize", handleResize);
     };
