@@ -26,6 +26,7 @@ import {
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from '@mui/icons-material/GitHub';
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
+import downloadIcon from "/assets/icon-download.svg";
 import emailErrorIcon from "/assets/emailErrorIcon.svg";
 import emailSentIcon from "/assets/emailSentIcon.svg";
 import { Link } from "react-router-dom";
@@ -373,7 +374,10 @@ export function Landing() {
               <Link to="/enter">
                 <Button
                   variant="contained"
-                  sx={{ "&:hover": { backgroundColor: "primary.dark" } }}
+                  sx={{ 
+                    textTransform: "uppercase",
+                    "&:hover": { backgroundColor: "primary.dark" } 
+                  }}
                 >
                   Sign Up
                 </Button>
@@ -395,7 +399,7 @@ export function Landing() {
               size={{ xs: 12, md: 6 }}
               sx={{
                 display: "flex",
-                justifyContent: "end",
+                justifyContent: {xs: "center", md: "end"},
               }}
             >
               <Box
@@ -422,7 +426,10 @@ export function Landing() {
                   <Link to="/enter">
                     <Button
                       variant="contained"
-                      sx={{ "&:hover": { backgroundColor: "primary.dark" } }}
+                      sx={{ 
+                        textTransform: "uppercase",
+                        "&:hover": { backgroundColor: "primary.dark" } 
+                      }}
                     >
                       Sign Up For Free
                     </Button>
@@ -583,12 +590,14 @@ export function Landing() {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                justifyContent: "center",
+                // justifyContent: "center",
+                justifyContent: { xs: "center", md: "center" },
+                textAlign: { xs: "center", md: "left" },           
               }}
             >
-              <Typography variant="body1" display="block" textAlign={"left"}>
+              <Typography variant="h4" display="block" textAlign={"left"} fontFamily={"Urbanist"} >
                 BodyBuddy offers an{" "}
-                <span style={{ fontSize: "2rem" }}>
+                <span style={{ fontSize: "2.5rem" }}>
                   effective fitness experience
                 </span>{" "}
                 without the worry of time and location constraints
@@ -688,6 +697,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
+                              textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -787,6 +797,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
+                              textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -885,6 +896,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
+                              textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -924,11 +936,76 @@ export function Landing() {
         </Box>
         <Box component="section" id="contact" ref={contactRef} sx={{ mb: 6 }}>
           <Grid container>
-            <Grid size={{ sm: 12, md: 5 }}>
-              <Box textAlign="center">
+            <Grid size={{ xs: 12, md: 5 }} 
+             sx={{
+              display: "flex", 
+              flexDirection: "column",
+              alignItems: "center", 
+              justifyContent: "start",
+              mb: 6,
+              typography: "body3",
+              }}
+            >
+              <Box sx={{textAlign: { xs: "center", md: "left" }}}>
                 <img src={logo} sx={{ width: "100%", maxWidth: "450px" }} />
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "left",
+                    marginTop: 2,
+                    "&:hover": { color: "primary.dark" },
+                  }}
+                >
+                  <Link
+                    to={"https://github.com/vinsouza99/BodyBuddy.git"}
+                    style={{
+                      display: "flex",
+                      textDecoration: "none",
+                      color: "inherit",
+                      alignItems: "center",
+                    }}
+                  >
+                    <GitHubIcon
+                      sx={{
+                        color: "white",
+                        backgroundColor: "black",
+                        borderRadius: "6px",
+                        padding: "2px",
+                        marginRight: 1,
+                      }}
+                    />
+                    {"Project Github"}
+                  </Link>
+                </Box>     
+                <Box
+                  sx={{
+                    display: "flex",
+                    marginTop: 2,
+                    "&:hover": { color: "primary.dark" },
+                  }}
+                >
+                  <Link
+                    to={""}
+                    style={{
+                      display: "flex",
+                      textDecoration: "none",
+                      color: "inherit",
+                      alignItems: "center",
+                    }}
+                  >
+
+                    <img
+                      src={downloadIcon}
+                      alt="download Icon"
+                      style={{ height: "28px", marginRight: "8px"}}
+                    />
+                    {"Download our proposal"}
+                  </Link>
+                </Box>
               </Box>
             </Grid>
+
             <Grid
               size={{ xs: 12, md: 7 }}
               sx={{
@@ -1006,6 +1083,7 @@ export function Landing() {
                   color="primary"
                   fullWidth
                   sx={{
+                    textTransform: "uppercase",
                     width: "110px",
                     "&:hover": { backgroundColor: "primary.dark" },
                   }}
