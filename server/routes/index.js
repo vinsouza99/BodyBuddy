@@ -21,31 +21,30 @@ router.use("/openai", authenticateToken, openaiapiRoutes);
 router.use("/auth", authenticateToken, authRoutes);
 
 // set-cookie endpoint for Access Token (JWT)
-router.post("/set-cookie", (req, res) => {
-  const { access_token } = req.body;
-  if (!access_token) {
-    return res.status(400).json({ message: "Token is required" });
-  }
-  // Set JWT token in HttpOnly cookie
-  res.cookie("access_token", access_token, {
-    httpOnly: true, // Can't be accessed using JavaScript
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
-    maxAge: 60 * 60 * 1000, // 60 minutes
-    // domain: 'www.bodybuddy.me'
-  });
-  res.status(200).json({ message: "Accesstoken set in HttpOnly cookie" });
-});
+// router.post("/set-cookie", (req, res) => {
+//   const { access_token } = req.body;
+//   if (!access_token) {
+//     return res.status(400).json({ message: "Token is required" });
+//   }
+//   // Set JWT token in HttpOnly cookie
+//   res.cookie("access_token", access_token, {
+//     httpOnly: true, // Can't be accessed using JavaScript
+//     secure: process.env.NODE_ENV === "production",
+//     sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
+//     maxAge: 60 * 60 * 1000, // 60 minutes
+//   });
+//   res.status(200).json({ message: "Accesstoken set in HttpOnly cookie" });
+// });
 
 // clear-cookie endpoint for Access Token (JWT)
-router.post("/clear-cookie", (req, res) => {
-  // Clear the 'access_token' cookie
-  res.clearCookie("access_token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
-  });
-  res.status(200).json({ message: "Logged out and cookie cleared" });
-});
+// router.post("/clear-cookie", (req, res) => {
+//   // Clear the 'access_token' cookie
+//   res.clearCookie("access_token", {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === "production",
+//     sameSite: process.env.NODE_ENV === "production" ? "None" : "Strict",
+//   });
+//   res.status(200).json({ message: "Logged out and cookie cleared" });
+// });
 
 export default router;

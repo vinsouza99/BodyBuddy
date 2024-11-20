@@ -1,8 +1,6 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, createContext, useContext } from "react";
 import { getUserProgress, updateUserProgress } from "../controllers/UserController";
-import axiosClient from "../utils/axiosClient";
-import { sendTokenToServer } from "./authUtils";
 import { supabase } from "./supabaseClient";
 import { parseISO } from 'date-fns';
 
@@ -18,17 +16,12 @@ export function AuthProvider({ children }) {
     const fetchSession = async () => {
       setLoading(true);
       try {
-        // const { data, error } = await supabase.auth.getSession();
-        // if (error) { throw error; }
-        // setUser(data?.session?.user ?? null);
-        const response = await axiosClient.get("/auth/session");
-        console.log(response);
-        if (response.status === 200) {
-          const userData = {
-            ...response.data.user,
-            id: response.data.user.sub,
-          };
-          setUser(userData);
+        const { data, error } = await supabase.auth.getSession();
+        if (error) { throw error; }
+
+        const session = data?.session;
+        if (session) {
+          setUser(session.user);
         } else {
           setUser(null);
         }
@@ -50,26 +43,16 @@ export function AuthProvider({ children }) {
       const access_token = session?.access_token;
 
       if (event === "INITIAL_SESSION") {
-        // Handle initial session event
+        console.log("Session data:", session);
       } else if (event === "SIGNED_IN" && access_token) {
-        // Handle signed in event
-        await sendTokenToServer(access_token);
         console.log("User signed in");
         setUser(session?.user ?? null);
         setLoading(false);
-        // Note: Code about coping user info to public.user table was replace with a trigger & function in the database
       } else if (event === "SIGNED_OUT") {
-        // Handle sign out event
         setUser(null);
         console.log("User signed out");
-      } else if (event === "PASSWORD_RECOVERY") {
-        // Handle password recovery event
       } else if (event === "TOKEN_REFRESHED") {
-        // Handle token refreshed event
-        await sendTokenToServer(access_token);
         console.log("Access token refreshed");
-      } else if (event === "USER_UPDATED") {
-        // Handle user updated event
       }
     });
 
@@ -122,19 +105,6 @@ export function AuthProvider({ children }) {
     } catch (error) {
       console.log("User failed to sign out", error);
       return;
-    }
-
-    // Clear the HTTP-Only cookie
-    try {
-      const response = await axiosClient.post("/clear-cookie");
-
-      if (response.status === 200) {
-        console.log("HTTP-Only cookie cleared successfully");
-      } else {
-        throw new Error("Failed to clear HTTP-Only cookie");
-      }
-    } catch (error) {
-      console.error("Error clearing HTTP-Only cookie:", error);
     }
   };
 
