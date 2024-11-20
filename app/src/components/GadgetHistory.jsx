@@ -148,7 +148,6 @@ export const GadgetHistory = ({ history = [] }) => {
 
   useEffect(() => {
     chartRef.current.resize();
-    console.log(chartRef.current);
   }, [windowWidth]);
 
   // When the mode is changed, reset the start date of the week or month
