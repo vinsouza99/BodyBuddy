@@ -13,6 +13,12 @@
     {
       "src": "/(.*)",
       "dest": "server.js"
+    },
+    {
+      "src": "/api/learn",
+      "headers": {
+        "cache-control": "public, max-age=3600, s-maxage=86400"
+      }
     }
   ]
 }
