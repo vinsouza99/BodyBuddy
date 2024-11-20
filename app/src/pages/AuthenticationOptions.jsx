@@ -1,13 +1,22 @@
 import React, { useEffect } from "react";
-import { Box, Button, Typography, Container, useMediaQuery } from "@mui/material";
+import { setPageTitle } from "../utils/utils";
+import {
+  Box,
+  Button,
+  Typography,
+  Container,
+  useMediaQuery,
+} from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { NavLink } from "react-router-dom";
 import { Onboarding } from "../components/Onboarding";
 import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import CircleCheckIcon from "/assets/icon-circle-check.svg";
-import theme from "../theme";
 
-export function AuthenticationOptions() {
+export function AuthenticationOptions(props) {
+  useEffect(() => {
+    setPageTitle(props.title);
+  }, []);
 
   // Use useMediaQuery to define screen width
   const isMobile = useMediaQuery("(max-width:600px)");
@@ -142,7 +151,6 @@ export function AuthenticationOptions() {
               </Typography>
             </Box>
           </Box>
-          
 
           {/* Button linking to CreateProgram.jsx */}
           <Button

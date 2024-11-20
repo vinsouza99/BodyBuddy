@@ -41,7 +41,7 @@ function App() {
         <Route index element={<Landing title="BodyBoddy" />} />
         <Route
           path="/enter"
-          element={<AuthenticationOptions title="Sign In or Sign Up" />}
+          element={<AuthenticationOptions title="Welcome to BodyBuddy" />}
         />
         <Route path="/signin" element={<SignIn title="Sign In" />} />
         <Route path="/signup" element={<SignUp title="Sign Up" />} />
