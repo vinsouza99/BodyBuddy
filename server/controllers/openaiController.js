@@ -1,3 +1,4 @@
+export const maxDuration = 60;
 import { OpenAI } from "openai";
 import Groq from "groq-sdk";
 import generateDemoData from "../utils/generateDemoData.js";
