@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useMemo, memo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Tabs, Tab, Grid2, Typography, Skeleton } from "@mui/material";
+import { Box, Tabs, Tab, Grid2, Skeleton } from "@mui/material";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 import { ErrorMessage } from "../components/ErrorMessage.jsx";
 // Gadgets Components
@@ -199,10 +199,8 @@ export const TrainingProgram = memo((props) => {
                 </Box>
               </Grid2>
             </>
-          ) : activeProgram ? (
-            myProgramTabContent
           ) : (
-            <Typography>No available program</Typography>
+            myProgramTabContent
           )
         ) : null}
         {/* PREMADE ROUTINES TAB */}
