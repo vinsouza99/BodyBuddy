@@ -94,7 +94,7 @@ export function Landing() {
       name: "Yosuke Hanaoka",
       picture: yosukePicture,
       github: "https://github.com/yoshan0921",
-      linkedin: "https://www.linkedin.com/in/yosuke-hatnaoka",
+      linkedin: "https://www.linkedin.com/in/yosuke-hanaoka",
       role: "Project Manager / / Full Stack Developer",
     },
     {
