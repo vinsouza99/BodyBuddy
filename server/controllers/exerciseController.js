@@ -12,7 +12,6 @@ export const getExercises = async (req, res) => {
         offset: offset,
         limit: limit,
       });
-      res.set("Cache-Control", "public, max-age=3600, s-maxage=86400");
       res.status(200).json({
         status: "200",
         message: "Success",
@@ -20,7 +19,6 @@ export const getExercises = async (req, res) => {
       });
     } else {
       const exercises = await Exercise.findAll();
-      res.set("Cache-Control", "public, max-age=3600, s-maxage=86400");
       res.status(200).json({
         status: "200",
         message: "Success",
