@@ -49,6 +49,7 @@ import violaPicture from "/assets/teammembers/viola.png";
 import liezelPicture from "/assets/teammembers/liezel.png";
 import normalCheck from "/assets/icon-normal-check.svg";
 import "./Landing.css";
+import ProjectProposal from "/assets/ProjectProposalSample.pdf";
 
 export function Landing() {
   const [emailSendingError, setEmailSendingError] = useState(false);
@@ -985,8 +986,9 @@ export function Landing() {
                     "&:hover": { color: "primary.dark" },
                   }}
                 >
-                  <Link
-                    to={""}
+                  <a
+                    href={ProjectProposal}
+                    download
                     style={{
                       display: "flex",
                       textDecoration: "none",
@@ -994,14 +996,13 @@ export function Landing() {
                       alignItems: "center",
                     }}
                   >
-
                     <img
                       src={downloadIcon}
                       alt="download Icon"
-                      style={{ height: "28px", marginRight: "8px"}}
+                      style={{ height: "28px", marginRight: "8px" }}
                     />
                     {"Download our proposal"}
-                  </Link>
+                  </a>                
                 </Box>
               </Box>
             </Grid>
