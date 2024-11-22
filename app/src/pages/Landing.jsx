@@ -198,7 +198,7 @@ export function Landing() {
             alignItems: "center",
             textAlign: "center",
             marginBottom: 3,
-            width:"190px",
+            width:"170px", // Changed 190px to 170px to fit 2 members per row on mobile
           }}
         >
           <Box
