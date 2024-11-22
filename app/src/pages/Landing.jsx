@@ -49,7 +49,7 @@ import violaPicture from "/assets/teammembers/viola.png";
 import liezelPicture from "/assets/teammembers/liezel.png";
 import normalCheck from "/assets/icon-normal-check.svg";
 import "./Landing.css";
-import ProjectProposal from "/assets/ProjectProposalSample.pdf";
+import ProjectProposal from "/assets/bodybuddy_project_proposal.pdf";
 
 export function Landing() {
   const [emailSendingError, setEmailSendingError] = useState(false);
