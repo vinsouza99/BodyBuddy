@@ -1,4 +1,6 @@
 export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 import { OpenAI } from "openai";
 import Groq from "groq-sdk";
 import generateDemoData from "../utils/generateDemoData.js";
