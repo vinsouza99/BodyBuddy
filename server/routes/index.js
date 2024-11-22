@@ -1,3 +1,6 @@
+export const maxDuration = 60;
+export const dynamic = "force-dynamic";
+
 import express from "express";
 import userRoutes from "./userRoutes.js";
 import localTableRoutes from "./localTableRoutes.js";
