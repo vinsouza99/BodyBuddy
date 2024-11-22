@@ -1,5 +1,6 @@
-export const maxDuration = 60;
-export const dynamic = "force-dynamic";
+// THE FOLLOWING CODE FOR VERCEL TIMEOUT ADJUSTMENT BUT CAUSE THE ERROR:
+// export const maxDuration = 60;
+// export const dynamic = "force-dynamic";
 
 import { OpenAI } from "openai";
 import Groq from "groq-sdk";

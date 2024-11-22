@@ -1,5 +1,6 @@
-export const maxDuration = 60;
-export const dynamic = "force-dynamic";
+// THE FOLLOWING CODE FOR VERCEL TIMEOUT ADJUSTMENT BUT CAUSE THE ERROR:
+// export const maxDuration = 60;
+// export const dynamic = "force-dynamic";
 
 import express from "express";
 import userRoutes from "./userRoutes.js";
