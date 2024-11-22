@@ -593,10 +593,10 @@ export function Landing() {
                 flexDirection: "column",
                 // justifyContent: "center",
                 justifyContent: { xs: "center", md: "center" },
-                textAlign: { xs: "center", md: "left" },           
+                textAlign: { xs: "center", md: "left" },   
               }}
             >
-              <Typography variant="h4" display="block" textAlign={"left"} fontFamily={"Urbanist"} >
+              <Typography variant="h4" display="block" textAlign={"left"} fontFamily={"Urbanist"} padding="0 1rem" >
                 BodyBuddy offers an{" "}
                 <span style={{ fontSize: "2.5rem" }}>
                   effective fitness experience
