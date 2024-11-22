@@ -24,6 +24,11 @@ const theme = createTheme({
       dark: "#FF0074", // Darker shade for hover effects (1 shade darker)
       contrastText: "#FFFFFF", // Text color for secondary buttons
     },
+    accent: {
+      //Green
+      main: "#B8E8B1",
+      contrastText: "#FFFFFF",
+    },
     success: {
       // Accent Green
       main: "#64CC54", // Main accent color
@@ -174,10 +179,12 @@ const theme = createTheme({
           "&.containedWhite": {
             backgroundColor: "#FFFFFF", // Primary background color
             color: "rgba(0, 0, 0, 0.5)", // Text color for readability
-            boxShadow: "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
+            boxShadow:
+              "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
             "&:hover": {
               backgroundColor: "primary.dark", // Dark background on hover
-              boxShadow: "0px 4px 5px -2px rgba(0,0,0,0.2), 0px 4px 4px 0px rgba(0,0,0,0.10), 0px 1px 8px 0px rgba(0,0,0,0.10)",
+              boxShadow:
+                "0px 4px 5px -2px rgba(0,0,0,0.2), 0px 4px 4px 0px rgba(0,0,0,0.10), 0px 1px 8px 0px rgba(0,0,0,0.10)",
             },
             minWidth: "110px", // Default minimum width
           },
@@ -186,7 +193,6 @@ const theme = createTheme({
             opacity: 0.2, // Set opacity to 50% when disabled
             pointerEvents: "none", // Disable pointer events for better UX
           },
-          
         },
         contained: {
           backgroundColor: "#000000", // Primary background color

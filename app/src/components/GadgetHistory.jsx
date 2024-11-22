@@ -1,23 +1,29 @@
 import PropTypes from "prop-types";
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button, ToggleButtonGroup, ToggleButton } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  ToggleButtonGroup,
+  ToggleButton,
+} from "@mui/material";
 import { GadgetBase } from "./GadgetBase";
 import { WeekPicker } from "./WeekPicker";
-import { 
+import {
   format,
   parseISO,
   startOfWeek,
-  startOfMonth, 
+  startOfMonth,
   startOfYear,
-  endOfMonth, 
+  endOfMonth,
   endOfYear,
-  isWithinInterval, 
-  addDays, 
-  addMonths, 
+  isWithinInterval,
+  addDays,
+  addMonths,
   getDate,
   getMonth,
- } from "date-fns";
+} from "date-fns";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -37,6 +43,7 @@ ChartJS.register(
   Tooltip,
   Legend
 );
+import theme from "../theme.js";
 
 export const GadgetHistory = ({ history = [] }) => {
   const navigate = useNavigate();
@@ -44,14 +51,21 @@ export const GadgetHistory = ({ history = [] }) => {
   const [totalDuration, setTotalDuration] = useState(0);
   const [totalCalories, setTotalCalories] = useState(0);
   const [windowWidth, setWindowWidth] = useState(0);
-  const [mode, setMode] = useState("week-simple"); 
-  const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
-  const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(startOfMonth(new Date()));
-  const [startOfCurrentYear, setStartOfCurrentYear] = useState(startOfYear(new Date()));
+  const [mode, setMode] = useState("week-simple");
+  const [startOfCurrentWeek, setStartOfCurrentWeek] = useState(
+    startOfWeek(new Date(), { weekStartsOn: 1 })
+  );
+  const [startOfCurrentMonth, setStartOfCurrentMonth] = useState(
+    startOfMonth(new Date())
+  );
+  const [startOfCurrentYear, setStartOfCurrentYear] = useState(
+    startOfYear(new Date())
+  );
   const [options, setOptions] = useState({
     font: {
       family: "'Montserrat', 'Arial', sans-serif",
     },
+    theme: theme,
     responsive: true,
     maintainAspectRatio: false,
     aspectRatio: 2,
@@ -60,26 +74,26 @@ export const GadgetHistory = ({ history = [] }) => {
         display: false,
       },
       tooltip: {
-        mode: 'index',
+        mode: "index",
         intersect: false,
         padding: 10,
-        titleColor: '#000',
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
-        borderColor: 'rgba(0, 0, 0, 0.5)',
+        titleColor: "#000",
+        backgroundColor: "rgba(255, 255, 255, 0.8)",
+        borderColor: "rgba(0, 0, 0, 0.5)",
         borderWidth: 1,
-        bodyColor: '#000',
-        titleFont: { size: 16, weight: 'bold' },
+        bodyColor: "#000",
+        titleFont: { size: 16, weight: "bold" },
         bodyFont: { size: 16 },
         caretSize: 10,
         cornerRadius: 15,
-        position: 'average',
-        yAlign: 'bottom', 
+        position: "average",
+        yAlign: "bottom",
       },
     },
     scales: {
       x: {
         ticks: {
-          align: 'end',
+          align: "end",
         },
         grid: {
           display: false,
@@ -92,7 +106,7 @@ export const GadgetHistory = ({ history = [] }) => {
     },
     animation: {
       duration: 500,
-      easing: 'easeInOutQuad',
+      easing: "easeInOutQuad",
     },
   });
   const [chartData, setChartData] = useState({
@@ -102,9 +116,9 @@ export const GadgetHistory = ({ history = [] }) => {
       {
         label: "Minutes (min)",
         data: [0, 0, 0, 0, 0, 0, 0],
-        backgroundColor: "#94DC8A",
-        borderColor: "#94DC8A",
-        borderRadius: 2,
+        backgroundColor: "#B8E8B1",
+        borderColor: "#B8E8B1",
+        borderRadius: 5,
         barPercentage: 1,
       },
       // For calories
@@ -113,7 +127,7 @@ export const GadgetHistory = ({ history = [] }) => {
         data: [0, 0, 0, 0, 0, 0, 0],
         backgroundColor: "#489FE4",
         borderColor: "#489FE4",
-        borderRadius: 2,
+        borderRadius: 5,
         barThickness: 0,
       },
     ],
@@ -176,7 +190,12 @@ export const GadgetHistory = ({ history = [] }) => {
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
-      if (isWithinInterval(entryDate, { start: startOfCurrentWeek, end: endOfCurrentWeek })) {
+      if (
+        isWithinInterval(entryDate, {
+          start: startOfCurrentWeek,
+          end: endOfCurrentWeek,
+        })
+      ) {
         const dayOfWeek = (parseInt(format(entryDate, "i")) - 1 + 7) % 7;
         weeklyMinutesData[dayOfWeek] += entry.minutes;
         weeklyCaloriesData[dayOfWeek] += entry.calories;
@@ -213,7 +232,12 @@ export const GadgetHistory = ({ history = [] }) => {
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
-      if (isWithinInterval(entryDate, { start: startOfCurrentMonth, end: endOfCurrentMonth })) {
+      if (
+        isWithinInterval(entryDate, {
+          start: startOfCurrentMonth,
+          end: endOfCurrentMonth,
+        })
+      ) {
         const dayOfMonth = getDate(entryDate) - 1;
         monthlyMinutesData[dayOfMonth] += entry.minutes;
         monthlyCaloriesData[dayOfMonth] += entry.calories;
@@ -227,7 +251,7 @@ export const GadgetHistory = ({ history = [] }) => {
       datasets: [
         { ...prevChartData.datasets[0], data: monthlyMinutesData },
         { ...prevChartData.datasets[1], data: monthlyCaloriesData },
-        ],
+      ],
     }));
     setOptions((prevOptions) => ({
       ...prevOptions,
@@ -251,7 +275,12 @@ export const GadgetHistory = ({ history = [] }) => {
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
-      if (isWithinInterval(entryDate, { start: startOfCurrentYear, end: endOfCurrentYear })) {
+      if (
+        isWithinInterval(entryDate, {
+          start: startOfCurrentYear,
+          end: endOfCurrentYear,
+        })
+      ) {
         const monthOfYear = getMonth(entryDate);
         yearlyMinutesData[monthOfYear] += entry.minutes;
         yearlyCaloriesData[monthOfYear] += entry.calories;
@@ -261,7 +290,20 @@ export const GadgetHistory = ({ history = [] }) => {
 
     setChartData((prevChartData) => ({
       ...prevChartData,
-      labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+      labels: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
       datasets: [
         { ...prevChartData.datasets[0], data: yearlyMinutesData },
         { ...prevChartData.datasets[1], data: yearlyCaloriesData },
@@ -309,14 +351,14 @@ export const GadgetHistory = ({ history = [] }) => {
 
   return (
     <GadgetBase>
-      <Box 
-        sx={{ 
-          width: "100%", 
-          display: "flex", 
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          gap: 2 
+          gap: 2,
         }}
       >
         <ToggleButtonGroup
@@ -328,7 +370,7 @@ export const GadgetHistory = ({ history = [] }) => {
             "& .MuiToggleButton-root": {
               border: "1px solid #ccc",
               "&.Mui-selected": {
-                borderColor: "transparent", 
+                borderColor: "transparent",
                 outline: "none",
                 backgroundColor: "#94DC8A",
               },
@@ -339,49 +381,56 @@ export const GadgetHistory = ({ history = [] }) => {
             },
           }}
         >
-          <ToggleButton 
-            value="week-simple" 
-            aria-label="week" 
-            sx={{ 
+          <ToggleButton
+            value="week-simple"
+            aria-label="week"
+            sx={{
               padding: "4px 10px",
             }}
           >
             Week
           </ToggleButton>
           <ToggleButton
-            value="month-simple" 
-            aria-label="month" 
-            sx={{ 
+            value="month-simple"
+            aria-label="month"
+            sx={{
               padding: "4px 10px",
             }}
           >
             Month
           </ToggleButton>
           <ToggleButton
-            value="year-simple" 
-            aria-label="month" 
-            sx={{ 
+            value="year-simple"
+            aria-label="month"
+            sx={{
               padding: "4px 10px",
             }}
           >
             Year
           </ToggleButton>
         </ToggleButtonGroup>
-        <WeekPicker
-          onClickNextWeek={handleNext}
-          onClickPreviousWeek={handlePrevious}
-          displayMode={mode}
-        />
-        <Box sx={{display: "flex", gap: 2}}>
-          <Typography>Total: </Typography>
-          <Typography sx={{fontWeight: "bold"}}>{`${totalDuration} min, ${totalCalories} kcal,`}</Typography>
+        <Box width={{ md: "100%", lg: "65%" }}>
+          <WeekPicker
+            onClickNextWeek={handleNext}
+            onClickPreviousWeek={handlePrevious}
+            displayMode={mode}
+          />
+        </Box>
+
+        <Box sx={{ display: "flex", gap: 2, alignContent: "baseline" }}>
+          <Typography variant="body1">Total: </Typography>
+          <Typography
+            variant="body1"
+            fontSize={"1.2rem"}
+            sx={{ fontWeight: "700" }}
+          >{`${totalDuration} min, ${totalCalories} kcal`}</Typography>
         </Box>
         <Box sx={{ height: "300px", width: "100%" }}>
           {chartData && chartData.datasets && chartData.datasets[0].data ? (
-            <Bar 
-              data={chartData} 
-              options={options} 
-              key={windowWidth} 
+            <Bar
+              data={chartData}
+              options={options}
+              key={windowWidth}
               ref={chartRef}
             />
           ) : (
@@ -393,10 +442,7 @@ export const GadgetHistory = ({ history = [] }) => {
         We help you track your progress as data and video as you becoming a
         better version of yourself.
       </Typography>
-      <Button
-        variant="contained"
-        onClick={() => navigate("/profile")}
-      >
+      <Button variant="contained" onClick={() => navigate("/profile")}>
         My History
       </Button>
     </GadgetBase>

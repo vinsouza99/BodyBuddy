@@ -1,23 +1,23 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { 
-  addDays, 
-  subDays, 
-  format, 
-  isSameDay, 
-  parseISO, 
-  startOfWeek, 
-  startOfMonth, 
-  endOfMonth, 
-  addMonths, 
+import { useState, useEffect } from "react";
+import { Box, IconButton, Typography } from "@mui/material";
+import {
+  addDays,
+  subDays,
+  format,
+  isSameDay,
+  parseISO,
+  startOfWeek,
+  startOfMonth,
+  endOfMonth,
+  addMonths,
   subMonths,
   startOfYear,
   endOfYear,
- } from 'date-fns';
-import { toZonedTime } from 'date-fns-tz';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+} from "date-fns";
+import { toZonedTime } from "date-fns-tz";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 export const WeekPicker = ({
   onSelectDate = null,
@@ -27,20 +27,21 @@ export const WeekPicker = ({
   scheduledDates = [],
   scheduledDatesBorderColor = "primary.main",
   scheduledDatesBgColor = "transparent",
-
 }) => {
   // const [startDate, setStartDate] = useState(new Date(getStartOfWeek(new Date()).setHours(0, 0, 0, 0)));
   // const [endDate, setEndDate] = useState(new Date(getStartOfWeek(addDays(new Date(), 7)).setHours(0, 0, 0, 0)));
   const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
-  const [endDate, setEndDate] = useState(addDays(getStartOfWeek(new Date()), 6));
+  const [endDate, setEndDate] = useState(
+    addDays(getStartOfWeek(new Date()), 6)
+  );
   const today = new Date();
-  const timeZone = 'America/Vancouver';
+  const timeZone = "America/Vancouver";
 
   useEffect(() => {
-    if (displayMode === 'month-simple') {
+    if (displayMode === "month-simple") {
       setStartDate(startOfMonth(today));
       setEndDate(endOfMonth(today));
-    } else if (displayMode === 'year-simple') {
+    } else if (displayMode === "year-simple") {
       setStartDate(startOfYear(today));
       setEndDate(endOfYear(today));
     } else {
@@ -64,22 +65,22 @@ export const WeekPicker = ({
     // if (typeof onClickNextWeek === 'function') {
     //   onClickNextWeek(addDays(startDate, 7));
     // }
-    if (displayMode === 'month-simple') {
+    if (displayMode === "month-simple") {
       setStartDate((prev) => startOfMonth(addMonths(prev, 1)));
       setEndDate((prev) => endOfMonth(addMonths(prev, 1)));
-      if (typeof onClickNextWeek === 'function') {
+      if (typeof onClickNextWeek === "function") {
         onClickNextWeek(addMonths(startDate, 1));
       }
-    } else if (displayMode === 'year-simple') {
+    } else if (displayMode === "year-simple") {
       setStartDate(addMonths(startDate, 12));
       setEndDate(addMonths(endDate, 12));
-      if (typeof onClickNextWeek === 'function') {
+      if (typeof onClickNextWeek === "function") {
         onClickNextWeek(addMonths(startDate, 12));
       }
     } else {
       setStartDate(addDays(startDate, 7));
       setEndDate(addDays(endDate, 7));
-      if (typeof onClickNextWeek === 'function') {
+      if (typeof onClickNextWeek === "function") {
         onClickNextWeek(addDays(startDate, 7));
       }
     }
@@ -91,29 +92,29 @@ export const WeekPicker = ({
     // if (typeof onClickPreviousWeek === 'function') {
     //   onClickPreviousWeek(addDays(startDate, -7));
     // }
-    if (displayMode === 'month-simple') {
+    if (displayMode === "month-simple") {
       setStartDate((prev) => startOfMonth(subMonths(prev, 1)));
       setEndDate((prev) => endOfMonth(subMonths(prev, 1)));
-      if (typeof onClickPreviousWeek === 'function') {
+      if (typeof onClickPreviousWeek === "function") {
         onClickPreviousWeek(subMonths(startDate, 1));
       }
-    } else if (displayMode === 'year-simple') {
+    } else if (displayMode === "year-simple") {
       setStartDate(subMonths(startDate, 12));
       setEndDate(subMonths(endDate, 12));
-      if (typeof onClickPreviousWeek === 'function') {
+      if (typeof onClickPreviousWeek === "function") {
         onClickPreviousWeek(subMonths(startDate, 12));
       }
     } else {
       setStartDate(subDays(startDate, 7));
       setEndDate(subDays(endDate, 7));
-      if (typeof onClickPreviousWeek === 'function') {
+      if (typeof onClickPreviousWeek === "function") {
         onClickPreviousWeek(subDays(startDate, 7));
       }
     }
   };
 
   const handleDayClick = (day) => {
-    if (typeof onSelectDate === 'function') {
+    if (typeof onSelectDate === "function") {
       onSelectDate(day);
     }
   };
@@ -132,81 +133,89 @@ export const WeekPicker = ({
       return isSameDay(utcDate, zonedDay);
     });
   };
-  
+
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        width: "100%",
       }}
     >
-
       {/* Weekly Calendar */}
       <Box
         sx={{
-          display: 'flex',
-          direction: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width: '100%',
-          flexWrap: 'wrap',
+          display: "flex",
+          direction: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+          gap: ".5rem",
+          flexWrap: "wrap",
           flexShrink: 1,
         }}
       >
         <IconButton
           sx={{
-            padding: '0',
-            "&:focus": { outline: 'none' },
-            "&:hover": { backgroundColor: 'transparent' },
+            padding: "0",
+            "&:focus": { outline: "none" },
+            "&:hover": { backgroundColor: "transparent" },
           }}
           onClick={handlerPreviousWeek}
         >
           <ArrowBackIosNewIcon />
         </IconButton>
 
-        {displayMode === 'week-basic' ? (
+        {displayMode === "week-basic" ? (
           weekdays.map((day, index) => (
             <Box
               key={index}
               sx={{
                 // cursor: 'pointer',
-                textAlign: 'center',
+                textAlign: "center",
               }}
               onClick={() => handleDayClick(day)}
             >
-              <Typography>
-                {format(day, 'E').charAt(0)}
-              </Typography> {/* Day of week */}
+              <Typography>{format(day, "E").charAt(0)}</Typography>{" "}
+              {/* Day of week */}
               <Typography
                 sx={{
-                  fontSize: '0.8rem',
-                  width: '30px',
-                  height: '30px',
-                  lineHeight: '30px',
-                  border: '1px solid',
-                  borderRadius: '50%',
-                  borderColor: isSameDay(day, today) ? 'secondary.main' : isScheduled(day) ? scheduledDatesBorderColor : 'transparent',
-                  backgroundColor: isSameDay(day, today) ? 'transparent' : isScheduled(day) ? scheduledDatesBgColor : 'transparent',
+                  fontSize: "0.8rem",
+                  width: "30px",
+                  height: "30px",
+                  lineHeight: "30px",
+                  border: "1px solid",
+                  borderRadius: "50%",
+                  borderColor: isSameDay(day, today)
+                    ? "secondary.main"
+                    : isScheduled(day)
+                      ? scheduledDatesBorderColor
+                      : "transparent",
+                  backgroundColor: isSameDay(day, today)
+                    ? "transparent"
+                    : isScheduled(day)
+                      ? scheduledDatesBgColor
+                      : "transparent",
                 }}
               >
-                {format(day, 'dd')}
-                </Typography> {/* Date */}
+                {format(day, "dd")}
+              </Typography>{" "}
+              {/* Date */}
             </Box>
           ))
         ) : (
-          <Typography >
-            {`${format(startDate, 'MMM d, yyyy')} - ${format(endDate, 'MMM d, yyyy')}`}
+          <Typography>
+            {`${format(startDate, "MMM d, yyyy")} - ${format(endDate, "MMM d, yyyy")}`}
           </Typography>
         )}
 
-        <IconButton 
+        <IconButton
           onClick={handlerNextWeek}
           sx={{
-            padding: '0',
-            "&:focus": { outline: 'none' },
-            "&:hover": { backgroundColor: 'transparent' },
+            padding: "0",
+            "&:focus": { outline: "none" },
+            "&:hover": { backgroundColor: "transparent" },
           }}
         >
           <ArrowForwardIosIcon />

@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
-import { Box, Typography, Button } from "@mui/material";
+import { Box, Typography, Button, Grid2 } from "@mui/material";
 import { GadgetBase } from "./GadgetBase";
 import { MetricCard } from "./routine-session/MetricCard";
 import { WeekPicker } from "./WeekPicker";
@@ -119,11 +119,15 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
           />
         </Box>
       </Box>
-      <WeekPicker
-        scheduledDates={scheduledDates}
-        scheduledDatesBorderColor={"transparent"}
-        scheduledDatesBgColor={"#B8E8B1"}
-      />
+      <Grid2 container width={"100%"} gap={2} justifyContent={"center"}>
+        <Typography variant="body1">This Week</Typography>
+        <WeekPicker
+          scheduledDates={scheduledDates}
+          scheduledDatesBorderColor={"transparent"}
+          scheduledDatesBgColor={"accent.main"}
+        />
+      </Grid2>
+
       <Typography>
         Exercise at least 3 times a week to keep your streak not reset
       </Typography>
