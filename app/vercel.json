@@ -4,5 +4,16 @@
       "source": "/(.*)",
       "destination": "/"
     }
+  ],
+  "headers": [
+    {
+      "source": "/learn",
+      "headers": [
+        {
+          "key": "cache-control",
+          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=600"
+        }
+      ]
+    }
   ]
 }
