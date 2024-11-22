@@ -40,6 +40,7 @@ export const TrainingProgram = memo((props) => {
   const [loadingPremadeRoutines, setLoadingPremadeRoutines] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [generatingComplete, setGeneratingComplete] = useState(false);
+  const [promptReady, setPromptReady] = useState(false);
   const prompt = useGenerateProgramPrompt({});
   const navigate = useNavigate();
 
@@ -52,6 +53,13 @@ export const TrainingProgram = memo((props) => {
     setPageTitle(props.title);
     loadData();
   }, []);
+
+  // Check if prompt is ready
+  useEffect(() => {
+    if (prompt) {
+      setPromptReady(true);
+    }
+  }, [prompt]);
 
   // Generate a new personalized program for the user
   useEffect(() => {
@@ -164,7 +172,7 @@ export const TrainingProgram = memo((props) => {
     <>
       {/* Backdrop for loading */}
       {activeTab === 0 && (
-        <LoadingBackdrop loading={loadingProgram} generating={generating} />
+        <LoadingBackdrop loading={loadingProgram || !promptReady} generating={generating} />
       )}
       {activeTab === 1 && <LoadingBackdrop loading={loadingPremadeRoutines} />}
 
