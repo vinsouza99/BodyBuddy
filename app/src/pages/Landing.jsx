@@ -449,7 +449,7 @@ export function Landing() {
         <Box component="section" id="features" ref={featuresRef}>
           <Grid container gap={5}>
             <Container>
-              <Typography variant="h2">
+              <Typography variant="h3">
                 All you need to start your fitness journey
               </Typography>
             </Container>
@@ -609,7 +609,7 @@ export function Landing() {
         <Box component="section" id="pricing" ref={pricingRef}>
           <Grid container spacing={5} alignItems="stretch">
             <Container>
-              <Typography variant="h2" textAlign="center">
+              <Typography variant="h3" textAlign="center">
                 Our Offers
               </Typography>
             </Container>
@@ -916,7 +916,7 @@ export function Landing() {
           </Grid>
         </Box>
         <Box component="section" id="team" ref={teamRef}>
-          <Typography variant="h2">Meet the Team</Typography>
+          <Typography variant="h3">Meet the Team</Typography>
           <Grid
             container
             padding={"1.5rem 0"}
@@ -1011,7 +1011,7 @@ export function Landing() {
               size={{ xs: 12, md: 7 }}
               sx={{
                 display: "flex",
-                justifyContent: "end",
+                justifyContent: "center", // Change from end to center
               }}
             >
               <Box
@@ -1026,6 +1026,7 @@ export function Landing() {
                   justifyContent: "center",
                   alignItems: "center",
                   gap: "1rem",
+                  maxWidth: "447px", // Set maxWidth based on figma design
                 }}
                 onSubmit={sendEmail}
               >
@@ -1036,7 +1037,7 @@ export function Landing() {
                 >
                   Contact Us
                 </Typography>
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="h5" sx={{ mb: 1 }}>
                     Your name
                   </Typography>
@@ -1046,10 +1047,14 @@ export function Landing() {
                     onChange={handleChange}
                     fullWidth={false}
                     required
-                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
+                    sx={{
+                      // width: "500px",
+                      backgroundColor: "#ffffff",
+                      width: "100%",
+                    }}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="h5" sx={{ mb: 1 }}>
                     Email
                   </Typography>
@@ -1060,10 +1065,14 @@ export function Landing() {
                     fullWidth={false}
                     required
                     type="email"
-                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
+                    sx={{
+                      // width: "500px",
+                      backgroundColor: "#ffffff",
+                      width: "100%",
+                    }}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="h5" sx={{ mb: 1 }}>
                     Leave us a few words
                   </Typography>
@@ -1075,7 +1084,11 @@ export function Landing() {
                     required
                     multiline
                     rows={4}
-                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
+                    sx={{
+                      // width: "500px",
+                      backgroundColor: "#ffffff",
+                      width: "100%",
+                    }}
                   />
                 </Box>
                 <Button
