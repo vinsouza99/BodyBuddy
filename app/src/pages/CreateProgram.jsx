@@ -38,6 +38,7 @@ import {
 import { useAuth } from "../utils/AuthProvider.jsx";
 import CheckIcon from "@mui/icons-material/Check"; // TODO: change to svg icon from design file
 import dayjs from "dayjs";
+import theme from "../theme.js";
 
 const CreateProgram = () => {
   const { user } = useAuth();
@@ -223,6 +224,9 @@ const CreateProgram = () => {
             left: "50%",
             transform: "translateX(-50%)",
             top: "80px", // Adjust to align vertically with radio buttons
+            [theme.breakpoints.down("sm")]: {
+              borderTop: "none", // Remove the borderTop for small screens
+            },
           }}
         ></Box>
         <RadioGroup
@@ -325,6 +329,9 @@ const CreateProgram = () => {
             left: "50%",
             transform: "translateX(-50%)",
             top: "80px", // Adjust to align vertically with radio buttons
+            [theme.breakpoints.down("sm")]: {
+              borderTop: "none", // Remove the borderTop for small screens
+            },
           }}
         ></Box>
         <RadioGroup
