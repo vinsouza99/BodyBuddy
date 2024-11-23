@@ -7,7 +7,7 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
 
   try {
     // OpenAI will generate the program data
-    console.log(prompt);
+    // console.log(prompt);
 
     const response_openai = await axiosClient.post(`openai/`, {
       prompt: prompt,
@@ -15,7 +15,6 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
     if (Number(response_openai.status) !== 200) {
       throw new Error("Failed to get OpenAI response");
     }
-    // console.log(response_openai.data.data.choices[0].message.content);
     const parsedContent = JSON.parse(
       response_openai.data.data.choices[0].message.content
     );
@@ -53,20 +52,21 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
           program_routine_item.completed
         );
         if (response_program_routine.status === 201) {
-          console.log(
-            "Program_Routine is created successfully (inserted)",
-            response_program_routine.status
-          );
+          // console.log(
+          //   "Program_Routine is created successfully (inserted)",
+          //   response_program_routine.status
+          // );
         } else if (response_program_routine.status === 200) {
-          console.log(
-            "Program_Routine is created successfully (updated)",
-            response_program_routine.status
-          );
+          // console.log(
+          //   "Program_Routine is created successfully (updated)",
+          //   response_program_routine.status
+          // );
         } else {
           throw new Error("Failed to insert program_routine info");
         }
       })
     );
+    console.log("Program_Routine is created successfully");
 
     // Insert routine_exercise data into the database
     await Promise.all(
@@ -81,20 +81,22 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
           rest_time: routine_exercise_item.rest_time,
         });
         if (response_routine_exercise.status === 201) {
-          console.log(
-            "Routine_Exercise created successfully (inserted)",
-            response_routine_exercise.status
-          );
+          // console.log(
+          //   "Routine_Exercise created successfully (inserted)",
+          //   response_routine_exercise.status
+          // );
         } else if (response_routine_exercise.status === 200) {
-          console.log(
-            "Routine_Exercise created successfully (updated)",
-            response_routine_exercise.status
-          );
+          // console.log(
+          //   "Routine_Exercise created successfully (updated)",
+          //   response_routine_exercise.status
+          // );
         } else {
           throw new Error("Failed to insert routine_exercise info");
         }
       })
     );
+    console.log("Routine_Exercise is created successfully");
+
   } catch (error) {
     console.error("Error generating personalized program:", error);
   }
