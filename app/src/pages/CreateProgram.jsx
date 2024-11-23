@@ -27,8 +27,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  IconButton,
 } from "@mui/material";
 import "./CreateProgram.css";
+import CloseIcon from "@mui/icons-material/Close"; // Close Icon
 import {
   getAllGoals,
   getAllIntensities,
@@ -516,6 +518,9 @@ const CreateProgram = () => {
       navigate("/signup", { state: { userResponses: formResponse } });
     }
   }
+  const handleClickClose = () => {
+    navigate("/enter");
+  };
   return (
     <>
       <Grid
@@ -530,8 +535,15 @@ const CreateProgram = () => {
           backgroundSize: "cover",
           minHeight: "100vh",
           padding: "2rem 1rem",
+          position: "relative",
         }}
       >
+        <IconButton
+          onClick={handleClickClose}
+          sx={{ position: "absolute", right: "1rem", top: "1rem" }}
+        >
+          <CloseIcon />
+        </IconButton>
         <img src={logo} alt="BodyBuddy" width={70} />
         <Container
           maxWidth="sm"
