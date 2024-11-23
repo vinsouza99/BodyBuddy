@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import emailjs from "emailjs-com";
+import emailjs from "emailjs-com"; 
 import theme from "../theme";
 import {
   AppBar,
@@ -376,7 +376,7 @@ export function Landing() {
                 <Button
                   variant="contained"
                   sx={{ 
-                    textTransform: "uppercase",
+                    // textTransform: "uppercase",
                     "&:hover": { backgroundColor: "primary.dark" } 
                   }}
                 >
@@ -428,7 +428,7 @@ export function Landing() {
                     <Button
                       variant="contained"
                       sx={{ 
-                        textTransform: "uppercase",
+                        // textTransform: "uppercase",
                         "&:hover": { backgroundColor: "primary.dark" } 
                       }}
                     >
@@ -698,7 +698,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -798,7 +798,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -897,7 +897,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -1097,7 +1097,7 @@ export function Landing() {
                   color="primary"
                   fullWidth
                   sx={{
-                    textTransform: "uppercase",
+                    // textTransform: "uppercase",
                     width: "110px",
                     "&:hover": { backgroundColor: "primary.dark" },
                   }}
@@ -1115,7 +1115,7 @@ export function Landing() {
       >
         <Container>
           <Typography variant="body2" color="primary.contrastText">
-            BodyBuddy 2024 &copy; All right reserved.
+            BodyBuddy 2024 &copy; All rights reserved.
           </Typography>
         </Container>
       </Box>
