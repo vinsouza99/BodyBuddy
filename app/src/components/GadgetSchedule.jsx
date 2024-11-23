@@ -7,7 +7,7 @@ import { RoutinesList } from "./RoutinesList";
 import { ErrorMessage } from "./ErrorMessage.jsx";
 import {
   isWithinInterval,
-  parseISO,
+  // parseISO,
   startOfWeek,
   endOfWeek,
   addDays,
@@ -33,14 +33,14 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
     setloadingProgramRoutine(true);
 
     const filtered = programRoutines.filter((routine) => {
-      const routineDate = parseISO(routine.scheduled_date);
+      // const routineDate = parseISO(routine.scheduled_date);
+      const routineDate = new Date(routine.scheduled_date);
       return isWithinInterval(routineDate, {
         start: selectedWeek.start,
         end: selectedWeek.end,
       });
     });
     setFilteredRoutines(filtered);
-    
     setloadingProgramRoutine(false);
   }, [selectedWeek, programRoutines]);
 
@@ -74,6 +74,7 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
       try {
         const response_openai = await axiosClient.post(`openai/`, {
           prompt: prompt,
+          enforceGenAI: true,
         });
         const parsedContent = JSON.parse(
           response_openai.data.data.choices[0].message.content

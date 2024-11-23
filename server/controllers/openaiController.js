@@ -18,8 +18,9 @@ export const getResponse = async (req, res) => {
   try {
     let response;
     const prompt = req.body.prompt;
+    const enforceGenAI = req.body.enforceGenAI || false;
 
-    if (process.env.GENERATIVE_AI === "DEMO") {
+    if (process.env.GENERATIVE_AI === "DEMO" && !enforceGenAI) {
       const demoData = await generateDemoData();
       response = {
         choices: [
