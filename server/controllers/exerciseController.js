@@ -12,6 +12,7 @@ export const getExercises = async (req, res) => {
         offset: offset,
         limit: limit,
       });
+      res.set("Cache-Control", "public, max-age=3600");
       res.status(200).json({
         status: "200",
         message: "Success",
@@ -85,6 +86,7 @@ export const getExerciseTypes = async (req, res) => {
         exercise_id: exercise_id,
       },
     });
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -106,6 +108,7 @@ export const getExerciseGoals = async (req, res) => {
         exercise_id: exercise_id,
       },
     });
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -127,6 +130,7 @@ export const getExerciseMuscleGroups = async (req, res) => {
         exercise_id: exercise_id,
       },
     });
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -162,7 +166,6 @@ export const createExercise = async (req, res) => {
     });
   }
 };
-
 export const updateExercise = async (req, res) => {
   try {
     const { id } = req.params;
@@ -190,7 +193,6 @@ export const updateExercise = async (req, res) => {
     });
   }
 };
-
 export const deleteExercise = async (req, res) => {
   try {
     const { id } = req.params;

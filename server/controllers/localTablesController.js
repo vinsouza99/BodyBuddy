@@ -7,6 +7,7 @@ import Type from "../models/Type.js";
 export const getIntensities = async (req, res) => {
   try {
     const IntensityList = await Intensity.findAll();
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -20,7 +21,6 @@ export const getIntensities = async (req, res) => {
     });
   }
 };
-
 export const getIntensity = async (req, res) => {
   try {
     const intensity_id = req.params.intensity_id;
@@ -31,6 +31,7 @@ export const getIntensity = async (req, res) => {
         message: "Intensity not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -53,6 +54,7 @@ export const getGoals = async (req, res) => {
         message: "Goals not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -76,6 +78,7 @@ export const getGoal = async (req, res) => {
         message: "Goal not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -143,6 +146,7 @@ export const getMuscleGroups = async (req, res) => {
         message: "MuscleGroups not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -166,6 +170,7 @@ export const getMuscleGroup = async (req, res) => {
         message: "MuscleGroup not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -179,7 +184,6 @@ export const getMuscleGroup = async (req, res) => {
     });
   }
 };
-
 export const getTypes = async (req, res) => {
   try {
     const types = await Type.findAll();
@@ -189,6 +193,7 @@ export const getTypes = async (req, res) => {
         message: "Types not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
@@ -212,6 +217,7 @@ export const getType = async (req, res) => {
         message: "Type not found",
       });
     }
+    res.set("Cache-Control", "public, max-age=3600");
     res.status(200).json({
       status: "200",
       message: "Success",
