@@ -199,6 +199,7 @@ export function Landing() {
             textAlign: "center",
             marginBottom: 3,
             width:"170px", // Changed 190px to 170px to fit 2 members per row on mobile
+            padding:{ xs: "0.3rem" } ,
           }}
         >
           <Box
