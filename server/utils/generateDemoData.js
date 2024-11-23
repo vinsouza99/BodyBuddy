@@ -34,6 +34,7 @@ const generateDemoData = async () => {
 
   data.routine = data.routine.map((r) => ({
     ...r,
+    program_id: generateNewUUID(r.program_id),
     id: generateNewUUID(r.id),
   }));
 

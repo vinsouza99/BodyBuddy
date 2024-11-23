@@ -96,6 +96,16 @@ export function AuthProvider({ children }) {
   const handleSignOut = async () => {
     // Sign out from supabase autehtication
     try {
+      // Check if there is an active session
+      const { data: session, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        console.log("No active session found. Clearing user state.");
+        setUser(null);
+        window.localStorage.clear();
+        return;
+      }
+
+      // Sign out the user
       const { error } = await supabase.auth.signOut();
       if (error) {
         throw error;
@@ -104,6 +114,8 @@ export function AuthProvider({ children }) {
       setUser(null);
     } catch (error) {
       console.log("User failed to sign out", error);
+      setUser(null);
+      window.localStorage.clear();
       return;
     }
   };
