@@ -1,12 +1,17 @@
 import { v4 as uuidv4 } from 'uuid';
+import { format } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const generateDemoData = async () => {
   const uuidMap = {};
   const today = new Date();
+  const timeZone = 'America/Vancouver';
+
   let scheduleDate = new Date(today);
   scheduleDate.setHours(0, 0, 0, 0); // Reset time to 00:00:00
+  const zonedDate = toZonedTime(scheduleDate, timeZone);
 
   // Sleep 5 seconds
   await sleep(5000);
@@ -27,7 +32,7 @@ const generateDemoData = async () => {
   }));
   data.program_routine = data.program_routine.map((routine) => {
     const updatedRoutine = { ...routine };
-    updatedRoutine.scheduled_date = scheduleDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    updatedRoutine.scheduled_date = format(zonedDate, 'yyyy-MM-dd');
     scheduleDate.setDate(scheduleDate.getDate() + 2);
     return updatedRoutine;
   });
