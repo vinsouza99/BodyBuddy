@@ -132,7 +132,7 @@ section {
     height: 100%;
   }
   #app-preview-container * {
-    position: static !important;
+    position: relative !important;
     height: 100%;
   }
 }
