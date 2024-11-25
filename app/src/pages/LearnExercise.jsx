@@ -203,10 +203,18 @@ export const LearnExercise = (props) => {
               boxShadow: "0 5px 10px rgba(0, 0, 0, 0.5)",
               color: isExerciseValid ? "white" : theme.palette.action.disabled,
               background: isExerciseValid
-                ? "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)"
+                ? "linear-gradient(180deg, #2d90e0, #ff118c 50%, #ef3897 60%, #2d90e0)"
                 : theme.palette.action.disabledBackground,
               fontSize: "1.2rem",
               fontWeight: "bold",
+              boxSizing: "border-box",
+              backgroundSize: "200% 200%",
+              backgroundPosition: "0% 0%",
+              transition: "all 0.4s ease-in-out",
+              "&:hover": { 
+                backgroundPosition: "0% 120%",
+                transition: "all 0.4s ease-in-out",
+              },
             })}
             disabled={!isExerciseValid} // Disable if exercise ID is invalid
           >
