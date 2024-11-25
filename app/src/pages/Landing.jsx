@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect, useRef } from "react";
-import emailjs from "emailjs-com"; 
+import emailjs from "emailjs-com";
 import theme from "../theme";
 import {
   AppBar,
@@ -24,7 +24,7 @@ import {
   DialogContentText,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import GitHubIcon from '@mui/icons-material/GitHub';
+import GitHubIcon from "@mui/icons-material/GitHub";
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
 import downloadIcon from "/assets/icon-download.svg";
 import emailErrorIcon from "/assets/emailErrorIcon.svg";
@@ -33,6 +33,7 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "/assets/bodybuddy.svg";
 import AppPreview from "/assets/main-app-preview.png";
+import AppPreviewHover from "/assets/main-app-preview-hover.png";
 import FeaturesImg1 from "/assets/landingpage_features_image_1.png";
 import FeaturesImg2 from "/assets/landingpage_features_image_2.png";
 import feature1IconSrc from "/assets/feature1Icon.svg";
@@ -198,8 +199,8 @@ export function Landing() {
             alignItems: "center",
             textAlign: "center",
             marginBottom: 3,
-            width:"170px", // Changed 190px to 170px to fit 2 members per row on mobile
-            padding:{ xs: "0.3rem" } ,
+            width: "170px", // Changed 190px to 170px to fit 2 members per row on mobile
+            padding: { xs: "0.3rem" },
           }}
         >
           <Box
@@ -226,19 +227,19 @@ export function Landing() {
               // style={{ textDecoration: "none", color: "inherit" }}
             >
               {showGitHubIcon && (
-              <GitHubIcon
-                sx={{
-                  position: "absolute",
-                  bottom: 8,
-                  right: 8,
-                  width: "20px",
-                  height: "20px",
-                  color: "white",
-                  backgroundColor: "black",
-                  borderRadius: "6px",
-                  padding: "2px",
-                }}
-              />
+                <GitHubIcon
+                  sx={{
+                    position: "absolute",
+                    bottom: 8,
+                    right: 8,
+                    width: "20px",
+                    height: "20px",
+                    color: "white",
+                    backgroundColor: "black",
+                    borderRadius: "6px",
+                    padding: "2px",
+                  }}
+                />
               )}
             </Link>
           </Box>
@@ -376,9 +377,9 @@ export function Landing() {
               <Link to="/enter">
                 <Button
                   variant="contained"
-                  sx={{ 
+                  sx={{
                     // textTransform: "uppercase",
-                    "&:hover": { backgroundColor: "primary.dark" } 
+                    "&:hover": { backgroundColor: "primary.dark" },
                   }}
                 >
                   Sign Up
@@ -401,7 +402,7 @@ export function Landing() {
               size={{ xs: 12, md: 6 }}
               sx={{
                 display: "flex",
-                justifyContent: {xs: "center", md: "end"},
+                justifyContent: { xs: "center", md: "end" },
               }}
             >
               <Box
@@ -428,9 +429,9 @@ export function Landing() {
                   <Link to="/enter">
                     <Button
                       variant="contained"
-                      sx={{ 
+                      sx={{
                         // textTransform: "uppercase",
-                        "&:hover": { backgroundColor: "primary.dark" } 
+                        "&:hover": { backgroundColor: "primary.dark" },
                       }}
                     >
                       Sign Up For Free
@@ -441,9 +442,14 @@ export function Landing() {
             </Grid>
             {/* Right section with sign-up form */}
             <Grid size={{ sm: 12, md: 6 }}>
-              <Container>
-                <img src={AppPreview} id="app-preview" />
-              </Container>
+              <Box id="app-preview-container">
+                <div className="grid-item">
+                  <img src={AppPreviewHover} id="main-app-preview-hover" />
+                </div>
+                <div className="grid-item">
+                  <img src={AppPreview} id="main-app-preview" />
+                </div>
+              </Box>
             </Grid>
           </Grid>
         </Box>
@@ -594,10 +600,16 @@ export function Landing() {
                 flexDirection: "column",
                 // justifyContent: "center",
                 justifyContent: { xs: "center", md: "center" },
-                textAlign: { xs: "center", md: "left" },   
+                textAlign: { xs: "center", md: "left" },
               }}
             >
-              <Typography variant="h4" display="block" textAlign={"left"} fontFamily={"Urbanist"} padding="0 1rem" >
+              <Typography
+                variant="h4"
+                display="block"
+                textAlign={"left"}
+                fontFamily={"Urbanist"}
+                padding="0 1rem"
+              >
                 BodyBuddy offers an{" "}
                 <span style={{ fontSize: "2.5rem" }}>
                   effective fitness experience
@@ -931,24 +943,29 @@ export function Landing() {
             </Grid>
             <Grid container spacing={1} justifyContent={"center"}>
               {teamMembers.slice(5, 10).map((member, index) => (
-                <TeamMember member={member} key={index} showGitHubIcon={false} />
+                <TeamMember
+                  member={member}
+                  key={index}
+                  showGitHubIcon={false}
+                />
               ))}
             </Grid>
           </Grid>
         </Box>
         <Box component="section" id="contact" ref={contactRef} sx={{ mb: 6 }}>
           <Grid container>
-            <Grid size={{ xs: 12, md: 5 }} 
-             sx={{
-              display: "flex", 
-              flexDirection: "column",
-              alignItems: "center", 
-              justifyContent: "start",
-              mb: 6,
-              typography: "body3",
+            <Grid
+              size={{ xs: 12, md: 5 }}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "start",
+                mb: 6,
+                typography: "body3",
               }}
             >
-              <Box sx={{textAlign: { xs: "center", md: "left" }}}>
+              <Box sx={{ textAlign: { xs: "center", md: "left" } }}>
                 <img src={logo} sx={{ width: "100%", maxWidth: "450px" }} />
                 <Box
                   sx={{
@@ -979,7 +996,7 @@ export function Landing() {
                     />
                     {"Project Github"}
                   </Link>
-                </Box>     
+                </Box>
                 <Box
                   sx={{
                     display: "flex",
@@ -1003,7 +1020,7 @@ export function Landing() {
                       style={{ height: "28px", marginRight: "8px" }}
                     />
                     {"Download our proposal"}
-                  </a>                
+                  </a>
                 </Box>
               </Box>
             </Grid>
