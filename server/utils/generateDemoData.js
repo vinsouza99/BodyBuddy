@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from 'uuid';
 import { format, addDays } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz'
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const generateDemoData = async () => {
   const uuidMap = {};
-  let scheduleDate = new Date();
+  const timeZone = 'America/Vancouver';
+
+  const now = new Date();
+  let scheduleDate = toZonedTime(now, timeZone);
 
   // Sleep 5 seconds
   await sleep(5000);
