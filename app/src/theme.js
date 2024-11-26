@@ -71,8 +71,8 @@ const theme = createTheme({
       active: "#000000", // Active state color
       hover: "#f5f5f5", // Hover background color
       selected: "#e0e0e0", // Selected item background color
-      disabled: "#e0e0e0", // Disabled state background color
-      disabledBackground: "#f5f5f5", // Disabled background color
+      disabled: "#cccccc", // Disabled state text color (was #e0e0e0)
+      disabledBackground: "#eeeeee", // Disabled state background color (#f5f5f5)
     },
     divider: "#e0e0e0", // Color for dividers
   },
@@ -135,25 +135,7 @@ const theme = createTheme({
   },
 
   components: {
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "rgba(255, 255, 255, 0.5)", // 50% opacity white background
-            borderRadius: 4, // Slightly rounded corners
-            "& fieldset": {
-              borderColor: "lightgray", // Default border color
-            },
-            "&:hover fieldset": {
-              borderColor: "lightgray", // Border remains lightgray on hover
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "#FF118C", // Pink border when focused
-            },
-          },
-        },
-      },
-    },
+
     /****************************************/
     /*           BUTTON COMPONENT           */
     /****************************************/
@@ -190,8 +172,12 @@ const theme = createTheme({
             minWidth: "110px", // Default minimum width
           },
 
+          "&.containedWhite.disabledButton": {
+            opacity: "0.5",
+          },
+
           "&.Mui-disabled": {
-            opacity: 0.2, // Set opacity to 50% when disabled
+            opacity: 1, // Set opacity to 50% when disabled
             pointerEvents: "none", // Disable pointer events for better UX
           },
         },
@@ -220,6 +206,30 @@ const theme = createTheme({
         },
       },
     },
+
+    /****************************************/
+    /*          TEXTFIELD COMPONENT         */
+    /****************************************/
+
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "rgba(255, 255, 255, 0.5)", // 50% opacity white background
+            borderRadius: 4, // Slightly rounded corners
+            "& fieldset": {
+              borderColor: "lightgray", // Default border color
+            },
+            "&:hover fieldset": {
+              borderColor: "lightgray", // Border remains lightgray on hover
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#FF118C", // Pink border when focused
+            },
+          },
+        },
+      },
+    }, 
 
     /****************************************/
     /*         TAB / TABS COMPONENT         */
@@ -291,98 +301,6 @@ const theme = createTheme({
         },
       },
     },
-
-    /****************************************/
-    /*         FOCUS                        */
-    /****************************************/
-    // MuiOutlinedInput: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    //         borderColor: 'transparent',
-    //       },
-    //     },
-    //   },
-    // },
-    // MuiButtonBase: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&:focus': {
-    //         outline: 'none',
-    //         boxShadow: 'none',
-    //       },
-    //     },
-    //   },
-    // },
-
-    /****************************************/
-    /*      GLOBAL STYLES (NOT IN USE)      */
-    /****************************************/
-
-    /* Global styles for common tags */
-    /* Tags need to be wrapped with: */
-    /*
-        return (
-          <ThemeProvider theme={theme}>
-            <CssBaseline>
-              <>
-                <h1>Heading Here</h1>
-                <p>Lorem ipsum dolor sit amet</p>
-              </>
-            </CssBaseline>
-          </ThemeProvider>
-        );
-    */
-
-    // MuiCssBaseline: {
-    //   styleOverrides: {
-    //     body: {
-    //       fontFamily: "'Montserrat', 'Arial', sans-serif",
-    //     },
-
-    //     p: {
-    //       fontFamily: "'Montserrat', 'Arial', sans-serif",
-    //       fontSize: "1.5rem",
-    //       fontWeight: 300,
-    //     },
-
-    //     h1: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "3rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h2: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "2rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h3: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1.75rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h4: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1.5rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h5: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1.25rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h6: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1rem",
-    //       fontWeight: 700,
-    //     },
-    //   },
-    // },
   },
 
   breakpoints: {
