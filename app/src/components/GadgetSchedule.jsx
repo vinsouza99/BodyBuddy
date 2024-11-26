@@ -7,10 +7,10 @@ import { RoutinesList } from "./RoutinesList";
 import { ErrorMessage } from "./ErrorMessage.jsx";
 import {
   isWithinInterval,
-  // parseISO,
   startOfWeek,
   endOfWeek,
   addDays,
+  parseISO,
 } from "date-fns";
 import axiosClient from "../utils/axiosClient";
 import { CircularProgress } from "../components/CircularProgress.jsx";
@@ -18,8 +18,8 @@ import { CircularProgress } from "../components/CircularProgress.jsx";
 export const GadgetSchedule = memo(({ programRoutines = [] }) => {
   const today = new Date();
   const [selectedWeek, setSelectedWeek] = useState({
-    start: startOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),
-    end: endOfWeek(today, { weekStartsOn: 1 }).setHours(0, 0, 0, 0),
+    start: startOfWeek(today, { weekStartsOn: 1 }),
+    end: endOfWeek(today, { weekStartsOn: 1 }),
   });
   const [filteredRoutines, setFilteredRoutines] = useState([]);
   const [weeklyGoal, setWeeklyGoal] = useState("");
@@ -31,11 +31,9 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
   useEffect(() => {
     if (programRoutines.length === 0) return;
     setloadingProgramRoutine(true);
-
     const filtered = programRoutines.filter((routine) => {
-      // const routineDate = parseISO(routine.scheduled_date);
-      const routineDate = new Date(routine.scheduled_date);
-      return isWithinInterval(routineDate, {
+      const routineDate = routine.scheduled_date;
+      return isWithinInterval(parseISO(routineDate), {
         start: selectedWeek.start,
         end: selectedWeek.end,
       });
