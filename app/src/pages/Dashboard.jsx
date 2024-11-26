@@ -24,7 +24,6 @@ import {
 } from "../controllers/UserController";
 import { getExercisesThumbnails } from "../controllers/ExerciseController";
 import { generatePersonalizedProgram } from "../utils/generatePersonalizedProgram";
-// import axiosClient from "../utils/axiosClient";
 import theme from "../theme";
 // Prompts
 import { useGenerateProgramPrompt } from "../utils/prompt/GenerateProgramPrompt";
@@ -93,6 +92,7 @@ export const Dashboard = (props) => {
     loadExerciseData();
   }, [user]);
 
+  // Switch loading backdrop
   useEffect(() => {
     if (userInfoLoaded && userAccumulatedStatsLoaded && exerciseInfoLoaded) {
       setLoading(false);
@@ -188,7 +188,7 @@ export const Dashboard = (props) => {
                     <GadgetStreaks
                       userInfo={userInfo}
                       history={userAccumulatedStats?.data || []}
-                    />{" "}
+                    />
                     <GadgetFavourite exerciseInfo={exerciseInfo || []} />
                   </>
                 )}

@@ -1,8 +1,8 @@
-import express from "express";
-import { getSession } from "../controllers/authController.js";
+// import express from "express";
+// import { getSession } from "../controllers/authController.js";
 
-const router = express.Router();
+// const router = express.Router();
 
-router.get("/session", getSession);
+// router.get("/session", getSession);
 
-export default router;
+// export default router;
