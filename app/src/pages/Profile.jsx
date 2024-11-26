@@ -2,12 +2,13 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setPageTitle } from "../utils/utils";
-import { Backdrop, Box, Typography, Skeleton } from "@mui/material";
+import { Backdrop, Card, Box, Typography, Skeleton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
+import loadingImg from "/assets/GeneralLoading.gif";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 
 export const Profile = (props) => {
@@ -15,6 +16,8 @@ export const Profile = (props) => {
   const [history, setHistory] = useState([]);
   const { user } = useAuth(); // For session management
   const [loading, setLoading] = useState(true);
+  const [loadingHistoryData, setLoadingHistoryData] = useState(true);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,18 +27,16 @@ export const Profile = (props) => {
       try {
         const userData = await getUser(user);
         setCurrentUser(userData);
-        console.log(userData);
-
+        setLoading(false);
         const userHistoryData = await getUserHistory(user.id);
         setHistory(userHistoryData);
-        console.log(userHistoryData);
       } catch (error) {
         navigate("/error", {
           errorDetails:
             "There was an error while loading user's information... try again later.",
         });
       } finally {
-        setLoading(false);
+        setLoadingHistoryData(false);
       }
     }
     getUserData();
@@ -104,7 +105,31 @@ export const Profile = (props) => {
               display={"flex"}
               style={{ height: "850px" }}
             >
-              <History data={history} />
+              {loadingHistoryData ? (
+                <Card
+                  sx={{
+                    padding: 3,
+                    borderRadius: 2,
+                    width: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Box textAlign="center">
+                    <Box
+                      component="img"
+                      src={loadingImg}
+                      alt="Loading"
+                      sx={{
+                        width: "800px",
+                        maxWidth: "90%",
+                      }}
+                    />
+                  </Box>
+                </Card>
+              ) : (
+                <History data={history} />
+              )}
             </Grid>
           </>
         ) : null}
