@@ -688,7 +688,7 @@ const CreateProgram = () => {
                 }}
               >
                 <Button
-                  className="containedWhite"
+                  className={`containedWhite ${step === 1 ? "disabledButton" : ""}`}
                   onClick={() => previousStep()}
                   disabled={step == 1}
                 >
