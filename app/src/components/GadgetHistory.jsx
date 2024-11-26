@@ -29,6 +29,7 @@ import {
   Legend,
 } from "chart.js";
 
+// Chart.js initialization
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -131,7 +132,7 @@ export const GadgetHistory = ({ history = [] }) => {
     };
   }, []);
 
-  // Chart resize
+  // Add char resize event listener
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -146,6 +147,7 @@ export const GadgetHistory = ({ history = [] }) => {
     };
   }, []);
 
+  // Chart resize
   useEffect(() => {
     chartRef.current.resize();
   }, [windowWidth]);
@@ -158,21 +160,27 @@ export const GadgetHistory = ({ history = [] }) => {
     setStartOfCurrentYear(startOfYear(today));
   }, [mode]);
 
+  // Switch chart views between week, month, and year
   useEffect(() => {
     if (mode === "week-simple") {
-      updateWeeklyData();
+      handleWeeklyView();
     } else if (mode === "month-simple") {
-      updateMonthlyData();
+      handleMonthlyView();
     } else if (mode === "year-simple") {
-      updatedYearlyData();
+      handleYearlyView();
     }
   }, [history, startOfCurrentWeek, startOfCurrentMonth, startOfCurrentYear]);
 
-  const updateWeeklyData = () => {
+  const handleModeChange = (event, newMode) => {
+    if (newMode) {
+      setMode(newMode);
+    }
+  };
+
+  const handleWeeklyView = () => {
     const endOfCurrentWeek = addDays(startOfCurrentWeek, 6);
     const weeklyMinutesData = Array(7).fill(0);
     const weeklyCaloriesData = Array(7).fill(0);
-    // console.log("startOfCurrentWeek - endOfCurrentWeek", startOfCurrentWeek, endOfCurrentWeek);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
@@ -204,12 +212,11 @@ export const GadgetHistory = ({ history = [] }) => {
     setTotalCalories(weeklyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
 
-  const updateMonthlyData = () => {
+  const handleMonthlyView = () => {
     const endOfCurrentMonth = endOfMonth(startOfCurrentMonth);
     const daysInMonth = getDate(endOfCurrentMonth);
     const monthlyMinutesData = Array(daysInMonth).fill(0);
     const monthlyCaloriesData = Array(daysInMonth).fill(0);
-    // console.log("startOfCurrentMonth - endOfCurrentMonth", startOfCurrentMonth, endOfCurrentMonth);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
@@ -219,8 +226,6 @@ export const GadgetHistory = ({ history = [] }) => {
         monthlyCaloriesData[dayOfMonth] += entry.calories;
       }
     });
-    // console.log("monthlyData", monthlyData);
-
     setChartData((prevChartData) => ({
       ...prevChartData,
       labels: Array.from({ length: daysInMonth }, (_, i) => (i + 1).toString()),
@@ -243,11 +248,10 @@ export const GadgetHistory = ({ history = [] }) => {
     setTotalCalories(monthlyCaloriesData.reduce((acc, curr) => acc + curr, 0));
   };
 
-  const updatedYearlyData = () => {
+  const handleYearlyView = () => {
     const endOfCurrentYear = endOfYear(startOfCurrentYear);
     const yearlyMinutesData = Array(12).fill(0);
     const yearlyCaloriesData = Array(12).fill(0);
-    // console.log("startOfCurrentYear - endOfCurrentYear", startOfCurrentYear, endOfCurrentYear);
 
     history.forEach((entry) => {
       const entryDate = parseISO(entry.date);
@@ -257,8 +261,6 @@ export const GadgetHistory = ({ history = [] }) => {
         yearlyCaloriesData[monthOfYear] += entry.calories;
       }
     });
-    // console.log("yearlyData", yearlyData);
-
     setChartData((prevChartData) => ({
       ...prevChartData,
       labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
@@ -279,12 +281,6 @@ export const GadgetHistory = ({ history = [] }) => {
     }));
     setTotalDuration(yearlyMinutesData.reduce((acc, curr) => acc + curr, 0));
     setTotalCalories(yearlyCaloriesData.reduce((acc, curr) => acc + curr, 0));
-  };
-
-  const handleModeChange = (event, newMode) => {
-    if (newMode) {
-      setMode(newMode);
-    }
   };
 
   const handleNext = () => {
