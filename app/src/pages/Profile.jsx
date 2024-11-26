@@ -105,31 +105,7 @@ export const Profile = (props) => {
               display={"flex"}
               style={{ height: "850px" }}
             >
-              {loadingHistoryData ? (
-                <Card
-                  sx={{
-                    padding: 3,
-                    borderRadius: 2,
-                    width: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <Box textAlign="center">
-                    <Box
-                      component="img"
-                      src={loadingImg}
-                      alt="Loading"
-                      sx={{
-                        width: "800px",
-                        maxWidth: "90%",
-                      }}
-                    />
-                  </Box>
-                </Card>
-              ) : (
-                <History data={history} />
-              )}
+              <History data={history} loading={loadingHistoryData} />
             </Grid>
           </>
         ) : null}

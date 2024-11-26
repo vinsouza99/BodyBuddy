@@ -966,7 +966,13 @@ export function Landing() {
               }}
             >
               <Box sx={{ textAlign: { xs: "center", md: "left" } }}>
-                <img src={logo} sx={{ width: "100%", maxWidth: "450px" }} />
+                <img
+                  src={logo}
+                  sx={{
+                    width: "100%",
+                    maxWidth: "450px",
+                  }}
+                />
                 <Box
                   sx={{
                     display: "flex",
@@ -974,6 +980,8 @@ export function Landing() {
                     justifyContent: "left",
                     marginTop: 2,
                     "&:hover": { color: "primary.dark" },
+                    fontSize: "1.1rem",
+                    paddingTop: "1rem",
                   }}
                 >
                   <Link
@@ -994,7 +1002,7 @@ export function Landing() {
                         marginRight: 1,
                       }}
                     />
-                    {"Project Github"}
+                    Project Github
                   </Link>
                 </Box>
                 <Box
@@ -1002,6 +1010,7 @@ export function Landing() {
                     display: "flex",
                     marginTop: 2,
                     "&:hover": { color: "primary.dark" },
+                    fontSize: "1.1rem",
                   }}
                 >
                   <a
@@ -1019,7 +1028,7 @@ export function Landing() {
                       alt="download Icon"
                       style={{ height: "28px", marginRight: "8px" }}
                     />
-                    {"Download our proposal"}
+                    Download our proposal
                   </a>
                 </Box>
               </Box>
@@ -1051,7 +1060,7 @@ export function Landing() {
                 <Typography
                   variant="h3"
                   display="block"
-                  sx={{ fontWeight: 700, textAlign: "center", width: "100%" }}
+                  sx={{ fontWeight: 700, textAlign: "left", width: "100%" }}
                 >
                   Contact Us
                 </Typography>

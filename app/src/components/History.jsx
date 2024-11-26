@@ -9,6 +9,7 @@ import {
   IconButton,
   Box,
   Button,
+  Skeleton,
 } from "@mui/material";
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
@@ -41,7 +42,7 @@ import duration from "/assets/icon-duration.svg";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-function History({ data = [] }) {
+function History({ data = [], loading = false }) {
   const [modalSwitch, setSwitch] = useState(false);
   const [videoSwitch, setVideoSwitch] = useState(false);
   const [isDateSelected, setIsDateSelected] = useState(false); // State if dates are picked
@@ -118,6 +119,7 @@ function History({ data = [] }) {
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
+            paddingBottom: "1rem",
           }}
         >
           <Typography
@@ -166,160 +168,130 @@ function History({ data = [] }) {
           }}
           className="custom-scrollbar"
         >
-          {filteredData.length > 0
-            ? filteredData.map((item, index) => (
-                <Accordion
-                  elevation={0}
-                  square={true}
-                  key={index}
+          {loading ? (
+            <Box display="flex" flexDirection="column" gap={1}>
+              {Array.from(Array(8)).map((_, index) => (
+                <Skeleton variant="rectangular" animation="wave" height={80} />
+              ))}
+            </Box>
+          ) : filteredData.length > 0 ? (
+            filteredData.map((item, index) => (
+              <Accordion
+                elevation={0}
+                square={true}
+                key={index}
+                sx={{
+                  marginTop: 1,
+                  borderLeft:
+                    item.record_type === "routine"
+                      ? "3px solid #4cc13c"
+                      : "3px solid #2d90e0",
+                  borderTop: "none",
+                }}
+              >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  // aria-controls="panel2-content"
+                  // id="panel2-header"
                   sx={{
-                    marginTop: 1,
-                    borderLeft:
-                      item.record_type === "routine"
-                        ? "3px solid #4cc13c"
-                        : "3px solid #2d90e0",
-                    borderTop: "none",
+                    height: "80px",
                   }}
                 >
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    // aria-controls="panel2-content"
-                    // id="panel2-header"
+                  <Typography sx={{ textAlign: "left" }}>
+                    <span style={{ fontWeight: 600 }}>
+                      {dayjs(item.compare_date).isSame(dayjs(), "day")
+                        ? "Today"
+                        : format(
+                            toZonedTime(
+                              parseISO(item.compare_date),
+                              "America/Vancouver"
+                            ),
+                            "MMM dd yyyy"
+                          )}{" "}
+                      :
+                    </span>{" "}
+                    {item.name}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                  <Box
+                    onClick={
+                      item.recording_url
+                        ? () => videoOpen(item.recording_url)
+                        : null
+                    }
                     sx={{
-                      height: "80px",
+                      cursor: item.recording_url ? "pointer" : "default",
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: 2,
+                      borderRadius: 10,
+                      backgroundColor: "#f3f3f3",
+                      boxShadow: 3,
                     }}
                   >
-                    <Typography sx={{ textAlign: "left" }}>
-                      <span style={{ fontWeight: 600 }}>
-                        {dayjs(item.compare_date).isSame(dayjs(), "day")
-                          ? "Today"
-                          : format(
-                              toZonedTime(
-                                parseISO(item.compare_date),
-                                "America/Vancouver"
-                              ),
-                              "MMM dd yyyy"
-                            )}{" "}
-                        :
-                      </span>{" "}
-                      {item.name}
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Box
-                      onClick={
-                        item.recording_url
-                          ? () => videoOpen(item.recording_url)
-                          : null
-                      }
-                      sx={{
-                        cursor: item.recording_url ? "pointer" : "default",
-                        display: "flex",
-                        alignItems: "center",
-                        marginBottom: 2,
-                        borderRadius: 10,
-                        backgroundColor: "#f3f3f3",
-                        boxShadow: 3,
-                      }}
-                    >
-                      {/* Video icon shows up when there is "recording_url" */}
-                      {
-                        <IconButton sx={{ padding: 0, marginRight: 1 }}>
-                          <Box
+                    {/* Video icon shows up when there is "recording_url" */}
+                    {
+                      <IconButton sx={{ padding: 0, marginRight: 1 }}>
+                        <Box
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            backgroundColor: item.recording_url ? "" : "grey",
+                            backgroundImage: item.recording_url
+                              ? item.record_type === "routine"
+                                ? "linear-gradient(to right, #4cc13c, #b4f5ab)"
+                                : "linear-gradient(to right, #2d90e0, #abd3f3)"
+                              : "unset",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            borderRadius: "50%",
+                          }}
+                        >
+                          <PlayArrowIcon
                             sx={{
-                              width: 60,
-                              height: 60,
-                              backgroundColor: item.recording_url ? "" : "grey",
-                              backgroundImage: item.recording_url
-                                ? item.record_type === "routine"
-                                  ? "linear-gradient(to right, #4cc13c, #b4f5ab)"
-                                  : "linear-gradient(to right, #2d90e0, #abd3f3)"
-                                : "unset",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              borderRadius: "50%",
+                              color: "white",
+                              fontSize: 40,
                             }}
-                          >
-                            <PlayArrowIcon
-                              sx={{
-                                color: "white",
-                                fontSize: 40,
-                              }}
-                            />
-                          </Box>
-                        </IconButton>
-                      }
+                          />
+                        </Box>
+                      </IconButton>
+                    }
 
-                      {/* description always shows up*/}
-                      <Typography variant="body1" sx={{ margin: 2 }}>
-                        {item.record_type === "routine" ? `Routine` : `Program`}
-                      </Typography>
-                    </Box>
-                    <Stack direction="row" spacing={1}>
-                      <Chip
-                        label={`${item.duration / 60000} min`}
-                        variant="outlined"
-                        sx={{ borderRadius: 2 }}
-                      />
-                      <Chip
-                        label={`${item.burned_calories ? item.burned_calories : 0} kcal`}
-                        variant="outlined"
-                        sx={{ borderRadius: 2 }}
-                      />
-                      <Chip
-                        label={`scored ${item.score ? item.score : 0}`}
-                        variant="outlined"
-                        sx={{ borderRadius: 2 }}
-                      />
-                    </Stack>
-                  </AccordionDetails>
-                </Accordion>
-              ))
-            : isDateSelected && "No history to show..."}
+                    {/* description always shows up*/}
+                    <Typography variant="body1" sx={{ margin: 2 }}>
+                      {item.record_type === "routine" ? `Routine` : `Program`}
+                    </Typography>
+                  </Box>
+                  <Stack direction="row" spacing={1}>
+                    <Chip
+                      label={`${item.duration / 60000} min`}
+                      variant="outlined"
+                      sx={{ borderRadius: 2 }}
+                    />
+                    <Chip
+                      label={`${item.burned_calories ? item.burned_calories : 0} kcal`}
+                      variant="outlined"
+                      sx={{ borderRadius: 2 }}
+                    />
+                    <Chip
+                      label={`scored ${item.score ? item.score : 0}`}
+                      variant="outlined"
+                      sx={{ borderRadius: 2 }}
+                    />
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
+            ))
+          ) : (
+            isDateSelected && "No history to show..."
+          )}
         </div>
       </Card>
 
       {/* Video Dialog */}
       <VideoModal open={videoSwitch} onclose={videoClose} videoURL={videoURL} />
-      {/* <Dialog
-        open={videoSwitch}
-        onClose={videoClose}
-        fullWidth
-        maxWidth="md"
-        BackdropProps={{
-          style: { backgroundColor: 'rgba(71, 71, 71, 0.169)' },
-        }}
-        sx={{
-          '& .MuiDialog-paper': {
-            borderRadius: 4,
-            overflow: 'hidden',
-            padding: 1,
-            backgroundColor: '#f7f7f7',
-          },
-        }}
-      >
-        <DialogTitle sx={{ padding: 0, display: "flex", justifyContent: "end" }}>
-          <IconButton onClick={videoClose}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: 0,
-          width: "100%",
-          height: "100%",
-          borderRadius: "8px",
-          overflow: 'hidden',
-        }}>
-          <video autoPlay width="100%" height="100%" controls>
-            <source src={videoURL} type="video/webm" />
-          </video>
-        </DialogContent>
-      </Dialog> */}
-
       {/* Modal part */}
       <Dialog
         open={modalSwitch}
