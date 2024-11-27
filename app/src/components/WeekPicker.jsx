@@ -151,7 +151,7 @@ export const WeekPicker = ({
           justifyContent: 'space-between',
           alignItems: 'center',
           width: '100%',
-          flexWrap: 'wrap',
+          flexWrap: 'nowrap',
           flexShrink: 1,
         }}
       >
