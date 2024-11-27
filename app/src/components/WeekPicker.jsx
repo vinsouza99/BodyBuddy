@@ -146,13 +146,12 @@ export const WeekPicker = ({
       {/* Weekly Calendar */}
       <Box
         sx={{
-          display: "flex",
-          direction: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-          width: "100%",
-          gap: ".5rem",
-          flexWrap: "wrap",
+          display: 'flex',
+          direction: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          width: '100%',
+          flexWrap: 'nowrap',
           flexShrink: 1,
         }}
       >
