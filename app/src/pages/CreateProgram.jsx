@@ -27,8 +27,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  IconButton,
 } from "@mui/material";
 import "./CreateProgram.css";
+import CloseIcon from "@mui/icons-material/Close"; // Close Icon
 import {
   getAllGoals,
   getAllIntensities,
@@ -36,6 +38,7 @@ import {
 import { useAuth } from "../utils/AuthProvider.jsx";
 import CheckIcon from "@mui/icons-material/Check"; // TODO: change to svg icon from design file
 import dayjs from "dayjs";
+import theme from "../theme.js";
 
 const CreateProgram = () => {
   const { user } = useAuth();
@@ -221,6 +224,9 @@ const CreateProgram = () => {
             left: "50%",
             transform: "translateX(-50%)",
             top: "80px", // Adjust to align vertically with radio buttons
+            [theme.breakpoints.down("sm")]: {
+              borderTop: "none", // Remove the borderTop for small screens
+            },
           }}
         ></Box>
         <RadioGroup
@@ -323,6 +329,9 @@ const CreateProgram = () => {
             left: "50%",
             transform: "translateX(-50%)",
             top: "80px", // Adjust to align vertically with radio buttons
+            [theme.breakpoints.down("sm")]: {
+              borderTop: "none", // Remove the borderTop for small screens
+            },
           }}
         ></Box>
         <RadioGroup
@@ -516,6 +525,9 @@ const CreateProgram = () => {
       navigate("/signup", { state: { userResponses: formResponse } });
     }
   }
+  const handleClickClose = () => {
+    navigate("/enter");
+  };
   return (
     <>
       <Grid
@@ -530,8 +542,15 @@ const CreateProgram = () => {
           backgroundSize: "cover",
           minHeight: "100vh",
           padding: "2rem 1rem",
+          position: "relative",
         }}
       >
+        <IconButton
+          onClick={handleClickClose}
+          sx={{ position: "absolute", right: "1rem", top: "1rem" }}
+        >
+          <CloseIcon />
+        </IconButton>
         <img src={logo} alt="BodyBuddy" width={70} />
         <Container
           maxWidth="sm"
@@ -669,7 +688,7 @@ const CreateProgram = () => {
                 }}
               >
                 <Button
-                  className="containedWhite"
+                  className={`containedWhite ${step === 1 ? "disabledButton" : ""}`}
                   onClick={() => previousStep()}
                   disabled={step == 1}
                 >

@@ -71,13 +71,13 @@ export const RotateConfirmationModal = ({ open = false, onClose = false }) => {
             flexDirection: "row",
             gap: 2,
             width: "100%",
+            justifyContent: "center",
           }}
         >
           <Button
             variant="contained"
             onClick={handleClose}
             color="primary"
-            fullWidth
           >
             OK
           </Button>

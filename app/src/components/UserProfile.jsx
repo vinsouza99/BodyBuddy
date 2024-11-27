@@ -19,16 +19,25 @@ export const UserProfile = ({
       }}
     >
       {profilePicture ? (
-        <img
-          src={profilePicture}
-          alt="avatar"
+        <Box
           style={{
+            border: "solid thin lightgray",
             width: "100px",
             height: "100px",
             borderRadius: "50%",
-            objectFit: "cover",
+            overflow: "hidden",
           }}
-        />
+        >
+          <img
+            src={profilePicture}
+            alt="avatar"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
+        </Box>
       ) : (
         <Avatar sx={{ width: 100, height: 100, fontSize: "3rem" }}>
           {username.charAt(0)}
@@ -37,15 +46,12 @@ export const UserProfile = ({
       <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
         <Typography
           textAlign="left"
-          sx={{ fontWeight: "bold", fontSize: "1.5rem" }} 
+          sx={{ fontWeight: "bold", fontSize: "1.5rem" }}
         >
           Hi, {username}!
         </Typography>
         <Box sx={{ width: "100%", position: "relative" }}>
-          <UserProgressBar
-            level={level}
-            levelProgress={levelProgress}
-          />
+          <UserProgressBar level={level} levelProgress={levelProgress} />
         </Box>
       </Box>
     </Box>

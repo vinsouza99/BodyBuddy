@@ -24,7 +24,7 @@ import {
   DialogContentText,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import GitHubIcon from '@mui/icons-material/GitHub';
+import GitHubIcon from "@mui/icons-material/GitHub";
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
 import downloadIcon from "/assets/icon-download.svg";
 import emailErrorIcon from "/assets/emailErrorIcon.svg";
@@ -33,6 +33,7 @@ import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "/assets/bodybuddy.svg";
 import AppPreview from "/assets/main-app-preview.png";
+import AppPreviewHover from "/assets/main-app-preview-hover.png";
 import FeaturesImg1 from "/assets/landingpage_features_image_1.png";
 import FeaturesImg2 from "/assets/landingpage_features_image_2.png";
 import feature1IconSrc from "/assets/feature1Icon.svg";
@@ -49,6 +50,7 @@ import violaPicture from "/assets/teammembers/viola.png";
 import liezelPicture from "/assets/teammembers/liezel.png";
 import normalCheck from "/assets/icon-normal-check.svg";
 import "./Landing.css";
+import ProjectProposal from "/assets/bodybuddy_project_proposal.pdf";
 
 export function Landing() {
   const [emailSendingError, setEmailSendingError] = useState(false);
@@ -197,7 +199,8 @@ export function Landing() {
             alignItems: "center",
             textAlign: "center",
             marginBottom: 3,
-            width:"190px",
+            width: "170px", // Changed 190px to 170px to fit 2 members per row on mobile
+            padding: { xs: "0.3rem" },
           }}
         >
           <Box
@@ -224,19 +227,19 @@ export function Landing() {
               // style={{ textDecoration: "none", color: "inherit" }}
             >
               {showGitHubIcon && (
-              <GitHubIcon
-                sx={{
-                  position: "absolute",
-                  bottom: 8,
-                  right: 8,
-                  width: "20px",
-                  height: "20px",
-                  color: "white",
-                  backgroundColor: "black",
-                  borderRadius: "6px",
-                  padding: "2px",
-                }}
-              />
+                <GitHubIcon
+                  sx={{
+                    position: "absolute",
+                    bottom: 8,
+                    right: 8,
+                    width: "20px",
+                    height: "20px",
+                    color: "white",
+                    backgroundColor: "black",
+                    borderRadius: "6px",
+                    padding: "2px",
+                  }}
+                />
               )}
             </Link>
           </Box>
@@ -374,9 +377,9 @@ export function Landing() {
               <Link to="/enter">
                 <Button
                   variant="contained"
-                  sx={{ 
-                    textTransform: "uppercase",
-                    "&:hover": { backgroundColor: "primary.dark" } 
+                  sx={{
+                    // textTransform: "uppercase",
+                    "&:hover": { backgroundColor: "primary.dark" },
                   }}
                 >
                   Sign Up
@@ -399,7 +402,7 @@ export function Landing() {
               size={{ xs: 12, md: 6 }}
               sx={{
                 display: "flex",
-                justifyContent: {xs: "center", md: "end"},
+                justifyContent: { xs: "center", md: "end" },
               }}
             >
               <Box
@@ -426,9 +429,9 @@ export function Landing() {
                   <Link to="/enter">
                     <Button
                       variant="contained"
-                      sx={{ 
-                        textTransform: "uppercase",
-                        "&:hover": { backgroundColor: "primary.dark" } 
+                      sx={{
+                        // textTransform: "uppercase",
+                        "&:hover": { backgroundColor: "primary.dark" },
                       }}
                     >
                       Sign Up For Free
@@ -439,16 +442,21 @@ export function Landing() {
             </Grid>
             {/* Right section with sign-up form */}
             <Grid size={{ sm: 12, md: 6 }}>
-              <Container>
-                <img src={AppPreview} id="app-preview" />
-              </Container>
+              <Box id="app-preview-container">
+                <div className="grid-item">
+                  <img src={AppPreviewHover} id="main-app-preview-hover" />
+                </div>
+                <div className="grid-item">
+                  <img src={AppPreview} id="main-app-preview" />
+                </div>
+              </Box>
             </Grid>
           </Grid>
         </Box>
         <Box component="section" id="features" ref={featuresRef}>
           <Grid container gap={5}>
             <Container>
-              <Typography variant="h2">
+              <Typography variant="h3">
                 All you need to start your fitness journey
               </Typography>
             </Container>
@@ -592,10 +600,16 @@ export function Landing() {
                 flexDirection: "column",
                 // justifyContent: "center",
                 justifyContent: { xs: "center", md: "center" },
-                textAlign: { xs: "center", md: "left" },           
+                textAlign: { xs: "center", md: "left" },
               }}
             >
-              <Typography variant="h4" display="block" textAlign={"left"} fontFamily={"Urbanist"} >
+              <Typography
+                variant="h4"
+                display="block"
+                textAlign={"left"}
+                fontFamily={"Urbanist"}
+                padding="0 1rem"
+              >
                 BodyBuddy offers an{" "}
                 <span style={{ fontSize: "2.5rem" }}>
                   effective fitness experience
@@ -608,7 +622,7 @@ export function Landing() {
         <Box component="section" id="pricing" ref={pricingRef}>
           <Grid container spacing={5} alignItems="stretch">
             <Container>
-              <Typography variant="h2" textAlign="center">
+              <Typography variant="h3" textAlign="center">
                 Our Offers
               </Typography>
             </Container>
@@ -697,7 +711,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -797,7 +811,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -896,7 +910,7 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              textTransform: "uppercase",
+                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -915,7 +929,7 @@ export function Landing() {
           </Grid>
         </Box>
         <Box component="section" id="team" ref={teamRef}>
-          <Typography variant="h2">Meet the Team</Typography>
+          <Typography variant="h3">Meet the Team</Typography>
           <Grid
             container
             padding={"1.5rem 0"}
@@ -929,25 +943,36 @@ export function Landing() {
             </Grid>
             <Grid container spacing={1} justifyContent={"center"}>
               {teamMembers.slice(5, 10).map((member, index) => (
-                <TeamMember member={member} key={index} showGitHubIcon={false} />
+                <TeamMember
+                  member={member}
+                  key={index}
+                  showGitHubIcon={false}
+                />
               ))}
             </Grid>
           </Grid>
         </Box>
         <Box component="section" id="contact" ref={contactRef} sx={{ mb: 6 }}>
           <Grid container>
-            <Grid size={{ xs: 12, md: 5 }} 
-             sx={{
-              display: "flex", 
-              flexDirection: "column",
-              alignItems: "center", 
-              justifyContent: "start",
-              mb: 6,
-              typography: "body3",
+            <Grid
+              size={{ xs: 12, md: 5 }}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "start",
+                mb: 6,
+                typography: "body3",
               }}
             >
-              <Box sx={{textAlign: { xs: "center", md: "left" }}}>
-                <img src={logo} sx={{ width: "100%", maxWidth: "450px" }} />
+              <Box sx={{ textAlign: { xs: "center", md: "left" } }}>
+                <img
+                  src={logo}
+                  sx={{
+                    width: "100%",
+                    maxWidth: "450px",
+                  }}
+                />
                 <Box
                   sx={{
                     display: "flex",
@@ -955,6 +980,8 @@ export function Landing() {
                     justifyContent: "left",
                     marginTop: 2,
                     "&:hover": { color: "primary.dark" },
+                    fontSize: "1.1rem",
+                    paddingTop: "1rem",
                   }}
                 >
                   <Link
@@ -975,18 +1002,20 @@ export function Landing() {
                         marginRight: 1,
                       }}
                     />
-                    {"Project Github"}
+                    Project Github
                   </Link>
-                </Box>     
+                </Box>
                 <Box
                   sx={{
                     display: "flex",
                     marginTop: 2,
                     "&:hover": { color: "primary.dark" },
+                    fontSize: "1.1rem",
                   }}
                 >
-                  <Link
-                    to={""}
+                  <a
+                    href={ProjectProposal}
+                    download
                     style={{
                       display: "flex",
                       textDecoration: "none",
@@ -994,14 +1023,13 @@ export function Landing() {
                       alignItems: "center",
                     }}
                   >
-
                     <img
                       src={downloadIcon}
                       alt="download Icon"
-                      style={{ height: "28px", marginRight: "8px"}}
+                      style={{ height: "28px", marginRight: "8px" }}
                     />
-                    {"Download our proposal"}
-                  </Link>
+                    Download our proposal
+                  </a>
                 </Box>
               </Box>
             </Grid>
@@ -1010,7 +1038,7 @@ export function Landing() {
               size={{ xs: 12, md: 7 }}
               sx={{
                 display: "flex",
-                justifyContent: "end",
+                justifyContent: "center", // Change from end to center
               }}
             >
               <Box
@@ -1025,17 +1053,18 @@ export function Landing() {
                   justifyContent: "center",
                   alignItems: "center",
                   gap: "1rem",
+                  maxWidth: "447px", // Set maxWidth based on figma design
                 }}
                 onSubmit={sendEmail}
               >
                 <Typography
                   variant="h3"
                   display="block"
-                  sx={{ fontWeight: 700, textAlign: "center", width: "100%" }}
+                  sx={{ fontWeight: 700, textAlign: "left", width: "100%" }}
                 >
                   Contact Us
                 </Typography>
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="h5" sx={{ mb: 1 }}>
                     Your name
                   </Typography>
@@ -1045,10 +1074,14 @@ export function Landing() {
                     onChange={handleChange}
                     fullWidth={false}
                     required
-                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
+                    sx={{
+                      // width: "500px",
+                      backgroundColor: "#ffffff",
+                      width: "100%",
+                    }}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="h5" sx={{ mb: 1 }}>
                     Email
                   </Typography>
@@ -1059,10 +1092,14 @@ export function Landing() {
                     fullWidth={false}
                     required
                     type="email"
-                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
+                    sx={{
+                      // width: "500px",
+                      backgroundColor: "#ffffff",
+                      width: "100%",
+                    }}
                   />
                 </Box>
-                <Box>
+                <Box sx={{ width: "100%" }}>
                   <Typography variant="h5" sx={{ mb: 1 }}>
                     Leave us a few words
                   </Typography>
@@ -1074,7 +1111,11 @@ export function Landing() {
                     required
                     multiline
                     rows={4}
-                    sx={{ width: "500px", backgroundColor: "#ffffff" }}
+                    sx={{
+                      // width: "500px",
+                      backgroundColor: "#ffffff",
+                      width: "100%",
+                    }}
                   />
                 </Box>
                 <Button
@@ -1083,7 +1124,7 @@ export function Landing() {
                   color="primary"
                   fullWidth
                   sx={{
-                    textTransform: "uppercase",
+                    // textTransform: "uppercase",
                     width: "110px",
                     "&:hover": { backgroundColor: "primary.dark" },
                   }}
@@ -1101,7 +1142,7 @@ export function Landing() {
       >
         <Container>
           <Typography variant="body2" color="primary.contrastText">
-            BodyBuddy 2024 &copy; All right reserved.
+            BodyBuddy 2024 &copy; All rights reserved.
           </Typography>
         </Container>
       </Box>

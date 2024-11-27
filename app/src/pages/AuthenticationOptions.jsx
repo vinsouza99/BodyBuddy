@@ -161,7 +161,7 @@ export function AuthenticationOptions(props) {
             to="/create-program"
             onClick={() => localStorage.setItem("currentSlide", 0)} // Reset onboarding slide to first slide
           >
-            Create my exercise plan
+            Create My Exercise Plan
           </Button>
 
           {/* Sign In link */}

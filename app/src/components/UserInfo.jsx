@@ -29,12 +29,20 @@ function UserInfo({ user = {} }) {
       >
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Grid sx={{ display: "flex", alignItems: "center" }}>
-            <Box>
+            <Box
+              style={{
+                border: "solid thin lightgray",
+                width: "100px",
+                height: "100px",
+                borderRadius: "50%",
+                overflow: "hidden",
+              }}
+            >
               {user.picture ? (
                 <Avatar
                   alt="Avatar"
                   src={user.picture}
-                  sx={{ width: 130, height: 130 }}
+                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
                 <Avatar alt="Avatar" sx={{ width: 130, height: 130 }}>

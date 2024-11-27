@@ -24,6 +24,11 @@ const theme = createTheme({
       dark: "#FF0074", // Darker shade for hover effects (1 shade darker)
       contrastText: "#FFFFFF", // Text color for secondary buttons
     },
+    accent: {
+      //Green
+      main: "#B8E8B1",
+      contrastText: "#FFFFFF",
+    },
     success: {
       // Accent Green
       main: "#64CC54", // Main accent color
@@ -66,8 +71,8 @@ const theme = createTheme({
       active: "#000000", // Active state color
       hover: "#f5f5f5", // Hover background color
       selected: "#e0e0e0", // Selected item background color
-      disabled: "#e0e0e0", // Disabled state background color
-      disabledBackground: "#f5f5f5", // Disabled background color
+      disabled: "#cccccc", // Disabled state text color (was #e0e0e0)
+      disabledBackground: "#eeeeee", // Disabled state background color (#f5f5f5)
     },
     divider: "#e0e0e0", // Color for dividers
   },
@@ -130,25 +135,7 @@ const theme = createTheme({
   },
 
   components: {
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            backgroundColor: "rgba(255, 255, 255, 0.5)", // 50% opacity white background
-            borderRadius: 4, // Slightly rounded corners
-            "& fieldset": {
-              borderColor: "lightgray", // Default border color
-            },
-            "&:hover fieldset": {
-              borderColor: "lightgray", // Border remains lightgray on hover
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: "#FF118C", // Pink border when focused
-            },
-          },
-        },
-      },
-    },
+
     /****************************************/
     /*           BUTTON COMPONENT           */
     /****************************************/
@@ -174,25 +161,31 @@ const theme = createTheme({
           "&.containedWhite": {
             backgroundColor: "#FFFFFF", // Primary background color
             color: "rgba(0, 0, 0, 0.5)", // Text color for readability
-            boxShadow: "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
+            boxShadow:
+              "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
             "&:hover": {
-              backgroundColor: "primary.dark", // Dark background on hover
-              boxShadow: "0px 4px 5px -2px rgba(0,0,0,0.2), 0px 4px 4px 0px rgba(0,0,0,0.10), 0px 1px 8px 0px rgba(0,0,0,0.10)",
+              backgroundColor: "#fafafa", // Dark background on hover
+              color: "#757575", // Dark grey label text on hover
+              boxShadow:
+                "0px 4px 5px -2px rgba(0,0,0,0.2), 0px 4px 4px 0px rgba(0,0,0,0.10), 0px 1px 8px 0px rgba(0,0,0,0.10)",
             },
             minWidth: "110px", // Default minimum width
           },
 
+          "&.containedWhite.disabledButton": {
+            opacity: "0.5",
+          },
+
           "&.Mui-disabled": {
-            opacity: 0.2, // Set opacity to 50% when disabled
+            opacity: 1, // Set opacity to 50% when disabled
             pointerEvents: "none", // Disable pointer events for better UX
           },
-          
         },
         contained: {
           backgroundColor: "#000000", // Primary background color
           color: "primary.contrastText", // Text color for readability
           "&:hover": {
-            backgroundColor: "primary.dark", // Dark background on hover
+            backgroundColor: "#2782D3", // Dark background on hover
           },
           minWidth: "110px", // Default minimum width
         },
@@ -213,6 +206,30 @@ const theme = createTheme({
         },
       },
     },
+
+    /****************************************/
+    /*          TEXTFIELD COMPONENT         */
+    /****************************************/
+
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "rgba(255, 255, 255, 0.5)", // 50% opacity white background
+            borderRadius: 4, // Slightly rounded corners
+            "& fieldset": {
+              borderColor: "lightgray", // Default border color
+            },
+            "&:hover fieldset": {
+              borderColor: "lightgray", // Border remains lightgray on hover
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#FF118C", // Pink border when focused
+            },
+          },
+        },
+      },
+    }, 
 
     /****************************************/
     /*         TAB / TABS COMPONENT         */
@@ -284,98 +301,6 @@ const theme = createTheme({
         },
       },
     },
-
-    /****************************************/
-    /*         FOCUS                        */
-    /****************************************/
-    // MuiOutlinedInput: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-    //         borderColor: 'transparent',
-    //       },
-    //     },
-    //   },
-    // },
-    // MuiButtonBase: {
-    //   styleOverrides: {
-    //     root: {
-    //       '&:focus': {
-    //         outline: 'none',
-    //         boxShadow: 'none',
-    //       },
-    //     },
-    //   },
-    // },
-
-    /****************************************/
-    /*      GLOBAL STYLES (NOT IN USE)      */
-    /****************************************/
-
-    /* Global styles for common tags */
-    /* Tags need to be wrapped with: */
-    /*
-        return (
-          <ThemeProvider theme={theme}>
-            <CssBaseline>
-              <>
-                <h1>Heading Here</h1>
-                <p>Lorem ipsum dolor sit amet</p>
-              </>
-            </CssBaseline>
-          </ThemeProvider>
-        );
-    */
-
-    // MuiCssBaseline: {
-    //   styleOverrides: {
-    //     body: {
-    //       fontFamily: "'Montserrat', 'Arial', sans-serif",
-    //     },
-
-    //     p: {
-    //       fontFamily: "'Montserrat', 'Arial', sans-serif",
-    //       fontSize: "1.5rem",
-    //       fontWeight: 300,
-    //     },
-
-    //     h1: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "3rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h2: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "2rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h3: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1.75rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h4: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1.5rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h5: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1.25rem",
-    //       fontWeight: 700,
-    //     },
-
-    //     h6: {
-    //       fontFamily: "'Urbanist', 'Arial', sans-serif",
-    //       fontSize: "1rem",
-    //       fontWeight: 700,
-    //     },
-    //   },
-    // },
   },
 
   breakpoints: {
