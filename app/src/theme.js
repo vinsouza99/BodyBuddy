@@ -135,7 +135,6 @@ const theme = createTheme({
   },
 
   components: {
-
     /****************************************/
     /*           BUTTON COMPONENT           */
     /****************************************/
@@ -229,7 +228,7 @@ const theme = createTheme({
           },
         },
       },
-    }, 
+    },
 
     /****************************************/
     /*         TAB / TABS COMPONENT         */
@@ -286,7 +285,7 @@ const theme = createTheme({
               inset: 0,
               borderRadius: "inherit",
               background: "linear-gradient(0deg, #FF118C, #2D90E0)", // Gradient colors
-              padding: "2px",
+              padding: "2px 2.5px 2.5px 2px",
               mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
               maskComposite: "exclude",
               transition: "opacity 0.3s ease", // Add transition here for hover effect
