@@ -4,13 +4,7 @@ import { setPageTitle } from "../utils/utils";
 import { supabase } from "../utils/supabaseClient";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/AuthProvider.jsx";
-import {
-  Button,
-  TextField,
-  Box,
-  Typography,
-  Container,
-} from "@mui/material";
+import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 // import GoogleIcon from "@mui/icons-material/Google";
 import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
@@ -39,7 +33,6 @@ export const SignIn = (props) => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
 
     try {
       const { error } = await supabase.auth.signInWithPassword({

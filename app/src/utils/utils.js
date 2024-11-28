@@ -31,16 +31,17 @@ export const calculateLevel = (points) => {
   }
 
   const pointsInCurrentLevel = points - totalPointsForPreviousLevel;
-  const pointsRequiredForCurrentLevel = pointsToNextLevel - totalPointsForPreviousLevel;
+  const pointsRequiredForCurrentLevel =
+    pointsToNextLevel - totalPointsForPreviousLevel;
   const remainingPointsToNextLevel = pointsToNextLevel - points;
 
   return {
     currentLevel: level,
     pointsInCurrentLevel: pointsInCurrentLevel,
     pointsRequiredForCurrentLevel: pointsRequiredForCurrentLevel,
-    remainingPointsToNextLevel: remainingPointsToNextLevel
+    remainingPointsToNextLevel: remainingPointsToNextLevel,
   };
-}
+};
 /**
  *
  * @param {*} notificationObj and object that represents a notification. It should have these fields:
@@ -61,6 +62,10 @@ export const sendNotification = async (obj) => {
   if (error) {
     console.error("Error inserting notification:", error);
   } else {
+    var audio = new Audio(
+      "../../public/assets/app/public/assets/mixkit-positive-notification-951.wav"
+    );
+    audio.play();
     console.log("Notification sent successfully");
   }
 };

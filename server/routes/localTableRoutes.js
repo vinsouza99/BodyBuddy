@@ -5,6 +5,7 @@ import {
   getIntensities,
   getIntensity,
   getAchievements,
+  getAchievement,
   getMuscleGroup,
   getMuscleGroups,
   getTypes,
@@ -120,7 +121,23 @@ router.get("/intensity/:intensity_id", getIntensity);
  *                 $ref: '#/components/schemas/Achievement'
  */
 router.get("/achievements", getAchievements);
-
+/**
+ * @swagger
+ * /Local/Achievements:
+ *   get:
+ *     summary: Returns a list of all achievements
+ *     tags: [Achievements]
+ *     responses:
+ *       200:
+ *         description: A list of Achievements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Achievement'
+ */
+router.get("/achievements/:achievement_id", getAchievement);
 /**
  * @swagger
  * /Goals:

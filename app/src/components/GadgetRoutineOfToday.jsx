@@ -139,7 +139,7 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
                 width: "150px",
                 height: "150px",
                 color: "white",
-                background: "linear-gradient(180deg, #2D90E0 0%, #FF118C 100%)",
+                background: "linear-gradient(180deg, #2d90e0, #ff118c 50%, #ef3897 60%, #2d90e0)",
                 borderRadius: "50%",
                 padding: 0,
                 minWidth: "unset",
@@ -148,6 +148,14 @@ export const GadgetRoutineOfToday = memo(({ programRoutines = [] }) => {
                 marginTop: "0.8rem",
                 marginBottom: "0.8rem",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.4)",
+                boxSizing: "border-box",
+                backgroundSize: "200% 200%",
+                backgroundPosition: "0% 0%",
+                transition: "all 0.4s ease-in-out",
+                "&:hover": { 
+                  backgroundPosition: "0% 120%",
+                  transition: "all 0.4s ease-in-out",
+                },  
               }}
             >
               START

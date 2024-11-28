@@ -56,7 +56,9 @@ export const SignUp = (props) => {
       const newUser = {
         id: data.user.id,
         name: name,
-        picture: data.user_metadata.profile_picture_url,
+        picture: data.user_metadata
+          ? data.user_metadata.profile_picture_url
+          : null,
         birthday: userResponses.birthday,
         gender: userResponses.gender,
         weight: userResponses.weight,
