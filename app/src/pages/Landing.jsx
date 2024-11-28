@@ -22,6 +22,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
+  CircularProgress,
 } from "@mui/material";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -57,6 +58,7 @@ export function Landing() {
   const [modalSwitch, setSwitch] = useState(false);
   const [menuActive, setMenuActive] = useState(false);
   const [isOnTop, setIsOnTop] = useState(true);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const isMdUp = useMediaQuery(theme.breakpoints.up("md"));
   const form = useRef();
   const [formData, setFormData] = useState({
@@ -165,6 +167,7 @@ export function Landing() {
 
   const sendEmail = (e) => {
     e.preventDefault();
+    setSendingEmail(true);
     emailjs
       .sendForm(
         "service_aj3y2o3", // Replace with your EmailJS Service ID
@@ -181,11 +184,13 @@ export function Landing() {
             message: "",
           });
           setSwitch(true);
+          setSendingEmail(false);
         },
         (error) => {
           console.log("FAILED...", error);
           setEmailSendingError(true);
           setSwitch(true);
+          setSendingEmail(false);
         }
       );
   };
@@ -1069,14 +1074,13 @@ export function Landing() {
                     Your name
                   </Typography>
                   <TextField
+                    disabled={sendingEmail}
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     fullWidth={false}
                     required
                     sx={{
-                      // width: "500px",
-                      backgroundColor: "#ffffff",
                       width: "100%",
                     }}
                   />
@@ -1086,6 +1090,7 @@ export function Landing() {
                     Email
                   </Typography>
                   <TextField
+                    disabled={sendingEmail}
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
@@ -1093,8 +1098,6 @@ export function Landing() {
                     required
                     type="email"
                     sx={{
-                      // width: "500px",
-                      backgroundColor: "#ffffff",
                       width: "100%",
                     }}
                   />
@@ -1104,6 +1107,7 @@ export function Landing() {
                     Leave us a few words
                   </Typography>
                   <TextField
+                    disabled={sendingEmail}
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
@@ -1112,13 +1116,12 @@ export function Landing() {
                     multiline
                     rows={4}
                     sx={{
-                      // width: "500px",
-                      backgroundColor: "#ffffff",
                       width: "100%",
                     }}
                   />
                 </Box>
                 <Button
+                  disabled={sendingEmail}
                   type="submit"
                   variant="contained"
                   color="primary"
@@ -1129,7 +1132,11 @@ export function Landing() {
                     "&:hover": { backgroundColor: "primary.dark" },
                   }}
                 >
-                  Submit
+                  {sendingEmail ? (
+                    <CircularProgress size="1.2rem" color="secondary" />
+                  ) : (
+                    "Submit"
+                  )}
                 </Button>
               </Box>
             </Grid>
