@@ -60,7 +60,6 @@ export const RoutineExercisesList = ({
     const loadExerciseData = async () => {
       const exerciseDetail = await getExercise(selectedExercise?.id, true);
       setExerciseDetail(exerciseDetail);
-      console.log(exerciseDetail);
     };
     loadExerciseData();
   }, [selectedExercise]);
@@ -99,6 +98,7 @@ export const RoutineExercisesList = ({
               alignItems: "center",
               borderRadius: "50px",
               width: "100%",
+              minWidth: "80px",
               height: "80px",
               boxShadow: 3,
             }}
@@ -112,8 +112,10 @@ export const RoutineExercisesList = ({
                 border: "2px solid",
                 borderColor: color,
                 borderRadius: "50px",
-                width: "80px",
-                height: "80px",
+                width: "100%",
+                maxWidth: "80px",
+                aspectRatio: "1",
+                height: "100%",
                 objectFit: "cover",
                 marginRight: "1rem",
               }}

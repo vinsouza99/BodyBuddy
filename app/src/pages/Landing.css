@@ -92,16 +92,18 @@ section {
   overflow: hidden;
   min-height: 50vh;
   height: 100%;
+  max-width: 750px;
+  min-width: 350px;
+  margin: auto;
 }
 #app-preview-container .grid-item {
-  position: absolute;
-  inset: 0;
   grid-row: 1;
   grid-column: 1;
   display: flex;
   place-content: center;
   place-items: center;
   overflow: visible;
+  position: relative;
 }
 #app-preview-container .grid-item:first {
   z-index: 2;
@@ -112,14 +114,14 @@ section {
   object-fit: contain;
 }
 #main-app-preview {
-  width: 80%;
-  height: 80%;
+  width: 90%;
+  height: 90%;
   object-fit: contain;
 }
 #main-app-preview-hover {
-  padding-left: 1rem;
-  width: 110%;
-  height: 110%;
+  margin-left: 1.8rem;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   opacity: 0%;
   transition: opacity 0.3s ease-in-out;
@@ -134,5 +136,10 @@ section {
   #app-preview-container * {
     position: relative !important;
     height: 100%;
+  }
+}
+@media (pointer: none), (pointer: coarse) {
+  #main-app-preview-hover {
+    opacity: 100%;
   }
 }

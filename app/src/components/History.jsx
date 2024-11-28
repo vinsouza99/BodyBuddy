@@ -163,6 +163,7 @@ function History({ data = [], loading = false }) {
 
         <div
           style={{
+            display: "flex",
             flexGrow: 1, // Set the displayed height
             overflowY: "auto", // Scrolling
           }}
@@ -285,7 +286,9 @@ function History({ data = [], loading = false }) {
               </Accordion>
             ))
           ) : (
-            isDateSelected && "No history to show..."
+            <Box flex={1} justifyContent={"center"} paddingTop={"2.5rem"}>
+              <Typography variant="body1">No history to show...</Typography>
+            </Box>
           )}
         </div>
       </Card>

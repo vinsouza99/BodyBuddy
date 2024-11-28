@@ -45,7 +45,10 @@ function UserInfo({ user = {} }) {
                   sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               ) : (
-                <Avatar alt="Avatar" sx={{ width: 130, height: 130 }}>
+                <Avatar
+                  alt="Avatar"
+                  sx={{ width: "100%", height: "100%", objectFit: "cover" }}
+                >
                   {user?.name?.charAt(0)}
                 </Avatar>
               )}

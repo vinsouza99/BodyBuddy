@@ -399,7 +399,7 @@ export function Landing() {
           id="home"
           component="section"
           ref={aboutRef}
-          sx={{ paddingTop: "80px" }}
+          sx={{ paddingTop: { xs: "80px", md: "10px" } }}
         >
           <Grid container>
             {/* Left section with image slider */}
@@ -425,7 +425,7 @@ export function Landing() {
                   Get fit and healthy from the comfort of home without gym or
                   trainers.
                 </Typography>
-                <Typography variant="body2" display="block">
+                <Typography variant="body1" display="block">
                   BodyBuddy is an AI-powered fitness web platform for people who
                   want to exercise in their own homes or on the go, at their own
                   pace.
