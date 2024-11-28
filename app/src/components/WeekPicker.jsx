@@ -28,8 +28,6 @@ export const WeekPicker = ({
   scheduledDatesBorderColor = "primary.main",
   scheduledDatesBgColor = "transparent",
 }) => {
-  // const [startDate, setStartDate] = useState(new Date(getStartOfWeek(new Date()).setHours(0, 0, 0, 0)));
-  // const [endDate, setEndDate] = useState(new Date(getStartOfWeek(addDays(new Date(), 7)).setHours(0, 0, 0, 0)));
   const [startDate, setStartDate] = useState(getStartOfWeek(new Date()));
   const [endDate, setEndDate] = useState(
     addDays(getStartOfWeek(new Date()), 6)
@@ -50,22 +48,12 @@ export const WeekPicker = ({
     }
   }, [displayMode]);
 
-  // function getStartOfWeek(date) {
-  //   const dayOfWeek = date.getDay();
-  //   const diff = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
-  //   return addDays(date, diff);
-  // }
   function getStartOfWeek(date) {
     return startOfWeek(date, { weekStartsOn: 1 }); // 1 = Monday
   }
 
   const handlerNextWeek = () => {
-    // setStartDate(addDays(startDate, 7));
-    // setEndDate(addDays(endDate, 7));
-    // if (typeof onClickNextWeek === 'function') {
-    //   onClickNextWeek(addDays(startDate, 7));
-    // }
-    if (displayMode === "month-simple") {
+    if (displayMode === 'month-simple') {
       setStartDate((prev) => startOfMonth(addMonths(prev, 1)));
       setEndDate((prev) => endOfMonth(addMonths(prev, 1)));
       if (typeof onClickNextWeek === "function") {
@@ -87,12 +75,7 @@ export const WeekPicker = ({
   };
 
   const handlerPreviousWeek = () => {
-    // setStartDate(subDays(startDate, 7));
-    // setEndDate(subDays(endDate, 7));
-    // if (typeof onClickPreviousWeek === 'function') {
-    //   onClickPreviousWeek(addDays(startDate, -7));
-    // }
-    if (displayMode === "month-simple") {
+    if (displayMode === 'month-simple') {
       setStartDate((prev) => startOfMonth(subMonths(prev, 1)));
       setEndDate((prev) => endOfMonth(subMonths(prev, 1)));
       if (typeof onClickPreviousWeek === "function") {
