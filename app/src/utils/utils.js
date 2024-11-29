@@ -55,7 +55,7 @@ export const sendNotification = async (obj) => {
     user_id: obj.user_id,
     title: obj.title,
     message: obj.message,
-    icon_id: obj.icon_id,
+    icon_url: obj.icon_url,
   };
   const { error } = await supabase.from("notification").insert(notificationObj);
 
@@ -66,6 +66,5 @@ export const sendNotification = async (obj) => {
       "../../public/assets/app/public/assets/mixkit-positive-notification-951.wav"
     );
     audio.play();
-    console.log("Notification sent successfully");
   }
 };
