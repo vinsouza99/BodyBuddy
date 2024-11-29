@@ -79,7 +79,7 @@ export const GadgetSchedule = memo(({ programRoutines = [] }) => {
         );
         setWeeklyGoal(parsedContent.summary);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         setLoadingError(true);
       } finally {
         setloadingWeeklyGoal(false);

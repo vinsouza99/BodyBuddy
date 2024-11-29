@@ -53,7 +53,10 @@ const LearningCard = ({ exercise, exercise_type }) => {
     : null;
 
   return (
-    <Card className="cardBorderHover" sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+    <Card
+      className="cardBorderHover"
+      sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+    >
       <Box>
         <img
           src={videoThumbnail ? videoThumbnail : "Video Thumbnail"}
@@ -99,9 +102,6 @@ const LearningCard = ({ exercise, exercise_type }) => {
           {exercise.name ? exercise.name : "Name is undefined or null"}
         </Typography>
         <Box sx={{ display: "flex", gap: 1 }}>
-          {/* Log exercise object */}
-          {/*console.log("Exercise object:", exercise)*/}
-
           {/* COCOY TODO: Display exercise types */}
           {exercise && exercise.types && exercise.types.length > 0 ? (
             exercise.types.map((type, index) => (

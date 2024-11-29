@@ -11,7 +11,6 @@ export const ExerciseDetails = ({ exercise } = {}) => {
 
   useEffect(() => {
     if (!exercise || Object.keys(exercise).length === 0) return;
-    console.log(exercise);
     const focusAreas =
       exercise?.muscleGroups?.map((group) => group.name).join(", ") || "None";
     setFocusAreas(focusAreas);
@@ -20,7 +19,6 @@ export const ExerciseDetails = ({ exercise } = {}) => {
     setGoals(goals);
     const executionSteps = exercise?.execution_steps || [];
     setExecutionSteps(executionSteps);
-    console.log(executionSteps);
   }, [exercise]);
 
   return (

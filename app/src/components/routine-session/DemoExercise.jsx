@@ -65,7 +65,8 @@ export const DemoExercise = ({
   useEffect(() => {
     const loadVoices = () => {
       const voices = speechSynthesis.getVoices();
-      const selectedVoice = voices.find((v) => v.name.includes("Google US English")) || voices[0];
+      const selectedVoice =
+        voices.find((v) => v.name.includes("Google US English")) || voices[0];
       setVoice(selectedVoice || null);
     };
 
@@ -78,7 +79,7 @@ export const DemoExercise = ({
 
   useEffect(() => {
     if (!voice || !trigger) return;
-  
+
     const handleSpeech = async () => {
       try {
         await speakMessage(message);
@@ -89,7 +90,7 @@ export const DemoExercise = ({
       }
     };
     handleSpeech();
-  
+
     return () => {
       speechSynthesis.cancel();
     };
@@ -102,9 +103,8 @@ export const DemoExercise = ({
         utterance.voice = voice;
         utterance.lang = "en-US";
         utterance.rate = 1.0;
-  
+
         utterance.onend = () => {
-          console.log("Speech has ended");
           resolve("Speech completed");
         };
 
@@ -139,7 +139,7 @@ export const DemoExercise = ({
     if (remainingTime !== 0) {
       speakMessage(remainingTime);
     }
-  }
+  };
 
   if (!isVisible || currentExerciseInfo == null || !voice) return null;
 

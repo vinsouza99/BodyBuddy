@@ -17,7 +17,7 @@ const getResponse = async (prompt) => {
     });
     return response.data.data.choices[0].message.content;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 /**
@@ -31,7 +31,7 @@ const generateProgram = async (promptObj) => {
     const prompt = await getPromptText(promptObj);
     return await getResponse(prompt);
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 /**

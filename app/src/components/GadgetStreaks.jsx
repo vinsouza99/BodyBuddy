@@ -21,7 +21,6 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
     if (!history || history?.length === 0) {
       return { currentStreak: 0, maxStreak: 0 };
     }
-    // console.log(history);
 
     // Sort history by date in ascending order
     const sortedHistory = history.sort(
@@ -88,8 +87,6 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
     return { currentStreak, maxStreak };
   };
   const streak = calculateCurrentAndMaxStreak(history);
-  // console.log(`Current Streak: ${streak.currentStreak}`);
-  // console.log(`Best Streak: ${streak.maxStreak}`);
 
   const scheduledDates = history.map((h) => h.date);
   return (

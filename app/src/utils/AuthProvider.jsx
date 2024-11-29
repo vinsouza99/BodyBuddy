@@ -1,8 +1,11 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, createContext, useContext } from "react";
-import { getUserProgress, updateUserProgress } from "../controllers/UserController";
+import {
+  getUserProgress,
+  updateUserProgress,
+} from "../controllers/UserController";
 import { supabase } from "./supabaseClient";
-import { parseISO } from 'date-fns';
+import { parseISO } from "date-fns";
 
 // For sharing the user state across the app
 const AuthContext = createContext();
@@ -17,7 +20,9 @@ export function AuthProvider({ children }) {
       setLoading(true);
       try {
         const { data, error } = await supabase.auth.getSession();
-        if (error) { throw error; }
+        if (error) {
+          throw error;
+        }
 
         const session = data?.session;
         if (session) {
@@ -26,7 +31,6 @@ export function AuthProvider({ children }) {
           setUser(null);
         }
       } catch (error) {
-        console.log("No valid session found", error);
         setUser(null);
       } finally {
         setLoading(false);
@@ -38,19 +42,15 @@ export function AuthProvider({ children }) {
 
     // Listener for changes on auth state
     const { data } = supabase.auth.onAuthStateChange(async (event, session) => {
-
       // JWT token provided by supabase
       const access_token = session?.access_token;
 
       if (event === "INITIAL_SESSION") {
-        console.log("Session data:", session);
       } else if (event === "SIGNED_IN" && access_token) {
-        console.log("User signed in");
         setUser(session?.user ?? null);
         setLoading(false);
       } else if (event === "SIGNED_OUT") {
         setUser(null);
-        console.log("User signed out");
       } else if (event === "TOKEN_REFRESHED") {
         console.log("Access token refreshed");
       }
@@ -61,7 +61,7 @@ export function AuthProvider({ children }) {
       if (data) data.subscription.unsubscribe();
     };
   }, []);
-  
+
   // Note:
   // This function doesn' work because last_sign_in_at is already update when the user is signed in
   useEffect(() => {
@@ -69,11 +69,14 @@ export function AuthProvider({ children }) {
       const checkDailyLoginPoints = async () => {
         const lastSignInAt = user.last_sign_in_at;
         if (lastSignInAt && isDifferentDate(lastSignInAt)) {
-          let progress = await getUserProgress(user.id) ?? { level_progress: 0 };
-          const updatedProgress = { ...progress, level_progress: progress.level_progress + 5 };
-          console.log(updatedProgress);
+          let progress = (await getUserProgress(user.id)) ?? {
+            level_progress: 0,
+          };
+          const updatedProgress = {
+            ...progress,
+            level_progress: progress.level_progress + 5,
+          };
           await updateUserProgress(user.id, updatedProgress);
-          console.log("User progress updated");
         }
       };
       checkDailyLoginPoints();
@@ -83,12 +86,10 @@ export function AuthProvider({ children }) {
   const isDifferentDate = (lastSignInAt) => {
     const lastSignInUTC = parseISO(lastSignInAt);
     const now = new Date();
-  
-    const yesterday = new Date(Date.UTC(
-      now.getUTCFullYear(),
-      now.getUTCMonth(),
-      now.getUTCDate() - 1
-    ));
+
+    const yesterday = new Date(
+      Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - 1)
+    );
     return lastSignInUTC <= yesterday;
   };
 
@@ -97,7 +98,8 @@ export function AuthProvider({ children }) {
     // Sign out from supabase autehtication
     try {
       // Check if there is an active session
-      const { data: session, error: sessionError } = await supabase.auth.getSession();
+      const { data: session, error: sessionError } =
+        await supabase.auth.getSession();
       if (sessionError || !session) {
         console.log("No active session found. Clearing user state.");
         setUser(null);
@@ -110,10 +112,9 @@ export function AuthProvider({ children }) {
       if (error) {
         throw error;
       }
-      console.log("User signed out");
       setUser(null);
     } catch (error) {
-      console.log("User failed to sign out", error);
+      console.error("User failed to sign out", error);
       setUser(null);
       window.localStorage.clear();
       return;

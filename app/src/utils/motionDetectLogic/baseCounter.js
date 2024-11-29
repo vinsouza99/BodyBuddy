@@ -25,7 +25,6 @@ export class BaseCounter {
     }
 
     if (!this._validateCustomConditions(landmarks)) {
-      console.log("Custom conditions not met");
       return { count: this.successCount, alert: this.alert };
     }
 
@@ -35,7 +34,10 @@ export class BaseCounter {
 
   // Process the specific pose (Overridden in derived classes)
   _processSpecificPose(landmarks) {
-    throw new Error("This method must be implemented in a derived class", landmarks);
+    throw new Error(
+      "This method must be implemented in a derived class",
+      landmarks
+    );
   }
 
   // Validate custom conditions (Overridden in derived classes)
@@ -53,8 +55,7 @@ export class BaseCounter {
     // Check if head and feet are in the frame
     return requiredLandmarks.every((landmark) => {
       return (
-        landmark.x >= 0 && landmark.x <= 1 &&
-        landmark.y >= 0 && landmark.y <= 1
+        landmark.x >= 0 && landmark.x <= 1 && landmark.y >= 0 && landmark.y <= 1
       );
     });
   }
@@ -97,7 +98,7 @@ export class BaseCounter {
   getScorePerSec() {
     throw new Error("getScorePerSec() must be implemented in subclass");
   }
-  
+
   resetCount() {
     this.successCount = 0;
   }

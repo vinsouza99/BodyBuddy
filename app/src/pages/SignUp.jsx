@@ -24,7 +24,6 @@ export const SignUp = (props) => {
   useEffect(() => {
     setPageTitle(props.title);
     setUserResponses(location.state.userResponses);
-    console.log(userResponses);
   }, []);
 
   // Transition to Dashboard when user authentication is successful
@@ -51,7 +50,6 @@ export const SignUp = (props) => {
       if (error) {
         throw error;
       }
-      console.log(userResponses);
 
       const newUser = {
         id: data.user.id,
@@ -66,16 +64,12 @@ export const SignUp = (props) => {
         settings: userResponses,
         schedule: userResponses.schedule,
       };
-      updateUser(newUser.id, newUser)
-        .then((response) => {
-          console.log("SUCCESS: User signed up", data, response);
-        })
-        .catch((error) => {
-          throw error;
-        });
+      updateUser(newUser.id, newUser).catch((error) => {
+        throw error;
+      });
     } catch (error) {
       setError(error.message);
-      console.log("ERROR: User signed up", error);
+      console.error(error);
     }
   };
 

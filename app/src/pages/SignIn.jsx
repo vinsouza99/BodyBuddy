@@ -48,32 +48,6 @@ export const SignIn = (props) => {
       console.error("User failed to signed in", error);
     }
   };
-
-  // const handleGoogleSignIn = async (e) => {
-  //   e.preventDefault();
-  //   localStorage.setItem("currentSlide", 0); // Reset onboarding slide to first slide
-
-  //   try {
-  //     const { data, error } = await supabase.auth.signInWithOAuth({
-  //       provider: "google",
-  //       options: {
-  //         prompt: "select_account", // For testing, always display consent page
-  //         redirectTo: `${BASE_URL}dashboard`,
-  //       },
-  //     });
-
-  //     if (error) {
-  //       throw error;
-  //     }
-
-  //     console.log("User signed in with Google", data);
-  //   } catch (error) {
-  //     setError(error.message);
-  //     console.error("User signed in with Google", error);
-  //     navigate("/signin");
-  //   }
-  // };
-
   return (
     <Grid container>
       {/* Left section with image slider */}
@@ -127,19 +101,6 @@ export const SignIn = (props) => {
             </Typography>
 
             <Box sx={{ width: "60%", margin: "0 auto" }}>
-              {/* Google Sign In Button */}
-              {/* <Button
-                variant="contained"
-                type="button"
-                startIcon={<GoogleIcon />}
-                onClick={handleGoogleSignIn}
-              >
-                Sign in with Google
-              </Button> */}
-
-              {/* Divider */}
-              {/* <Divider sx={{ width: "100%", mt: 2 }}>or</Divider> */}
-
               {/* Email & Password Sign In Form */}
               <Box
                 component="form"
@@ -176,16 +137,6 @@ export const SignIn = (props) => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {error && <Typography color="error">{error}</Typography>}
-
-                {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-              sx={{
-                color: "text.secondary",
-                justifyContent: "flex-start",
-                width: "100%",
-              }}
-            /> */}
 
                 <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
                   Sign In

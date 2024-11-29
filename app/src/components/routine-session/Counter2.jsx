@@ -5,7 +5,12 @@ import { Box, Typography } from "@mui/material";
 // Custom Components for Routine Session
 import { useLandscapeMode } from "./useLandscapeMode";
 
-export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete }) => {
+export const Counter2 = ({
+  title = "Counter",
+  count = 0,
+  target = 0,
+  onComplete,
+}) => {
   const isLandscapeMode = useLandscapeMode();
   const [completed, setCompleted] = useState(true);
 
@@ -15,24 +20,24 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
     }
 
     if (target && count >= target && onComplete && !completed) {
-      console.log("Counter completed");
       onComplete();
       setCompleted(true); // This is to prevent onComplete from being called multiple times
     }
   }, [count, target, onComplete, completed]);
 
   return (
-    <Box 
-      sx={{ 
-        fontWeight: "bold", 
-        // color: `${theme.palette.secondary.main}` 
-        color: `white` 
-      }}>
+    <Box
+      sx={{
+        fontWeight: "bold",
+        // color: `${theme.palette.secondary.main}`
+        color: `white`,
+      }}
+    >
       <Typography
         sx={{
-          fontWeight: 'normal',
-          fontSize: isLandscapeMode ? '1rem' : '1.2rem',
-          textAlign: 'center',
+          fontWeight: "normal",
+          fontSize: isLandscapeMode ? "1rem" : "1.2rem",
+          textAlign: "center",
         }}
       >
         {title}
@@ -46,22 +51,22 @@ export const Counter2 = ({ title = "Counter", count = 0, target = 0, onComplete 
       >
         <Typography
           sx={{
-            fontWeight: 'bold',
-            fontSize: isLandscapeMode ? '1.5rem' : '2.5rem',
-            textAlign: 'center',
+            fontWeight: "bold",
+            fontSize: isLandscapeMode ? "1.5rem" : "2.5rem",
+            textAlign: "center",
           }}
         >
           {count}
         </Typography>
         <Typography
           sx={{
-            fontWeight: 'bold',
-            fontSize: isLandscapeMode ? '1.5rem' : '2.5rem',
-            textAlign: 'center',
+            fontWeight: "bold",
+            fontSize: isLandscapeMode ? "1.5rem" : "2.5rem",
+            textAlign: "center",
             marginLeft: 1,
           }}
         >
-          {target ? `/ ${target}` : ''}
+          {target ? `/ ${target}` : ""}
         </Typography>
       </Box>
     </Box>

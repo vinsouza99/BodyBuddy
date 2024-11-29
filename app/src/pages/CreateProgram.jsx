@@ -58,7 +58,7 @@ const CreateProgram = () => {
   useEffect(() => {
     async function getData() {
       try {
-        setPrimaryGoalsOptions(await getAllGoals()); //uncomment this line when database configuration is done
+        setPrimaryGoalsOptions(await getAllGoals());
         setIntensityOptions(await getAllIntensities());
       } catch (e) {
         navigate("/error", {
@@ -75,7 +75,6 @@ const CreateProgram = () => {
     if (index == -1) {
       array.push(value);
     } else {
-      // array.splice(array, 1);
       array.splice(index, 1);
     }
   };
@@ -103,7 +102,6 @@ const CreateProgram = () => {
     }
   }
   function nextStep() {
-    //TODO: validate user input on the current step (check if they have entered a valid input before proceeding)
     if (step < 6) {
       setStep(step + 1);
     }
@@ -186,7 +184,7 @@ const CreateProgram = () => {
                 {/* FormControlLabel for the radio button */}
                 <FormControlLabel
                   key={index}
-                  value={goal.id} // COCOY TODO: CHECK IF THIS IS CORRECT, IT USED TO BE GOAL.ID BUT IT WASN'T WORKING
+                  value={goal.id}
                   control={<Radio />}
                   label={goal.name}
                 />
@@ -197,11 +195,6 @@ const CreateProgram = () => {
             </Accordion>
           ))}
         </RadioGroup>
-
-        {/* <Typography variant="body1">
-          Click <ExpandMoreIcon /> to learn how this goal determines your
-          exercise plan.
-        </Typography> */}
       </FormControl>
     );
   }
@@ -241,8 +234,6 @@ const CreateProgram = () => {
               className="inlineRadioButton"
               sx={{
                 // Custom styling for FormControlLabel if not using className="inlineRadioButton"
-                // minWidth: "30px",
-                // maxWidth: "60px",
                 "& .MuiFormControlLabel-label": {
                   lineHeight: 1.2, // Apply line height to the label
                 },
@@ -477,13 +468,11 @@ const CreateProgram = () => {
                     },
                   }}
                   // Custom checkbox icon
-                  // TODO: change to svg icon from design file
                   checkedIcon={<CheckIcon />}
                 />
               }
               label={day.substring(0, 3)}
               labelPlacement="bottom"
-              // onChange={(e) => toggleOptions(schedule, e.target.value)}
               // Display a default selection
               checked={schedule.includes(day)}
               onChange={(e) => {
@@ -518,9 +507,6 @@ const CreateProgram = () => {
     };
     if (user) {
       navigate("/dashboard", { state: formResponse });
-      // navigate("/training", {
-      //   state: { userResponses: formResponse },
-      // });
     } else {
       navigate("/signup", { state: { userResponses: formResponse } });
     }

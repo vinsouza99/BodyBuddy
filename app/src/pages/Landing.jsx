@@ -177,7 +177,6 @@ export function Landing() {
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response.status, response.text);
           setFormData({
             name: "",
             email: "",
@@ -187,7 +186,6 @@ export function Landing() {
           setSendingEmail(false);
         },
         (error) => {
-          console.log("FAILED...", error);
           setEmailSendingError(true);
           setSwitch(true);
           setSendingEmail(false);
@@ -302,7 +300,9 @@ export function Landing() {
         position="fixed"
         className="toolbar"
         sx={{
-          backgroundColor: isOnTop ? "transparent" : "white",
+          backgroundColor: isOnTop
+            ? "rgba(255,255,255,0)"
+            : "rgba(255,255,255,1)",
           boxShadow: "none",
         }}
       >

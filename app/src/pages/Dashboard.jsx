@@ -2,12 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Box,
-  Grid2,
-  useMediaQuery,
-  Skeleton,
-} from "@mui/material";
+import { Box, Grid2, useMediaQuery, Skeleton } from "@mui/material";
 // Gadgets Components
 import { GadgetUserProfile } from "../components/GadgetUserProfile.jsx";
 import { GadgetStreaks } from "../components/GadgetStreaks.jsx";
@@ -61,7 +56,6 @@ export const Dashboard = (props) => {
         const userInfo = await getUser(user);
         setUserInfo(userInfo);
         setUserInfoLoaded(true);
-        console.log("UserInfo loaded:", userInfo);
 
         const userAccumulatedStats = await getUserAccumulatedStats(user.id);
         setUserAccumulatedStats(userAccumulatedStats);
@@ -109,15 +103,9 @@ export const Dashboard = (props) => {
       try {
         const programs = await getAllUserPrograms(user.id);
         if (programs.length === 0) {
-          console.log(
-            "No program found for this user. Generating the first personalized program."
-          );
           setGenerating(true);
           await generatePersonalizedProgram(user.id, prompt);
           setGenerating(false);
-          console.log("Personalized program is generated successfully.");
-        } else {
-          console.log("User already has some programs.");
         }
       } catch (error) {
         console.error("Error fetching programs:", error);

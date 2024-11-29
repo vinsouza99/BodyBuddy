@@ -9,7 +9,6 @@ import {
   getGoal,
   getIntensity,
 } from "./LocalTablesController";
-import Achievement from "../models/Achievement";
 import { getUserCompletedPrograms } from "./ProgramController";
 import { getUserCompletedRoutines } from "./RoutineController";
 

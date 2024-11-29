@@ -93,24 +93,20 @@ export const TrainingProgram = memo((props) => {
   const loadData = async () => {
     try {
       // Retrieve Program
-      console.log("Loading user programs...");
       const programs = await getAllUserPrograms(user.id, true, false);
 
       // Find the first program without completed_at
       const activeProgram = programs.find((program) => !program.completed_at);
       if (activeProgram) {
-        console.log("User has active program.");
         setActiveProgram(activeProgram);
         setProgramRoutines(activeProgram?.routines || []);
         if (activeProgram.name) setPageTitle(activeProgram.name);
       } else {
-        console.log("No active program found.");
         setActiveProgram(null);
       }
       setLoadingProgram(false);
 
       // Retrieve Preset Routines
-      console.log("Loading preset routines...");
       const presetRoutines = await getAllPresetRoutines();
       setPresetRoutines(presetRoutines);
       setLoadingPremadeRoutines(false);
@@ -172,7 +168,10 @@ export const TrainingProgram = memo((props) => {
     <>
       {/* Backdrop for loading */}
       {activeTab === 0 && (
-        <LoadingBackdrop loading={loadingProgram || !promptReady} generating={generating} />
+        <LoadingBackdrop
+          loading={loadingProgram || !promptReady}
+          generating={generating}
+        />
       )}
       {activeTab === 1 && <LoadingBackdrop loading={loadingPremadeRoutines} />}
 

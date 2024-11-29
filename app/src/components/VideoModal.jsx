@@ -1,20 +1,17 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { supabase } from "../utils/supabaseClient.js";
-import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export const VideoModal = ({ open, onclose, videoURL }) => {
-
   const [signedVideoURL, setSignedVideoURL] = useState(null);
 
   useEffect(() => {
-    console.log("Video URL:", videoURL);
     if (!videoURL) return;
     const fetchSignedUrl = async () => {
       if (videoURL) {
-        const { data, error } = await supabase
-          .storage
+        const { data, error } = await supabase.storage
           .from("Training Videos")
           .createSignedUrl(videoURL, 60);
 
@@ -42,35 +39,39 @@ export const VideoModal = ({ open, onclose, videoURL }) => {
       fullWidth
       maxWidth="md"
       BackdropProps={{
-        style: { backgroundColor: 'rgba(71, 71, 71, 0.169)' },
+        style: { backgroundColor: "rgba(71, 71, 71, 0.169)" },
       }}
       sx={{
-        '& .MuiDialog-paper': {
+        "& .MuiDialog-paper": {
           borderRadius: 4,
-          overflow: 'hidden',
+          overflow: "hidden",
           padding: 1,
-          backgroundColor: '#f7f7f7',
+          backgroundColor: "#f7f7f7",
         },
       }}
     >
       <DialogTitle sx={{ padding: 0, display: "flex", justifyContent: "end" }}>
-        <IconButton onClick={() => {
-          setSignedVideoURL(null);
-          onclose();
-        }}>
+        <IconButton
+          onClick={() => {
+            setSignedVideoURL(null);
+            onclose();
+          }}
+        >
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: 0,
-        width: "100%",
-        height: "100%",
-        borderRadius: "8px",
-        overflow: 'hidden',
-      }}>
+      <DialogContent
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 0,
+          width: "100%",
+          height: "100%",
+          borderRadius: "8px",
+          overflow: "hidden",
+        }}
+      >
         {signedVideoURL ? (
           <video autoPlay width="100%" height="100%" controls>
             <source src={signedVideoURL} type="video/webm" />
@@ -80,11 +81,11 @@ export const VideoModal = ({ open, onclose, videoURL }) => {
         )}
       </DialogContent>
     </Dialog>
-  )
-}
+  );
+};
 
 VideoModal.propTypes = {
   open: PropTypes.bool,
   onclose: PropTypes.func,
   videoURL: PropTypes.string,
-}
+};

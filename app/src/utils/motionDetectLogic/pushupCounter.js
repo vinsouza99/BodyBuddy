@@ -16,11 +16,10 @@ export class PushupCounter extends BaseCounter {
     // Make sure the user has his/her hands on the floor.
     const leftWrist = landmarks[landmarkNames.LEFT_WRIST];
     const rightWrist = landmarks[landmarkNames.RIGHT_WRIST];
-    
+
     const groundLevel = 0.5;
-    
+
     if (leftWrist.y < groundLevel || rightWrist.y < groundLevel) {
-      console.log("Hands are not close enough to the floor.", leftWrist.y, rightWrist.y);
       return false;
     }
     return true;
@@ -40,25 +39,56 @@ export class PushupCounter extends BaseCounter {
     const rightHip = landmarks[landmarkNames.RIGHT_HIP];
 
     // Process Alert
-    this.#processAlert(leftShoulder, leftHip, leftAnkle, rightShoulder, rightHip, rightAnkle);
+    this.#processAlert(
+      leftShoulder,
+      leftHip,
+      leftAnkle,
+      rightShoulder,
+      rightHip,
+      rightAnkle
+    );
 
     // Process Count
-    this.#processCount(leftShoulder, leftElbow, leftWrist, rightShoulder, rightElbow, rightWrist);
+    this.#processCount(
+      leftShoulder,
+      leftElbow,
+      leftWrist,
+      rightShoulder,
+      rightElbow,
+      rightWrist
+    );
 
-    return { 
-      count: this.successCount, 
+    return {
+      count: this.successCount,
       alert: this.alert,
       calorie: PushupCounter.MET * (PushupCounter.TIME_PER_REP / 3600) * 1.05,
       score: 1,
     };
   }
 
-  #processAlert(leftShoulder, leftHip, leftAnkle, rightShoulder, rightHip, rightAnkle) {
+  #processAlert(
+    leftShoulder,
+    leftHip,
+    leftAnkle,
+    rightShoulder,
+    rightHip,
+    rightAnkle
+  ) {
     // Calculate the angle if the head to heel line is not straight
-    this.leftSholderHipAnkleAngle = calculateAngle(leftShoulder, leftHip, leftAnkle);
-    this.rightSholderHipAnkleAngle = calculateAngle(rightShoulder, rightHip, rightAnkle);
-    if (this.leftSholderHipAnkleAngle < 160 
-      || this.rightSholderHipAnkleAngle < 160) {
+    this.leftSholderHipAnkleAngle = calculateAngle(
+      leftShoulder,
+      leftHip,
+      leftAnkle
+    );
+    this.rightSholderHipAnkleAngle = calculateAngle(
+      rightShoulder,
+      rightHip,
+      rightAnkle
+    );
+    if (
+      this.leftSholderHipAnkleAngle < 160 ||
+      this.rightSholderHipAnkleAngle < 160
+    ) {
       this.alertCount += 1;
     }
 
@@ -71,28 +101,52 @@ export class PushupCounter extends BaseCounter {
     }
   }
 
-  #processCount(leftShoulder, leftElbow, leftWrist, rightShoulder, rightElbow, rightWrist) {
-    this.leftShoulderElbowWristAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
-    this.rightShoulderElbowWristAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
+  #processCount(
+    leftShoulder,
+    leftElbow,
+    leftWrist,
+    rightShoulder,
+    rightElbow,
+    rightWrist
+  ) {
+    this.leftShoulderElbowWristAngle = calculateAngle(
+      leftShoulder,
+      leftElbow,
+      leftWrist
+    );
+    this.rightShoulderElbowWristAngle = calculateAngle(
+      rightShoulder,
+      rightElbow,
+      rightWrist
+    );
 
     // Judge Pushup Up (top position)
-    if ((this.leftShoulderElbowWristAngle > 165 || this.rightShoulderElbowWristAngle > 165) 
-      && !this.up) {
+    if (
+      (this.leftShoulderElbowWristAngle > 165 ||
+        this.rightShoulderElbowWristAngle > 165) &&
+      !this.up
+    ) {
       this.up = true;
       this.down = false;
     }
 
     // Judge Pushup Down (bottom position)
-    if (this.up 
-      && (this.leftShoulderElbowWristAngle < 90 || this.rightShoulderElbowWristAngle < 90) 
-      && !this.down) {
+    if (
+      this.up &&
+      (this.leftShoulderElbowWristAngle < 90 ||
+        this.rightShoulderElbowWristAngle < 90) &&
+      !this.down
+    ) {
       this.down = true;
       this.successCount += 1;
     }
 
     // Reset Up state when user returns to the top position
-    if (this.down 
-      && (this.leftShoulderElbowWristAngle > 170 || this.rightShoulderElbowWristAngle > 170)) {
+    if (
+      this.down &&
+      (this.leftShoulderElbowWristAngle > 170 ||
+        this.rightShoulderElbowWristAngle > 170)
+    ) {
       this.up = false;
     }
   }

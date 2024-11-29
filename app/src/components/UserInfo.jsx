@@ -15,9 +15,6 @@ function UserInfo({ user = {} }) {
         day: "numeric",
       })
     : "No birthday set";
-
-  console.log(user);
-  console.log(user.name);
   return (
     <>
       <Card

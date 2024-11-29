@@ -7,8 +7,6 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
 
   try {
     // OpenAI will generate the program data
-    // console.log(prompt);
-
     const response_openai = await axiosClient.post(`openai/`, {
       prompt: prompt,
     });
@@ -18,8 +16,6 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
     const parsedContent = JSON.parse(
       response_openai.data.data.choices[0].message.content
     );
-    console.log("AI generated data:", parsedContent);
-
     // Insert program data into the database
     const response_program = await axiosClient.post("programs/", {
       ...parsedContent.program,
@@ -28,7 +24,6 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
     if (Number(response_program.status) !== 201) {
       throw new Error("Failed to insert program info");
     }
-    console.log("Program is created successfully");
 
     // Insert routine data into the database
     for (const routine_item of parsedContent.routine) {
@@ -40,8 +35,6 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
         throw new Error("Failed to insert routine info");
       }
     }
-    console.log("Routine is created successfully");
-
     // Insert program_routine data into the database
     await Promise.all(
       parsedContent.program_routine.map(async (program_routine_item) => {
@@ -51,23 +44,14 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
           program_routine_item.scheduled_date,
           program_routine_item.completed
         );
-        if (response_program_routine.status === 201) {
-          // console.log(
-          //   "Program_Routine is created successfully (inserted)",
-          //   response_program_routine.status
-          // );
-        } else if (response_program_routine.status === 200) {
-          // console.log(
-          //   "Program_Routine is created successfully (updated)",
-          //   response_program_routine.status
-          // );
-        } else {
+        if (
+          response_program_routine.status !== 201 &&
+          response_program_routine.status !== 200
+        ) {
           throw new Error("Failed to insert program_routine info");
         }
       })
     );
-    console.log("Program_Routine is created successfully");
-
     // Insert routine_exercise data into the database
     await Promise.all(
       parsedContent.routine_exercise.map(async (routine_exercise_item) => {
@@ -80,23 +64,14 @@ export const generatePersonalizedProgram = async (userId, prompt) => {
           duration: 0,
           rest_time: routine_exercise_item.rest_time,
         });
-        if (response_routine_exercise.status === 201) {
-          // console.log(
-          //   "Routine_Exercise created successfully (inserted)",
-          //   response_routine_exercise.status
-          // );
-        } else if (response_routine_exercise.status === 200) {
-          // console.log(
-          //   "Routine_Exercise created successfully (updated)",
-          //   response_routine_exercise.status
-          // );
-        } else {
+        if (
+          response_routine_exercise.status !== 201 &&
+          response_routine_exercise.status !== 200
+        ) {
           throw new Error("Failed to insert routine_exercise info");
         }
       })
     );
-    console.log("Routine_Exercise is created successfully");
-
   } catch (error) {
     console.error("Error generating personalized program:", error);
   }

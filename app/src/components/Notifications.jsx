@@ -10,7 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
+import badgePlaceholder from "/assets/badge_placeholder.png";
 import "./Notifications.css";
 
 import { Button, Divider, Grid2 as Grid, Typography } from "@mui/material";
@@ -40,6 +40,7 @@ function Notifications() {
         console.error("Error fetching notifications:", error);
       } else {
         setNotifications(initialNotifications);
+        console.log(initialNotifications);
         const unreadNotifications = initialNotifications.filter(
           (notification) => !notification.read
         );
@@ -187,7 +188,11 @@ function Notifications() {
                         <img
                           width="50px"
                           alt="Notification Icon"
-                          src={notification.icon_url}
+                          src={
+                            notification.icon_url
+                              ? notification.icon_url
+                              : badgePlaceholder
+                          }
                         />
                       </ListItemAvatar>
                       <ListItemText
