@@ -163,7 +163,6 @@ function History({ data = [], loading = false }) {
 
         <div
           style={{
-            display: "flex",
             flexGrow: 1, // Set the displayed height
             overflowY: "auto", // Scrolling
           }}
