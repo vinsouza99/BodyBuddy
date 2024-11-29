@@ -153,13 +153,13 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     // Get session start time
     if (!startedAtRef.current) {
       startedAtRef.current = new Date();
-      console.log("Started at:", startedAtRef.current);
     }
 
     // Load voices for text-to-speech
     const loadVoices = () => {
       const voices = speechSynthesis.getVoices();
-      const selectedVoice = voices.find((v) => v.name.includes("Google US English")) || voices[0];
+      const selectedVoice =
+        voices.find((v) => v.name.includes("Google US English")) || voices[0];
       setVoice(selectedVoice || null);
     };
     if (speechSynthesis.onvoiceschanged !== undefined) {
@@ -171,7 +171,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     const fetchUserInfo = async () => {
       try {
         const data = await getUser(user);
-        // console.log(data);
         setUserInfo(data);
       } catch (error) {
         console.error("Error fetching user info:", error);
@@ -216,7 +215,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
           if (Number(response.status) === 200) {
             setProgramId(response.data.data.program_id);
           } else if (Number(response.status) === 404) {
-            console.log("This is a premade routine.");
             setProgramId(null);
           } else {
             throw new Error("Failed to fetch program ID");
@@ -250,7 +248,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         if (Number(response.status) !== 200) {
           throw new Error("Failed to fetch exercise info");
         }
-        console.log(response.data);
         const routineData = [
           {
             exercise_id: response.data.data.id,
@@ -271,10 +268,8 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
     // Fetch routine or exercise information based on idType
     if (idType === "routine") {
-      console.log("Routine is selected.");
       fetchRoutineInfo();
     } else if (idType === "exercise") {
-      console.log("Exercise is selected.");
       fetchExerciseInfo();
     } else {
       console.error("Invalid idType:", idType);
@@ -291,7 +286,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   useEffect(() => {
     const observer = new MutationObserver(() => {
       if (videoRef.current) {
-        // console.log("VideoRef is now available:", videoRef.current);
         toggleWebCam();
         // Disconnect the observer after the video element is available
         observer.disconnect();
@@ -325,7 +319,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Reset selected exercise index when routine changes
   useEffect(() => {
-    console.log("Routine:", routine);
     if (routine && routine.length > 0) {
       setSelectedExerciseIndex(0);
     }
@@ -333,8 +326,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
   // Dynamically load exercise counter class based on selected exercise
   useEffect(() => {
-    console.log("Selected exercise:", routine[selectedExerciseIndex]);
-
     // Reset success count when exercise changes
     setSuccessRepCount(0);
     setSuccessSetCount(0);
@@ -424,8 +415,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (error) {
         console.error("Error uploading file:", error);
       } else {
-        console.log("File uploaded successfully:", data);
-        console.log("fileName:", `${fileName}`);
         setExerciseVideo(`${fileName}`);
         setRecordedChunks([]);
 
@@ -572,7 +561,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       videoElement.srcObject = stream;
       videoElement.addEventListener("loadeddata", () => {
         setWebcamRunning(true); // Update state
-        console.log("Webcam enabled");
       });
     } catch (error) {
       console.error("Error accessing the webcam: ", error);
@@ -593,7 +581,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       videoElement.srcObject = null;
       setWebcamRunning(false);
       clearCanvas();
-      console.log("Webcam disabled");
     }
   };
 
@@ -624,7 +611,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       recorder.start(1000);
       setMediaRecorder(recorder);
       setIsRecording(true);
-      console.log("Recording started");
     } else {
       console.error("Webcam is not running. Cannot start recording.");
     }
@@ -636,7 +622,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       mediaRecorder.stop();
       setMediaRecorder(null);
       setIsRecording(false);
-      console.log("Recording stopped");
     }
   }, [mediaRecorder, setMediaRecorder, setIsRecording]);
 
@@ -645,7 +630,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
     if (selectedExercise) {
       const CounterClass = exerciseCounterLoader[selectedExercise.exercise_id];
       if (CounterClass) {
-        console.log("Exercise counter is loaded.", selectedExercise.name);
         return new CounterClass();
       } else {
         console.error(
@@ -663,7 +647,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
   const predictPosture = async () => {
     // Skip posture detection during rest time
     if (isResting) {
-      console.log("Resting time. Skipping posture detection.");
       return;
     }
 
@@ -674,7 +657,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
     // Check if video element is available
     if (videoElement.videoWidth === 0 || videoElement.videoHeight === 0) {
-      console.log("Video element not available or has been stopped.");
       return;
     }
 
@@ -815,10 +797,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (Number(response.status) !== 200 && Number(response.status) !== 204) {
         throw new Error("Failed to update Program_Routine");
       }
-      console.log(
-        "Program_Routine has been successfully updaed:",
-        response.data
-      );
     } catch (error) {
       console.error("Failed to update Program_Routine:", error);
     }
@@ -840,7 +818,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       // Check if all routines in the program are completed
       for (const routine of fetchResponse.data.data) {
         if (!routine.completed) {
-          console.log("Program has uncompleted routines");
           return;
         }
       }
@@ -852,7 +829,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (Number(response.status) !== 200 && Number(response.status) !== 204) {
         throw new Error("Failed to update Program");
       }
-      console.log("Program has been successfully updaed:", response.data);
     } catch (error) {
       console.error("Failed to update Program:", error);
     }
@@ -880,10 +856,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
       if (Number(response.status) !== 201) {
         throw new Error("Failed to update Routine_History");
       }
-      console.log(
-        "Routine_History has been successfully updaed:",
-        response.data
-      );
     } catch (error) {
       console.error("Failed to update Routine_History:", error);
     }
@@ -900,10 +872,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         completedAt,
         duration, // minutes
         Math.round(calorie)
-      );
-      console.log(
-        "User_Accumulated_Workout_Stats has been successfully updaed:",
-        response.data
       );
     } catch (error) {
       console.error("Failed to update User_Accumulated_Workout_Stats:", error);
@@ -922,7 +890,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         level_progress: progress.level_progress + score,
       };
       const response = await updateUserProgress(user.id, updatedProgress);
-      console.log("User_Progress has been successfully updaed:", response.data);
     } catch (error) {
       console.error("Failed to update User_Progress:", error);
     }
@@ -947,14 +914,11 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
         // Send notification
         sendNotification({
           user_id: user.id,
-          title: 'Congratulations! You have earned "Newbie No More" badge.',
+          title: "New Achievement!",
           message:
             'You complete your first workout Routine and earned "Newbie No More".',
           icon_url: achievement.badge_url,
         });
-        console.log('"Newbie No More" badge earned!', response);
-      } else {
-        console.log('"Newbie No More" badge already earned.');
       }
 
       // Badge 2: The first program completion
@@ -1226,7 +1190,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                   <MetricCard title="Kcal" value={calorie} />
                 </Box>
 
-                <Box sx={{display: "flex", flexDirection: "row", gap: 2}}>
+                <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
                   {/* Puase & Play */}
                   <IconButton
                     onClick={toggleIsResting}
