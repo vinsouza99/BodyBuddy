@@ -178,16 +178,16 @@ const data = {
         {
             "routine_id": "33b15c28-b1f7-490c-bb38-95a3d21bdc4a",
             "exercise_id": "fb7180ab-f3e2-4a5d-b731-a2c0fc5de9fa",
-            "sets": 3,
-            "reps": 10,
+            "sets": 1,
+            "reps": 5,
             "order": 1,
             "rest_time": 600000
         },
         {
             "routine_id": "33b15c28-b1f7-490c-bb38-95a3d21bdc4a",
-            "exercise_id": "0cc22f75-7d4d-4d50-9cdd-4ae3c731c517",
-            "sets": 3,
-            "reps": 15,
+            "exercise_id": "ed999b28-ae50-4009-b29c-c7f6a28857c9",
+            "sets": 1,
+            "reps": 5,
             "order": 2,
             "rest_time": 600000
         },
