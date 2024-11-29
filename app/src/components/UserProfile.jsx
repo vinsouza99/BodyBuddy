@@ -15,7 +15,7 @@ export const UserProfile = ({
         flexDirection: "row",
         width: "100%",
         gap: 2,
-        alignItems: "center",
+        alignItems: "start",
       }}
     >
       {profilePicture ? (
