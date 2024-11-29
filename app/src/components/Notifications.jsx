@@ -169,7 +169,7 @@ function Notifications() {
             </Button>
           </Grid>
           <Divider />
-          <List sx={{ width: "380px", maxWidth: "100vw" }}>
+          <List sx={{ width: { xs: "100vw", sm: "380px", md: "45vw" } }}>
             {notifications.length > 0 ? (
               notifications.map((notification, index) => (
                 <React.Fragment key={index}>
