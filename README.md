@@ -1,8 +1,2 @@
 # BodyBuddy
-Final project for WMDD's third term
-
-## Server cheatsheet
-
-`npm test` - runs test scripts
-`npm start` - runs production server
-`npm run dev` - runs development server
+BodyBuddy is an AI-powered fitness web platform for people who want to exercise in their own homes or on the go, at their own pace. The platform offers an effective fitness experience without the need for a gym or personal trainer and without the worry of time and location constraints. The AI analysis checks your form in real-time, ensuring correct posture for a safe and effective workout. It also helps you create personalized workout plans based on your fitness level and goals. Plus, the progress dashboard keeps you motivated, making it easier to stay on track and maintain a regular workout routine, even when exercising alone!
