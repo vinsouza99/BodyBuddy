@@ -231,7 +231,6 @@ export const DemoExercise = ({
                       fontSize: "1rem",
                       fontWeight: "normal",
                       marginLeft: "auto",
-                      // color: 'black',
                       "&.Mui-disabled": {
                         color: "darkgrey", // overwrite disabled color
                       },

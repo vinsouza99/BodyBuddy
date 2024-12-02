@@ -9,8 +9,6 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import Grid from "@mui/material/Grid2";
-import Modal from "@mui/material/Modal"; // import QuiltedImageList from "../components/ImageLists";
 
 const LearningCard = ({ exercise, exercise_type }) => {
   // Access the theme for styling

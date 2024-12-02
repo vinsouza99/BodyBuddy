@@ -151,7 +151,6 @@ export const LearnExercise = (props) => {
               overflow: "hidden",
               marginBottom: "1rem",
               position: "relative", // Add position relative for absolute children
-              // backgroundColor: "background.paper",
               backgroundColor: "rgba(255, 255, 255, 0.8)",
               border: "2px solid white",
             }}
@@ -211,7 +210,7 @@ export const LearnExercise = (props) => {
               backgroundSize: "200% 200%",
               backgroundPosition: "0% 0%",
               transition: "all 0.4s ease-in-out",
-              "&:hover": { 
+              "&:hover": {
                 backgroundPosition: "0% 120%",
                 transition: "all 0.4s ease-in-out",
               },

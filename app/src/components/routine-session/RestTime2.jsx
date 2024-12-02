@@ -1,10 +1,10 @@
 // Reat and Material-UI
 import PropTypes from "prop-types";
-import { useState, useEffect } from 'react';
-import { Modal, Box, Typography, IconButton } from '@mui/material';
+import { useState, useEffect } from "react";
+import { Modal, Box, Typography, IconButton } from "@mui/material";
 // Custom Components for Routine Session
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import { useLandscapeMode } from './useLandscapeMode';
+import { CountdownCircleTimer } from "react-countdown-circle-timer";
+import { useLandscapeMode } from "./useLandscapeMode";
 // Icons & Images
 import PauseCircleOutlineIcon from "@mui/icons-material/PauseCircleOutline";
 import PlayCircleOutlineIcon from "@mui/icons-material/PlayCircleOutline";
@@ -12,26 +12,31 @@ import SkipNextOutlinedIcon from "@mui/icons-material/SkipNextOutlined";
 
 const modalStyle = {
   // Layout and positioning
-  position: 'absolute',
+  position: "absolute",
   top: 0,
   left: 0,
   zIndex: 1000,
   // Box model
-  width: '100vw',
-  height: '100vh',
+  width: "100vw",
+  height: "100vh",
   padding: 4,
-  backgroundColor: 'rgba(0, 0, 0, 0.9)',
+  backgroundColor: "rgba(0, 0, 0, 0.9)",
   // Flexbox alignment
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
   gap: 2,
   // Visual effects
-  color: '#fff',
+  color: "#fff",
 };
 
-export const RestTime2 = ({ title = "Time for resting", trigger, duration, onComplete }) => {
+export const RestTime2 = ({
+  title = "Time for resting",
+  trigger,
+  duration,
+  onComplete,
+}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const isLandscapeMode = useLandscapeMode();
@@ -44,35 +49,33 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
   }, [trigger]);
 
   const togglePlayPause = () => {
-    setIsPlaying(prev => !prev);
+    setIsPlaying((prev) => !prev);
   };
 
   const handleTimerComplete = () => {
     setIsVisible(false);
     onComplete();
   };
-  
+
   if (!isVisible) return null;
 
   return (
-    <Modal 
-      open={trigger}
-    >
+    <Modal open={trigger}>
       <Box sx={modalStyle}>
         <CountdownCircleTimer
           isPlaying={isPlaying}
           duration={duration}
           size={isLandscapeMode ? 80 : 110}
           strokeWidth={isLandscapeMode ? 6 : 8}
-          colors='#FFFFFF'
-          trailColor='transparent'
+          colors="#FFFFFF"
+          trailColor="transparent"
           onComplete={handleTimerComplete}
         >
           {({ remainingTime }) => (
             <Typography
-              sx={{ 
+              sx={{
                 fontWeight: "bold",
-                fontSize: isLandscapeMode ? '3rem' : '4rem',
+                fontSize: isLandscapeMode ? "3rem" : "4rem",
               }}
             >
               {remainingTime}
@@ -80,9 +83,9 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
           )}
         </CountdownCircleTimer>
         <Typography
-          sx={{ 
-            fontWeight: "bold", 
-            fontSize: isLandscapeMode ? '1.5rem' : '2rem',
+          sx={{
+            fontWeight: "bold",
+            fontSize: isLandscapeMode ? "1.5rem" : "2rem",
           }}
         >
           {title}
@@ -90,17 +93,18 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
 
         <Box
           sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
             gap: 2,
           }}
         >
-          {/* Puase & Play */}
-          <IconButton 
+          {/* Pause & Play */}
+          <IconButton
             onClick={togglePlayPause}
             onMouseDown={(e) => e.preventDefault()}
-            style={{ fontSize: 50, color: "#fff" }}>
+            style={{ fontSize: 50, color: "#fff" }}
+          >
             {isPlaying ? (
               <PauseCircleOutlineIcon style={{ fontSize: 50 }} />
             ) : (
@@ -109,10 +113,11 @@ export const RestTime2 = ({ title = "Time for resting", trigger, duration, onCom
           </IconButton>
 
           {/* Next Exercise */}
-          <IconButton 
+          <IconButton
             onClick={handleTimerComplete}
             onMouseDown={(e) => e.preventDefault()}
-            style={{ fontSize: 50, color: "#fff" }}>
+            style={{ fontSize: 50, color: "#fff" }}
+          >
             <SkipNextOutlinedIcon style={{ fontSize: 50 }} />
           </IconButton>
         </Box>
@@ -127,4 +132,3 @@ RestTime2.propTypes = {
   duration: PropTypes.number.isRequired,
   onComplete: PropTypes.func.isRequired,
 };
-

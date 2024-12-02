@@ -169,7 +169,6 @@ const CreateProgram = () => {
           name="radio-buttons-group4"
           value={selectedGoal}
           onChange={(e) => {
-            // onChange was moved up to RadioGroup
             setSelectedGoal(e.target.value);
           }}
         >
@@ -337,8 +336,7 @@ const CreateProgram = () => {
               className="inlineRadioButton"
               sx={{
                 // Custom styling for FormControlLabel if not using className="inlineRadioButton"
-                // minWidth: "30px",
-                // maxWidth: "60px",
+
                 "& .MuiFormControlLabel-label": {
                   lineHeight: 1.2, // Apply line height to the label
                 },
@@ -555,7 +553,7 @@ const CreateProgram = () => {
             minHeight={400}
             padding={"1rem"}
           >
-            <Box component={"div"} sx={{ margin: "0 auto", width: "75%" }}>
+            <Box sx={{ margin: "0 auto", width: "75%" }}>
               <ProgressBar progress={(step / 7) * 100} />
             </Box>
             <form
@@ -567,22 +565,22 @@ const CreateProgram = () => {
                 submitForm();
               }}
             >
-              <Box component={"div"} display={step == 1 ? "block" : "none"}>
+              <Box display={step == 1 ? "block" : "none"}>
                 <GenderStep />
               </Box>
-              <Box component={"div"} display={step == 2 ? "block" : "none"}>
+              <Box display={step == 2 ? "block" : "none"}>
                 <PrimaryGoalStep />
               </Box>
-              <Box component={"div"} display={step == 3 ? "block" : "none"}>
+              <Box display={step == 3 ? "block" : "none"}>
                 <PastExerciseFrequencyStep />
               </Box>
-              <Box component={"div"} display={step == 4 ? "block" : "none"}>
+              <Box display={step == 4 ? "block" : "none"}>
                 <IntensityStep />
               </Box>
-              <Box component={"div"} display={step == 5 ? "block" : "none"}>
+              <Box display={step == 5 ? "block" : "none"}>
                 <ScheduleStep />
               </Box>
-              <Box component={"div"} display={step == 6 ? "block" : "none"}>
+              <Box display={step == 6 ? "block" : "none"}>
                 <FormControl>
                   <FormLabel id="personalInfoLabel">
                     <Typography variant="h4">

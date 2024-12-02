@@ -25,8 +25,8 @@ export class SquatCounter extends BaseCounter {
     // Process Count
     this.#processCount(leftShoulder, leftHip, leftKnee, leftAnkle);
 
-    return { 
-      count: this.successCount, 
+    return {
+      count: this.successCount,
       alert: this.alert,
       calorie: SquatCounter.MET * (SquatCounter.TIME_PER_REP / 3600) * 1.05,
       score: 1,

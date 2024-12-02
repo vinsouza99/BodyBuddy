@@ -65,10 +65,11 @@ export const ExitRoutineSessionModal = ({
         </IconButton>
         <img src={ExitConfirm} alt="Exit confirmation" />
         <Typography textAlign="center">
-          You haven&apos;t completed the routine yet.<br/>
+          You haven&apos;t completed the routine yet.
+          <br />
           Do you want to continue finishing today&apos;s goal?
         </Typography>
-        <Typography textAlign="center" sx={{fontSize: "0.8rem"}}>
+        <Typography textAlign="center" sx={{ fontSize: "0.8rem" }}>
           Your progress will not be saved if you stop exercising now.
         </Typography>
         <Box
@@ -80,20 +81,10 @@ export const ExitRoutineSessionModal = ({
             justifyContent: "center",
           }}
         >
-          <Button
-            className="containedWhite"
-            onClick={handleComplete}
-            // color="primary"
-            // fullWidth
-          >
+          <Button className="containedWhite" onClick={handleComplete}>
             Exit
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleClose}
-            // color="primary"
-            // fullWidth
-          >
+          <Button variant="contained" onClick={handleClose}>
             Continue
           </Button>
         </Box>

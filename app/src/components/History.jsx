@@ -14,7 +14,6 @@ import {
 
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -35,8 +34,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import { VideoModal } from "./VideoModal";
 import duration from "/assets/icon-duration.svg";
-
-// import testData from './HistoryData.json'; // When you want to use dammy data, Comment out "setHistory(userHistoryData);" around line 20~30 on Profile.jsx
 
 // dayjs plugins for timezone support
 dayjs.extend(utc);

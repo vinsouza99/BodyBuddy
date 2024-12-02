@@ -128,13 +128,7 @@ export const GadgetStreaks = ({ userInfo = null, history = [] }) => {
       <Typography>
         Exercise at least 3 times a week to keep your streak not reset
       </Typography>
-      <Button
-        variant="contained"
-        onClick={() => navigate("/training")}
-        // sx={{
-        //   width: '50%',
-        // }}
-      >
+      <Button variant="contained" onClick={() => navigate("/training")}>
         Today&apos;s Routine
       </Button>
     </GadgetBase>

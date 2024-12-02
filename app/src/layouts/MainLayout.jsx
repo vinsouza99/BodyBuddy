@@ -78,13 +78,9 @@ export const MainLayout = () => {
     },
   });
 
-  // Loading state
-  const [loading, setLoading] = useState(true); // <-- Loading state for the spinner
-
   useEffect(() => {
     const getUserInfo = async () => {
       try {
-        setLoading(true); // <-- Set loading state to true before fetching data
         const response = await getUser(user, false);
         setSession({
           user: {
@@ -95,8 +91,6 @@ export const MainLayout = () => {
         });
       } catch (error) {
         console.error("Error fetching user data:", error);
-      } finally {
-        setLoading(false); // <-- Set loading state to false once data is fetched
       }
     };
     getUserInfo();

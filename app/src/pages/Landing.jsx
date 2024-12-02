@@ -307,9 +307,11 @@ export function Landing() {
         }}
       >
         <Toolbar>
-          <Box component="div" className="toolbar-content-wrapper">
-            <Box component="div">
-              <a href="#"><img src={logo} id="app-logo" /></a>
+          <Box className="toolbar-content-wrapper">
+            <Box>
+              <a href="#">
+                <img src={logo} id="app-logo" />
+              </a>
             </Box>
             <Box sx={{ flexGrow: "1", justifyContent: { xs: "end" } }}>
               {/* Desktop Links */}

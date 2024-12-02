@@ -2,13 +2,12 @@ import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { setPageTitle } from "../utils/utils";
-import { Backdrop, Card, Box, Typography, Skeleton } from "@mui/material";
+import { Box, Skeleton } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import UserInfo from "../components/UserInfo";
 import History from "../components/History";
 import { getUser, getUserHistory } from "../controllers/UserController";
 import { useAuth } from "../utils/AuthProvider";
-import loadingImg from "/assets/GeneralLoading.gif";
 import { LoadingBackdrop } from "../components/LoadingBackdrop.jsx";
 
 export const Profile = (props) => {

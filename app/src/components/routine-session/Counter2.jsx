@@ -29,7 +29,6 @@ export const Counter2 = ({
     <Box
       sx={{
         fontWeight: "bold",
-        // color: `${theme.palette.secondary.main}`
         color: `white`,
       }}
     >

@@ -144,13 +144,7 @@ export const GadgetFavourite = ({ exerciseInfo = null }) => {
         Learning how to move correctly would significantly increase your
         efficiency. We have some good tips for you, check it out!
       </Typography>
-      <Button
-        variant="contained"
-        // sx={{
-        //   width: '50%',
-        // }}
-        onClick={() => navigate("/learning")}
-      >
+      <Button variant="contained" onClick={() => navigate("/learning")}>
         Start Learning
       </Button>
     </GadgetBase>

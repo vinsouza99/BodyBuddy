@@ -1048,7 +1048,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
           <RestTime2
             title="Time for resting"
             trigger={restForSetIncrement}
-            // duration={routine[selectedExerciseIndex]?.rest_time || 0}
             duration={15}
             onComplete={() => endRestCountdown("set")}
           />
@@ -1080,11 +1079,9 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               zIndex: 9000,
               // Box model
               padding: "0.5rem",
-              // borderRadius: "50%",
               // Visual effects
               fontSize: "2.5rem",
               color: restForNextExercise ? "black" : "white",
-              // backgroundColor: "#333333",
               "&:hover": {
                 backgroundColor: restForNextExercise ? "white" : "#4F4F4F",
               },
@@ -1132,9 +1129,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
               zIndex: 1000,
             }}
           >
-            {/* Angle meters are temporarily removed as they are not an effective UI */}
-            {/* <AngleMeter2 title={"Angle"} angle={angle} /> */}
-
             {idType === "routine" && (
               <>
                 <Counter2
@@ -1191,7 +1185,7 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
                 </Box>
 
                 <Box sx={{ display: "flex", flexDirection: "row", gap: 2 }}>
-                  {/* Puase & Play */}
+                  {/* Pause & Play */}
                   <IconButton
                     onClick={toggleIsResting}
                     onMouseDown={(e) => e.preventDefault()}
@@ -1206,7 +1200,6 @@ export const RoutineSession = ({ title = "Routine Session" }) => {
 
                   {/* Timer */}
                   <CountdownCircleTimer
-                    // key={selectedExerciseIndex} // To reset timer when exercise changes
                     key={`${selectedExerciseIndex}-${successSetCount}`}
                     isPlaying={!isResting}
                     duration={routine[selectedExerciseIndex]?.duration || 0}

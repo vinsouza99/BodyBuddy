@@ -6,11 +6,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../utils/AuthProvider.jsx";
 import { Button, TextField, Box, Typography, Container } from "@mui/material";
 import Grid from "@mui/material/Grid2";
-// import GoogleIcon from "@mui/icons-material/Google";
 import bodybuddyLogo from "/assets/bodybuddy_logo_color.svg";
 import { Onboarding } from "../components/Onboarding";
-
-// const BASE_URL = import.meta.env.VITE_APP_BASE_URL || "http://localhost:3000/";
 
 export const SignIn = (props) => {
   const { user } = useAuth();
@@ -117,7 +114,6 @@ export const SignIn = (props) => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
-                  // autoFocus
                   value={email}
                   sx={{ marginTop: 1 }}
                   onChange={(e) => setEmail(e.target.value)}
