@@ -4,7 +4,6 @@ import localTableRoutes from "./localTableRoutes.js";
 import programRoutes from "./programRoutes.js";
 import exerciseRoutes from "./exerciseRoutes.js";
 import routineRoutes from "./routineRoutes.js";
-import historyRoutes from "./historyRoutes.js";
 import authenticateToken from "../authenticateToken.js";
 import openaiapiRoutes from "./openaiapiRoutes.js";
 
@@ -15,7 +14,6 @@ router.use("/local", localTableRoutes); // No authentication required
 router.use("/programs", authenticateToken, programRoutes);
 router.use("/exercises", authenticateToken, exerciseRoutes);
 router.use("/routines", authenticateToken, routineRoutes);
-router.use("/log", authenticateToken, historyRoutes);
 router.use("/openai", authenticateToken, openaiapiRoutes);
 
 export default router;
