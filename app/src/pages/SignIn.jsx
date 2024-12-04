@@ -82,7 +82,7 @@ export const SignIn = (props) => {
 
             {/* Welcome message */}
             <Typography
-              variant="h6"
+              variant="h4"
               sx={{
                 width: "60%",
                 lineHeight: 1.2,
@@ -93,11 +93,11 @@ export const SignIn = (props) => {
               Welcome back!
             </Typography>
 
-            <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
+            <Typography component="h1" variant="h3" sx={{ mb: 2 }}>
               Sign In
             </Typography>
 
-            <Box sx={{ width: "60%", margin: "0 auto" }}>
+            <Box sx={{ width: {xs: "60%", sm: "50%"}, margin: "0 auto" }}>
               {/* Email & Password Sign In Form */}
               <Box
                 component="form"

@@ -102,7 +102,7 @@ export const SignUp = (props) => {
             alignItems: "center",
           }}
         >
-          <Box>
+          <Box sx={{ margin: "0 auto", textAlign: "center" }}>
             {/* Logo */}
             <Box sx={{ mb: 1 }}>
               <img src={bodybuddyLogo} alt="BodyBuddy Logo" width={60} />
@@ -120,56 +120,57 @@ export const SignUp = (props) => {
               Sign Up
             </Typography>
 
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSignUp}
-              sx={{ width: "40%", margin: "0 auto" }}
-            >
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="name"
-                label="Name"
-                name="name"
-                autoFocus
-                value={name}
-                sx={{ marginTop: 1 }}
-                onChange={(e) => setName(e.target.value)}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
-                value={email}
-                sx={{ marginTop: 1 }}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <TextField
-                variant="outlined"
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                value={password}
-                sx={{ marginTop: 1 }}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              {error && <Typography color="error">{error}</Typography>}
-              <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
-                Sign Up
-              </Button>
+            <Box sx={{ width: {xs: "60%", sm: "40%"}, margin: "0 auto" }}>
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSignUp}
+              >
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="name"
+                  label="Name"
+                  name="name"
+                  autoFocus
+                  value={name}
+                  sx={{ marginTop: 1 }}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  autoComplete="email"
+                  value={email}
+                  sx={{ marginTop: 1 }}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <TextField
+                  variant="outlined"
+                  margin="normal"
+                  required
+                  fullWidth
+                  name="password"
+                  label="Password"
+                  type="password"
+                  id="password"
+                  autoComplete="current-password"
+                  value={password}
+                  sx={{ marginTop: 1 }}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {error && <Typography color="error">{error}</Typography>}
+                <Button type="submit" variant="contained" sx={{ mt: 1, mb: 2 }}>
+                  Sign Up
+                </Button>
+              </Box>
             </Box>
           </Box>
         </Container>
