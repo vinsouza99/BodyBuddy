@@ -432,18 +432,38 @@ export function Landing() {
                   want to exercise in their own homes or on the go, at their own
                   pace.
                 </Typography>
-                <Box display="block">
-                  <Link to="/enter">
-                    <Button
-                      variant="contained"
-                      sx={{
-                        // textTransform: "uppercase",
-                        "&:hover": { backgroundColor: "primary.dark" },
+                <Box
+                  sx={{
+                    display: "block",
+                    marginTop: 2,
+                    "&:hover": { color: "primary.dark" },
+                    fontSize: "1.1rem",
+                  }}
+                >
+                  <Button variant="contained">
+                    <a
+                      href={ProjectProposal}
+                      download
+                      style={{
+                        display: "flex",
+                        textDecoration: "none",
+                        color: "inherit",
+                        alignItems: "center",
                       }}
                     >
-                      Sign Up For Free
-                    </Button>
-                  </Link>
+                      {/*
+                      <img
+                        src={downloadIcon}
+                        alt="download Icon"
+                        style={{
+                          height: "28px",
+                          marginRight: "8px",
+                        }}
+                      />
+                      */}
+                      Download Proposal
+                    </a>
+                  </Button>
                 </Box>
               </Box>
             </Grid>
@@ -818,7 +838,6 @@ export function Landing() {
                           <Button
                             variant="contained"
                             sx={{
-                              // textTransform: "uppercase",
                               "&:hover": { backgroundColor: "primary.dark" },
                             }}
                           >
@@ -841,7 +860,6 @@ export function Landing() {
                       height: "100%",
                       display: "flex",
                       flexDirection: "column",
-                      // "&:hover": {border: "2px solid #ff118c"}
                     }}
                   >
                     <CardContent
@@ -1011,32 +1029,6 @@ export function Landing() {
                     />
                     Project Github
                   </Link>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    marginTop: 2,
-                    "&:hover": { color: "primary.dark" },
-                    fontSize: "1.1rem",
-                  }}
-                >
-                  <a
-                    href={ProjectProposal}
-                    download
-                    style={{
-                      display: "flex",
-                      textDecoration: "none",
-                      color: "inherit",
-                      alignItems: "center",
-                    }}
-                  >
-                    <img
-                      src={downloadIcon}
-                      alt="download Icon"
-                      style={{ height: "28px", marginRight: "8px" }}
-                    />
-                    Download our proposal
-                  </a>
                 </Box>
               </Box>
             </Grid>
