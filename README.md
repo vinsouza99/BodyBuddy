@@ -4,7 +4,7 @@ BodyBuddy is an AI-powered fitness web platform for people who want to exercise 
 **Developers:**
 - [Vin](https://github.com/vinsouza99) (Development Lead and Full-Stack Developer)
 - [Cocoy Suguitan](https://github.com/cocoysg) (Full-Stack Developer)
-- [Yosuke Hanaoka](https://github.com/yoshan0921) (Full-Stack Developer)
+- [Yosuke Hanaoka](https://github.com/yoshan0921) (Project Manager and Full-Stack Developer)
 - [Teru Mori](https://github.com/terumori1206) (Full-Stack Developer)
 
 ## Technical Overview
