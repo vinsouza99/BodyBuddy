@@ -1,12 +1,20 @@
 # BodyBuddy
 BodyBuddy is an AI-powered fitness web platform for people who want to exercise in their own homes or on the go, at their own pace. The platform offers an effective fitness experience without the need for a gym or personal trainer and without the worry of time and location constraints. The AI analysis checks your form in real-time, ensuring correct posture for a safe and effective workout. It also helps you create personalized workout plans based on your fitness level and goals. Plus, the progress dashboard keeps you motivated, making it easier to stay on track and maintain a regular workout routine, even when exercising alone!
 
+**Developers:**
+- [Vin](https://github.com/vinsouza99) (Development Lead and Full-Stack Developer)
+- [Cocoy Suguitan](https://github.com/cocoysg) (Full-Stack Developer)
+- [Yosuke Hanaoka](https://github.com/yoshan0921) (Full-Stack Developer)
+- [Teru Mori](https://github.com/terumori1206) (Full-Stack Developer)
+
 ## Technical Overview
 BodyBuddy combines state-of-the-art tools to deliver a seamless fitness experience, and these are the reasons why they were chosen.
 
+![image](https://github.com/user-attachments/assets/7fe4e1e1-fc68-43bc-994d-4251f971980d)
+
 **React**—paired with **Vite**—was our choice for front-end development. React is the industry standard for building responsive and dynamic user interfaces, and Vite makes development faster with its lightning-fast build times. For styling, **Material UI** was a natural fit. Built for React, it allowed us to quickly develop a visually appealing and responsive interface.
 
-For the AI poweredfeatures, we used **MediaPipe** library and **OpenAI API**. MediaPipe provides pre-trained models for posture detection and can be customized to meet our app’s needs. This enabled us to integrate real-time performance feedback using the webcam effectively. **OpenAI API** was used to generate personalized workout plans, since it delivers high-quality outputs based on templates and user settings.
+For the AI powered features, we used **MediaPipe** library and **OpenAI API**. MediaPipe provides pre-trained models for posture detection and can be customized to meet our app’s needs. This enabled us to integrate real-time performance feedback using the webcam effectively. **OpenAI API** was used to generate personalized workout plans, since it delivers high-quality outputs based on templates and user settings.
 
 On the back end, **Node.js** and **Express** power our server. We chose Node.js for its performance and scalability and Express for its simplicity and our familiarity with it. To manage our database interactions, we used the **Sequelize** library, which made data modeling and manipulation straightforward. For API security, we implemented **JWT**, ensuring secure user authentication and data integrity.
 
