@@ -24,6 +24,7 @@ import {
   DialogContentText,
   CircularProgress,
 } from "@mui/material";
+import ReactPlayer from "react-player";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import CloseIcon from "@mui/icons-material/Close"; // Close Icon
@@ -643,6 +644,22 @@ export function Landing() {
                 </span>{" "}
                 without the worry of time and location constraints
               </Typography>
+            </Grid>
+          </Grid>
+          <Grid container>
+            <Grid
+              justifyContent={"center"}
+              sx={{
+                margin: "auto",
+                marginTop: "2rem",
+                marginBottom: "2rem",
+                overflow: "hidden",
+                borderRadius: "10px",
+              }}
+            >
+              <ReactPlayer
+                url={"https://youtu.be/uvNULBcpdWA?si=_KGPgJsaHsgM0z9X&t=7550"}
+              />
             </Grid>
           </Grid>
         </Box>
